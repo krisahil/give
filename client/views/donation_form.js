@@ -316,33 +316,7 @@ Template.DonationForm.events({
                     console.log(form.paymentInformation.start_date);
                     handleCalls(response, form, 'card');
                 }
-                /*if () {
-                    // Show the errors on the form
-                    $form.find('.payment-errors').text(response.error.message);
-                    $form.find('button').prop('disabled', false);
-                } else {
-                    // response contains id and card, which contains additional card details
-                    var token = response.id;
-                    // Insert the token into the form so it gets submitted to the server
-                    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-                    // and submit
-                    $form.get(0).submit();
-                }*/
-
-
             });
-            /*balanced.card.create(payload, function (response) {
-                // Successful tokenization
-                if (response.status_code === 201) {
-                    var fundingInstrument = response.cards != null ? response.cards[0] : response.bank_accounts[0];
-                    // Call your backend
-                    handleCalls(fundingInstrument, form);
-                } else {
-                    //error logic here
-                    var sendError = {reason: response.errors[0].category_code, details: response.errors[0].description};
-                    handleErrors(sendError);
-                }
-            });*/
         } else {
             form.paymentInformation.type = "Check";
             Stripe.bankAccount.createToken({
@@ -364,17 +338,6 @@ Template.DonationForm.events({
                     handleCalls(response, form, 'check');
                 }
             });
-            /*balanced.bankAccount.create(payload, function (response) {
-                // Successful tokenization
-                if (response.status_code === 201) {
-                    var fundingInstrument = response.bank_accounts != null ? response.bank_accounts[0] : response.cards[0];
-                    // Call your backend
-                    handleCalls(fundingInstrument, form);
-                } else {
-                    //error logic here
-                    console.error(response);
-                }
-            });*/
         }
     },
     'change #is_recurring': function() {
@@ -559,6 +522,13 @@ Template.DonationForm.helpers({
         if(Session.equals("coverTheFees", true)){
             return "form-group";
         } else return "form-group";
+    },
+    MeteorUser: function(){
+        if(Meteor.user()){
+            return true;
+        } else{
+            return false;
+        }
     }
 });
 /*****************************************************************************/

@@ -1,3 +1,17 @@
+Meteor.methods({
+    update_customer: function (form, customer_id, dt_persona_id) {
+
+        //Check the client side form fields with the Meteor 'check' method
+        Utils.check_update_customer_form(form, customer_id, dt_persona_id);
+
+        // Send the user's contact updates to balanced
+        var test = Utils.update_stripe_customer(form, customer_id);
+
+        // Send the user's contact udpates to Donor Tools
+        Utils.update_dt_account(form, dt_persona_id);
+    }
+});
+
 _.extend(Utils, {
     getDonateTo: function (donateTo) {
         var returnToCalled;
@@ -447,7 +461,41 @@ _.extend(Utils, {
     stripe_get_subscription: function(invoice_id){
         logger.info("Started stripe_get_subscription");
 
+    },
+    update_stripe_customer: function(form, customer_id){
+        logger.info("Inside update_stripe_customer.");
+        console.log("LOOK HERE");
+        console.log(form.address.city);
+
+        var stripeCustomerUpdate = new Future();
+
+        Stripe.customers.update(customer_id, {
+                "metadata": {
+                    "city":            form.address.city,
+                    "state":           form.address.state,
+                    "address_line1":   form.address.address_line1,
+                    "address_line2":   form.address.address_line2,
+                    "postal_code":     form.address.postal_code,
+                    "phone":           form.phone
+                }
+            }, function (error, customer) {
+                if (error) {
+                    //console.dir(error);
+                    stripeCustomerUpdate.return(error);
+                } else {
+                    stripeCustomerUpdate.return(customer);
+                }
+            }
+        );
+
+        stripeCustomerUpdate = stripeCustomerUpdate.wait();
+
+        if (!stripeCustomerUpdate.object) {
+            throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
+        }
+
+        console.dir(stripeCustomerUpdate);
+
+        return stripeCustomerUpdate;
     }
-
-
 });

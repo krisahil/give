@@ -1,0 +1,21 @@
+<template name="UserContact">
+    <div class="profile">
+        <div class="well col-sm-12">
+        <br>
+        {{#with user}}
+                <h5 id="profile_section">{{profile.fname}} {{profile.lname}}</h5>
+            {{{business_name}}}
+                <p>
+                    {{profile.address.address_line1}} <br>
+                    {{{address_line2}}}
+                    {{profile.address.city}}, {{profile.address.state}} {{profile.address.postal_code}}<br>
+                    {{profile.address.country}}<br>
+                    {{profile.phone}} <br>
+                    {{#each emails}}
+                        {{address}}
+                    {{/each}} <br>
+                </p>
+        {{/with}}
+        </div>
+    </div>
+</template>

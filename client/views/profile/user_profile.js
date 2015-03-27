@@ -121,24 +121,24 @@ Template.UserProfile.events({
         evt.stopPropagation();
         var fields = {
             address: {
-                'line1':          $('#line1').val(),
-                'line2':          $('#line2').val(),
-                'city':           $('#city').val(),
-                'state':          $('#state').val(),
-                'postal_code':    $('#zip').val()
+                'address_line1':    $('#line1').val(),
+                'address_line2':    $('#line2').val(),
+                'city':             $('#city').val(),
+                'state':            $('#state').val(),
+                'postal_code':      $('#zip').val()
             },
-            phone:                $('#phone').val()
+            phone:                  $('#phone').val()
         };
         var updateThis = {$set: fields};
 
         // Update the Meteor.user profile
         Meteor.users.update(Meteor.user()._id, {$set: {'profile.address': fields.address, 'profile.phone': fields.phone}});
-
-        var updateCustomer = Customers.update(Customers.findOne()._id, updateThis);
+        var customer_id = Meteor.users.findOne().primary_customer_id;
+        var updateCustomer = Customers.update({_id: customer_id}, updateThis);
         if(updateCustomer === 1) {
             $('#modal_for_address_change').modal('hide')
         }
-        Meteor.call('update_customer', updateThis.$set,  Customers.findOne()._id, DT_donations.findOne().persona_id, function(error, result){
+        Meteor.call('update_customer', updateThis.$set,  customer_id, DT_donations.findOne().persona_id, function(error, result){
            if(result){
                console.log(result);
            } else{
