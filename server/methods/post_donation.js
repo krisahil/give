@@ -128,11 +128,9 @@ _.extend(Utils, {
     link_gift_to_user: function(customer_id, charge_id, userId) {
         logger.info("Started link_gift_to_user.");
         try {
-            var insertThis = {};
-            insertThis.customers = customer_id;
-            insertThis.charges = charge_id;
+            Utils.update_customer_user(customer_id, userId);
 
-            Meteor.users.update(userId, {$addToSet: insertThis});
+            Meteor.users.update(userId, {$set: insertThis});
         } catch (e) {
             logger.error(e);
         }

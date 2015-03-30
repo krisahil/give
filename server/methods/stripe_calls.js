@@ -343,27 +343,26 @@ _.extend(Utils, {
         logger.info("Started store_stripe_event");
         
         console.dir(event_body);
+        event_body.data.object._id = event_body.data.object.id;
 
         switch(event_body.data.object.object){
             case "customer":
-                event_body.data.object._id = event_body.data.object.id;
                 Customers.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "invoice":
-                event_body.data.object._id = event_body.data.object.id;
                 Invoices.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "charge":
-                event_body.data.object._id = event_body.data.object.id;
                 Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "card":
-                event_body.data.object._id = event_body.data.object.id;
                 Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "bank_account":
-                event_body.data.object._id = event_body.data.object.id;
                 Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                break;
+            case "subscription":
+                Subscriptions.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             default:
                 logger.error("This event didn't fit any of the configured cases, go into store_stripe_event and add the appropriate case.");

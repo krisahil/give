@@ -118,6 +118,15 @@ Meteor.publish("userCustomers", function () {
 	}
 });
 
+Meteor.publish("userSubscriptions", function () {
+	if (this.userId) {
+        var customer_id = Meteor.users.findOne({_id: this.userId}).primary_customer_id;
+		return Subscriptions.find({customer: customer_id});
+	} else {
+		this.ready();
+	}
+});
+
 Meteor.publish("userDT", function (page) {
 	if (this.userId) {
         var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;

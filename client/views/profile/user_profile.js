@@ -177,8 +177,16 @@ Template.UserProfile.rendered = function(){
 Template.UserNav.events({
     'click #nav-button-password': function(evt){
         evt.preventDefault();
-        evt.stopPropagation();
         Router.go('changePwd');
+    },
+    'click #nav-button-profile': function(evt){
+        evt.preventDefault();
+        Router.go('/give/user');
+    }
+    ,
+    'click #nav-button-subscriptions': function(evt){
+        evt.preventDefault();
+        Router.go('/give/user/subscriptions');
     }
 });
 

@@ -2,28 +2,13 @@
     <div class="text-right">
         <span class="">
             <p class="text-danger text-center">
-                Your giving history may still be updating. It might not reflect the latest numbers we have in our donation system. &nbsp;&nbsp;&nbsp;
+                <!--Your giving history may still be updating. It might not reflect the latest numbers we have in our donation system. &nbsp;&nbsp;&nbsp;-->
+                <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}">Profile & Giving History</button></a>
+                <a href="{{pathFor 'user.subscriptions'}}"><button type="button" id="nav-button-subscriptions" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.subscriptions'}}">Recurring Gifts</button></a>
                 <button type="button" id="nav-button-password" class="btn btn-primary navbar-btn">Change Password</button>
                 {{> atNavButton}}
             </p>
 
         </span>
     </div>
-    <!--<nav class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-            <a class="navbar-brand" href="#">Trash Mountain Project</a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse-01">
-            <ul class="nav navbar-nav">
-                <li class="{{isActiveRoute regex='give'}}"><a href="/give">Donation Form</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {{> atNavButton}}
-                <button type="button" id="nav-button-password" class="btn btn-default navbar-btn">Change Password</button>
-            </ul>
-        </div>
-    </nav>&lt;!&ndash; /navbar &ndash;&gt;-->
 </template>

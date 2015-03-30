@@ -19,8 +19,8 @@ Router.onBeforeAction(function () {
     except: ['donation.form', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks']
 });
 
-Router.route(':root', function () {
-    var root = Meteor.settings.public.root;
+Router.route(':root_path', function () {
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     var params = this.params;
 
     Session.set('params.donateTo', params.query.donateTo);
@@ -37,8 +37,8 @@ Router.route(':root', function () {
     name: 'donation.form'
 });
 
-Router.route(':root/donorTools', function () {
-    var root = Meteor.settings.public.root;
+Router.route(':root_path/donorTools', function () {
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     var params = this.params;
 
     Session.set('params.id', params.query.id);
@@ -51,7 +51,7 @@ Router.route(':root/donorTools', function () {
     name: 'donation.dt'
 });
 
-Router.route(':root/thanks', {
+Router.route(':root_path/thanks', {
     name: 'donation.thanks',
     waitOn: function () {
         return  [
@@ -61,7 +61,7 @@ Router.route(':root/thanks', {
         ];
     },
     data: function () {
-        var root = Meteor.settings.public.root;
+        var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     },
     action: function () {
         this.render('Thanks', {
@@ -72,8 +72,8 @@ Router.route(':root/thanks', {
     }
 });
 
-Router.route(':root/gift/:_id', function () {
-    var root = Meteor.settings.public.root;
+Router.route(':root_path/gift/:_id', function () {
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     var params = this.params;
 
     this.subscribe('donate', params._id).wait();
@@ -95,17 +95,17 @@ Router.route(':root/gift/:_id', function () {
     name: 'donation.gift'
 });
 
-Router.route(':root/dashboard', function () {
+Router.route(':root_path/dashboard', function () {
     this.layout('AdminLayout');
-    var root = Meteor.settings.public.root;
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     this.render('Dashboard');
 }, {
     name: 'admin.dashboard'
 });
 
-Router.route(':root/transactions', function () {
+Router.route(':root_path/transactions', function () {
     this.layout('AdminLayout');
-    var root = Meteor.settings.public.root;
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
 
     this.subscribe('donate_list').wait();
 
@@ -118,9 +118,9 @@ Router.route(':root/transactions', function () {
     }
 });
 
-Router.route(':root/subscription/:_id', function () {
+Router.route(':root_path/subscription/:_id', function () {
     this.layout('AdminLayout');
-    var root = Meteor.settings.public.root;
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
 
     this.subscribe('donate', this.params._id).wait();
 
@@ -137,9 +137,9 @@ Router.route(':root/subscription/:_id', function () {
     }
 });
 
-Router.route(':root/order/:_id', function () {
+Router.route(':root_path/order/:_id', function () {
     this.layout('AdminLayout');
-    var root = Meteor.settings.public.root;
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
 
     this.subscribe('donate', this.params._id).wait();
 
@@ -156,19 +156,19 @@ Router.route(':root/order/:_id', function () {
     }
 });
 
-Router.route(':root/tables', {
+Router.route(':root_path/tables', {
     template: 'Tables',
     name: 'admin.tables',
     layoutTemplate: 'AdminLayout',
     data: function () {
-        var root = Meteor.settings.public.root;
+        var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     },
     action: function () {
         this.render('Tables')
     }
 });
 
-Router.route(':root/report', {
+Router.route(':root_path/report', {
     name: 'admin.report',
     template: 'Report',
     layoutTemplate: 'AdminLayout',
@@ -180,11 +180,11 @@ Router.route(':root/report', {
         return Meteor.subscribe('give_report', query.startDate, query.endDate);
     },
     data: function () {
-        var root = Meteor.settings.public.root;
+        var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     }
 });
 
-Router.route(':root/expiring', {
+Router.route(':root_path/expiring', {
     name: 'admin.expiring',
     template: 'Expiring',
     layoutTemplate: 'AdminLayout',
@@ -193,17 +193,16 @@ Router.route(':root/expiring', {
         return Meteor.subscribe('card_expiring');
     },
     data: function () {
-        var root = Meteor.settings.public.root;
+        var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
     }
 });
 
-Router.route(':root/user', function () {
+Router.route('user.profile', function () {
     this.layout('UserLayout');
-    var root = Meteor.settings.public.root;
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
 
     this.subscribe('userDataPublish').wait();
     this.subscribe('userCharges').wait();
-    //this.subscribe('userDonations').wait();
     this.subscribe('userCustomers').wait();
     this.subscribe('userDT').wait();
     this.subscribe('userDTFunds').wait();
@@ -216,22 +215,22 @@ Router.route(':root/user', function () {
         this.next();
     }
 }, {
-    name: 'user.profile'
+    path: ':root_path/user'
 });
 
-Router.route(':root/scheduled', {
+Router.route(':root_path/scheduled', {
     name: 'donation.scheduled',
     
     data: function () {
-        var root = Meteor.settings.public.root;
+        var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
         Session.set('params.frequency', this.params.query.frequency);
         Session.set('params.amount', this.params.query.amount);
         Session.set('params.start_date', moment(this.params.query.start_date * 1000).format('DD MMM, YYYY'));
     }
 });
 
-Router.route(':root/webhooks/stripe', function () {
-    var root = Meteor.settings.public.root;
+Router.route(':root_path/webhooks/stripe', function () {
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
 
     // Receive an event, check that it contains a data.object object and send along to appropriate function
     var request = this.request.body;
@@ -246,4 +245,24 @@ Router.route(':root/webhooks/stripe', function () {
     }
 }, {where: 'server',
     name: 'stripe_webhooks'
+});
+
+Router.route('user.subscriptions', function(){
+    this.layout('UserLayout');
+    var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
+
+    this.subscribe('userDataPublish').wait();
+    this.subscribe('userCharges').wait();
+    this.subscribe('userCustomers').wait();
+    this.subscribe('userSubscriptions').wait();
+
+    if (this.ready()) {
+        this.render('Subscriptions');
+        this.next();
+    } else {
+        this.render('Loading');
+        this.next();
+    }
+}, {
+    path: ':root_path/user/subscriptions'
 });

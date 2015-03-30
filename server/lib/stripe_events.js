@@ -73,6 +73,16 @@ Stripe_Events = {
         return;
     },
     'customer.deleted': function (stripeEvent, res) {
+        Customers.remove({_id: stripeEvent.data.object.id});
+        var user_with_customer_id = Meteor.users.findOne({'customers.customer_id': stripeEvent.data.object.id});
+
+
+        // Remove the devices associated with this customer
+        stripeEvent.sources.data.forEach(function(element){
+            console.log("Removing this device: " + element.id);
+            Devices.remove({_id: element.id});
+        });
+
         console.log(stripeEvent.type + ': event processed');
         return;
     },
@@ -89,7 +99,7 @@ Stripe_Events = {
         return;
     },
     'customer.card.deleted': function (stripeEvent, res) {
-        Utils.store_stripe_event(stripeEvent);
+        Devices.remove({_id: stripeEvent.data.object.id});
 
         console.log(stripeEvent.type + ': event processed');
         return;
@@ -101,14 +111,21 @@ Stripe_Events = {
         return;
     },
     'customer.subscription.created': function (stripeEvent, res) {
+        Utils.store_stripe_event(stripeEvent);
+
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.subscription.updated': function (stripeEvent, res) {
+        Utils.store_stripe_event(stripeEvent);
+
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.subscription.deleted': function (stripeEvent, res) {
+        Utils.store_stripe_event(stripeEvent);
+
+
         console.log(stripeEvent.type + ': event processed');
         return;
     },

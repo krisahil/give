@@ -1,0 +1,61 @@
+<template name="SubscriptionsOverview">
+  <div class="panel panel-default billing-module">
+    <div class="panel-heading">
+      <h3 class="panel-title">Subscriptions Overview</h3>
+    </div>
+    <div class="panel-body">
+        {{#if subscriptions}}
+            {{#each subscriptions}}
+                <div class="col col-lg-6">
+                <ul class="list-group">
+                    <!--
+                      We just map out each type here so we don't have a bunch of tangled state.
+                      Wire this up as you see fit. Just make sure to account for each status type you need :)
+                      See: https://stripe.com/docs/api#subscription_object.
+                    -->
+                    {{#if equals status "trialing"}}
+                        <li class="list-group-item list-group-item-info">
+                            <p>Your gift is schedule to start on {{epochToString trial_end}}. <a href="#" class="cancel-subscription">Cancel Subscription</a>.</p>
+                        </li>
+                    {{/if}}
+                    {{#if equals status "active"}}
+                    <li class="list-group-item list-group-item-success">
+                      <p>Your recurring gift is currently active! <a href="#" class="cancel-subscription">Cancel</a>.</p>
+                    </li>
+                    {{/if}}
+                    {{#if equals status "canceled"}}
+                    <li class="list-group-item list-group-item-danger">
+                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <a href="{{pathFor 'billingResubscribe'}}">Resubscribe</a>.</p>
+                    </li>
+                    {{/if}}
+                    <li class="list-group-item bm-block clearfix">
+                      <div class="bm-block-content">
+                        <span class="plan-name-quota">Designated to: <strong>{{metadata.donateTo}}</strong><br>
+                            Frequency: <strong>{{capitalize plan_name}}</strong></span>
+                      </div>
+                      {{#if equals status "canceled"}}
+                        <a href="{{pathFor 'billingResubscribe'}}" class="btn btn-small btn-default pull-right">Resubscribe</a>
+                      {{else}}
+                        <a href="{{pathFor 'billingPlan'}}" class="btn btn-small btn-default pull-right">Change Plan</a>
+                      {{/if}}
+                    </li>
+                    <li class="list-group-item bm-block clearfix">
+                      <span class="bm-block-label">Payment</span>
+                      <div class="bm-block-content">
+                        <span><strong>{{payment.card.type}}</strong> {{payment.card.lastFour}}</span>
+                        {{#unless equals status "canceled"}}
+                          <span>Next gift on: <strong>{{epochToString current_period_end}}</strong></span>
+                          <span>Amount: <strong>{{centsToDollars quantity}}</strong></span>
+                        {{/unless}}
+                      </div>
+                      <a href="{{pathFor 'billingCard'}}" class="btn btn-small btn-default pull-right">Update Card</a>
+                    </li>
+                  </ul>
+                </div>
+            {{/each}}
+        {{else}}
+            <h2>No recurring gifts found</h2>
+        {{/if}}
+    </div>
+  </div>
+</template>
