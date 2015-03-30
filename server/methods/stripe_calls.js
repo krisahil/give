@@ -5,9 +5,9 @@ Meteor.methods({
         Utils.check_update_customer_form(form, customer_id, dt_persona_id);
 
         // Send the user's contact updates to balanced
-        var test = Utils.update_stripe_customer(form, customer_id);
+        Utils.update_stripe_customer(form, customer_id);
 
-        // Send the user's contact udpates to Donor Tools
+        // Send the user's contact updates to Donor Tools
         Utils.update_dt_account(form, dt_persona_id);
     }
 });
@@ -413,7 +413,7 @@ _.extend(Utils, {
         }
     },
     link_card_to_customer: function(customer_id, token_id, type){
-        logger.info("Started create_card");
+        logger.info("Started link_card_to_customer");
 
         var stripeCreateCard = new Future();
         var payment_device = {};
@@ -448,6 +448,39 @@ _.extend(Utils, {
 
         return stripeCreateCard;
     },
+    update_card: function(customer_id, card_id, saved){
+        logger.info("Started link_card_to_customer");
+
+        var stripeUpdatedCard = new Future();
+
+        Stripe.customers.updateCard(
+            customer_id,
+            card_id,{
+                metadata: {
+                    saved: saved
+                }
+            },
+            function (error, card) {
+                if (error) {
+                    //console.dir(error);
+                    stripeUpdatedCard.return(error);
+                } else {
+                    stripeUpdatedCard.return(card);
+                }
+            }
+        );
+
+        stripeUpdatedCard = stripeUpdatedCard.wait();
+
+        if (!stripeUpdatedCard.object) {
+            throw new Meteor.Error(stripeUpdatedCard.rawType, stripeUpdatedCard.message);
+        }
+
+        stripeUpdatedCard._id = stripeUpdatedCard.id;
+        console.dir(stripeUpdatedCard);
+
+        return stripeUpdatedCard;
+    },
     add_meta_from_subscription_to_charge: function(stripeEvent) {
         logger.info("Started add_meta_from_subscription_to_charge");
 
@@ -463,7 +496,6 @@ _.extend(Utils, {
     },
     update_stripe_customer: function(form, customer_id){
         logger.info("Inside update_stripe_customer.");
-        console.log("LOOK HERE");
         console.log(form.address.city);
 
         var stripeCustomerUpdate = new Future();
@@ -496,5 +528,35 @@ _.extend(Utils, {
         console.dir(stripeCustomerUpdate);
 
         return stripeCustomerUpdate;
+    },
+    update_stripe_customer_user: function(customer_id, user_id){
+        logger.info("Inside update_stripe_customer_user.");
+        console.log(user_id);
+
+        var stripeCustomerUserUpdate = new Future();
+
+        Stripe.customers.update(customer_id, {
+                "metadata": {
+                    "user_id": user_id
+                }
+            }, function (error, customer) {
+                if (error) {
+                    //console.dir(error);
+                    stripeCustomerUserUpdate.return(error);
+                } else {
+                    stripeCustomerUserUpdate.return(customer);
+                }
+            }
+        );
+
+        stripeCustomerUserUpdate = stripeCustomerUserUpdate.wait();
+
+        if (!stripeCustomerUserUpdate.object) {
+            throw new Meteor.Error(stripeCustomerUserUpdate.rawType, stripeCustomerUserUpdate.message);
+        }
+
+        console.dir(stripeCustomerUserUpdate);
+
+        return stripeCustomerUserUpdate;
     }
 });

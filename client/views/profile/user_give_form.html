@@ -1,0 +1,45 @@
+<template name="UserGiveForm">
+    <div class="modal fade" id="modal_for_user_give_form">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title"><strong>Thanks</strong>, complete the form below.</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <fieldset>
+
+                            <!-- Prepend -->
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input type="text" class="form-control" placeholder="Amount" />
+                            </div>
+
+                            <!-- Select Basic -->
+                            {{> GiveDropdownGroup}}
+                            {{#if selectedNewDevice}}
+                                {{#if paymentWithCard}}
+                                    {{> cardPaymentInformation}}
+                                {{else}}
+                                    {{#if paymentWithCheck}}
+                                        {{> checkPaymentInformation}}
+                                    {{/if}}
+                                {{/if}}
+                            {{/if}}
+
+                            <div class="form-group padBottom">
+                                <div class="col-sm-offset-2 col-sm-8">
+                                    <button name="submitThisForm" type="submit" class="btn btn-block btn-hg btn-primary"
+                                            data-toggle="modal" data-target=".bs-example-modal-lg">Submit Donation</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</template>

@@ -78,7 +78,7 @@ Stripe_Events = {
 
 
         // Remove the devices associated with this customer
-        stripeEvent.sources.data.forEach(function(element){
+        stripeEvent.data.object.sources.data.forEach(function(element){
             console.log("Removing this device: " + element.id);
             Devices.remove({_id: element.id});
         });
@@ -105,6 +105,12 @@ Stripe_Events = {
         return;
     },
     'customer.source.created': function (stripeEvent, res) {
+        Utils.store_stripe_event(stripeEvent);
+
+        console.log(stripeEvent.type + ': event processed');
+        return;
+    },
+    'customer.source.updated': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
 
         console.log(stripeEvent.type + ': event processed');

@@ -15,32 +15,6 @@ function handleErrors(error) {
         var gatherInfo = {};
         gatherInfo.browser = navigator.userAgent;
 
-
-        // Stripe seems to have good error messages, might not need this
-        /*error.details = "<tr>\
-                        <td><p>Hmmm... Looks like the form was submitted with something in it that computers don't like. Computers have\
-                         a strict diet, so don't try to feed them anything that they shouldn't eat. <-- Think here of dogs and chocolate ;-)</p></td>\
-                        </tr>\
-                    <tr>\
-                        <td><p>Try these to see if it fixes the form.</p></td>\
-                    </tr>\
-                        <td><p>1. Look through the fields and make sure they all have the right kind of information in them. Numbers in number fields letters in letter fields, etc.. \
-                        Then try to submit the form again.</p></td>\
-                    </tr>\
-                    <tr>\
-                        <td><p>2. If the form looks correct and you still get this error there could be a temporary problem preventing the form from being submitted. Try reloading the browser. \
-                        If you are still having problems, try rebooting your computer. If you come back here and you still have problems then please report this to tech support. <br> \
-                        <center><a target='_blank' href='mailto:support@trashmountain.com?subject=Trouble with the match field on the giving page&body=Boy, I sure love dogs. \
-                        But I&#39;m not here to talk about dogs, or cats. I&#39;m having a problem giving to your fine organization. %0A%0A\
-                        What&#39;s more, I&#39;ve tried all the steps listed on your site but I still can&#39;t give. What gives(pun intended)? Please help. %0A%0A\
-                        Please leave the below information in the email. This will help us get to the bottom of the problem. %0A%0A User Agent: " + gatherInfo.browser + "%0A\
-                        Language:  " + window.navigator.language + "%0A\
-                        IE Language:  " + navigator.userLanguage + "%0A\
-                        Location HREF: " + location.href + "'><button type='button' class='btn btn-danger'>Send an e-mail to support</button></a></center></p></td>\
-                    </tr>\
-                </tr>";*/
-
-
         $('#modal_for_initial_donation_error').modal({show: true});
         $(".modal-dialog").css("z-index", "1500");
         $('#errorCategory').html(error.code);
@@ -169,42 +143,6 @@ function handleCalls(payment, form, type) {
             }
         }
     });
-
-    /*if ($('#is_recurring').val() === 'one_time') {
-        Meteor.call("singleDonation", form, function (error, result) {
-            if (result) {
-
-                Router.go('/give/thanks?c=' + result.c + "&don=" + result.don + "&deb=" + result.deb);
-            } else {
-                //run updateTotal so that when the user resubmits the form the total_amount field won't be blank.
-                updateTotal();
-                handleErrors(error);
-            }
-            //END error handling block for meteor call to processPayment
-        });
-        //END Meteor call block
-    } else if ($('#is_recurring').val() === 'monthly' || $('#is_recurring').val() === 'weekly' || $('#is_recurring').val() === 'daily') {
-        Meteor.call('recurringDonation', form, function (error, result) {
-            if (result) {
-                if(result.deb === 'scheduled'){
-
-                    // Send the user to the scheduled page and include the frequency and the amount in the url for displaying to them
-                    Router.go('/give/scheduled/?frequency=' + form.paymentInformation.is_recurring + '&amount=' + form.paymentInformation.amount/100 + '&start_date=' + form.paymentInformation.start_date );
-                }else{
-
-                    Router.go('/give/thanks?c=' + result.c + "&don=" + result.don + "&deb=" + result.deb);
-                }
-            } else {
-
-                //run updateTotal so that when the user resubmits the form the total_amount field won't be blank.
-                updateTotal();
-
-                //handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
-                //the error.
-                handleErrors(error);
-            }
-        });
-    }*/
 }
 
 Template.DonationForm.events({
@@ -264,7 +202,8 @@ Template.DonationForm.events({
                 "is_recurring": $('#is_recurring').val(),
                 "coverTheFees": $('#coverTheFees').is(":checked"),
                 "created_at": moment().format('MM/DD/YYYY, hh:mm'),
-                "start_date": moment(new Date($('#start_date').val())).format('X')
+                "start_date": moment(new Date($('#start_date').val())).format('X'),
+                "saved": $('#save_payment').is(":checked")
             },
             "customer": {
                 "fname": $('#fname').val(),
@@ -292,6 +231,7 @@ Template.DonationForm.events({
         if (form.paymentInformation.total_amount !== form.paymentInformation.amount) {
             form.paymentInformation.fees = (form.paymentInformation.total_amount - form.paymentInformation.amount);
         }
+
         if (form.paymentInformation.donateWith === "Card") {
             form.paymentInformation.type = "Card";
 
@@ -505,9 +445,6 @@ Template.DonationForm.helpers({
     today: function () {
         return moment().format('D MMM, YYYY');
     },
-    userLoggedIn: function() {
-        return Boolean(Meteor.users.findOne());
-    },
     amountWidth: function() {
         if(Session.equals("paymentMethod", "Card")){
             return 'form-group col-md-4 col-sm-4 col-xs-12';
@@ -540,9 +477,6 @@ Template.DonationForm.destroyed = function() {
 Template.DonationForm.rendered = function() {
     // Setup parsley form validation
     $('#donation_form').parsley();
-
-    //enable select2 for those select elements with the .select class
-    //$('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
     //Set the checkboxes to unchecked
     $(':checkbox').radiocheck('uncheck');
@@ -587,7 +521,6 @@ Template.checkPaymentInformation.helpers({
             placeholder: "Bank Account Number",
             required: true
         };
-        //name: "account_number",
     },
     attributes_Input_RoutingNumber: function() {
         return {
@@ -596,7 +529,6 @@ Template.checkPaymentInformation.helpers({
             placeholder: "Routing numbers are 9 digits long",
             required: true
         };
-        //name: "routing_number",
     }
 });
 //Check Payment Template mods

@@ -82,14 +82,6 @@ Meteor.publish('card_expiring', function () {
 	}
 });
 
-Meteor.publish("userDataPublish", function () {
-	if (this.userId) {
-		return Meteor.users.find({_id: this.userId});
-	} else {
-		this.ready();
-	}
-});
-
 Meteor.publish("userDonations", function () {
 	if (this.userId) {
         var donations = Meteor.users.findOne({_id: this.userId}).donations;
@@ -99,30 +91,50 @@ Meteor.publish("userDonations", function () {
 	}
 });
 
-Meteor.publish("userCharges", function () {
-	if (this.userId) {
-        var charges = Meteor.users.findOne({_id: this.userId}).charges;
-		return Charges.find({'_id': { $in: charges}});
-	} else {
+Meteor.publish("userStripeData", function() {
+    if (this.userId) {
+        var customers = Customers.find({'metadata.user_id': this.userId});
+        var customers_ids = [];
+
+        customers.forEach(function(element) {
+            customers_ids.push(element.id);
+        });
+        var charges = Charges.find({'customer': {$in: customers_ids}});
+        var user = Meteor.users.find({_id: this.userId});
+        return[customers, charges, user];
+    }
+});
+
+Meteor.publish("userStripeDataWithSubscriptions", function () {
+    if (this.userId) {
+        var customers = Customers.find({'metadata.user_id': this.userId});
+        var customer_ids = [];
+        var subscription_ids = [];
+
+        customers.forEach(function(element) {
+            customer_ids.push(element.id);
+        });
+        var charges = Charges.find({'customer': {$in: customer_ids}});
+        var subscriptions = Subscriptions.find({'customer': {$in: customer_ids}});
+        var user = Meteor.users.find({_id: this.userId});
+        var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': true}]});
+        return[customers, charges, subscriptions, user, devices];
+    } else {
 		this.ready();
 	}
 });
 
-Meteor.publish("userCustomers", function () {
-	if (this.userId) {
-        var customers = Meteor.users.findOne({_id: this.userId}).primary_customer_id;
-        console.log(customers);
-		return Customers.find(customers);
-	} else {
-		this.ready();
-	}
-});
 
 Meteor.publish("userSubscriptions", function () {
-	if (this.userId) {
-        var customer_id = Meteor.users.findOne({_id: this.userId}).primary_customer_id;
-		return Subscriptions.find({customer: customer_id});
-	} else {
+    if (this.userId) {
+        var customers = Customers.find({'metadata.user_id': this.userId});
+        var subscriptions = [];
+        customers.forEach(function(element) {
+            console.log(element.id);
+            subscriptions.push(Subscriptions.find({customer: element.id}));
+        });
+        return subscriptions;
+    }else {
 		this.ready();
 	}
 });

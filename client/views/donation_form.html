@@ -9,7 +9,7 @@
             <div class="innerTitle">
                 <div class="centerTitle">
                     <div class="positionedAbsolute">
-                        {{#if userLoggedIn}}
+                        {{#if MeteorUser}}
                             <button class="btn btn-primary" type="button" id="userProfileButton"><span class="fa fa-user"> User Profile Page</span></button>
                         {{/if}}
                         <span class="signInOut" >{{> atNavButton}}</span>
@@ -106,28 +106,15 @@
 
 
     				<!--call the address portion of the form -->
-                    {{#if MeteorUser}}
-                        <h5>PAYMENT DETAILS
-                            <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
-                        </h5>
+                    {{> RequestAddress}}
+                    <h5>PAYMENT DETAILS
+                        <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
+                    </h5>
 
-                        {{#if paymentWithCard}}
-                            {{> cardPaymentInformation}}
-                        {{else}}
-                            {{> checkPaymentInformation}}
-                        {{/if}}
-                        {{> UserContact}}
+                    {{#if paymentWithCard}}
+                        {{> cardPaymentInformation}}
                     {{else}}
-                        {{> RequestAddress}}
-                        <h5>PAYMENT DETAILS
-                            <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
-                        </h5>
-
-                        {{#if paymentWithCard}}
-                            {{> cardPaymentInformation}}
-                        {{else}}
-                            {{> checkPaymentInformation}}
-                        {{/if}}
+                        {{> checkPaymentInformation}}
                     {{/if}}
 
 
@@ -286,7 +273,13 @@
                 <option value="2024">2024</option>
             </select>
         </div>
-
+        <!-- Checbox for Covering related fees-->
+        <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} />
+         Save this payment method for future use <span><i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
+             data-placement="bottom" data-trigger="hover focus" title="Processor fees" data-container="body"
+             data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
+             method in the future.">
+        </i></span>
         
     </div>
 </template>

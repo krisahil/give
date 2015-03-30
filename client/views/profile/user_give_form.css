@@ -1,0 +1,5 @@
+@media (min-width: 768px){
+    #modal_for_user_give_form .modal-content {
+        margin-right: -35px;
+    }
+}

@@ -24,12 +24,14 @@ Meteor.methods({
                 if(!customerData.object){
                     return {error: customerData.rawType, message: customerData.message};
                 }
+                Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
             }
             // If the user does exist in the Meteor user's collection, run the below code
             else{
                 logger.info("Found that user in the Meteor user's collection.");
                 customerData = Customers.findOne({_id: lookupCustomer.primary_customer_id});
                 var device = Utils.link_card_to_customer(customerData._id, data.paymentInformation.token_id, type);
+                Utils.update_card(customerData.id, device.id, data.paymentInformation.saved);
             }
 
             var metadata = {
