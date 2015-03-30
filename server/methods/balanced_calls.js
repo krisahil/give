@@ -1,16 +1,4 @@
-Meteor.methods({
-    update_customer: function (form, customer_id, dt_persona_id) {
 
-        //Check the client side form fields with the Meteor 'check' method
-        Utils.check_update_customer_form(form, customer_id, dt_persona_id);
-
-        // Send the user's contact updates to balanced
-        Utils.update_balanced_customer(form, customer_id);
-
-        // Send the user's contact udpates to Donor Tools
-        Utils.update_dt_account(form, dt_persona_id);
-    }
-});
 
 _.extend(Utils, {
     update_balanced_customer: function(form, customer_id){
@@ -57,14 +45,14 @@ _.extend(Utils, {
         persona = {};
 
         // Shape the data the way it needs to go into the persona record
-        var street_address = form['address.line1'] + " \n" + form['address.line2'];
+        var street_address = form.address.address_line1 + " \n" + form.address.address_line2;
         persona.addresses = [];
         persona.addresses[0] = {
             "id": address_id,
-            "city": form['address.city'],
-            "state": form['address.state'],
+            "city": form.address.city,
+            "state": form.address.state,
             "street_address": street_address,
-            "postal_code": form['address.postal_code']
+            "postal_code": form.address.postal_code
         };
         persona.phone_numbers = [];
         persona.phone_numbers[0] = {

@@ -105,19 +105,31 @@
                     </div>
 
 
-
     				<!--call the address portion of the form -->
-                    {{> RequestAddress}}
+                    {{#if MeteorUser}}
+                        <h5>PAYMENT DETAILS
+                            <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
+                        </h5>
 
-                    <h5>PAYMENT DETAILS
-                        <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
-                    </h5>
-
-                    {{#if paymentWithCard}}
-    					{{> cardPaymentInformation}}
+                        {{#if paymentWithCard}}
+                            {{> cardPaymentInformation}}
+                        {{else}}
+                            {{> checkPaymentInformation}}
+                        {{/if}}
+                        {{> UserContact}}
                     {{else}}
-    					{{> checkPaymentInformation}}
+                        {{> RequestAddress}}
+                        <h5>PAYMENT DETAILS
+                            <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
+                        </h5>
+
+                        {{#if paymentWithCard}}
+                            {{> cardPaymentInformation}}
+                        {{else}}
+                            {{> checkPaymentInformation}}
+                        {{/if}}
                     {{/if}}
+
 
                     <br>
     				<div class="form-group padBottom">
