@@ -7,13 +7,12 @@ Template.UserGiveForm.helpers({
         return true;
     },
     paymentWithCard: function() {
-        return Session.equals("paymentMethod", "Card");
+        return Session.equals("UserPaymentMethod", "Card");
+    },
+    paymentWithCheck: function() {
+        return Session.equals("UserPaymentMethod", "Check");
     }
 });
 
 Template.UserGiveForm.events({
-    'change [name=pay_with]': function() {
-        var selectedValue = $("[name=donateWith]").val();
-        Session.set("paymentMethod", selectedValue);
-    }
 });

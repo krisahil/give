@@ -176,7 +176,7 @@ _.extend(Utils, {
         stripeCustomer._id = stripeCustomer.id;
 
         Customers.insert(stripeCustomer);
-        logger.info("Customer _id: " + stripeCustomer.id);
+        logger.info("Customer_id: " + stripeCustomer.id);
         return stripeCustomer;
     },
     charge: function (total, donation_id, customer_id, payment_id, metadata) {
@@ -412,7 +412,7 @@ _.extend(Utils, {
             return;
         }
     },
-    link_card_to_customer: function(customer_id, token_id, type){
+    link_card_to_customer: function(customer_id, token_id, type, customerInfo){
         logger.info("Started link_card_to_customer");
 
         var stripeCreateCard = new Future();
@@ -421,7 +421,7 @@ _.extend(Utils, {
         if(type === 'card') {
             payment_device.card = token_id;
         } else{
-                payment_device.bank_account = token_id;
+            payment_device.bank_account = token_id;
         }
 
         Stripe.customers.createCard(
@@ -440,6 +440,11 @@ _.extend(Utils, {
         stripeCreateCard = stripeCreateCard.wait();
 
         if (!stripeCreateCard.object) {
+            if(stripeCreateCard.message === "A bank account with that routing number and account number already exists for this customer."){
+                logger.info("Woops, that is a duplicate account, running the create customer function to fix this.");
+                var customer = Utils.create_customer(token_id, customerInfo);
+                return customer;
+            }
             throw new Meteor.Error(stripeCreateCard.rawType, stripeCreateCard.message);
         }
 
@@ -449,7 +454,8 @@ _.extend(Utils, {
         return stripeCreateCard;
     },
     update_card: function(customer_id, card_id, saved){
-        logger.info("Started link_card_to_customer");
+        logger.info("Started update_card");
+        logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
 
         var stripeUpdatedCard = new Future();
 

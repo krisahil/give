@@ -30,7 +30,13 @@ Meteor.methods({
             else{
                 logger.info("Found that user in the Meteor user's collection.");
                 customerData = Customers.findOne({_id: lookupCustomer.primary_customer_id});
-                var device = Utils.link_card_to_customer(customerData._id, data.paymentInformation.token_id, type);
+                var device = Utils.link_card_to_customer(customerData._id, data.paymentInformation.token_id, type, data.customer);
+                console.log("After first device create " + device.id);
+                if(device.id.slice(0,2) === "cu"){
+                    console.log("Returned a customer_id from link to card");
+                    customerData.id = device.id;
+                    device.id = data.paymentInformation.source_id;
+                } else{}
                 Utils.update_card(customerData.id, device.id, data.paymentInformation.saved);
             }
 

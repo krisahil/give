@@ -219,6 +219,22 @@ Router.route('subscriptions', {
     }
 );
 
+Router.route('PaymentDevice', {
+        layoutTemplate: 'UserLayout',
+        path: root_path + '/user/paymentDevice',
+        subscriptions: function() {
+            return Meteor.subscribe('userStripeDataWithSubscriptions');
+        },
+        action: function () {
+            if (this.ready()) {
+                this.render();
+            } else {
+                this.render('Loading');
+            }
+        }
+    }
+);
+
 Router.route(root_path + '/scheduled', {
     name: 'donation.scheduled',
 

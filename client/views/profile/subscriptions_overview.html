@@ -15,17 +15,17 @@
                     -->
                     {{#if equals status "trialing"}}
                         <li class="list-group-item list-group-item-info">
-                            <p>Your gift is schedule to start on {{epochToString trial_end}}. <a href="#" class="cancel-subscription">Cancel Subscription</a>.</p>
+                            <p>Your gift is schedule to start on {{epochToString trial_end}}. <!--<a href="#" class="cancel-subscription">Cancel Subscription</a>--></p>
                         </li>
                     {{/if}}
                     {{#if equals status "active"}}
                     <li class="list-group-item list-group-item-success">
-                      <p>Your recurring gift is currently active! <a href="#" class="cancel-subscription">Cancel</a>.</p>
+                      <p>Your recurring gift is currently active! <!--<a href="#" class="cancel-subscription">Cancel</a>--></p>
                     </li>
                     {{/if}}
                     {{#if equals status "canceled"}}
                     <li class="list-group-item list-group-item-danger">
-                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <a href="{{pathFor 'billingResubscribe'}}">Resubscribe</a>.</p>
+                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <!--<a href="{{pathFor 'billingResubscribe'}}">Resubscribe</a>--></p>
                     </li>
                     {{/if}}
                     <li class="list-group-item bm-block clearfix">
@@ -34,9 +34,9 @@
                             Frequency: <strong>{{capitalize plan_name}}</strong></span>
                       </div>
                       {{#if equals status "canceled"}}
-                        <a href="{{pathFor 'billingResubscribe'}}" class="btn btn-small btn-default pull-right">Resubscribe</a>
+                        <!--<a href="{{pathFor 'billingResubscribe'}}" class="btn btn-small btn-default pull-right">Resubscribe</a>-->
                       {{else}}
-                        <a href="{{pathFor 'billingPlan'}}" class="btn btn-small btn-default pull-right">Change Plan</a>
+                        <!--<a href="{{pathFor 'billingPlan'}}" class="btn btn-small btn-default pull-right">Change Gift</a>-->
                       {{/if}}
                     </li>
                     <li class="list-group-item bm-block clearfix">
@@ -48,7 +48,7 @@
                           <span>Amount: <strong>{{centsToDollars quantity}}</strong></span>
                         {{/unless}}
                       </div>
-                      <a href="{{pathFor 'billingCard'}}" class="btn btn-small btn-default pull-right">Update Card</a>
+                      <!--<a href="{{pathFor 'PaymentDevice'}}" class="btn btn-small btn-default pull-right">Update Payment Method</a>-->
                     </li>
                   </ul>
                 </div>

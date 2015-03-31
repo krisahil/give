@@ -31,7 +31,21 @@ Template.GiveDropdownGroup.helpers({
         return moment().format('D MMM, YYYY');
     },
     device: function(){
+        if(!Devices.find()){
+            Session.set("UserPaymentMethod", "Check");
+        }
         return Devices.find();
+    },
+    card_id: function(){
+        return this.id;
+    },
+    selected: function() {
+        var customer = Customers.find({_id: this.customer});
+        if(this.id === customer.default_source){
+            return selected;
+        } else{
+            return;
+        }
     },
     brand: function(){
         if(this.brand){
@@ -53,5 +67,9 @@ Template.GiveDropdownGroup.events({
             $('#calendarSection').hide();
             $("#s2id_is_recurring").children().removeClass("redText");
         }
+    },
+    'change #pay_with': function() {
+        var selectedValue = $("#pay_with").val();
+        Session.set("UserPaymentMethod", selectedValue);
     }
 });

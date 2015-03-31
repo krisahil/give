@@ -16,9 +16,8 @@
                                 <input type="text" class="form-control" placeholder="Amount" />
                             </div>
 
-                            <!-- Select Basic -->
+                            <!-- Show give form -->
                             {{> GiveDropdownGroup}}
-                            {{#if selectedNewDevice}}
                                 {{#if paymentWithCard}}
                                     {{> cardPaymentInformation}}
                                 {{else}}
@@ -26,7 +25,6 @@
                                         {{> checkPaymentInformation}}
                                     {{/if}}
                                 {{/if}}
-                            {{/if}}
 
                             <div class="form-group padBottom">
                                 <div class="col-sm-offset-2 col-sm-8">
