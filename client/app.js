@@ -180,3 +180,11 @@ UI.registerHelper('plan', function(){
 UI.registerHelper('currentRoute', function(route){
     return Session.equals('currentRoute', route) ? 'active' : '';
 });
+
+UI.registerHelper('MeteorUser', function(){
+    if(Meteor.user()){
+        return true;
+    } else{
+        return false;
+    }
+});

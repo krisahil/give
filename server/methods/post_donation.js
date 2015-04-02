@@ -27,15 +27,15 @@ _.extend(Utils, {
                 //create dt user since one wasn't found in DT
                 if (persona_ids == '') {
                     //Call DT create function
-                    var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
+                    var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id._id, charge_id);
 
                     // the persona_ids is expected to be an array
                     persona_ids = [single_persona_id];
 
                     // Send me an email letting me know a new user was created in DT.
-                    Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
+                    Utils.send_dt_new_dt_account_added(email_address, user_id._id, single_persona_id);
                 } else {
-                    Utils.insert_donation_into_dt(customer_id, user_id, persona_ids, charge_id);
+                    Utils.insert_donation_into_dt(customer_id, user_id._id, persona_ids, charge_id);
                 }
             } else {
                 logger.error("Didn't find the customer record, exiting.");
@@ -48,10 +48,10 @@ _.extend(Utils, {
 
         // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
         persona_ids.forEach(function(element){
-            Utils.insert_persona_id_into_user(user_id, element);
+            Utils.insert_persona_id_into_user(user_id._id, element);
         });
 
-        Utils.link_gift_to_user(customer_id, charge_id, user_id);
+        Utils.link_gift_to_user(customer_id, charge_id, user_id._id);
 
     },
     create_user: function (email, customer_id) {
@@ -125,10 +125,10 @@ _.extend(Utils, {
          throw new Meteor.Error(error, e._id);
          }*/
     },
-    link_gift_to_user: function(customer_id, charge_id, userId) {
+    link_gift_to_user: function(customer_id, charge_id, user_id) {
         logger.info("Started link_gift_to_user.");
         try {
-            Utils.update_stripe_customer_user(customer_id, userId);
+            Utils.update_stripe_customer_user(customer_id, user_id);
 
         } catch (e) {
             logger.error(e);
@@ -192,7 +192,7 @@ _.extend(Utils, {
                         "state": customer.metadata.state,
                         "postal_code": customer.metadata.postal_code,
                         "phone_number": customer.metadata.phone,
-                        "web_address": "https://trashmountain.com/give/dashboard/users?userID=" + user_id,
+                        "web_address": "https://trashmountain.com/give/dashboard/users?userID=" + user_id._id,
                         "salutation_formal": customer.metadata.fname + " " + customer.metadata.lname,
                         "recognition_name": recognition_name
                     }
@@ -299,10 +299,10 @@ _.extend(Utils, {
             html: html
         });
     },
-    insert_persona_id_into_user: function(id, persona_id) {
+    insert_persona_id_into_user: function(user_id, persona_id) {
         //Insert the donor tools persona id into the user record
         logger.info("Started insert_persona_id_into_user");
-        Meteor.users.update(id, {$addToSet: {'persona_id': parseInt(persona_id)}});
+        Meteor.users.update({_id: user_id}, {$addToSet: {'persona_id': parseInt(persona_id)}});
     },
     insert_donation_into_dt: function (customer_id, user_id, persona_ids, charge_id){
         /*try {*/
@@ -380,14 +380,14 @@ _.extend(Utils, {
          throw new Meteor.Error(error, e._id);
          }*/
     },
-    send_dt_new_dt_account_added: function (email, id, personaID){
+    send_dt_new_dt_account_added: function (email, user_id, personaID){
 
         logger.info("Started send_dt_new_persona_added_to_meteor_user");
 
         //Create the HTML content for the email.
         //Create the link to go to the new person that was just created.
         var html = "<h1>DT account created</h1><p>" +
-            "Details: <br>Email: " + email + "<br>ID: " + id + "<br>Link: <a href='https://trashmountain.donortools.com/people/" + personaID +"'>" + personaID + "</a></p>";
+            "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='https://trashmountain.donortools.com/people/" + personaID +"'>" + personaID + "</a></p>";
 
         //Send email
 

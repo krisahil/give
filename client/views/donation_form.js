@@ -459,13 +459,6 @@ Template.DonationForm.helpers({
         if(Session.equals("coverTheFees", true)){
             return "form-group";
         } else return "form-group";
-    },
-    MeteorUser: function(){
-        if(Meteor.user()){
-            return true;
-        } else{
-            return false;
-        }
     }
 });
 /*****************************************************************************/

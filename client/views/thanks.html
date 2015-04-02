@@ -5,9 +5,24 @@
                 display:none;
             } 
     <![endif]-->
+
 	<div class="row text-center hidden-print">
         <div class="blackBackground"><a href="https://trashmountain.com" target="_blank"><img class="logoImage" src="https://trashmountain.com/system/wp-content/uploads/2012/07/bw_logo.png">	</a>
         </div>
+    </div>
+    <div class="outerTitle">
+        <div class="innerTitle">
+            <div class="centerTitle">
+                <div class="positionedAbsolute">
+                    {{#if MeteorUser}}
+                        <button class="btn btn-primary" type="button" id="userProfileButton"><span class="fa fa-user"> User Profile Page</span></button>
+                    {{/if}}
+                    <span class="signInOut" >{{> atNavButton}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loginButton">
     </div>
 	<div class="container hidden-print fix-height">
 	    <div class="row vertical-center-row">

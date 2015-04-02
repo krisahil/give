@@ -117,7 +117,7 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
         var charges = Charges.find({'customer': {$in: customer_ids}});
         var subscriptions = Subscriptions.find({'customer': {$in: customer_ids}});
         var user = Meteor.users.find({_id: this.userId});
-        var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': true}]});
+        var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
         return[customers, charges, subscriptions, user, devices];
     } else {
 		this.ready();
