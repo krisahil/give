@@ -37,10 +37,13 @@ _.extend(Utils,{
                 }
             }
 
-			//var donateWithType  = charge_cursor.source.brand;
-
 			//Get the donation with description for either the card or the bank account
-			var donateWith = charge_cursor.source.brand;//Evts.get_donate_with(customer_cursor, charge_cursor.links.source);
+			var donateWith;
+            if(charge_cursor.source.brand){
+                donateWith = charge_cursor.source.brand;
+            } else{
+                donateWith = charge_cursor.source.bank_name;
+            }
 
 			//var created_at = moment(new Date(Number(charge_cursor.created*1000))).format('MM/DD/YYYY h:mma');
 			var created_at = moment(new Date(Number(charge_cursor.created*1000))).format('MM/DD/YYYY h:mma');//'03/18/2015 7:09pm';

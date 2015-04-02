@@ -19,7 +19,7 @@ _.extend(Utils, {
             // check that there was a customer record and that record had an email address
             if(email_address) {
                 //create user
-                var user_id = Utils.create_user(email_address, customer_id);
+                var user_cursor = Utils.create_user(email_address, customer_id);
 
                 //check dt for user, persona_ids will be an array of 0 to many persona_ids
                 var persona_ids = Utils.check_for_dt_user(email_address);
@@ -27,60 +27,62 @@ _.extend(Utils, {
                 //create dt user since one wasn't found in DT
                 if (persona_ids == '') {
                     //Call DT create function
-                    var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id._id, charge_id);
+                    var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_cursor._id, charge_id);
 
                     // the persona_ids is expected to be an array
                     persona_ids = [single_persona_id];
 
                     // Send me an email letting me know a new user was created in DT.
-                    Utils.send_dt_new_dt_account_added(email_address, user_id._id, single_persona_id);
+                    Utils.send_dt_new_dt_account_added(email_address, user_cursor._id, single_persona_id);
                 } else {
-                    Utils.insert_donation_into_dt(customer_id, user_id._id, persona_ids, charge_id);
+                    Utils.insert_donation_into_dt(customer_id, user_cursor._id, persona_ids, charge_id);
                 }
+
+                // Get all of the donations related to the persona_id that was either just created or that was just used when
+                // the user gave
+                Utils.get_all_dt_donations(persona_ids);
+
+                // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
+                persona_ids.forEach(function(element){
+                    Utils.insert_persona_id_into_user(user_id._id, element);
+                });
+
+                Utils.update_stripe_customer_user(customer_id, user_id._id);
             } else {
                 logger.error("Didn't find the customer record, exiting.");
+                throw new Meteor.Error("Email doesn't exist", "Customer didn't have an email address", "Customers.findOne(customer_id) && Customers.findOne(customer_id).email from post_donation.js didn't find an email");
             }
         }
-
-        // Get all of the donations related to the persona_id that was either just created or that was just used when
-        // the user gave
-        Utils.get_all_dt_donations(persona_ids);
-
-        // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
-        persona_ids.forEach(function(element){
-            Utils.insert_persona_id_into_user(user_id._id, element);
-        });
-
-        Utils.link_gift_to_user(customer_id, charge_id, user_id._id);
-
     },
     create_user: function (email, customer_id) {
         logger.info("Started create_user.");
 
-        // setup name variable
-        var customer_cursor = Customers.findOne(customer_id);
-
-        var fname = customer_cursor && customer_cursor.metadata.fname;
-        var lname = customer_cursor && customer_cursor.metadata.lname;
-        var profile = {
-            fname: fname,
-            lname: lname,
-            address: {
-                address_line1: customer_cursor.metadata.address_line1,
-                address_line2: customer_cursor.metadata.address_line2,
-                city: customer_cursor.metadata.city,
-                state: customer_cursor.metadata.state,
-                postal_code: customer_cursor.metadata.postal_code,
-                country: customer_cursor.metadata.country
-            },
-            phone: customer_cursor.metadata.phone,
-            business_name: customer_cursor.metadata.business_name
-        };
         //Check to see if the user exists
         var user_id = Meteor.users.findOne({'emails.address': email});
 
         if(!user_id){
             // No user found with that email address
+
+            // setup name variable
+            var customer_cursor = Customers.findOne(customer_id);
+
+            var fname = customer_cursor && customer_cursor.metadata.fname;
+            var lname = customer_cursor && customer_cursor.metadata.lname;
+            var profile = {
+                fname: fname,
+                lname: lname,
+                address: {
+                    address_line1: customer_cursor.metadata.address_line1,
+                    address_line2: customer_cursor.metadata.address_line2,
+                    city: customer_cursor.metadata.city,
+                    state: customer_cursor.metadata.state,
+                    postal_code: customer_cursor.metadata.postal_code,
+                    country: customer_cursor.metadata.country
+                },
+                phone: customer_cursor.metadata.phone,
+                business_name: customer_cursor.metadata.business_name
+            };
+
             // Create a new user
             user_id = Accounts.createUser({email: email});
 
@@ -124,15 +126,6 @@ _.extend(Utils, {
          var error = (e.response);
          throw new Meteor.Error(error, e._id);
          }*/
-    },
-    link_gift_to_user: function(customer_id, charge_id, user_id) {
-        logger.info("Started link_gift_to_user.");
-        try {
-            Utils.update_stripe_customer_user(customer_id, user_id);
-
-        } catch (e) {
-            logger.error(e);
-        }
     },
     insert_donation_and_donor_into_dt: function (customer_id, user_id, charge_id){
         /*try {*/

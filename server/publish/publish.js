@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/* DonateIndex Publish Functions
+/* Publish Functions
 /*****************************************************************************/
 
 Meteor.publish('receipt_donations', function (input) {
@@ -44,16 +44,8 @@ Meteor.publish('receipt_charges', function (input) {
 	return Charges.find({_id: input}, {fields: {'id': 0}});
 });
 
-Meteor.publish('donate_list', function () {
-	//check to see that the user is the admin user
-	 if(this.userId === Meteor.settings.admin_user){
-	 	return Donate.find({viewable: true});
-	 }else{
-	 	return '';
-	 }
-});
-
-Meteor.publish('give_report', function (start_date, finish_date) {
+//TODO: These functions are from the old dashboard, need to replicate in the new one
+/*Meteor.publish('give_report', function (start_date, finish_date) {
 	//Check the input that came from the client
 	check(start_date, String);
 	check(finish_date, String);
@@ -80,7 +72,7 @@ Meteor.publish('card_expiring', function () {
 	}else{
 		return '';
 	}
-});
+});*/
 
 Meteor.publish("userDonations", function () {
 	if (this.userId) {

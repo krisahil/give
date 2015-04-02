@@ -15,7 +15,12 @@
                     -->
                     {{#if equals status "trialing"}}
                         <li class="list-group-item list-group-item-info">
-                            <p>Your gift is schedule to start on {{epochToString trial_end}}. <!--<a href="#" class="cancel-subscription">Cancel Subscription</a>--></p>
+                            <p>This gift is schedule for {{epochToString trial_end}}. <!--<a href="#" class="cancel-subscription">Cancel Subscription</a>--></p>
+                        </li>
+                    {{/if}}
+                    {{#if equals status "pending"}}
+                        <li class="list-group-item list-group-item-info">
+                            <p>This gift is pending  {{epochToString trial_end}}. <!--<a href="#" class="cancel-subscription">Cancel Subscription</a>--></p>
                         </li>
                     {{/if}}
                     {{#if equals status "active"}}

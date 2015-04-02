@@ -20,9 +20,16 @@ Stripe_Events = {
         return;
     },
     'charge.pending': function (stripeEvent, res) {
+        // Check for existing charge succeeded before updating with old pending event
+        var check_pending = Utils.check_charge_status(stripeEvent.data.object.id);
+        if(check_pending){
+            Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+            console.log(stripeEvent.type + ': event processed');
+            return;
+        }
         Utils.charge_events(stripeEvent);
-        if(stripeEvent.data.object.amount === 0)
         Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.succeeded': function (stripeEvent, res) {
@@ -183,6 +190,10 @@ Stripe_Events = {
         return;
     },
     'invoiceitem.deleted': function (stripeEvent, res) {
+        console.log(stripeEvent.type + ': event processed');
+        return;
+    },
+    'payment.created': function (stripeEvent, res) {
         console.log(stripeEvent.type + ': event processed');
         return;
     },

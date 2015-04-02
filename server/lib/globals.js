@@ -3,23 +3,6 @@ Future = Meteor.npmRequire("fibers/future");
 Stripe = StripeAPI(Meteor.settings.stripe.secret);
 
 Utils = {
-    extractFromPromise: function(promise) {
-        var fut = new Future();
-        promise.then(function (result) {
-            fut.return(result);
-        }, function (error) {
-            logger.info(error);
-            fut.throw(error);
-        });
-        return fut.wait();
-    },
-    getInvoice: function(subGUID){
-        var resultSet;
-        resultSet = HTTP.post("https://billy.balancedpayments.com/v1/subscriptions/" + subGUID + "/invoices", {
-            auth: Meteor.settings.billy_key + ':'
-        });
-        return resultSet;
-    },
     // Check donation form entries
     check_update_customer_form: function(form, customer_id, dt_persona_id) {
         check(dt_persona_id, Number);

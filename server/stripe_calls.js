@@ -1,17 +1,3 @@
-Meteor.methods({
-    update_customer: function (form, customer_id, dt_persona_id) {
-
-        //Check the client side form fields with the Meteor 'check' method
-        Utils.check_update_customer_form(form, customer_id, dt_persona_id);
-
-        // Send the user's contact updates to balanced
-        Utils.update_stripe_customer(form, customer_id);
-
-        // Send the user's contact updates to Donor Tools
-        Utils.update_dt_account(form, dt_persona_id);
-    }
-});
-
 _.extend(Utils, {
     getDonateTo: function (donateTo) {
         var returnToCalled;
@@ -273,9 +259,9 @@ _.extend(Utils, {
                 });
 
             stripeInvoiceList = stripeInvoiceList.wait();
-            logger.info("Finished Stripe charge_plan. Subscription ID: " + stripeChargePlan.id + " Charge ID: " +
-            stripeInvoiceList.data[0].charge);
-            return stripeInvoiceList.data[0].charge;
+
+            logger.info("Finished Stripe charge_plan. Subscription ID: " + stripeChargePlan.id);
+            return stripeInvoiceList.data[0];
         } else {
             Utils.send_scheduled_email(donation_id, stripeChargePlan.id, subscription_frequency, total);
             return 'scheduled';
@@ -398,7 +384,6 @@ _.extend(Utils, {
 
                 Utils.send_donation_email(true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
                     stripeEvent, frequency_and_subscription.frequency, frequency_and_subscription.subscription);
-                console.log(stripeEvent.type + ': event processed');
                 return;
             } else {
                 // null frequency_and_subscription means that either the frequency or the subscription couldn't be found using the invoice id.
@@ -408,7 +393,6 @@ _.extend(Utils, {
         } else {
             Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
                 stripeEvent, "One Time", null);
-            console.log(stripeEvent.type + ': event processed');
             return;
         }
     },
@@ -564,5 +548,19 @@ _.extend(Utils, {
         console.dir(stripeCustomerUserUpdate);
 
         return stripeCustomerUserUpdate;
+    },
+    check_charge_status: function(charge_id){
+        logger.info("Inside check_charge_status");
+
+        // Because the pending status is the only one that couldn't have been the second event thrown we need to check
+        // if there is already a stored charge and if so then I don't want to override it with a pending status
+        var check_status = Charges.find({_id: charge_id});
+
+        if(check_status){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 });
