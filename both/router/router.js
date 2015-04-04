@@ -245,7 +245,7 @@ Router.route(root_path + '/scheduled', {
     }
 });
 
-Router.route(root_path + '/webhooks/stripe', function () {
+Router.route('/webhooks/stripe', function () {
 
     // Receive an event, check that it contains a data.object object and send along to appropriate function
     var request = this.request.body;

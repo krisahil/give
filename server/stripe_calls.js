@@ -361,7 +361,6 @@ _.extend(Utils, {
                 Invoices.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "charge":
-                console.log("LOOK HERE< SFDSOFISFSSF!!!!!! + Charge store event");
                 Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "card":

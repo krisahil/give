@@ -44,10 +44,10 @@ _.extend(Utils, {
 
                 // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
                 persona_ids.forEach(function(element){
-                    Utils.insert_persona_id_into_user(user_id._id, element);
+                    Utils.insert_persona_id_into_user(user_cursor._id, element);
                 });
 
-                Utils.update_stripe_customer_user(customer_id, user_id._id);
+                Utils.update_stripe_customer_user(customer_id, user_cursor._id);
             } else {
                 logger.error("Didn't find the customer record, exiting.");
                 throw new Meteor.Error("Email doesn't exist", "Customer didn't have an email address", "Customers.findOne(customer_id) && Customers.findOne(customer_id).email from post_donation.js didn't find an email");
