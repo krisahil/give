@@ -41,20 +41,6 @@ Router.route(':root_path', function () {
     name: 'donation.form'
 });
 
-Router.route(root_path + '/donorTools', function () {
-
-    var params = this.params;
-
-    Session.set('params.id', params.query.id);
-    Session.set('params.persona_id', params.query.persona_id);
-    Session.set('params.email', params.query.email);
-    Session.set('params.donation_id', params.query.donation_id);
-
-    this.render('DonorTools');
-}, {
-    name: 'donation.dt'
-});
-
 Router.route(root_path + '/thanks', {
     name: 'donation.thanks',
     waitOn: function () {

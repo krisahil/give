@@ -96,7 +96,7 @@ Template.UserProfile.helpers({
         if(DT_funds.findOne({_id: this.fund_id}) && DT_funds.findOne({_id: this.fund_id}).name){
             return DT_funds.findOne({_id: this.fund_id}).name;
         }
-        else return '<span style="color: red;">Fund not found</span>';
+        else return '<span style="color: red;">Finding fund...</span>';
     },
     redText: function(){
         if(this.payment_status && this.payment_status === 'pending'){

@@ -100,7 +100,7 @@
                     </div>
                     {{#if showHistory}}
                     <div id="" class="col-md-6 col-lg-6">
-                        <h5 id="">Your Giving History</h5>
+                        <h5 id="">Your Giving History {{#if db_donations}}<span class="redText">Retrieving...</span>{{else}}{{/if}}</h5>
                         <table class="table table-striped">
                             <tbody>
                             <tr class="responsiveFont">

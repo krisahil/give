@@ -36,7 +36,7 @@ Template.DonorToolsFunds.events({
                 console.dir(result);
                 $('#data').html('<div class="col-lg-6 text-center"><br><p>' + result+ '</p></div>');
                 $('#form_result').show();
-
+                alert("Got 'em.")
             } else {
                 console.log(error);
             }

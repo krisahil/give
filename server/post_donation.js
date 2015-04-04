@@ -154,10 +154,14 @@ _.extend(Utils, {
         payment_status = charge.status;
         received_on = moment(new Date(charge.created * 1000)).format("YYYY/MM/DD");
 
-        var dt_fund, dt_fund;
+        var dt_fund, invoice_cursor;
         if(charge_id.slice(0,2) === 'ch'){
             invoice_cursor = Invoices.findOne({_id: charge.invoice});
-            dt_fund = DT_funds.findOne({name: invoice_cursor.metadata.donateTo});
+            if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
+                dt_fund = DT_funds.findOne({name: invoice_cursor.lines.data[0].metadata.donateTo});
+            } else{
+                dt_fund = null;
+            }
         } else{
 
         }
@@ -352,7 +356,7 @@ _.extend(Utils, {
                     "donation_type_id": 2985,
                     "received_on": moment(new Date(charge.created * 1000)).format("YYYY/MM/DD"),
                     "source_id": source_id,
-                    "payment_status": "pending",
+                    "payment_status": charge.status,
                     "transaction_id": charge_id
                 }
             },
