@@ -194,6 +194,8 @@ Stripe_Events = {
         return;
     },
     'payment.created': function (stripeEvent, res) {
+        Utils.payment_events(stripeEvent);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
         console.log(stripeEvent.type + ': event processed');
         return;
     },

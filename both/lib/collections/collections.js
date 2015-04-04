@@ -17,3 +17,5 @@ DT_funds = new Meteor.Collection('dt_funds');
 Invoices = new Meteor.Collection('invoices');
 
 Subscriptions = new Meteor.Collection('subscriptions');
+
+Payments = new Meteor.Collection('payments');

@@ -334,8 +334,16 @@ _.extend(Utils, {
             Subscriptions.findOne({_id: return_this.subscription}).plan.interval;
 
         if (return_this.frequency == null || return_this.subscription == null) {
-            logger.error("Something went wrong, there doesn't seem to be an invoice with that id, exiting");
-            return;
+            var get_invoice = Utils.get_invoice(invoice_id);
+            if(get_invoice && get_invoice.subscription){
+                return_this.subscription = get_invoice.subscription;
+                return_this.frequency = get_invoice.lines.data[0].plan.interval;
+                return return_this;
+            } else{
+                logger.error("Something went wrong, there doesn't seem to be an invoice with that id, exiting");
+                return;
+            }
+
         }
         return return_this;
     },
@@ -353,6 +361,7 @@ _.extend(Utils, {
                 Invoices.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "charge":
+                console.log("LOOK HERE< SFDSOFISFSSF!!!!!! + Charge store event");
                 Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "card":
@@ -381,7 +390,6 @@ _.extend(Utils, {
             // Get the frequency_and_subscription of this charge, since it is part of a subscription.
             frequency_and_subscription = Utils.get_frequency_and_subscription(stripeEvent.data.object.invoice);
             if(frequency_and_subscription){
-
                 Utils.send_donation_email(true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
                     stripeEvent, frequency_and_subscription.frequency, frequency_and_subscription.subscription);
                 return;
@@ -562,5 +570,31 @@ _.extend(Utils, {
         else{
             return false;
         }
+    },
+    get_invoice: function(invoice_id){
+        logger.info("Inside get_invoice");
+
+        var stripeInvoice = new Future();
+
+        Stripe.invocices.retrieve(invoice_id,
+            function (error, invoice) {
+                if (error) {
+                    //console.dir(error);
+                    stripeInvoice.return(error);
+                } else {
+                    stripeInvoice.return(invoice);
+                }
+            }
+        );
+
+        stripeInvoice = stripeInvoice.wait();
+
+        if (!stripeInvoice.object) {
+            throw new Meteor.Error(stripeInvoice.rawType, stripeInvoice.message);
+        }
+
+        console.dir(stripeInvoice);
+
+        return stripeInvoice;
     }
 });

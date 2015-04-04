@@ -3,10 +3,12 @@
         <span class="">
             <p class="text-danger text-center">
                 <!--Your giving history may still be updating. It might not reflect the latest numbers we have in our donation system. &nbsp;&nbsp;&nbsp;-->
-                <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}">Profile & Giving History</button></a>
-                <a href="{{pathFor 'user.subscriptions'}}"><button type="button" id="nav-button-subscriptions" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.subscriptions'}}">Recurring Gifts</button></a>
-                <button type="button" id="nav-button-password" class="btn btn-primary navbar-btn">Change Password</button>
-                {{> atNavButton}}
+                {{#if MeteorUser}}
+                    <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}">Profile & Giving History</button></a>
+                    <a href="{{pathFor 'subscriptions'}}"><button type="button" id="nav-button-subscriptions" class="btn btn-primary navbar-btn {{isActiveRoute regex='subscriptions'}}">Recurring Gifts</button></a>
+                    <button type="button" id="nav-button-password" class="btn btn-primary navbar-btn">Change Password</button>
+                    {{> atNavButton}}
+                {{/if}}
             </p>
 
         </span>

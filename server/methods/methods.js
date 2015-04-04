@@ -168,7 +168,6 @@ Meteor.methods({
             console.log(data.paymentInformation.is_recurring);
 
             //Start a subscription (which also connects this card, or bank_account to the customer
-            console.log("*&*&**&*& " + customerData.id);
             var charge_object = Utils.charge_plan(data.paymentInformation.total_amount,
                     data._id, customerData.id, data.paymentInformation.source_id,
                     data.paymentInformation.is_recurring, data.paymentInformation.start_date, metadata);
@@ -176,19 +175,7 @@ Meteor.methods({
                  logger.error("The charge_id object didn't have .object attached.");
                 return {error: charge.rawType, message: charge.message};
              }
-            var charge_or_payment_id;
-            if(charge_object.charge){
-                logger.info("Found the charge inside this:");
-                console.dir(charge_object);
-                charge_or_payment_id = charge_object.charge;
-            } else if(charge_object.payment){
-                logger.info("Found the payment inside this:");
-                console.dir(charge_object);
-                charge_or_payment_id = charge_object.payment;
-            } else{
-                logger.error("Couldn't find the id for a charge.");
-            }
-            return {c: customerData.id, don: data._id, charge: charge_or_payment_id};
+            return {c: customerData.id, don: data._id, charge: charge_object.charge};
         }
 
         /*} catch (e) {
