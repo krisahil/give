@@ -51,7 +51,7 @@
                                      data-placement="bottom" data-trigger="hover focus" title="Processor fees" data-container="body"
                                      data-content="Our credit card processor charges 2.9% + .30 per transaction. If you check the box to cover these fees we'll do the math and change your gift amount to reflect this amount.">
                             </i></span>
-<span data-bind="foo"><label for="total_amount_display">&nbsp;</label>
+                            <span ><label for="total_amount_display">&nbsp;</label>
                                     <p id="total_amount_display" class=""></p>
                             </span>
 
@@ -241,14 +241,14 @@
             <!--[if lt IE 9]>
                 <label>CVV Code</label>
             <![endif]-->        
-            <input type="text" class="form-control slim-borders" name="cvv" id="cvv"
+            <input type="text" class="form-control slim-borders" id="cvv"
                    placeholder="CVV" data-parsley-type="number" data-parsley-minlength="3" required>
         </div>
     </div>
     <div class="form-group">
         <!--<label class="col-lg-3 col-md-4 col-sm-4 col-xs-3 control-label noRightPadding" for="expiry_month">Expiration Date</label>-->
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="expiry_monthDiv">
-            <select class="form-control  select select-primary select-block mbl" name="expiry_month" id="expiry_month" required="true">
+            <select class="form-control  select select-primary select-block mbl" id="expiry_month" required="true">
                 <option value="">Month</option>
                 <option value="01">Jan (01)</option>
                 <option value="02">Feb (02)</option>
@@ -265,9 +265,8 @@
             </select>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" name="expiry_yearDiv">
-            <select class="form-control select select-primary select-block mbl" name="expiry_year" id="expiry_year" required="true">
+            <select class="form-control select select-primary select-block mbl" id="expiry_year" required="true">
                 <option value="">Year</option>
-                <option value="2014">2014</option>
                 <option value="2015">2015</option>
                 <option value="2016">2016</option>
                 <option value="2017">2017</option>

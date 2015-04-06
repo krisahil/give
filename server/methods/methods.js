@@ -88,13 +88,14 @@ Meteor.methods({
         // Send the user's contact updates to Donor Tools
         Utils.update_dt_account(form, dt_persona_id);
     },
-    stripeDonation: function(data, paymentDevice, type){
+    stripeDonation: function(data, paymentDevice){
         logger.info("Started stripeDonation");
         /*try {*/
         //Check the form to make sure nothing malicious is being submitted to the server
         Utils.checkFormFields(data);
         console.log(data.paymentInformation.start_date);
-        var customerData;
+        var customerData = {};
+        var customerInfo, metadata;
 
         //Convert donation to more readable format
         var donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
@@ -102,46 +103,51 @@ Meteor.methods({
         if(donateTo === 'Write In') {
             donateTo = data.paymentInformation.writeIn;
         }
-
-        customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
-        if(!customerData.object){
-            return {error: customerData.rawType, message: customerData.message};
+        if(!data.customer.id){
+            customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
+            if(!customerData.object){
+                return {error: customerData.rawType, message: customerData.message};
+            }
+            Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
+        } else{
+            //TODO: change these to match what you'll be using for a Stripe customer that already exists
+            var customer_cursor = Customers.findOne({_id: data.customer.id});
+            customerData.id = customer_cursor._id;
         }
-        Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
-
-        var metadata = {
-            created_at: data.paymentInformation.created_at,
-            sessionId: data.sessionId,
-            URL: data.URL,
-            'donateTo': donateTo,
-            'donateWith': data.paymentInformation.donateWith,
-            'type': data.paymentInformation.type,
-            'total_amount': data.paymentInformation.total_amount,
-            'amount': data.paymentInformation.amount,
-            'fees': data.paymentInformation.fees,
-            'coveredTheFees': data.paymentInformation.coverTheFees,
-            'customer_id': customerData.id,
-            'status': 'pending',
-            'frequency': data.paymentInformation.is_recurring,
-            'dt_donation_id': null
+        customerInfo = {
+            "city":             data.customer.city,
+            "state":            data.customer.region,
+            "address_line1":    data.customer.address_line1,
+            "address_line2":    data.customer.address_line2,
+            "country":          data.customer.country,
+            "postal_code":      data.customer.postal_code,
+            "phone":            data.customer.phone_number,
+            "business_name":    data.customer.org,
+            "email":            data.customer.email_address,
+            "fname":            data.customer.fname,
+            "lname":            data.customer.lname
         };
+
+        metadata = {
+            created_at:         data.paymentInformation.created_at,
+            sessionId:          data.sessionId,
+            URL:                data.URL,
+            'donateTo':         donateTo,
+            'donateWith':       data.paymentInformation.donateWith,
+            'type':             data.paymentInformation.type,
+            'total_amount':     data.paymentInformation.total_amount,
+            'amount':           data.paymentInformation.amount,
+            'fees':             data.paymentInformation.fees,
+            'coveredTheFees':   data.paymentInformation.coverTheFees,
+            'customer_id':      customerData.id,
+            'status':           'pending',
+            'frequency':        data.paymentInformation.is_recurring,
+            'dt_donation_id':   null
+        };
+
 
         data._id = Donations.insert(metadata);
         logger.info("Donation ID: " + data._id);
-
-        var customerInfo = {
-            "city": data.customer.city,
-            "state": data.customer.region,
-            "address_line1": data.customer.address_line1,
-            "address_line2": data.customer.address_line2,
-            "country": data.customer.country,
-            "postal_code": data.customer.postal_code,
-            "phone": data.customer.phone_number,
-            "business_name": data.customer.org,
-            "email": data.customer.email_address,
-            "fname": data.customer.fname,
-            "lname": data.customer.lname
-        };
 
         for (var attrname in customerInfo) { metadata[attrname] = customerInfo[attrname]; }
         delete metadata.URL;

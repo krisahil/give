@@ -21,7 +21,8 @@ Template.GiveDropdownGroup.rendered = function() {
 
     // Now let's align datepicker with the prepend button
     datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
-}
+
+};
 
 Template.GiveDropdownGroup.helpers({
     give_home: function() {
@@ -68,8 +69,8 @@ Template.GiveDropdownGroup.events({
             $("#s2id_is_recurring").children().removeClass("redText");
         }
     },
-    'change #pay_with': function() {
-        var selectedValue = $("#pay_with").val();
+    'change #donateWith': function() {
+        var selectedValue = $("#donateWith").val();
         Session.set("UserPaymentMethod", selectedValue);
     }
 });
