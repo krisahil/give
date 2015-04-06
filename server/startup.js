@@ -5,9 +5,4 @@ Meteor.startup(function() {
     });
 
     Stripe.setPublishableKey(Meteor.settings.public.stripe.publishable);
-
-    var handler = StripeCheckout.configure({
-        key: Meteor.settings.public.stripe.publishable,
-        token: function(token) {}
-    });
 });

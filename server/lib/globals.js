@@ -28,7 +28,7 @@ Utils = {
             amount: Match.Integer,
             total_amount: Match.Integer,
             donateTo: String,
-            donateWith: Match.OneOf("Card", "Check"),
+            donateWith: Match.Optional(String),
             is_recurring: Match.OneOf("one_time", "monthly", "weekly", "daily"),
             coverTheFees: Boolean,
             created_at: String,
@@ -39,7 +39,8 @@ Utils = {
             writeIn: Match.Optional(String),
             start_date: Match.Optional(String),
             later: Match.Optional(Boolean),
-            type: String
+            type: String,
+            saved: Boolean
         },
             customer: {
                 fname: String,

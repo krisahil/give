@@ -6,6 +6,12 @@ _.extend(App, {
         var form = {};
         if(quick_form){
             var user_cursor = Meteor.user();
+            var business_name;
+            if(user_cursor.profile.business_name){
+                business_name = user_cursor.profile.business_name;
+            } else {
+                business_name = '';
+            }
 
             console.log($('#amount').val());
             form = {
@@ -24,7 +30,7 @@ _.extend(App, {
                 "customer": {
                     "fname": user_cursor.profile.fname,
                     "lname": user_cursor.profile.lname,
-                    "org": user_cursor.profile.business_name,
+                    "org": business_name,
                     "email_address": user_cursor.emails[0].address,
                     "phone_number": user_cursor.profile.phone,
                     "address_line1": user_cursor.profile.address.address_line1,
@@ -124,6 +130,9 @@ _.extend(App, {
             }
             form.paymentInformation.source_id = form.paymentInformation.donateWith;
             form.customer.id = Devices.findOne({_id: form.paymentInformation.donateWith}).customer;
+            var created_at = Customers.findOne({_id: form.customer.id}).created;
+
+            form.customer.created_at = moment(created_at*1000).format('MM/DD/YYYY, hh:mma');
             App.handleCalls(payment, form);
         }
     },

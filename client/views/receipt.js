@@ -112,19 +112,21 @@ Template.Receipt.created = function () {
 };
 
 Template.Receipt.rendered = function () {
-  $.fn.scrollView = function () {
-      return this.each(function () {
-          $('html, body').animate({
-              scrollTop: $(this).offset().top
-          }, 1000);
-      });
-  }
-  $('#invoice').scrollView();
-  
-  //Look for print url param and if it is set to yes, send the js command to show the print dialog
-  if (Session.equals('print', 'yes')) {
-      return window.print();
-  }
+
+
+    $.fn.scrollView = function () {
+        return this.each(function () {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top
+            }, 1000);
+        });
+    }
+    $('#invoice').scrollView();
+
+    //Look for print url param and if it is set to yes, send the js command to show the print dialog
+    if (Session.equals('print', 'yes')) {
+        return window.print();
+    }
 };
 
 Template.Receipt.destroyed = function () {

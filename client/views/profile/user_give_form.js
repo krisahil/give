@@ -22,6 +22,8 @@ Template.UserGiveForm.rendered = function () {
     // Setup parsley form validation
     $('#quick_give').parsley();
 
+    $("#spinDiv").hide();
+
 };
 
 Template.UserGiveForm.helpers({
@@ -66,6 +68,25 @@ Template.UserGiveForm.events({
 
         //TODO: put the DRY form call here
         console.log("Got here");
+
+        var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
+        var target = document.getElementById('spinContainer');
+        spinner = new Spinner(opts).spin(target);
+
+        $.fn.scrollView = function () {
+            return this.each(function () {
+                $('html, body').animate({
+                    scrollTop: $(this).offset().top
+                }, 1000);
+            });
+        }
+        $('#spinContainer').scrollView();
+        $("#spinDiv").show();
+
+        $(window).off('beforeunload');
+
+        App.updateTotal();
+
         App.process_give_form(true);
     },
     'keyup, change #amount': function() {
