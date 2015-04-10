@@ -37,9 +37,6 @@ Template.GiveDropdownGroup.helpers({
         }
         return Devices.find();
     },
-    card_id: function(){
-        return this.id;
-    },
     selected: function() {
         var customer = Customers.find({_id: this.customer});
         if(this.id === customer.default_source){

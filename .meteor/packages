@@ -16,7 +16,7 @@ j4507:datatables-bootstrap-3
 useraccounts:bootstrap
 accounts-password
 zimme:iron-router-active
-reactive-var
+browser-policy
 
 audit-argument-checks
 meteor-platform
@@ -30,3 +30,4 @@ themeteorchef:bert
 meteorhacks:npm
 alanning:roles
 ongoworks:security
+msavin:jetsetter

@@ -104,6 +104,25 @@ Template.UserProfile.helpers({
         } else if(this.payment_status && this.payment_status === 'failed'){
             return 'red-text';
         }
+    },
+    receipt_link: function() {
+        var charge_id, donation_id, customer_id;
+        if(this.transaction_id){
+            charge_id = this.transaction_id;
+            customer_id = Charges.findOne({_id: charge_id}).customer;
+            donation_id = Donations.findOne({customer_id: customer_id})._id;
+            return '/give/thanks?c=' + customer_id + '&don=' + donation_id + '&charge=' + charge_id;
+        }else{
+            return;
+        }
+    },
+    clickable_row: function() {
+        if(this.transaction_id){
+            return 'clickable_row';
+        }
+        else{
+            return;
+        }
     }
 
 });
@@ -157,6 +176,9 @@ Template.UserProfile.events({
         evt.preventDefault();
         evt.stopPropagation();
         Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')+10));
+    },
+    'click .clickable_row': function(){
+        Router.go($('.clickable_row').closest('tr').data("href"));
     }
 
 });
@@ -181,12 +203,12 @@ Template.UserNav.events({
     },
     'click #nav-button-profile': function(evt){
         evt.preventDefault();
-        Router.go('/give/user');
+        Router.go('user.profile');
     }
     ,
     'click #nav-button-subscriptions': function(evt){
         evt.preventDefault();
-        Router.go('/give/user/subscriptions');
+        Router.go('subscriptions');
     }
 });
 

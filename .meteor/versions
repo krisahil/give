@@ -11,6 +11,10 @@ binary-heap@1.0.3
 blaze@2.1.2
 blaze-tools@1.0.3
 boilerplate-generator@1.0.3
+browser-policy@1.0.4
+browser-policy-common@1.0.3
+browser-policy-content@1.0.4
+browser-policy-framing@1.0.4
 callback-hook@1.0.3
 check@1.0.5
 chuangbo:cookie@1.1.0
@@ -59,6 +63,7 @@ momentjs:moment@2.9.0
 mongo@1.1.0
 mongo-livedata@1.0.8
 mrgalaxy:stripe@2.1.0
+msavin:jetsetter@1.0.7
 msavin:mongol@1.0.12
 npm-bcrypt@0.7.8_2
 npm-container@1.0.0

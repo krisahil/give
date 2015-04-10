@@ -182,9 +182,18 @@ Router.route(root_path + '/user',{
     layoutTemplate: 'UserLayout',
 
     subscriptions: function(){
-        this.subscribe('userStripeData').wait();
-        this.subscribe('userDT').wait();
-        this.subscribe('userDTFunds').wait();
+        return [
+            Meteor.subscribe('userStripeData'),
+            Meteor.subscribe('userDT'),
+            Meteor.subscribe('userDTFunds')
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+            this.render();
+        } else {
+            this.render('Loading');
+        }
     },
     name: 'user.profile'
 });

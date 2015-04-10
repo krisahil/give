@@ -113,6 +113,7 @@ Meteor.methods({
             //TODO: change these to match what you'll be using for a Stripe customer that already exists
             var customer_cursor = Customers.findOne({_id: data.customer.id});
             customerData.id = customer_cursor._id;
+            Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
         }
         customerInfo = {
             "city":             data.customer.city,
@@ -168,8 +169,7 @@ Meteor.methods({
             console.dir(charge);
 
             return {c: customerData.id, don: data._id, charge: charge.id};
-        }
-        else {
+        } else {
             // Print how often it it recurs?
             console.log(data.paymentInformation.is_recurring);
 

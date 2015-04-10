@@ -80,9 +80,18 @@ Stripe_Events = {
         return;
     },
     'customer.deleted': function (stripeEvent, res) {
-        Customers.remove({_id: stripeEvent.data.object.id});
-        var user_with_customer_id = Meteor.users.findOne({'customers.customer_id': stripeEvent.data.object.id});
+        var user_with_customer_email = Meteor.users.findOne({'emails.address': stripeEvent.data.object.email});
+        var other_customers = Customers.findOne({email: stripeEvent.data.object.email});
 
+        // check to see if the customer that was deleted was also set as the primary customer for this user
+        // if so, put the next customer record in its place, copying the data from the first into the second.
+        if(other_customers && user_with_customer_email.primary_customer_id === stripeEvent.data.object.id){
+            console.log("LOOK HERE, found another customer");
+
+
+
+        }
+        Customers.remove({_id: stripeEvent.data.object.id});
 
         // Remove the devices associated with this customer
         stripeEvent.data.object.sources.data.forEach(function(element){
@@ -101,6 +110,12 @@ Stripe_Events = {
     },
     'customer.card.updated': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
+
+        console.log(stripeEvent.type + ': event processed');
+        return;
+    },
+    'customer.source.deleted': function (stripeEvent, res) {
+        Devices.remove({_id: stripeEvent.data.object.id});
 
         console.log(stripeEvent.type + ': event processed');
         return;

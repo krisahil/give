@@ -13,7 +13,6 @@ _.extend(App, {
                 business_name = '';
             }
 
-            console.log($('#amount').val());
             form = {
                 "paymentInformation": {
                     "amount": parseInt(($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100),
@@ -89,39 +88,73 @@ _.extend(App, {
         if (form.paymentInformation.donateWith === "Card") {
             form.paymentInformation.type = "card";
             form.customer.created_at =  moment().format('MM/DD/YYYY, hh:mma');
-            var card_info = {
-                name: $('#fname').val() + ' ' + $('#lname').val(),
-                number: $('#card_number').val(),
-                cvc: $('#cvv').val(),
-                exp_month: $('#expiry_month').val(),
-                exp_year: $('#expiry_year').val(),
-                address_line1: $('#address_line1').val(),
-                address_line2: $('#address_line2').val(),
-                address_city: $('#city').val(),
-                address_state: $('#region').val(),
-                address_country: $('#country').val(),
-                address_zip: $('#postal_code').val()
-            };
+            var card_info = {};
+            if(quick_form){
+                card_info = {
+                    name: user_cursor.profile.fname + ' ' + user_cursor.profile.lname,
+                    number: $('#card_number').val(),
+                    cvc: $('#cvv').val(),
+                    exp_month: $('#expiry_month').val(),
+                    exp_year: $('#expiry_year').val(),
+                    address_line1: user_cursor.profile.address.address_line1,
+                    address_line2: user_cursor.profile.address.address_line2,
+                    address_city: user_cursor.profile.address.city,
+                    address_state: user_cursor.profile.address.state,
+                    address_country: user_cursor.profile.address.country,
+                    address_zip: user_cursor.profile.address.postal_code
+                };
+            } else{
+                card_info = {
+                    name: $('#fname').val() + ' ' + $('#lname').val(),
+                    number: $('#card_number').val(),
+                    cvc: $('#cvv').val(),
+                    exp_month: $('#expiry_month').val(),
+                    exp_year: $('#expiry_year').val(),
+                    address_line1: $('#address_line1').val(),
+                    address_line2: $('#address_line2').val(),
+                    address_city: $('#city').val(),
+                    address_state: $('#region').val(),
+                    address_zip: $('#postal_code').val(),
+                    address_country: $('#country').val()
+                };
+            }
+
             App.process_card(card_info, form);
 
         } else if(form.paymentInformation.donateWith === "Check") {
             form.paymentInformation.type = "check";
             form.customer.created_at =  moment().format('MM/DD/YYYY, hh:mma');
-            var bank_info = {
-                name: $('#fname').val() + ' ' + $('#lname').val(),
-                country: $('#country').val(),
-                routing_number: $('#routing_number').val(),
-                account_number: $('#account_number').val(),
-                address_line1: $('#address_line1').val(),
-                address_line2: $('#address_line2').val(),
-                address_city: $('#city').val(),
-                address_state: $('#region').val(),
-                address_zip: $('#postal_code').val()
-            };
+            var bank_info = {};
+            if(quick_form){
+                bank_info = {
+                    name: user_cursor.profile.fname + ' ' + user_cursor.profile.lname,
+                    account_number: $('#account_number').val(),
+                    routing_number: $('#routing_number').val(),
+                    address_line1: user_cursor.profile.address.address_line1,
+                    address_line2: user_cursor.profile.address.address_line2,
+                    address_city: user_cursor.profile.address.city,
+                    address_state: user_cursor.profile.address.state,
+                    address_zip: user_cursor.profile.address.postal_code,
+                    address_country: user_cursor.profile.address.country
+                };
+            } else{
+                bank_info = {
+                    name: $('#fname').val() + ' ' + $('#lname').val(),
+                    account_number: $('#account_number').val(),
+                    routing_number: $('#routing_number').val(),
+                    address_line1: $('#address_line1').val(),
+                    address_line2: $('#address_line2').val(),
+                    address_city: $('#city').val(),
+                    address_state: $('#region').val(),
+                    address_zip: $('#postal_code').val(),
+                    address_country: $('#country').val()
+                };
+            }
             App.process_bank(bank_info, form);
         } else{
             //TODO: process the gift with a saved device
             console.log("Process with saved device");
+            form.paymentInformation.saved = true;
             var payment = {id: form.paymentInformation.donateWith};
             if(form.paymentInformation.donateWith.slice(0,3) === 'car'){
                 form.paymentInformation.type = 'card';

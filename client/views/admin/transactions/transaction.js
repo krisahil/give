@@ -90,7 +90,6 @@ Template.Transaction.events({
 
 		var stop_id_is = "stop" + this._id;
 
-
 		console.log("Started delete process");
 		console.log(this._id);
 

@@ -19,7 +19,8 @@ _.extend(Utils, {
             // check that there was a customer record and that record had an email address
             if(email_address) {
                 //create user
-                var user_cursor = Utils.create_user(email_address, customer_id);
+                var user_id = Utils.create_user(email_address, customer_id);
+                console.log(user_id);
 
                 //check dt for user, persona_ids will be an array of 0 to many persona_ids
                 var persona_ids = Utils.check_for_dt_user(email_address);
@@ -27,15 +28,15 @@ _.extend(Utils, {
                 //create dt user since one wasn't found in DT
                 if (persona_ids == '') {
                     //Call DT create function
-                    var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_cursor._id, charge_id);
+                    var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
 
                     // the persona_ids is expected to be an array
                     persona_ids = [single_persona_id];
 
                     // Send me an email letting me know a new user was created in DT.
-                    Utils.send_dt_new_dt_account_added(email_address, user_cursor._id, single_persona_id);
+                    Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
                 } else {
-                    Utils.insert_donation_into_dt(customer_id, user_cursor._id, persona_ids, charge_id);
+                    Utils.insert_donation_into_dt(customer_id, user_id, persona_ids, charge_id);
                 }
 
                 // Get all of the donations related to the persona_id that was either just created or that was just used when
@@ -44,10 +45,10 @@ _.extend(Utils, {
 
                 // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
                 persona_ids.forEach(function(element){
-                    Utils.insert_persona_id_into_user(user_cursor._id, element);
+                    Utils.insert_persona_id_into_user(user_id, element);
                 });
 
-                Utils.update_stripe_customer_user(customer_id, user_cursor._id);
+                Utils.update_stripe_customer_user(customer_id, user_id);
             } else {
                 logger.error("Didn't find the customer record, exiting.");
                 throw new Meteor.Error("Email doesn't exist", "Customer didn't have an email address", "Customers.findOne(customer_id) && Customers.findOne(customer_id).email from post_donation.js didn't find an email");
@@ -100,7 +101,7 @@ _.extend(Utils, {
         }
         return user_id;
     },
-    check_for_dt_user: function(email){
+    check_for_dt_user: function (email){
         /*try {*/
         //This function is used to get all of the persona_id s from DT if they exist or return false if none do
         logger.info("Started check_for_dt_user");
@@ -160,10 +161,11 @@ _.extend(Utils, {
             if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
                 dt_fund = DT_funds.findOne({name: invoice_cursor.lines.data[0].metadata.donateTo});
             } else{
-                dt_fund = null;
+                var donateTo = charge && charge.meta && charge.meta.donateTo;
+                dt_fund = DT_funds.findOne({name: donateTo});
             }
         } else{
-
+            // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
         }
 
         //fund_id 65663 is the No-Match-Found fund used to help reconcile
@@ -179,7 +181,7 @@ _.extend(Utils, {
                         "fund_id": fund_id,
                         "memo": Meteor.settings.dev
                     }],
-                    "donation_type_id": 2985,
+                    "donation_type_id": Meteor.settings.donor_tools_gift_type,
                     "received_on": received_on,
                     "source_id": source_id,
                     "payment_status": payment_status,
@@ -193,7 +195,7 @@ _.extend(Utils, {
                         "state": customer.metadata.state,
                         "postal_code": customer.metadata.postal_code,
                         "phone_number": customer.metadata.phone,
-                        "web_address": "https://trashmountain.com/give/dashboard/users?userID=" + user_id._id,
+                        "web_address": "https://trashmountain.com/give/dashboard/users?userID=" + user_id,
                         "salutation_formal": customer.metadata.fname + " " + customer.metadata.lname,
                         "recognition_name": recognition_name
                     }
@@ -303,6 +305,7 @@ _.extend(Utils, {
     insert_persona_id_into_user: function(user_id, persona_id) {
         //Insert the donor tools persona id into the user record
         logger.info("Started insert_persona_id_into_user");
+        console.log("user_id: " + user_id);
         Meteor.users.update({_id: user_id}, {$addToSet: {'persona_id': parseInt(persona_id)}});
     },
     insert_donation_into_dt: function (customer_id, user_id, persona_ids, charge_id){
@@ -353,7 +356,7 @@ _.extend(Utils, {
                         "fund_id": fund_id,
                         "memo": Meteor.settings.dev
                     }],
-                    "donation_type_id": 2985,
+                    "donation_type_id": Meteor.settings.donor_tools_gift_type,
                     "received_on": moment(new Date(charge.created * 1000)).format("YYYY/MM/DD"),
                     "source_id": source_id,
                     "payment_status": charge.status,
@@ -384,6 +387,7 @@ _.extend(Utils, {
     send_dt_new_dt_account_added: function (email, user_id, personaID){
 
         logger.info("Started send_dt_new_persona_added_to_meteor_user");
+        console.log("User_id: " + user_id);
 
         //Create the HTML content for the email.
         //Create the link to go to the new person that was just created.

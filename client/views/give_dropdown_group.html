@@ -20,7 +20,7 @@
                     <option value="Card">New Card</option>
                     <option value="Check">New Bank</option>
                     {{#each device}}
-                        <option value="{{card_id}}" selected {{selected}}>{{brand}} - {{last4}}</option>
+                        <option value="{{this.id}}" selected {{selected}}>{{brand}} - {{last4}}</option>
                     {{/each}}
                 </select>
             </div>

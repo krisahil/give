@@ -2,16 +2,16 @@
 Template.UserGiveForm.rendered = function () {
 
     if($('#donateWith option').length > 2){
-        $('#donateWith').val($('#donateWith option').eq(3).val());
+        $('#donateWith').val($('#donateWith option').eq(2).val());
         if($('#donateWith').val().slice(0,3) === 'car'){
             Session.set("savedDevice", "Card");
-            Session.set("paymentMethod", $('#donateWith option').eq(3).val());
+            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
         } else if($('#donateWith').val().slice(0,3) === 'ban'){
             Session.set("savedDevice", "Check");
-            Session.set("paymentMethod", $('#donateWith option').eq(3).val());
+            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
         }
-    } else {
-        Session.set("paymentMethod", params.donateWith);
+    } else if(Session.get('params.donateWith')){
+        Session.set("paymentMethod", Session.get('params.donateWith'));
     }
 
     if($('#donateWith').val() === 'Card'){
@@ -23,6 +23,15 @@ Template.UserGiveForm.rendered = function () {
     $('#quick_give').parsley();
 
     $("#spinDiv").hide();
+
+    _.each(_.uniq(_.pluck($("select[name='donateWith'] > option")
+        .get(), 'text')), function(name) { $("select[name='donateWith'] > option:contains(" + name + ")")
+        .not(":first").remove(); });
+
+    $('#donateWith').change();
+
+    /*Bert.defaults.autoHide = false;
+    Bert.alert('We see you already have an account and you are logged in, here is the quick give form.', 'success', 'fixed-top');*/
 
 };
 
@@ -66,21 +75,10 @@ Template.UserGiveForm.events({
         // Stop propagation prevents the form from being submitted more than once.
         e.stopPropagation();
 
-        //TODO: put the DRY form call here
-        console.log("Got here");
-
         var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
         var target = document.getElementById('spinContainer');
         spinner = new Spinner(opts).spin(target);
 
-        $.fn.scrollView = function () {
-            return this.each(function () {
-                $('html, body').animate({
-                    scrollTop: $(this).offset().top
-                }, 1000);
-            });
-        }
-        $('#spinContainer').scrollView();
         $("#spinDiv").show();
 
         $(window).off('beforeunload');

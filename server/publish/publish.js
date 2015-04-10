@@ -92,8 +92,9 @@ Meteor.publish("userStripeData", function() {
             customers_ids.push(element.id);
         });
         var charges = Charges.find({'customer': {$in: customers_ids}});
+        var donations = Donations.find({'customer_id': {$in: customers_ids}});
         var user = Meteor.users.find({_id: this.userId});
-        return[customers, charges, user];
+        return[customers, charges, user, donations];
     }
 });
 

@@ -2,91 +2,100 @@ _.extend(Utils, {
     getDonateTo: function (donateTo) {
         var returnToCalled;
         switch (donateTo) {
-            case 'WriteIn':
-                return 'Write In';
-            case 'JoshuaBechard':
-                returnToCalled = 'Joshua Bechard';
-                return returnToCalled;
-                break;
-            case 'JamesHishmeh':
-                returnToCalled = 'James Hishmeh';
-                return returnToCalled;
-                break;
-            case 'WillieBrooks':
-                returnToCalled = 'Willie Brooks';
-                return returnToCalled;
-                break;
             case 'WhereMostNeeded':
                 returnToCalled = 'Where Most Needed';
                 return returnToCalled;
                 break;
-            case 'TimmCollins':
-                returnToCalled = 'Timm Collins';
-                return returnToCalled;
-                break;
-            case 'JonDeMeo':
-                returnToCalled = 'Jon DeMeo';
-                return returnToCalled;
-                break;
-            case 'BrettDurbin':
-                returnToCalled = 'Brett Durbin';
-                return returnToCalled;
-                break;
-            case 'JohnKazaklis':
-                returnToCalled = 'John Kazaklis';
-                return returnToCalled;
-                break;
-            case 'ChrisMammoliti':
-                returnToCalled = 'Chris Mammoliti';
-                return returnToCalled;
-                break;
-            case 'ShelleySetchell':
-                returnToCalled = 'Shelley Setchell';
-                return returnToCalled;
-                break;
-            case 'IsaacTarwater':
-                returnToCalled = 'Isaac Tarwater';
+            case 'FieldProjects':
+                returnToCalled = 'Field Projects';
                 return returnToCalled;
                 break;
             case 'UrgentOperationalNeeds':
                 returnToCalled = 'Urgent Operational Needs';
                 return returnToCalled;
                 break;
+            case 'JoshuaBechard':
+                returnToCalled = 'BaseCamp - Joshua Bechard';
+                return returnToCalled;
+                break;
+            case 'WillieBrooks':
+                returnToCalled = 'BaseCamp - Willie Brooks';
+                return returnToCalled;
+                break;
+            case 'TimmCollins':
+                returnToCalled = 'BaseCamp - Timm Collins';
+                return returnToCalled;
+                break;
+            case 'JonDeMeo':
+                returnToCalled = 'BaseCamp - Jon DeMeo';
+                return returnToCalled;
+                break;
+            case 'BrettDurbin':
+                returnToCalled = 'BaseCamp - Brett Durbin';
+                return returnToCalled;
+                break;
+            case 'JamesHishmeh':
+                returnToCalled = 'BaseCamp - James Hishmeh';
+                return returnToCalled;
+                break;
+            case 'JohnKazaklis':
+                returnToCalled = 'BaseCamp - John Kazaklis';
+                return returnToCalled;
+                break;
+            case 'ChrisMammoliti':
+                returnToCalled = 'BaseCamp - Chris Mammoliti';
+                return returnToCalled;
+                break;
+            case 'ShelleySetchell':
+                returnToCalled = 'BaseCamp - Shelley Setchell';
+                return returnToCalled;
+                break;
+            case 'IsaacTarwater':
+                returnToCalled = 'BaseCamp - Isaac Tarwater';
+                return returnToCalled;
+                break;
             case 'DRUrgent':
-                returnToCalled = 'DR Urgent';
+                returnToCalled = 'DR - Most Urgent';
                 return returnToCalled;
                 break;
             case 'DRCS':
-                returnToCalled = 'Santiago, DR - Community Sponsorship';
+                returnToCalled = 'DR - Community Sponsorship';
                 return returnToCalled;
                 break;
             case 'DRInfrastructure':
-                returnToCalled = 'DR Infrastructure';
-                return returnToCalled;
-                break;
-            case 'HondurasUrgent':
-                returnToCalled = 'Honduras Urgent';
-                return returnToCalled;
-                break;
-            case 'HondurasCS':
-                returnToCalled = 'Honduras Community Sponsorship';
-                return returnToCalled;
-                break;
-            case 'HondurasInfrastructure':
-                returnToCalled = 'Honduras Infrastructure';
+                returnToCalled = 'DR - Infrastructure';
                 return returnToCalled;
                 break;
             case 'PhilippinesUrgent':
-                returnToCalled = 'Philippines Urgent';
+                returnToCalled = 'Philippines - Most Urgent';
                 return returnToCalled;
                 break;
             case 'PhilippinesCS':
-                returnToCalled = 'Tanza, Philippines - Community Sponsorship';
+                returnToCalled = 'Phil - Tanza Community Sponsor';
                 return returnToCalled;
                 break;
             case 'PhilippinesInfrastructure':
-                returnToCalled = 'Philippines Infrastructure';
+                returnToCalled = 'Philippines - Infrastructure';
                 return returnToCalled;
+                break;
+            case 'BoliviaUrgent':
+                returnToCalled = 'Bolivia - Most Urgent';
+                return returnToCalled;
+                break;
+            case 'HondurasUrgent':
+                returnToCalled = 'Honduras - Most Urgent';
+                return returnToCalled;
+                break;
+            case 'HondurasCS':
+                returnToCalled = 'Honduras - Community Sponsorship';
+                return returnToCalled;
+                break;
+            case 'HondurasInfrastructure':
+                returnToCalled = 'Honduras - Infrastructure';
+                return returnToCalled;
+                break;
+            case 'WriteIn':
+                return 'Write In';
                 break;
             default:
                 returnToCalled = 'Where Most Needed';
@@ -485,7 +494,15 @@ _.extend(Utils, {
         var subscription_cursor = Subscriptions.findOne({_id: stripeEvent.data.object.subscription});
 
         // update the charges document to add the metadata, this way the related gift information is attached to the charge
-        Charges.update({_id: stripeEvent.data.object.charge}, {$set: subscription_cursor.metadata});
+        Charges.update({_id: stripeEvent.data.object.charge}, {$set: {metadata: subscription_cursor.metadata}});
+
+        // update the invoices document to add the metadata
+        Invoices.update({_id: stripeEvent.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
+
+        // Now send these changes off to Stripe to update the record there.
+        Utils.update_invoice_metadata(stripeEvent);
+
+
     },
     stripe_get_subscription: function(invoice_id){
         logger.info("Started stripe_get_subscription");
@@ -530,11 +547,14 @@ _.extend(Utils, {
         logger.info("Inside update_stripe_customer_user.");
         console.log(user_id);
 
+        var user = Meteor.users.findOne(user_id);
+        console.log(user._id);
+
         var stripeCustomerUserUpdate = new Future();
 
         Stripe.customers.update(customer_id, {
                 "metadata": {
-                    "user_id": user_id
+                    "user_id": user._id
                 }
             }, function (error, customer) {
                 if (error) {
@@ -575,7 +595,7 @@ _.extend(Utils, {
 
         var stripeInvoice = new Future();
 
-        Stripe.invocices.retrieve(invoice_id,
+        Stripe.invoices.retrieve(invoice_id,
             function (error, invoice) {
                 if (error) {
                     //console.dir(error);
@@ -595,5 +615,65 @@ _.extend(Utils, {
         console.dir(stripeInvoice);
 
         return stripeInvoice;
+    },
+    update_invoice_metadata: function(event_body){
+        logger.info("Inside update_invoice_metadata");
+
+        // Get the subscription cursor
+        var subscription_cursor = Subscriptions.findOne({_id: event_body.data.object.subscription});
+
+        // Use the metadata from the subscription to udpate the invoice with Stripe
+        var stripeInvoice = new Future();
+
+        Stripe.invoices.update(event_body.data.object.id,{
+                "metadata":  subscription_cursor.metadata
+        }, function (error, invoice) {
+                if (error) {
+                    //console.dir(error);
+                    stripeInvoice.return(error);
+                } else {
+                    stripeInvoice.return(invoice);
+                }
+            }
+        );
+
+        stripeInvoice = stripeInvoice.wait();
+
+        if (!stripeInvoice.object) {
+            throw new Meteor.Error(stripeInvoice.rawType, stripeInvoice.message);
+        }
+
+        console.dir(stripeInvoice);
+
+    },
+    update_charge_metadata: function(event_body){
+        logger.info("Inside update_charge_metadata");
+
+        // Get the subscription cursor
+        var subscription_cursor = Subscriptions.findOne({_id: event_body.data.object.subscription});
+
+        // Use the metadata from the subscription to udpate the charge with Stripe
+        var stripeCharges = new Future();
+
+        Stripe.charges.update(event_body.data.object.charge,{
+                "metadata":  subscription_cursor.metadata
+        }, function (error, charges) {
+                if (error) {
+                    //console.dir(error);
+                    stripeCharges.return(error);
+                } else {
+                    stripeCharges.return(charges);
+                }
+            }
+        );
+
+        stripeCharges = stripeCharges.wait();
+
+        if (!stripeCharges.object) {
+            throw new Meteor.Error(stripeCharges.rawType, stripeCharges.message);
+        }
+
+        console.dir(stripeCharges);
+
     }
 });

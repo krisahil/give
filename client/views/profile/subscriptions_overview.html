@@ -45,9 +45,8 @@
                       {{/if}}
                     </li>
                     <li class="list-group-item bm-block clearfix">
-                      <span class="bm-block-label">Payment</span>
+                      <span class="bm-block-label">Payment<strong>{{type}}</strong> {{lastFour}}</span>
                       <div class="bm-block-content">
-                        <span><strong>{{payment.card.type}}</strong> {{payment.card.lastFour}}</span>
                         {{#unless equals status "canceled"}}
                           <span>Next gift on: <strong>{{epochToString current_period_end}}</strong></span>
                           <span>Amount: <strong>{{centsToDollars quantity}}</strong></span>
