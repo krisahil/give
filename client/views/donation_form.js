@@ -12,9 +12,22 @@ Template.DonationForm.events({
             $("#s2id_is_recurring").children().addClass("redText");
             return;
         }
+
         var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
         var target = document.getElementById('spinContainer');
         spinner = new Spinner(opts).spin(target);
+
+        if($('#donateWith').val() === 'Card'){
+            if(!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())){
+                var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"}
+                App.handleErrors(new_error);
+                return;
+            } else if(!Stripe.card.validateCardNumber($('#card_number').val())){
+                var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"}
+                App.handleErrors(new_error);
+                return;
+            }
+        }
 
         $.fn.scrollView = function () {
             return this.each(function () {

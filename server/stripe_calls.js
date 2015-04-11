@@ -277,6 +277,8 @@ _.extend(Utils, {
         }
     },
     audit_email: function (id, type, failure_message, failure_code) {
+        logger.info("Inside audit_email.");
+
         if (type === 'charge.pending') {
             Audit_trail.update({charge_id: id}, {
                     $set: {
@@ -543,18 +545,17 @@ _.extend(Utils, {
 
         return stripeCustomerUpdate;
     },
-    update_stripe_customer_user: function(customer_id, user_id){
+    update_stripe_customer_user: function(customer_id, user){
         logger.info("Inside update_stripe_customer_user.");
-        console.log(user_id);
 
-        var user = Meteor.users.findOne(user_id);
+        var user_cursor = Meteor.users.findOne(user);
         console.log(user._id);
 
         var stripeCustomerUserUpdate = new Future();
 
         Stripe.customers.update(customer_id, {
                 "metadata": {
-                    "user_id": user._id
+                    "user_id": user_cursor._id
                 }
             }, function (error, customer) {
                 if (error) {

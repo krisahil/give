@@ -23,28 +23,28 @@ Stripe_Events = {
         // Check for existing charge succeeded before updating with old pending event
         var check_pending = Utils.check_charge_status(stripeEvent.data.object.id);
         if(check_pending){
-            Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+            Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'pending');
             console.log(stripeEvent.type + ': event processed');
             return;
         }
         Utils.charge_events(stripeEvent);
-        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'pending');
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.succeeded': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
-        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'succeeded');
         return;
     },
     'charge.failed': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
-        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'failed');
         return;
     },
     'charge.refunded': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
-        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'refunded');
         return;
     },
     'charge.captured': function (stripeEvent, res) {

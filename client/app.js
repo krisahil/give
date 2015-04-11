@@ -135,7 +135,7 @@ _.extend(App, {
                     address_city: user_cursor.profile.address.city,
                     address_state: user_cursor.profile.address.state,
                     address_zip: user_cursor.profile.address.postal_code,
-                    address_country: user_cursor.profile.address.country
+                    country: user_cursor.profile.address.country
                 };
             } else{
                 bank_info = {
@@ -147,7 +147,7 @@ _.extend(App, {
                     address_city: $('#city').val(),
                     address_state: $('#region').val(),
                     address_zip: $('#postal_code').val(),
-                    address_country: $('#country').val()
+                    country: $('#country').val()
                 };
             }
             App.process_bank(bank_info, form);
@@ -204,22 +204,34 @@ _.extend(App, {
     handleErrors: function(error) {
         spinner.stop();
         $("#spinDiv").hide();
+        console.dir(error);
 
+        var gatherInfo = {};
         Session.set("loaded", true);
-        if(error.message === "Your card's security code is invalid."){
-            var gatherInfo = {};
+        if(error.type === "invalid_request_error"){
             gatherInfo.browser = navigator.userAgent;
 
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.code);
+            $('#errorCategory').html(error.type);
             $('#errorDescription').html(error.message);
-        } else{
+            return;
+        }
+        if(error.message === "Your card's security code is invalid."){
+
+            gatherInfo.browser = navigator.userAgent;
 
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.code);
-            $('#errorDescription').html(error.message);
+            $('#errorCategory').html(error.error);
+            $('#errorDescription').html(error.reason);
+            return;
+        } else{
+            $('#modal_for_initial_donation_error').modal({show: true});
+            $(".modal-dialog").css("z-index", "1500");
+            $('#errorCategory').html(error.error);
+            $('#errorDescription').html(error.reason);
+            return;
         }
     },
     process_card: function (card_info, form){
@@ -304,7 +316,9 @@ _.extend(App, {
                 $('#routing_number').val("111000025"); // Invalid test =  fail after initial screen =  valid test = 111000025
                 $('#account_number').val("000123456789"); // Invalid test =  fail after initial screen =  valid test = 000123456789
             } else {
-                $('#card_number').val("4242424242424242"); //Succeeded = 4242424242424242 Failed = 4242111111111111 AMEX = 378282246310005
+                $('#card_number').val("4000000000000341");
+                //Succeeded = 4242424242424242 Failed = 4242111111111111 AMEX = 378282246310005
+                // Fail after connection to customer succeeds = 4000000000000341
                 $('#expiry_month option').prop('selected', false).filter('[value=12]').prop('selected', true);
                 $('select#expiry_month').change();
                 $('#expiry_year option').prop('selected', false).filter('[value=2015]').prop('selected', true);

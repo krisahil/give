@@ -66,13 +66,13 @@ Template.Receipt.helpers({
         return this.donateTo;
 },
     donateWith: function () {
-        var source = Charges.findOne().links.source;
-        if(source.slice(0,2) === 'CC'){
-            var card = _.findWhere(this.cards, {id: source});
-                return card.brand + ", ending in " + card.number.slice(-4);
-        } else if (source.slice(0,2) === 'BA'){
-            var bank_account = _.findWhere(this.bank_accounts, {id: source});
-            return  bank_account.bank_name +  ", ending in " + bank_account.account_number.slice(-4);
+        if(Charges.findOne() && Charges.findOne().source) {
+            var source = Charges.findOne().source;
+            if (source.object.slice(0, 4) === 'card') {
+                return source.brand + ", ending in " + source.last4;
+            } else if (source.object.slice(0, 4) === 'bank') {
+                return source.bank_name + ", ending in " + source.last4;
+            }
         }
    },
    amount: function () {

@@ -144,7 +144,7 @@
                     <a href="tel:+17852466845">(785)246-6845</a>.
                 </div>
                 <div class="alert alert-warning">
-                    <p><strong>Error category:</strong> <span id="errorCategory"></span></p>
+                    <p><strong>Error category:</strong> <span class="capitalize_this" id="errorCategory"></span></p>
                     <p><strong>Error Description:</strong> <span id="errorDescription"></span></p>
                 </div>
             </div>
@@ -221,7 +221,7 @@
                 <label>Card Number</label>
             <![endif]-->
           <input type="text" class="form-control slim-borders" id="card_number"
-                 placeholder="Debit/Credit Card Number" data-parsley-type="number" data-parsley-length="[15,16]" required>
+                 placeholder="Debit/Credit Card Number" data-parsley-type="number" data-parsley-length="[14,16]" data-parsley-error-message="This should be between 14-16 numbers, no dashes or spaces." required>
         </div> <!-- 4111111111111111 -->
         <div class="col-md-3 col-sm-3 col-xs-4">
             <!--[if lt IE 9]>

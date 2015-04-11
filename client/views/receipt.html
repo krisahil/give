@@ -83,7 +83,7 @@
                             <thead>
                             <tr>
                                 <th>Designation</th>
-                                <th>Payment type</th>
+                                <th>Donated with</th>
                                 <th>Amount</th>
                             </tr>
                             </thead>
@@ -91,7 +91,7 @@
                             <tr>
                                 <th>{{#with donation}}{{donateTo}}{{/with}}</th>
                                 <td class="donateWith text-left">
-                                    {{charges.source.brand}}
+                                    {{donateWith}}
                                 </td>
                                 <td>${{#with donation}}{{amount}}{{/with}}</td>
                             </tr>

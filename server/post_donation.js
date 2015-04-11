@@ -20,7 +20,6 @@ _.extend(Utils, {
             if(email_address) {
                 //create user
                 var user_id = Utils.create_user(email_address, customer_id);
-                console.log(user_id);
 
                 //check dt for user, persona_ids will be an array of 0 to many persona_ids
                 var persona_ids = Utils.check_for_dt_user(email_address);
@@ -228,11 +227,11 @@ _.extend(Utils, {
         });
     },
     insert_each_dt_donation: function(donation){
-        //logger.info("Inside insert_each_dt_donation with " + donation.id);
+        logger.info("Inside insert_each_dt_donation with " + donation.id);
 
         //Insert each donation into the DT_donations collection
         donation._id = donation.id;
-        //logger.info(donation._id);
+        logger.info(donation._id);
         DT_donations.upsert({_id: donation._id}, donation);
     },
     separate_funds: function(fundResults){
@@ -305,7 +304,6 @@ _.extend(Utils, {
     insert_persona_id_into_user: function(user_id, persona_id) {
         //Insert the donor tools persona id into the user record
         logger.info("Started insert_persona_id_into_user");
-        console.log("user_id: " + user_id);
         Meteor.users.update({_id: user_id}, {$addToSet: {'persona_id': parseInt(persona_id)}});
     },
     insert_donation_into_dt: function (customer_id, user_id, persona_ids, charge_id){
@@ -325,7 +323,12 @@ _.extend(Utils, {
 
         var dt_fund, donateTo;
         if(charge.invoice){
-            donateTo = Invoices.findOne({_id: charge.invoice}).metadata.donateTo;
+            if(Invoices.findOne({_id: charge.invoice})){
+                donateTo = Invoices.findOne({_id: charge.invoice}).metadata.donateTo;
+            } else{
+                var invoice = Utils.get_invoice(charge.invoice);
+                donateTo = invoice.metadata.donateTo;
+            }
         } else{
             donateTo = charge.metadata.donateTo;
         }
@@ -387,7 +390,6 @@ _.extend(Utils, {
     send_dt_new_dt_account_added: function (email, user_id, personaID){
 
         logger.info("Started send_dt_new_persona_added_to_meteor_user");
-        console.log("User_id: " + user_id);
 
         //Create the HTML content for the email.
         //Create the link to go to the new person that was just created.
@@ -434,10 +436,10 @@ _.extend(Utils, {
 
         return stripeUpdateCharge;
     },
-    update_dt_status: function (charge_id, interval) {
+    update_dt_status: function (charge_id, status, interval) {
         logger.info("Started update_dt_status");
         console.log("Interval: " + interval);
-        console.log("Debit_id: " + charge_id);
+        console.log("Charge_id: " + charge_id);
 
         // Check to see if the donor tools donation has been inserted yet. Return if it hasn't
         Meteor.setTimeout(function(){
@@ -445,14 +447,16 @@ _.extend(Utils, {
 
             if(dt_donation){
                 console.log(dt_donation.id);
-                var debit_cursor = Charges.findOne(charge_id);
+                var charge_cursor = Charges.findOne(charge_id);
                 var get_dt_donation = HTTP.get(Meteor.settings.donor_tools_site + '/donations/' + dt_donation.id + '.json', {
                     auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
                 });
                 console.dir(get_dt_donation.data.donation);
-                /*var temp_value = {};
-                temp_value.transaction_fee = (get_dt_donation.data.donation.transaction_fee /100);*/
-                get_dt_donation.data.donation.payment_status = debit_cursor.status;
+
+                get_dt_donation.data.donation.payment_status = charge_cursor.status;
+                if(charge_cursor.status === 'failed'){
+                    get_dt_donation.data.donation.donation_type_id = 3921;
+                }
 
                 var update_donation = HTTP.call("PUT", Meteor.settings.donor_tools_site + '/donations/'+ dt_donation.id + '.json',
                     {
@@ -467,15 +471,15 @@ _.extend(Utils, {
                                 console.log(error + '\nFailed...retrying');
                                 Meteor.setTimeout(function(){
                                     console.log(interval);
-                                    Utils.update_dt_status(charge_id, interval+=1);
+                                    Utils.update_dt_status(charge_id, status, interval+=1);
                                 },60000);
                             } else{
                                 logger.warn("Retried for 10 minutes, still could not connect.");
                             }
                         }
                     });
-                console.log("***********LOOK HERE************");
-                DT_donations.update(dt_donation, {$set: {'payment_status': debit_cursor.status}});
+
+                DT_donations.update(dt_donation, {$set: {'payment_status': charge_cursor.status}});
 
             } else {
                 // There may not actually be a problem here, just want a warning in case there is.
@@ -484,15 +488,12 @@ _.extend(Utils, {
             }
         }, 20000);
     },
-    audit_dt_donation: function (charge_id, customer_id){
+    audit_dt_donation: function (charge_id, customer_id, status){
         logger.info("Started audit_dt_donation");
 
-        var audit_cursor = Audit_trail.findOne({charge_id: charge_id});
-        if(audit_cursor && audit_cursor.dt_donation_created){
-            Utils.update_dt_status(charge_id, 1);
-        } else {
-            Audit_trail.upsert({_id: charge_id}, {$set: {dt_donation_created: true}});
-            Utils.post_donation_operation(customer_id, charge_id);
-        }
+        Audit_trail.upsert({_id: charge_id}, {$set: {dt_donation_created: true}});
+        Audit_trail.upsert({_id: charge_id}, {$addToSet: {status: {dt_donation_status_updated_to: status, time: moment().format("MMM DD, YYYY hh:mma")}}});
+        Utils.update_dt_status(charge_id, status, 1);
+        Utils.post_donation_operation(customer_id, charge_id);
     }
 });

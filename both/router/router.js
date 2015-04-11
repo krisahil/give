@@ -19,7 +19,7 @@ Router.onBeforeAction(function () {
     except: ['donation.form', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks']
 });
 
-Router.route(':root_path', function () {
+Router.route(root_path, function () {
 
     var params = this.params;
     if(Meteor.user()){
