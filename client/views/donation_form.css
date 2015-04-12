@@ -448,3 +448,8 @@ div.fadeMe {
 .cover-fees{
     font-size: 80%;
 }
+
+.form-container {
+	margin-top: 30px;
+	background-color: white;
+}
