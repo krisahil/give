@@ -166,7 +166,6 @@ Meteor.methods({
                 return {error: charge.rawType, message: charge.message};
             }
             Donations.update({_id: data._id}, {$set: {charge_id: charge.id}});
-            console.dir(charge);
 
             return {c: customerData.id, don: data._id, charge: charge.id};
         } else {

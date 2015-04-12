@@ -243,6 +243,7 @@ _.extend(App, {
                 // Call your backend
                 console.log(form.paymentInformation.start_date);
                 form.paymentInformation.source_id = response.card.id;
+                console.dir(response);
                 App.handleCalls(response, form);
             }
         });
@@ -255,6 +256,7 @@ _.extend(App, {
             } else {
                 // Call your backend
                 form.paymentInformation.source_id = response.bank_account.id;
+                console.dir(response);
                 App.handleCalls(response, form);
             }
         });
@@ -316,7 +318,7 @@ _.extend(App, {
                 $('#routing_number').val("111000025"); // Invalid test =  fail after initial screen =  valid test = 111000025
                 $('#account_number').val("000123456789"); // Invalid test =  fail after initial screen =  valid test = 000123456789
             } else {
-                $('#card_number').val("4000000000000341");
+                $('#card_number').val("4242424242424242");
                 //Succeeded = 4242424242424242 Failed = 4242111111111111 AMEX = 378282246310005
                 // Fail after connection to customer succeeds = 4000000000000341
                 $('#expiry_month option').prop('selected', false).filter('[value=12]').prop('selected', true);

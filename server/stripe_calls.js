@@ -199,6 +199,7 @@ _.extend(Utils, {
         }
         stripeCharge._id = stripeCharge.id;
 
+        console.dir(stripeCharge);
         // Add charge response from Stripe to the collection
         Charges.insert(stripeCharge);
         logger.info("Finished Stripe charge. Charges ID: " + stripeCharge._id);
@@ -206,7 +207,7 @@ _.extend(Utils, {
     },
     charge_plan: function (total, donation_id, customer_id, payment_id, frequency, start_date, metadata) {
         logger.info("Inside charge_plan.");
-        console.log(start_date);
+        console.log("Start date: " + start_date);
 
         var plan, subscription_frequency;
         subscription_frequency = frequency;
@@ -280,58 +281,45 @@ _.extend(Utils, {
         logger.info("Inside audit_email.");
 
         if (type === 'charge.pending') {
-            Audit_trail.update({charge_id: id}, {
+            Audit_trail.upsert({charge_id: id}, {
                     $set: {
                         'charge.pending.sent': true,
                         'charge.pending.time': new Date()
                     }
-                },
-                {
-                    upsert: true
                 }
             );
         } else if (type === 'charge.succeeded') {
-            Audit_trail.update({charge_id: id}, {
+            Audit_trail.upsert({charge_id: id}, {
                     $set: {
                         'charge.succeeded.sent': true,
                         'charge.succeeded.time': new Date()
                     }
-                },
-                {
-                    upsert: true
                 }
             );
         } else if (type === 'large_gift') {
-            Audit_trail.update({charge_id: id}, {
+            Audit_trail.upsert({charge_id: id}, {
                     $set: {
                         'charge.large_gift.sent': true,
                         'charge.large_gift.time': new Date()
                     }
-                },
-                {
-                    upsert: true
                 }
             );
         } else if (type === 'charge.failed') {
-            Audit_trail.update({charge_id: id}, {
+            Audit_trail.upsert({charge_id: id}, {
                 $set: {
                     'charge.failed.sent':       true,
                     'charge.failed.time':       new Date(),
                     'charge.failure_message':   failure_message,
                     'charge.failure_code':      failure_code
                 }
-            }, {
-                upsert: true
             });
         }
         else if (type === 'subscription.scheduled') {
-            Audit_trail.update({subscription_id: id}, {
+            Audit_trail.upsert({subscription_id: id}, {
                 $set: {
                     'subscription_scheduled.sent': true,
                     'subscription_scheduled.time': new Date()
                 }
-            }, {
-                upsert: true
             });
         }
     },
