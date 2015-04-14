@@ -1,4 +1,4 @@
-var root_path = (Meteor.settings && Meteor.settings.public && Meteor.settings.public.root) || "";
+
 Router.configure({
     layoutTemplate: 'MasterLayout',
     loadingTemplate: 'Loading',
@@ -19,7 +19,7 @@ Router.onBeforeAction(function () {
     except: ['donation.form', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks']
 });
 
-Router.route(root_path, function () {
+Router.route('', function () {
 
     var params = this.params;
     if(Meteor.user()){
@@ -41,7 +41,7 @@ Router.route(root_path, function () {
     name: 'donation.form'
 });
 
-Router.route(root_path + '/thanks', {
+Router.route('/thanks', {
     name: 'donation.thanks',
     waitOn: function () {
         return  [
@@ -62,7 +62,7 @@ Router.route(root_path + '/thanks', {
     }
 });
 
-Router.route(root_path + '/gift/:_id', function () {
+Router.route('/gift/:_id', function () {
 
     var params = this.params;
 
@@ -85,7 +85,7 @@ Router.route(root_path + '/gift/:_id', function () {
     name: 'donation.gift'
 });
 
-Router.route(root_path + '/dashboard', function () {
+Router.route('/dashboard', function () {
     this.layout('AdminLayout');
 
     this.render('Dashboard');
@@ -93,7 +93,7 @@ Router.route(root_path + '/dashboard', function () {
     name: 'admin.dashboard'
 });
 
-Router.route(root_path + '/transactions', function () {
+Router.route('/transactions', function () {
     this.layout('AdminLayout');
 
 
@@ -108,7 +108,7 @@ Router.route(root_path + '/transactions', function () {
     }
 });
 
-Router.route(root_path + '/subscription/:_id', function () {
+Router.route('/subscription/:_id', function () {
     this.layout('AdminLayout');
 
 
@@ -127,7 +127,7 @@ Router.route(root_path + '/subscription/:_id', function () {
     }
 });
 
-Router.route(root_path + '/order/:_id', function () {
+Router.route('/order/:_id', function () {
     this.layout('AdminLayout');
 
 
@@ -146,7 +146,7 @@ Router.route(root_path + '/order/:_id', function () {
     }
 });
 
-Router.route(root_path + '/tables', {
+Router.route('/tables', {
     template: 'Tables',
     name: 'admin.tables',
     layoutTemplate: 'AdminLayout',
@@ -155,7 +155,7 @@ Router.route(root_path + '/tables', {
     }
 });
 
-Router.route(root_path + '/report', {
+Router.route('/report', {
     name: 'admin.report',
     template: 'Report',
     layoutTemplate: 'AdminLayout',
@@ -168,7 +168,7 @@ Router.route(root_path + '/report', {
     }
 });
 
-Router.route(root_path + '/expiring', {
+Router.route('/expiring', {
     name: 'admin.expiring',
     template: 'Expiring',
     layoutTemplate: 'AdminLayout',
@@ -178,7 +178,7 @@ Router.route(root_path + '/expiring', {
     }
 });
 
-Router.route(root_path + '/user',{
+Router.route('/user',{
     layoutTemplate: 'UserLayout',
 
     subscriptions: function(){
@@ -200,7 +200,7 @@ Router.route(root_path + '/user',{
 
 Router.route('subscriptions', {
         layoutTemplate: 'UserLayout',
-        path: root_path + '/user/subscriptions',
+        path: '/user/subscriptions',
         subscriptions: function() {
             return Meteor.subscribe('userStripeDataWithSubscriptions');
         },
@@ -216,7 +216,7 @@ Router.route('subscriptions', {
 
 Router.route('PaymentDevice', {
         layoutTemplate: 'UserLayout',
-        path: root_path + '/user/paymentDevice',
+        path: '/user/paymentDevice',
         subscriptions: function() {
             return Meteor.subscribe('userStripeDataWithSubscriptions');
         },
@@ -230,7 +230,7 @@ Router.route('PaymentDevice', {
     }
 );
 
-Router.route(root_path + '/scheduled', {
+Router.route('/scheduled', {
     name: 'donation.scheduled',
 
     data: function () {
