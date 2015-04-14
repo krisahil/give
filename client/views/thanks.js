@@ -56,6 +56,6 @@ Template.Thanks.events({
         e.preventDefault();
         // Stop propagation prevents the form from being submitted more than once.
         e.stopPropagation();
-        Router.go('/give/user');
+        Router.go('//user');
     }
 });
