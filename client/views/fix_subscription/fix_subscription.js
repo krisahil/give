@@ -37,7 +37,14 @@ Template.FixSubscription.rendered = function(){
         submitHandler: function(){
             // In order to account for the possibility of our customer resubscribing
             // with a new credit card, we need to check whether or not they're doing that.
-                var update_this = {customer: Customers.findOne()._id, card: Session.get('update_this_card'), exp_month: $('[name="expMo"]').val(), exp_year: $('[name="expYr"]').val()};
+                var update_this = {
+                    customer_id: Customers.findOne()._id,
+                    subscription_id: Subscriptions.findOne()._id,
+                    status: Subscriptions.findOne().status,
+                    card: Customers.findOne().sources.data[0].id,
+                    exp_month: $('[name="expMo"]').val(),
+                    exp_year: $('[name="expYr"]').val()
+                };
                 var addingNewCreditCard = Session.get('addingNewCreditCard');
                 var resubscribeButton   = $(".resubscribe").button('loading');
 
@@ -59,11 +66,12 @@ Template.FixSubscription.rendered = function(){
                         // Call your backend
                         console.dir(response);
                         var subscription_id = Subscriptions.findOne()._id;
+                        var subscription_status = Subscriptions.findOne().status;
                         var customer_id = Customers.findOne()._id;
 
                         // Call our stripeSwipeCard method to replace our customer's existing
                         // card with the new card they've specified.
-                        Meteor.call("stripeUpdateSubscription", customer_id, subscription_id, response.id, function(error, response){
+                        Meteor.call("stripeUpdateSubscription", customer_id, subscription_id, response.id, subscription_status, function(error, response){
                             if (error){
                                 console.dir(error);
                                 resubscribeButton.button("reset");
@@ -82,20 +90,25 @@ Template.FixSubscription.rendered = function(){
             } else {
                 Meteor.call("stripeUpdateCard", update_this, function(error, response){
                     if (error){
+                        console.dir(error);
                         resubscribeButton.button("reset");
                         Bert.alert(error.message, "danger");
                     } else {
                         // If we're resubscribed, go ahead and confirm by returning to the
                         // subscriptions page and show the alert
                         resubscribeButton.button("reset");
-                        Bert.alert("Successfully updated your card. Thank you!", "success");
+                        if(response === 'new'){
+                            Bert.alert("Successfully activated your recurring gift. Thank you!", "success");
+                        } else{
+                            Bert.alert("Successfully updated your card. Thank you!", "success");
+                        }
                         Router.go('subscriptions');
                     }
                 });
             }
         }
     });
-}
+};
 
 Template.FixSubscription.events({
     'submit form': function(e){
@@ -106,8 +119,11 @@ Template.FixSubscription.events({
         Session.set('addingNewCreditCard', true);
     },
 
-    'click .cancel-new-card': function(){
+    'click .cancel-new-card': function(e){
+        e.preventDefault();
+        $('form#resubscribe').unbind('submit');
         Session.set('addingNewCreditCard', false);
+
     }
 });
 

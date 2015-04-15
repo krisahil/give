@@ -98,7 +98,6 @@ Meteor.publish("customer", function (subscription_id) {
     //Check the subscription_id that came from the client
     check(subscription_id, String);
 
-
 	if (this.userId) {
         var subscription = Subscriptions.findOne({_id: subscription_id});
         console.log(subscription.customer);
@@ -133,7 +132,7 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
             customer_ids.push(element.id);
         });
         var charges = Charges.find({'customer': {$in: customer_ids}});
-        var subscriptions = Subscriptions.find({'customer': {$in: customer_ids}});
+        var subscriptions = Subscriptions.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.replaced': {$ne: true}}]});
         var user = Meteor.users.find({_id: this.userId});
         var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
         return[customers, charges, subscriptions, user, devices];

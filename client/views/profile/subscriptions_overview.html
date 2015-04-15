@@ -14,27 +14,27 @@
                       See: https://stripe.com/docs/api#subscription_object.
                     -->
                     {{#if equals status "trialing"}}
-                        <li class="list-group-item list-group-item-info">
+                        <li class="list-group-item list-group-item-info" data-subscription-id="{{id}}">
                             <p>This gift is schedule for {{epochToString trial_end}}. <!--<a href="#" class="cancel-subscription">Cancel Subscription</a>--></p>
                         </li>
                     {{/if}}
                     {{#if equals status "pending"}}
-                        <li class="list-group-item list-group-item-info">
+                        <li class="list-group-item list-group-item-info" data-subscription-id="{{id}}">
                             <p>This gift is pending  {{epochToString trial_end}}. <!--<a href="#" class="cancel-subscription">Cancel Subscription</a>--></p>
                         </li>
                     {{/if}}
                     {{#if equals status "active"}}
-                    <li class="list-group-item list-group-item-success">
-                      <p>Your recurring gift is currently active! <!--<a href="#" class="cancel-subscription">Cancel</a>--></p>
+                    <li class="list-group-item list-group-item-success" data-subscription-id="{{id}}">
+                      <p>Your recurring gift is currently active! <span class="pull-right"><a id="cancel_subscription" href="" class="btn btn-small btn-default cancelButton">Cancel</a>   <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-small btn-default">Update Payment</a></span></p>
                     </li>
                     {{/if}}
                     {{#if equals status "canceled"}}
-                    <li class="list-group-item list-group-item-danger">
-                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <!--<a href="{{pathFor 'Resubscribe'}}">Resubscribe</a>--></p>
+                    <li class="list-group-item list-group-item-danger" data-subscription-id="{{id}}">
+                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-small btn-default pull-right">Fix</a></p>
                     </li>
                     {{/if}}
                     {{#if equals status "past_due"}}
-                    <li class="list-group-item list-group-item-danger">
+                    <li class="list-group-item list-group-item-danger" data-subscription-id="{{id}}">
                       <p>Your gift failed on {{epochToString current_period_start}}. Want to resume your gift? <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-small btn-default pull-right">Fix</a></p>
                     </li>
                     {{/if}}
@@ -43,11 +43,6 @@
                         <span class="plan-name-quota">Designated to: <strong>{{metadata.donateTo}}</strong><br>
                             Frequency: <strong>{{capitalize plan_name}}</strong></span>
                       </div>
-                      {{#if equals status "canceled"}}
-                        <!--<a href="{{pathFor 'FixResubscribe'}}" class="btn btn-small btn-default pull-right">FixResubscribe</a>-->
-                      {{else}}
-                        <!--<a href="{{pathFor 'billingPlan'}}" class="btn btn-small btn-default pull-right">Change Gift</a>-->
-                      {{/if}}
                     </li>
                     <li class="list-group-item bm-block clearfix">
                       <span class="bm-block-label">Payment<strong>{{type}}</strong> {{lastFour}}</span>

@@ -708,9 +708,10 @@ _.extend(Utils, {
         // Get the subscription cursor
         var subscription_cursor = Subscriptions.findOne({_id: event_body.data.object.subscription});
 
-        // Use the metadata from the subscription to udpate the charge with Stripe
+        // setup the future for the async Stripe call
         var stripeCharges = new Future();
 
+        // Use the metadata from the subscription to udpate the charge with Stripe
         Stripe.charges.update(event_body.data.object.charge,{
                 "metadata":  subscription_cursor.metadata
         }, function (error, charges) {
@@ -731,5 +732,95 @@ _.extend(Utils, {
 
         console.dir(stripeCharges);
 
+    },
+    cancel_stripe_subscription: function(customer_id, subscription_id, reason){
+        logger.info("Inside cancel_stripe_subscription");
+        console.log(customer_id + " " + " " + subscription_id + " " + reason);
+
+        // setup the future for the async Stripe call
+        var stripe_update= new Future();
+
+        Stripe.customers.updateSubscription(customer_id, subscription_id,{
+                metadata: {canceled_reason: reason}
+        },
+        function (error, subscription) {
+                if (error) {
+                    console.dir(error);
+                    stripe_update.return(error);
+                } else {
+                    stripe_update.return(subscription);
+                }
+            }
+        );
+
+        stripe_update = stripe_update.wait();
+
+        if (!stripe_update.object) {
+            throw new Meteor.Error(stripe_update.rawType, stripe_update.message);
+        }
+        if (stripe_update.error) {
+            throw new Meteor.Error(stripe_update.rawType, stripe_update.message);
+        }
+
+        console.dir(stripe_update);
+
+        // setup the future for the async Stripe call
+        var stripe_cancel = new Future();
+
+        Stripe.customers.cancelSubscription(customer_id, subscription_id,
+        function (error, subscription) {
+                if (error) {
+                    console.dir(error);
+                    stripe_cancel.return(error);
+                } else {
+                    stripe_cancel.return(subscription);
+                }
+            }
+        );
+
+        stripe_cancel = stripe_cancel.wait();
+
+        if (!stripe_cancel.object) {
+            throw new Meteor.Error(stripe_cancel.rawType, stripe_cancel.message);
+        }
+
+        console.dir(stripe_cancel);
+        return stripe_cancel;
+    },
+    stripe_create_subscription: function (customer_id, source_id, plan, quantity, metadata) {
+        logger.info("Inside stripe_create_subscription.");
+        console.log(customer_id);
+
+        // don't want to copy the canceled reason to the new subscription
+        delete metadata.reason;
+
+        var stripeCreateSubscription = new Future();
+        Stripe.customers.createSubscription(customer_id,
+            {
+                plan: plan,
+                quantity: quantity,
+                metadata: metadata
+            },
+            function (error, subscription) {
+                if (error) {
+                    console.dir(error);
+                    stripeCreateSubscription.return(error);
+                } else {
+                    stripeCreateSubscription.return(subscription);
+                }
+            });
+        stripeCreateSubscription = stripeCreateSubscription.wait();
+        if (!stripeCreateSubscription.object) {
+            throw new Meteor.Error(stripeCreateSubscription.rawType, stripeCreateSubscription.message);
+        }
+        stripeCreateSubscription._id = stripeCreateSubscription.id;
+        console.log("Stripe charge plan information");
+        console.dir(stripeCreateSubscription);
+        // Add charge response from Stripe to the collection
+        Subscriptions.insert(stripeCreateSubscription);
+        metadata.subscription_id = stripeCreateSubscription.id;
+        Donations.insert(metadata);
+
+        return stripeCreateSubscription;
     }
 });

@@ -208,6 +208,7 @@ Template.UserNav.events({
     ,
     'click #nav-button-subscriptions': function(evt){
         evt.preventDefault();
+        Session.set('addingNewCreditCard', false);
         Router.go('subscriptions');
     }
 });

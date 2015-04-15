@@ -273,7 +273,7 @@ Router.route('FixSubscription', {
         if (this.ready()) {
             var query = this.params.query;
             Session.set('sub', query.sub);
-            Session.setDefault('update_this_card', Customers.findOne().sources.data[0].id);
+            Session.set('update_this_card', Customers.findOne().sources.data[0].id);
             this.render();
         } else {
             this.render('Loading');

@@ -153,7 +153,6 @@ Stripe_Events = {
     'customer.subscription.deleted': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
 
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
@@ -170,6 +169,8 @@ Stripe_Events = {
         return;
     },
     'customer.discount.deleted': function (stripeEvent, res) {
+        Utils.store_stripe_event(stripeEvent);
+
         console.log(stripeEvent.type + ': event processed');
         return;
     },

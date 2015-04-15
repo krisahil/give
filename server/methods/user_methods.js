@@ -1,84 +1,101 @@
 Meteor.methods({
-    stripeUpdateSubscription: function (customer_id, subscription_id, token_id) {
+    stripeUpdateSubscription: function (customer_id, subscription_id, token_id, status) {
+        logger.info("Started method stripeUpdateSubscription.");
+
         // Check our arguments against their expected patterns. This is especially
         // important here because we're dealing with sensitive customer information.
+        check(customer_id, String);
         check(subscription_id, String);
         check(token_id, String);
-        check(customer_id, String);
+        check(status, String);
 
-        var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id);
-        if(!updated_subscription.object){
-            return {error: updated_subscription.rawType, message: updated_subscription.message};
-        }
-        else {
-            return 'success';
+        if(status === 'canceled'){
+            var subscription_amount = Subscriptions.findOne({_id: subscription_id}).quantity;
+            var subscription_metadata = Subscriptions.findOne({_id: subscription_id}).metadata;
+            var subscription_plan = Subscriptions.findOne({_id: subscription_id}).plan.name;
+            var created_subscription = Utils.create_stripe_subscription(customer_id, token_id, subscription_plan, subscription_amount, subscription_metadata);
+            if(!created_subscription.object){
+                return {error: created_subscription.rawType, message: created_subscription.message};
+            }
+            else {
+                var updated_subscription = Utils.update_stripe_canceled_customer_subscription(customer_id, subscription_id);
+                if(!updated_subscription.object){
+                    return {error: updated_subscription.rawType, message: updated_subscription.message};
+                }
+                else {
+                    return 'success';
+                }
+            }
+        } else{
+            var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id);
+            if(!updated_subscription.object){
+                return {error: updated_subscription.rawType, message: updated_subscription.message};
+            }
+            else {
+                return 'success';
+            }
         }
 
     },
     stripeUpdateCard: function (updated_data) {
+        logger.info("Started method stripeUpdateCard.");
+
         // Check our arguments against their expected patterns. This is especially
         // important here because we're dealing with sensitive customer information.
         check(updated_data, {
-            customer: String,
+            customer_id: String,
+            subscription_id: String,
+            status: String,
             card: String,
             exp_month: String,
             exp_year: String
         });
+        console.log(updated_data.status);
 
-        var updated_card = Utils.update_stripe_customer_card(updated_data);
-        if (!updated_card.object) {
-            return {error: updated_card.rawType, message: updated_card.message};
-        } else{
-            return 'success';
+        if(updated_data.status === 'canceled') {
+            var subscription_amount = Subscriptions.findOne({_id: updated_data.subscription_id}).quantity;
+            var subscription_metadata = Subscriptions.findOne({_id: updated_data.subscription_id}).metadata;
+            var subscription_plan = Subscriptions.findOne({_id: updated_data.subscription_id}).plan.name;
+            if (updated_data.status === 'canceled') {
+                var updated_card = Utils.update_stripe_customer_card(updated_data);
+                if (!updated_card.object) {
+                    return {error: updated_card.rawType, message: updated_card.message};
+                } else {
+                    var created_subscription = Utils.stripe_create_subscription(updated_data.customer_id, updated_data.card, subscription_plan, subscription_amount, subscription_metadata);
+                    if (!created_subscription.object) {
+                        return {error: created_subscription.rawType, message: created_subscription.message};
+                    }
+                    else {
+                        Subscriptions.update({_id: updated_data.subscription_id}, {$set: {'metadata.replaced': true}});
+                        return 'new';
+                    }
+                }
+            } else {
+                var updated_card = Utils.update_stripe_customer_card(updated_data);
+                if (!updated_card.object) {
+                    return {error: updated_card.rawType, message: updated_card.message};
+                } else {
+                    return 'success';
+                }
+            }
         }
     },
     //TODO: update this method to work with the subscriptions page
-    stripeCancelSubscription: function () {
-        // Because Stripe's API is asynchronous (meaning it doesn't block our function
-        // from running once it's started), we need to make use of the Fibers/Future
-        // library. This allows us to create a return object that "waits" for us to
-        // return a value to it.
-        var stripeCancelSubscription = new Future();
+    stripeCancelSubscription: function (customer_id, subscription_id, reason) {
+        logger.info("Started method stripeCancelSubscription.");
 
-        // Before we jump into everything, we need to get our customer's ID. Recall
-        // that we can't send this over from the client because we're *not* publishing
-        // it to the client. Instead, here, we take the current userId from Meteor
-        // and lookup our customerId.
-        var user = Meteor.userId();
-        var getUser = Meteor.users.findOne({"_id": user}, {fields: {"customerId": 1}});
+        // Check our arguments against their expected patterns. This is especially
+        // important here because we're dealing with sensitive customer information.
+        check(customer_id, String);
+        check(subscription_id, String);
+        check(reason, String);
 
-        // Once we have our customerId, call to Stripe to cancel the active subscription.
-        Stripe.customers.cancelSubscription(getUser.customerId, {
-            at_period_end: true
-        }, function (error, response) {
-            if (error) {
-                stripeCancelSubscription.return(error);
-            } else {
-                // Because we're running Meteor code inside of another function's callback, we need to wrap
-                // it in a Fiber. Note: this is a verbose way of doing this. You could refactor this
-                // and the call to Stripe to use a Meteor.wrapAsync method instead. The difference is
-                // that while wrapAsync is cleaner syntax-wise, it can be a bit confusing. To keep
-                // things simple, we'll stick with a Fiber here.
-                Fiber(function () {
-                    var update = {
-                        auth: SERVER_AUTH_TOKEN,
-                        user: user,
-                        subscription: {
-                            status: response.cancel_at_period_end ? "canceled" : response.status,
-                            ends: response.current_period_end
-                        }
-                    }
-                    Meteor.call('updateUserSubscription', update, function (error, response) {
-                        if (error) {
-                            stripeCancelSubscription.return(error);
-                        } else {
-                            stripeCancelSubscription.return(response);
-                        }
-                    });
-                }).run();
-            }
-        });
+        var cancel_subscription = Utils.cancel_stripe_subscription(customer_id, subscription_id, reason);
+        if (!cancel_subscription.object) {
+            return {error: cancel_subscription.rawType, message: cancel_subscription.message};
+        } else{
+            return 'success';
+        }
 
-        return stripeCancelSubscription.wait();
     }
 });

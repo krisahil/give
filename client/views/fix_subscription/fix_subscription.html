@@ -15,7 +15,7 @@
                                     {{#if isRepair}}
                                         {{#if addNewCard}}
                                             <input type="text" name="cardNumber" class="form-control card-number" placeholder="Card Number">
-                                            <p><a class="cancel-new-card" href="#">Cancel</a></p>
+                                            <p><a class="cancel-new-card" href="" >Cancel</a></p>
                                         {{else}}
                                             {{#if customer}}
                                                 <p class="alert alert-info">Card used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}} <strong><br>Expires: </strong>{{#if customer_device.exp_year}}{{customer_device.exp_month}}/{{customer_device.exp_year}}{{/if}}</p>
