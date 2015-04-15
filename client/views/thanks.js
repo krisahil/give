@@ -12,11 +12,11 @@ Template.Thanks.helpers({
         return (debitStatus === 'succeeded');
     },
     successOrPendingPayment: function () {
-        var debitStatus;
+        var chargeStatus;
         if(Charges.findOne()){
-            debitStatus = Charges.findOne().status;
+            chargeStatus = Charges.findOne().status;
         }
-        return (debitStatus === 'succeeded' || debitStatus === 'pending' || debitStatus == null);
+        return (chargeStatus === 'succeeded' || chargeStatus === 'pending' || chargeStatus == null);
     },
     successOrPendingTrans: function () {
         return "<h3 class='text-center'>Thank you for your gift!</h3>\
@@ -31,7 +31,7 @@ Template.Thanks.helpers({
     },
     failedTrans: function () {
         var referrer = Donations.findOne().URL;
-        var errorMessage = Charges.findOne().failure_reason ? Charges.findOne().failure_reason + " " + Charges.findOne().failure_reason_code : 'The error we got from the card \
+        var errorMessage = Charges.findOne().failure_code ? Charges.findOne().failure_code + " " + Charges.findOne().failure_message : 'The error we got from the card \
     processor was not very helpful so instead of displaying their cryptic error message you got this message, sorry we could not be more helpful.';
         if(!referrer || !errorMessage) {
             return "<h3 class='text-center badText'>Something went wrong.</h3>\

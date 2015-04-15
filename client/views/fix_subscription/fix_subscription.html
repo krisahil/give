@@ -1,0 +1,65 @@
+<template name="FixSubscription">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 center-block" style="float: none;">
+            <div class="panel panel-default billing-module">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><a href="{{pathFor 'subscriptions'}}" class="text-muted">Subscriptions</a> / Resubscribe</h3>
+                </div>
+                <form id="resubscribe">
+                    <div class="panel-body">
+                        <p class="alert alert-success">Verify the details below, then click update. If you need to update your credit card expiration date, click update card. If you need to add a payment method click add. When you are ready click update. Keep in mind: <strong>this will charge your card immediately</strong>.</p>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label class="text-success"><i class="fa fa-lock"></i> Card Number (Totes Secure, Like a Bank)</label>
+                                    {{#if isRepair}}
+                                        {{#if addNewCard}}
+                                            <input type="text" name="cardNumber" class="form-control card-number" placeholder="Card Number">
+                                            <p><a class="cancel-new-card" href="#">Cancel</a></p>
+                                        {{else}}
+                                            {{#if customer}}
+                                                <p class="alert alert-info">Card used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}} <strong><br>Expires: </strong>{{#if customer_device.exp_year}}{{customer_device.exp_month}}/{{customer_device.exp_year}}{{/if}}</p>
+                                                <p><a class="add-new-card" href="#">Add a New Card</a></p>
+                                            {{/if}}
+                                        {{/if}}
+                                    {{else}}
+                                        <input type="text" name="cardNumber" class="form-control card-number" placeholder="Card Number">
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div> <!-- end .row -->
+
+                        <div class="row">
+                            {{#if isRepair}}
+                                <div class="col-xs-7 col-md-7">
+                                    <div class="form-group">
+                                        <label for="expMonth">EXPIRATION DATE</label>
+                                        <div class="col-xs-6 col-lg-6 pl-ziro">
+                                            <input type="text" class="form-control" name="expMo" placeholder="MM" required />
+                                        </div>
+                                        <div class="col-xs-6 col-lg-6 pl-ziro">
+                                            <input type="text" class="form-control" name="expYr" placeholder="YY" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                {{#if addNewCard}}
+                                    <div class="col-xs-5 col-md-5 pull-right">
+                                        <div class="form-group">
+                                            <label for="cvCode">CV CODE</label>
+                                            <input type="password" class="form-control" name="cvCode" placeholder="CV" required data-stripe="cvc" />
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            {{/if}}
+                        </div>
+                    </div> <!-- end .panel-body -->
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-success resubscribe" data-loading-text="Resubscribing...">Update</button>
+                        <a href="{{pathFor 'subscriptions'}}" class="btn btn-default">Cancel</a>
+                    </div>
+                </form> <!-- end #resubscribe -->
+            </div>
+        </div> <!-- end .col-xs-12 -->
+    </div> <!-- end .row -->
+
+</template>

@@ -111,7 +111,7 @@ Template.UserProfile.helpers({
             charge_id = this.transaction_id;
             customer_id = Charges.findOne({_id: charge_id}).customer;
             donation_id = Donations.findOne({customer_id: customer_id})._id;
-            return '//thanks?c=' + customer_id + '&don=' + donation_id + '&charge=' + charge_id;
+            return '/thanks?c=' + customer_id + '&don=' + donation_id + '&charge=' + charge_id;
         }else{
             return;
         }

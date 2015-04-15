@@ -83,6 +83,31 @@ Meteor.publish("userDonations", function () {
 	}
 });
 
+Meteor.publish("subscription", function (subscription_id) {
+    //Check the subscription_id that came from the client
+    check(subscription_id, String);
+
+	if (this.userId) {
+        return Subscriptions.find({'_id': subscription_id});
+	} else {
+		this.ready();
+	}
+});
+
+Meteor.publish("customer", function (subscription_id) {
+    //Check the subscription_id that came from the client
+    check(subscription_id, String);
+
+
+	if (this.userId) {
+        var subscription = Subscriptions.findOne({_id: subscription_id});
+        console.log(subscription.customer);
+        return Customers.find({_id: subscription.customer});
+	} else {
+		this.ready();
+	}
+});
+
 Meteor.publish("userStripeData", function() {
     if (this.userId) {
         var customers = Customers.find({'metadata.user_id': this.userId});

@@ -267,7 +267,7 @@ _.extend(Utils,{
                         data_slug.message.merge_vars[0].vars.push(
                             {
                                 "name": "URL",
-                                "content": "https://trashmountain.com/give/user/subscriptions?fix_it=" + subscription
+                                "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
                             }
                         );
                     }
@@ -277,7 +277,7 @@ _.extend(Utils,{
                         data_slug.message.merge_vars[0].vars.push(
                             {
                                 "name": "URL",
-                                "content": "https://trashmountain.com/give/user/subscriptions?fix_it=" + subscription
+                                "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
                             }
                         );
                         data_slug.message.merge_vars[0].vars.push(
@@ -397,7 +397,7 @@ _.extend(Utils,{
         }
     },
     send_scheduled_email: function (id, subscription_id, frequency, amount) {
-        try {
+        /*try {*/
             logger.info("Started send_donation_email with ID: " + id + " subscription_id: " + subscription_id + " frequency: " + frequency + "amount: " + amount);
 
             // Check to see if this email has already been sent before continuing, log it if it hasn't
@@ -422,12 +422,12 @@ _.extend(Utils,{
 
             // convert the amount from an integer to a two decimal place number
             amount = (amount/100).toFixed(2);
-            data_slug.slug = "scheduled-donation-with-amount-and-frequency";
+            var slug = "scheduled-donation-with-amount-and-frequency";
 
-            logger.info("Sending with template name: " + data_slug.slug);
+            logger.info("Sending with template name: " + slug);
             Meteor.Mandrill.sendTemplate({
                 "key": Meteor.settings.mandrillKey,
-                "template_name": data_slug.slug,
+                "template_name": slug,
                 "template_content": [
                     {}
                 ],
@@ -461,11 +461,11 @@ _.extend(Utils,{
                     ]
                 }
             });
-        } //End try
+        /*} //End try
         catch (e) {
             logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
             logger.error('Mandril sendEmailOutAPI Method error: ' + e);
             throw new Meteor.error(e);
-        }
+        }*/
     }
 });

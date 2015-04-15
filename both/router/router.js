@@ -198,19 +198,21 @@ Router.route('/user',{
     name: 'user.profile'
 });
 
-Router.route('subscriptions', {
-        layoutTemplate: 'UserLayout',
-        path: '/user/subscriptions',
-        subscriptions: function() {
-            return Meteor.subscribe('userStripeDataWithSubscriptions');
-        },
-        action: function () {
-            if (this.ready()) {
-                this.render();
-            } else {
-                this.render('Loading');
-            }
+Router.route('Subscriptions', function() {
+        var params = this.params;
+        var fix_it = this.params.fix_it;
+        Session.set('fix_it', params.query.fix_it);
+
+        this.wait(Meteor.subscribe('userStripeDataWithSubscriptions'));
+        if (this.ready()) {
+            this.render();
+        } else {
+            this.render('Loading');
         }
+    }, {
+        name: 'subscriptions',
+        layoutTemplate: 'UserLayout',
+        path: '/user/subscriptions'
     }
 );
 
@@ -255,4 +257,26 @@ Router.route('/webhooks/stripe', function () {
     }
 }, {where: 'server',
     name: 'stripe_webhooks'
+});
+
+Router.route('FixSubscription', {
+    layoutTemplate: 'UserLayout',
+    path: '/user/subscriptions/resubscribe',
+    template: 'FixSubscription',
+    subscriptions: function(){
+        return [
+            Meteor.subscribe('subscription', this.params.query.sub),
+            Meteor.subscribe('customer', this.params.query.sub)
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+            var query = this.params.query;
+            Session.set('sub', query.sub);
+            Session.setDefault('update_this_card', Customers.findOne().sources.data[0].id);
+            this.render();
+        } else {
+            this.render('Loading');
+        }
+    }
 });

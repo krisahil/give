@@ -52,7 +52,7 @@ Template.UserGiveForm.helpers({
         };
     },
     amountWidth: function() {
-        if(Session.equals("paymentMethod", "Card") || Session.get("paymentMethod").slice(0,3) === 'car'){
+        if(Session.equals("paymentMethod", "Card") || Session.get("paymentMethod") && Session.get("paymentMethod").slice(0,3) === 'car'){
             return 'form-group col-md-4 col-sm-4 col-xs-12';
         } else if(Session.equals("paymentMethod", "Check")){
             return 'form-group';

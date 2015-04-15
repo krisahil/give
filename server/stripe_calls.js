@@ -42,6 +42,14 @@ _.extend(Utils, {
                 returnToCalled = 'BaseCamp - John Kazaklis';
                 return returnToCalled;
                 break;
+            case 'LindseyKell':
+                returnToCalled = 'BaseCamp - John Kazaklis';
+                return returnToCalled;
+                break;
+            case 'JohnKazaklis':
+                returnToCalled = 'BaseCamp - John Kazaklis';
+                return returnToCalled;
+                break;
             case 'ChrisMammoliti':
                 returnToCalled = 'BaseCamp - Chris Mammoliti';
                 return returnToCalled;
@@ -111,6 +119,7 @@ _.extend(Utils, {
             type = "card";
             Stripe.customers.create({
                 card: paymentDevice,
+                account_balance: -1000,
                 email: customerInfo.email_address,
                 metadata: {
                     "city": customerInfo.city,
@@ -130,6 +139,8 @@ _.extend(Utils, {
                     //console.dir(error);
                     stripeCustomer.return(error);
                 } else {
+                    console.log("LOOK HERE ************_____________");
+                    console.dir(customer);
                     stripeCustomer.return(customer);
                 }
             });
@@ -532,6 +543,62 @@ _.extend(Utils, {
         console.dir(stripeCustomerUpdate);
 
         return stripeCustomerUpdate;
+    },
+    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
+        logger.info("Inside update_stripe_customer_subscription.");
+
+        var stripeSubscriptionUpdate = new Future();
+
+        Stripe.customers.updateSubscription(customer_id, subscription_id, {
+                source: token_id,
+                metadata: {saved: false}
+            }, function (error, subscription) {
+                if (error) {
+                    //console.dir(error);
+                    stripeSubscriptionUpdate.return(error);
+                } else {
+                    stripeSubscriptionUpdate.return(subscription);
+                }
+            }
+        );
+
+        stripeSubscriptionUpdate = stripeSubscriptionUpdate.wait();
+
+        if (!stripeSubscriptionUpdate.object) {
+            throw new Meteor.Error(stripeSubscriptionUpdate.rawType, stripeSubscriptionUpdate.message);
+        }
+
+        console.dir(stripeSubscriptionUpdate);
+
+        return stripeSubscriptionUpdate;
+    },
+    update_stripe_customer_card: function(data){
+        //TODO: refactor this copied function to actually update the customer's card
+        logger.info("Inside update_stripe_customer_card.");
+        var stripeCardUpdate = new Future();
+
+        Stripe.customers.updateCard(data.customer_id, data.card, {
+                exp_month: data.exp_month,
+                exp_year: data.exp_year
+            }, function (error, card) {
+                if (error) {
+                    //console.dir(error);
+                    stripeCardUpdate.return(error);
+                } else {
+                    stripeCardUpdate.return(card);
+                }
+            }
+        );
+
+        stripeCardUpdate = stripeCardUpdate.wait();
+
+        if (!stripeCardUpdate.object) {
+            throw new Meteor.Error(stripeCardUpdate.rawType, stripeCardUpdate.message);
+        }
+
+        console.dir(stripeCardUpdate);
+
+        return stripeCardUpdate;
     },
     update_stripe_customer_user: function(customer_id, user){
         logger.info("Inside update_stripe_customer_user.");

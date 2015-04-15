@@ -194,7 +194,7 @@ _.extend(Utils, {
                         "state": customer.metadata.state,
                         "postal_code": customer.metadata.postal_code,
                         "phone_number": customer.metadata.phone,
-                        "web_address": "https://trashmountain.com/give/dashboard/users?userID=" + user_id,
+                        "web_address": Meteor.absoluteUrl("/dashboard/users?userID=" + user_id),
                         "salutation_formal": customer.metadata.fname + " " + customer.metadata.lname,
                         "recognition_name": recognition_name
                     }
@@ -290,7 +290,9 @@ _.extend(Utils, {
             });
         } else
             html = "<h1>DT account not found</h1><p><a href='https://trashmountain.donortools.com/personas?search=" + name + "&go=true'>Search DT for this person</a></p>" +
-            "<p><a href='https://trashmountain.com/give/donorTools?id=" + id + "&persona_id=&email=" + email + "&donation_id=" + donation_id + "'>Insert after finding or creating in DT</a></p>";
+            "<p><a href='"+
+            Meteor.absoluteUrl("donorTools?id=" + id + "&persona_id=&email=" + email + "&donation_id=" + donation_id ) +
+            ">Insert after finding or creating in DT</a></p>";
 
         //Send email to reconcile DT personas
 

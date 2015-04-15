@@ -6,8 +6,7 @@ BrowserPolicy.content.allowFontDataUrl();
 
 var trusted = [
     'js.stripe.com',
-    'checkout.stripe.com',
-    'trashmountain.com/system/wp-content/uploads/2012/07/bw_logo.png'
+    'checkout.stripe.com'
 ];
 
 _.each(trusted, function(origin) {

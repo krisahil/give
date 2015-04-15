@@ -241,10 +241,15 @@ _.extend(App, {
                 App.handleErrors(response.error);
             } else {
                 // Call your backend
-                console.log(form.paymentInformation.start_date);
-                form.paymentInformation.source_id = response.card.id;
-                console.dir(response);
-                App.handleCalls(response, form);
+                if(form){
+                    console.log(form.paymentInformation.start_date);
+                    form.paymentInformation.source_id = response.card.id;
+                    console.dir(response);
+                    App.handleCalls(response, form);
+                } else{
+                    console.dir(response);
+                    return response;
+                }
             }
         });
     },
@@ -255,9 +260,15 @@ _.extend(App, {
                 App.handleErrors(response.error);
             } else {
                 // Call your backend
-                form.paymentInformation.source_id = response.bank_account.id;
-                console.dir(response);
-                App.handleCalls(response, form);
+                if(form){
+                    console.log(form.paymentInformation.start_date);
+                    form.paymentInformation.source_id = response.bank_account.id;
+                    console.dir(response);
+                    App.handleCalls(response, form);
+                } else{
+                    console.dir(response);
+                    return response;
+                }
             }
         });
     },

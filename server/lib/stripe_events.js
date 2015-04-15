@@ -191,7 +191,7 @@ Stripe_Events = {
         console.log(stripeEvent.type + ': event processed');
         return;
     },
-    'invoice.payment_failed ': function (stripeEvent, res) {
+    'invoice.payment_failed': function (stripeEvent, res) {
         var sync_request = Utils.store_stripe_event(stripeEvent);
         console.log(stripeEvent.type + ': event processed');
         return;

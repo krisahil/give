@@ -30,7 +30,12 @@
                     {{/if}}
                     {{#if equals status "canceled"}}
                     <li class="list-group-item list-group-item-danger">
-                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <!--<a href="{{pathFor 'billingResubscribe'}}">Resubscribe</a>--></p>
+                      <p>Your recurring gift was cancelled on {{epochToString ends}}. Want to resume your gift? <!--<a href="{{pathFor 'Resubscribe'}}">Resubscribe</a>--></p>
+                    </li>
+                    {{/if}}
+                    {{#if equals status "past_due"}}
+                    <li class="list-group-item list-group-item-danger">
+                      <p>Your gift failed on {{epochToString current_period_start}}. Want to resume your gift? <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-small btn-default pull-right">Fix</a></p>
                     </li>
                     {{/if}}
                     <li class="list-group-item bm-block clearfix">
@@ -39,7 +44,7 @@
                             Frequency: <strong>{{capitalize plan_name}}</strong></span>
                       </div>
                       {{#if equals status "canceled"}}
-                        <!--<a href="{{pathFor 'billingResubscribe'}}" class="btn btn-small btn-default pull-right">Resubscribe</a>-->
+                        <!--<a href="{{pathFor 'FixResubscribe'}}" class="btn btn-small btn-default pull-right">FixResubscribe</a>-->
                       {{else}}
                         <!--<a href="{{pathFor 'billingPlan'}}" class="btn btn-small btn-default pull-right">Change Gift</a>-->
                       {{/if}}

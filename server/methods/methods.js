@@ -177,10 +177,14 @@ Meteor.methods({
                     data._id, customerData.id, data.paymentInformation.source_id,
                     data.paymentInformation.is_recurring, data.paymentInformation.start_date, metadata);
              if (!charge_object.object) {
-                 logger.error("The charge_id object didn't have .object attached.");
-                return {error: charge.rawType, message: charge.message};
+                 if(charge_object === 'scheduled') {
+                     return {c: customerData.id, don: data._id, charge: 'scheduled'};
+                 } else{
+                     logger.error("The charge_id object didn't have .object attached.");
+                     return {error: charge.rawType, message: charge.message};
+                 }
              }
-            return {c: customerData.id, don: data._id, charge: charge_object.charge};
+        return {c: customerData.id, don: data._id, charge: charge_object.charge};
         }
 
         /*} catch (e) {
