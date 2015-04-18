@@ -208,7 +208,7 @@ _.extend(App, {
 
         var gatherInfo = {};
         Session.set("loaded", true);
-        if(error.type === "invalid_request_error"){
+        if(error.type === "invalid_request_error" || error.code === "invalid_expiry_month"){
             gatherInfo.browser = navigator.userAgent;
 
             $('#modal_for_initial_donation_error').modal({show: true});

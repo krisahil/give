@@ -13,18 +13,14 @@ Meteor.methods({
             var subscription_amount = Subscriptions.findOne({_id: subscription_id}).quantity;
             var subscription_metadata = Subscriptions.findOne({_id: subscription_id}).metadata;
             var subscription_plan = Subscriptions.findOne({_id: subscription_id}).plan.name;
-            var created_subscription = Utils.create_stripe_subscription(customer_id, token_id, subscription_plan, subscription_amount, subscription_metadata);
+            var created_subscription = Utils.stripe_create_subscription(customer_id, token_id, subscription_plan, subscription_amount, subscription_metadata);
+            console.log(created_subscription)
             if(!created_subscription.object){
                 return {error: created_subscription.rawType, message: created_subscription.message};
             }
             else {
-                var updated_subscription = Utils.update_stripe_canceled_customer_subscription(customer_id, subscription_id);
-                if(!updated_subscription.object){
-                    return {error: updated_subscription.rawType, message: updated_subscription.message};
-                }
-                else {
-                    return 'success';
-                }
+                Subscriptions.update({_id: subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
+                return 'success';
             }
         } else{
             var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id);
@@ -66,7 +62,7 @@ Meteor.methods({
                         return {error: created_subscription.rawType, message: created_subscription.message};
                     }
                     else {
-                        Subscriptions.update({_id: updated_data.subscription_id}, {$set: {'metadata.replaced': true}});
+                        Subscriptions.update({_id: updated_data.subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
                         return 'new';
                     }
                 }

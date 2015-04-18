@@ -7,16 +7,8 @@ Router.configure({
     routeControllerNameConverter: 'upperCamelCase'
 });
 
-Router.onBeforeAction(function () {
-    if(!Meteor.user()) {
-        // if the user is not logged in, render the Login template
-        this.render('Login');
-    } else {
-        // otherwise don't hold up the rest of hooks or our route/action function from running
-        this.next();
-    }
-}, {
-    except: ['donation.form', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks']
+Router.plugin('ensureSignedIn', {
+    except: ['donation.form', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
 });
 
 Router.route('', function () {

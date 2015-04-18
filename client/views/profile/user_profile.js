@@ -107,7 +107,7 @@ Template.UserProfile.helpers({
     },
     receipt_link: function() {
         var charge_id, donation_id, customer_id;
-        if(this.transaction_id){
+        if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
             charge_id = this.transaction_id;
             customer_id = Charges.findOne({_id: charge_id}).customer;
             donation_id = Donations.findOne({customer_id: customer_id})._id;
@@ -117,7 +117,7 @@ Template.UserProfile.helpers({
         }
     },
     clickable_row: function() {
-        if(this.transaction_id){
+        if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
             return 'clickable_row';
         }
         else{
@@ -204,8 +204,7 @@ Template.UserNav.events({
     'click #nav-button-profile': function(evt){
         evt.preventDefault();
         Router.go('user.profile');
-    }
-    ,
+    },
     'click #nav-button-subscriptions': function(evt){
         evt.preventDefault();
         Session.set('addingNewCreditCard', false);

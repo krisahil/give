@@ -395,6 +395,8 @@ _.extend(Utils, {
 
         var frequency_and_subscription;
         if(stripeEvent.data.object.invoice) {
+            // Now send these changes off to Stripe to update the record there.
+            Utils.update_charge_metadata(stripeEvent);
 
             // Get the frequency_and_subscription of this charge, since it is part of a subscription.
             frequency_and_subscription = Utils.get_frequency_and_subscription(stripeEvent.data.object.invoice);
@@ -502,8 +504,6 @@ _.extend(Utils, {
 
         // Now send these changes off to Stripe to update the record there.
         Utils.update_invoice_metadata(stripeEvent);
-
-
     },
     stripe_get_subscription: function(invoice_id){
         logger.info("Started stripe_get_subscription");
@@ -706,13 +706,15 @@ _.extend(Utils, {
         logger.info("Inside update_charge_metadata");
 
         // Get the subscription cursor
-        var subscription_cursor = Subscriptions.findOne({_id: event_body.data.object.subscription});
+        var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
+        var subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
 
         // setup the future for the async Stripe call
         var stripeCharges = new Future();
 
+        console.log("Charge id: " + event_body.data.object.id);
         // Use the metadata from the subscription to udpate the charge with Stripe
-        Stripe.charges.update(event_body.data.object.charge,{
+        Stripe.charges.update(event_body.data.object.id,{
                 "metadata":  subscription_cursor.metadata
         }, function (error, charges) {
                 if (error) {

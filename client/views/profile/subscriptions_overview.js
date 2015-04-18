@@ -41,6 +41,9 @@ Template.SubscriptionsOverview.helpers({
         } else {
             return;
         }
+    },
+    frequency: function () {
+        return this.plan.id;
     }
 });
 
