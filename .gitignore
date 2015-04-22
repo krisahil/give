@@ -1,6 +1,5 @@
 settings.json
 dev_settings.json
-billy/
 config/
 .idea
 start-dev.sh
@@ -9,3 +8,4 @@ start-tunnel.sh
 .DS_Store
 webdriver_error.png
 thanks-page.png
+npm-debug.log
