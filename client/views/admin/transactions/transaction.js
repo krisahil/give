@@ -78,9 +78,6 @@ Template.Transaction.helpers({
 	},
 	stop_id: function(e, tmpl) {
 		return "stop" + this._id;
-	},
-	root_url: function(e, tmpl) {
-		return Meteor.settings.public.root;
 	}
 });
 Template.Transaction.events({

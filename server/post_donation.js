@@ -38,6 +38,8 @@ _.extend(Utils, {
                     Utils.insert_donation_into_dt(customer_id, user_id, persona_ids, charge_id);
                 }
 
+                Utils.update_stripe_customer_user(customer_id, user_id, email_address);
+
                 // Get all of the donations related to the persona_id that was either just created or that was just used when
                 // the user gave
                 Utils.get_all_dt_donations(persona_ids);
@@ -46,8 +48,6 @@ _.extend(Utils, {
                 persona_ids.forEach(function(element){
                     Utils.insert_persona_id_into_user(user_id, element);
                 });
-
-                Utils.update_stripe_customer_user(customer_id, user_id);
             } else {
                 logger.error("Didn't find the customer record, exiting.");
                 throw new Meteor.Error("Email doesn't exist", "Customer didn't have an email address", "Customers.findOne(customer_id) && Customers.findOne(customer_id).email from post_donation.js didn't find an email");
@@ -65,6 +65,9 @@ _.extend(Utils, {
 
             // setup name variable
             var customer_cursor = Customers.findOne(customer_id);
+            if(!customer_cursor.metadata.country){
+                logger.error("No Country");
+            }
 
             var fname = customer_cursor && customer_cursor.metadata.fname;
             var lname = customer_cursor && customer_cursor.metadata.lname;
@@ -152,7 +155,7 @@ _.extend(Utils, {
         }
 
         payment_status = charge.status;
-        received_on = moment(new Date(charge.created * 1000)).format("YYYY/MM/DD");
+        received_on = moment(new Date(charge.created * 1000)).format("YYYY/MM/DD hh:mma");
 
         var dt_fund, invoice_cursor;
         if(charge_id.slice(0,2) === 'ch'){
@@ -160,7 +163,7 @@ _.extend(Utils, {
             if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
                 dt_fund = DT_funds.findOne({name: invoice_cursor.lines.data[0].metadata.donateTo});
             } else{
-                var donateTo = charge && charge.meta && charge.meta.donateTo;
+                var donateTo = charge && charge.metadata && charge.metadata.donateTo;
                 dt_fund = DT_funds.findOne({name: donateTo});
             }
         } else{
@@ -194,7 +197,7 @@ _.extend(Utils, {
                         "state": customer.metadata.state,
                         "postal_code": customer.metadata.postal_code,
                         "phone_number": customer.metadata.phone,
-                        "web_address": Meteor.absoluteUrl("/dashboard/users?userID=" + user_id),
+                        "web_address": Meteor.absoluteUrl("dashboard/users?userID=" + user_id),
                         "salutation_formal": customer.metadata.fname + " " + customer.metadata.lname,
                         "recognition_name": recognition_name
                     }
@@ -362,7 +365,7 @@ _.extend(Utils, {
                         "memo": Meteor.settings.dev
                     }],
                     "donation_type_id": Meteor.settings.donor_tools_gift_type,
-                    "received_on": moment(new Date(charge.created * 1000)).format("YYYY/MM/DD"),
+                    "received_on": moment(new Date(charge.created * 1000)).format("YYYY/MM/DD hh:mma"),
                     "source_id": source_id,
                     "payment_status": charge.status,
                     "transaction_id": charge_id

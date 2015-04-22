@@ -1,4 +1,4 @@
-Session.setDefault('dt_donations_cursor', 0);
+
 
 Template.UserProfile.helpers({
     user: function () {
@@ -178,13 +178,15 @@ Template.UserProfile.events({
         Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')+10));
     },
     'click .clickable_row': function(){
-        Router.go($('.clickable_row').closest('tr').data("href"));
+        var transaction_id = this.transaction_id;
+        Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
     }
 
 });
 
 Template.UserProfile.rendered = function(){
-   Session.set("showHistory", true);
+    Session.setDefault('dt_donations_cursor', 0);
+    Session.set("showHistory", true);
 
     // Make sure the user can't enter anything, except what would go in a phone number field
     $("#phone").mask("(999)999-9999");

@@ -141,6 +141,25 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
 	}
 });
 
+Meteor.publish("user_date_and_subscriptions_with_only_4", function () {
+    if (this.userId) {
+        var customers = Customers.find({'metadata.user_id': this.userId});
+        var customer_ids = [];
+        var subscription_ids = [];
+
+        customers.forEach(function(element) {
+            customer_ids.push(element.id);
+        });
+        var charges = Charges.find({'customer': {$in: customer_ids}});
+        var subscriptions = Subscriptions.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.replaced': {$ne: true}}]});
+        var user = Meteor.users.find({_id: this.userId});
+        var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
+        return[customers, charges, subscriptions, user, devices];
+    } else {
+		this.ready();
+	}
+});
+
 
 Meteor.publish("userSubscriptions", function () {
     if (this.userId) {

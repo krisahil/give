@@ -88,21 +88,23 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {{#with charges}}
                             <tr>
-                                <th>{{#with donation}}{{donateTo}}{{/with}}</th>
+                                <th>{{donateTo}}</th>
                                 <td class="donateWith text-left">
                                     {{donateWith}}
                                 </td>
-                                <td>${{#with donation}}{{amount}}{{/with}}</td>
+                                <td>${{amount}}</td>
                             </tr>
-                            {{#with donation}}{{{fees}}}{{/with}}
+                            {{{fees}}}
+                            {{/with}}
                             </tbody>
                         </table>
                     </div><!-- e: invoice totals -->
 
                 <div class="invoice-notes">
                     <h6>For Your Tax Purposes:</h6>
-                    <p>Thank you for your donation of ${{#with donation}}{{total_amount}}{{/with}} to Trash Mountain Project, Inc. We know that our efforts are only possible because of the contributions we receive from generous donors like you, and we thank you again for believing in and supporting our mission.</p>
+                    <p>Thank you for your donation of ${{#with charges}}{{total_amount}}{{/with}} to Trash Mountain Project, Inc. We know that our efforts are only possible because of the contributions we receive from generous donors like you, and we thank you again for believing in and supporting our mission.</p>
                     <p>The estimated value of any goods or services provided in return for your donation is $0.
                     Please keep this written acknowledgment of your donation for your tax records.</p>
                     <h6 class="hidden-print">Matching Gifts.</h6>

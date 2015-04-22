@@ -2,6 +2,7 @@ Template.FixSubscription.rendered = function(){
 
 
     Session.setDefault('isRepair', true);
+    Session.set('update_this_card', Customers.findOne().sources.data[0].id);
 
     if(Subscriptions.findOne().status === 'past_due' || Subscriptions.findOne().status === 'canceled'){
         Session.set('addingNewCreditCard', true);
@@ -10,11 +11,9 @@ Template.FixSubscription.rendered = function(){
     }
 
     $('#resubscribe').parsley();
-
-
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
-    $("[name='square-switch']").bootstrapSwitch();
 
+    $("[name='square-switch']").bootstrapSwitch();
 };
 
 Template.FixSubscription.events({

@@ -195,7 +195,7 @@ Router.route('Subscriptions', function() {
         var fix_it = this.params.fix_it;
         Session.set('fix_it', params.query.fix_it);
 
-        this.wait(Meteor.subscribe('userStripeDataWithSubscriptions'));
+        this.wait(Meteor.subscribe('user_date_and_subscriptions_with_only_4'));
         if (this.ready()) {
             this.render();
         } else {
@@ -263,11 +263,10 @@ Router.route('FixSubscription', {
     },
     action: function () {
         if (this.ready()) {
-            var query = this.params.query;
-            Session.set('sub', query.sub);
-            Session.set('update_this_card', Customers.findOne().sources.data[0].id);
-            this.render();
-        } else {
+        var query = this.params.query;
+        Session.set('sub', query.sub);
+        this.render();
+    } else {
             this.render('Loading');
         }
     }

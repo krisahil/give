@@ -71,6 +71,7 @@
                     {{/if}}
                       <!--<a href="{{pathFor 'PaymentDevice'}}" class="btn btn-block btn-default">Update Payment Method</a>-->
                   </ul>
+
                 </div>
             {{/each}}
             {{#if show_give_form}}
@@ -79,6 +80,17 @@
         {{else}}
             <h2>No recurring gifts found</h2>
         {{/if}}
+
     </div>
+    {{#if number_of_subscriptions}}
+        <div class="row text-center">
+            <nav>
+                <ul class="pager">
+                <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Previous page</a></li>
+                <li class="next"><a href="#">Next page <span aria-hidden="true">&rarr;</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    {{/if}}
   </div>
 </template>

@@ -115,11 +115,11 @@ _.extend(Utils, {
 
         var stripeCustomer = new Future();
         var type;
+
         if (paymentDevice.slice(0, 2) === 'to') {
             type = "card";
             Stripe.customers.create({
                 card: paymentDevice,
-                account_balance: -1000,
                 email: customerInfo.email_address,
                 metadata: {
                     "city": customerInfo.city,
@@ -600,11 +600,16 @@ _.extend(Utils, {
 
         return stripeCardUpdate;
     },
-    update_stripe_customer_user: function(customer_id, user){
+    update_stripe_customer_user: function(customer_id, user, email_address){
         logger.info("Inside update_stripe_customer_user.");
 
-        var user_cursor = Meteor.users.findOne(user);
-        console.log(user._id);
+        var user_cursor;
+
+        if(!user){
+            user_cursor = Meteor.users.findOne({'emails.address': email_address});
+        } else{
+            user_cursor = Meteor.users.findOne(user);
+        }
 
         var stripeCustomerUserUpdate = new Future();
 

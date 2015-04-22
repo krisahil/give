@@ -63,11 +63,16 @@ Template.Receipt.helpers({
         }
     },
     donateTo: function () {
-        return this.donateTo;
+        if(this.metadata && this.metadata.donateTo){
+            return this.metadata.donateTo;
+        } else {
+            if(Donations.findOne() && Donations.findOne().donateTo);
+            return Donations.findOne().donateTo;
+        }
 },
     donateWith: function () {
-        if(Charges.findOne() && Charges.findOne().source) {
-            var source = Charges.findOne().source;
+        if(this.source) {
+            var source = this.source;
             if (source.object.slice(0, 4) === 'card') {
                 return source.brand + ", ending in " + source.last4;
             } else if (source.object.slice(0, 4) === 'bank') {
@@ -76,10 +81,12 @@ Template.Receipt.helpers({
         }
    },
    amount: function () {
-          if(this.amount){
-          return (this.amount / 100).toFixed(2);
-          }else {
-            return '';   
+          if(this.amount && this.metadata.fees){
+          return ((this.amount - this.metadata.fees) / 100).toFixed(2);
+          }else if(this.amount){
+              return (this.amount / 100).toFixed(2);
+          } else {
+              return;
           }
          
    },
@@ -91,17 +98,18 @@ Template.Receipt.helpers({
       }
    },
     fees: function () {
-        if(this.fees && this.total_amount){
+        console.log(this.metadata);
+        if(this.metadata.fees){
             return '\
             <tr>\
                 <th>Covered fees:</th>\
                 <td></td>\
-                <td>$' + (this.fees / 100).toFixed(2) + '</td>\
+                <td>$' + (this.metadata.fees / 100).toFixed(2) + '</td>\
             </tr>\
             <tr>\
                 <th>Total:</th>\
                 <td></td>\
-                <td>$' + (this.total_amount / 100).toFixed(2) + '</td>\
+                <td>$' + (this.amount / 100).toFixed(2) + '</td>\
             </tr>';
         } else {
         return "";
