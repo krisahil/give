@@ -1,6 +1,6 @@
 {
   "name": "Give",
-  "Version": "0.8",
+  "Version": "0.9",
   "engines": {
     "node": "0.10.32"
   },

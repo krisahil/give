@@ -1,8 +1,7 @@
 //creating a global server logger
-logger = Meteor.npmRequire('winston');
+logger = Winston;
 
-var Papertrail = Meteor.npmRequire('winston-papertrail').Papertrail;
-logger.add(Papertrail, {
+logger.add(Winston_Papertrail, {
 	levels: {
 			debug: 0,
 			info: 1,
@@ -17,11 +16,14 @@ logger.add(Papertrail, {
 			error: 'red',
 			auth: 'red'
 		},
+
 		host: "logs.papertrailapp.com",
 		port: 17342, //this will be change from the papertrail account to account
+        handleExceptions: true,
+        json: true,
+        colorize: true,
 		logFormat: function(level, message) {
 		return '[' + level + '] ' + message;
-  },
-  inlineMeta: true
+  }
 });
 logger.info(" =====> Meteor App restarted "+ new Date( Date.now()) +" <=====");

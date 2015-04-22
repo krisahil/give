@@ -110,8 +110,7 @@ Template.UserProfile.helpers({
         if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
             charge_id = this.transaction_id;
             customer_id = Charges.findOne({_id: charge_id}).customer;
-            donation_id = Donations.findOne({customer_id: customer_id})._id;
-            return '/thanks?c=' + customer_id + '&don=' + donation_id + '&charge=' + charge_id;
+            return '/thanks?c=' + customer_id + '&charge=' + charge_id;
         }else{
             return;
         }
@@ -211,6 +210,23 @@ Template.UserNav.events({
         evt.preventDefault();
         Session.set('addingNewCreditCard', false);
         Router.go('subscriptions');
+    },
+    'click #nav-button-give': function(evt){
+        evt.preventDefault();
+        Session.set('addingNewCreditCard', false);
+        Session.set('params.give', 'Yes');
+        /*$('#modal_for_user_give_form').modal({
+            show: true,
+            backdrop: 'static'
+        });*/
+        if(Router.current().route.getName() === 'subscriptions'){
+            $('#modal_for_user_give_form').modal({
+                show: true,
+                backdrop: 'static'
+            });
+        } else {
+            Router.go('subscriptions');
+        }
     }
 });
 

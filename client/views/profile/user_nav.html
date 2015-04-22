@@ -4,9 +4,10 @@
             <p class="text-danger text-center">
                 <!--Your giving history may still be updating. It might not reflect the latest numbers we have in our donation system. &nbsp;&nbsp;&nbsp;-->
                 {{#if MeteorUser}}
-                    <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}">Profile & Giving History</button></a>
-                    <a href="{{pathFor 'subscriptions'}}"><button type="button" id="nav-button-subscriptions" class="btn btn-primary navbar-btn {{isActiveRoute regex='subscriptions'}}">Recurring Gifts</button></a>
-                    <button type="button" id="nav-button-password" class="btn btn-primary navbar-btn">Change Password</button>
+                    <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}"><span class="fa fa-history"></span> Profile & Giving History</button></a>
+                    <a href="{{pathFor 'subscriptions'}}"><button type="button" id="nav-button-subscriptions" class="btn btn-primary navbar-btn {{isActiveRoute regex='subscriptions'}}"><span class="fa fa-refresh"></span> Recurring Gifts</button></a>
+                    <a href="{{pathFor 'subscriptions'}}"><button type="button" id="nav-button-give" class="btn btn-primary navbar-btn {{isActiveRoute regex='subscriptions'}}"><span class="fa fa-plus-circle"></span> Give</button></a>
+                    <button type="button" id="nav-button-password" class="btn btn-primary navbar-btn"><span class="fa fa-unlock-alt"></span> Change Password</button>
                     {{> atNavButton}}
                 {{/if}}
             </p>

@@ -9,9 +9,6 @@ Template.Receipt.events({
 });
 
 Template.Receipt.helpers({
-    donation: function () {
-        return Donations.findOne();
-    },
     customer_data: function () {
         return Customers.findOne().metadata;
     },
@@ -28,7 +25,6 @@ Template.Receipt.helpers({
         }else{
             return 'One time';
         }
-
     },
    date: function () {
    		return moment(this.created_at).format('MM/DD/YYYY');
@@ -63,13 +59,13 @@ Template.Receipt.helpers({
         }
     },
     donateTo: function () {
-        if(this.metadata && this.metadata.donateTo){
+        if(this.metadata && this.metadata.donateTo) {
             return this.metadata.donateTo;
-        } else {
-            if(Donations.findOne() && Donations.findOne().donateTo);
-            return Donations.findOne().donateTo;
         }
-},
+        else {
+            return 'Retrieving...';
+        }
+    },
     donateWith: function () {
         if(this.source) {
             var source = this.source;
@@ -91,14 +87,13 @@ Template.Receipt.helpers({
          
    },
    total_amount: function () {
-      if(this.total_amount){
-        return (this.total_amount / 100).toFixed(2);
+      if(this.amount){
+        return (this.amount / 100).toFixed(2);
       }else {
        return '';   
       }
    },
     fees: function () {
-        console.log(this.metadata);
         if(this.metadata.fees){
             return '\
             <tr>\
