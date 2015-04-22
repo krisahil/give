@@ -78,9 +78,6 @@ Template.Transaction.helpers({
 	},
 	stop_id: function(e, tmpl) {
 		return "stop" + this._id;
-	},
-	root_url: function(e, tmpl) {
-		return Meteor.settings.public.root;
 	}
 });
 Template.Transaction.events({
@@ -89,7 +86,6 @@ Template.Transaction.events({
 		e.stopPropagation();
 
 		var stop_id_is = "stop" + this._id;
-
 
 		console.log("Started delete process");
 		console.log(this._id);

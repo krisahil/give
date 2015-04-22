@@ -2,135 +2,122 @@
     <div class="row text-center" id="spinContainer">
         <div class="blackBackground">
             <a href="https://trashmountain.com" target="_blank"><img class="logoImage"
-              src="/give/images/bw_logo.png"  style="width:235px;height:60px">
+              src="/images/bw_logo.png"  style="height:60px">
             </a>
         </div>
         <div class="outerTitle">
             <div class="innerTitle">
                 <div class="centerTitle">
                     <div class="positionedAbsolute">
-                        {{#if userLoggedIn}}
+                        {{#if MeteorUser}}
                             <button class="btn btn-primary" type="button" id="userProfileButton"><span class="fa fa-user"> User Profile Page</span></button>
                         {{/if}}
                         <span class="signInOut" >{{> atNavButton}}</span>
                     </div>
-                    <h2>THANK YOU</h2>
                 </div>
             </div>
         </div>
         <div class="loginButton">
-
         </div>
 
-
-
 		<form class="form-horizontal donation-form" role="form" id="donation_form" name="donation_form" data-parsley-focus="first"
-              data-parsley-excluded="input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden">
+            data-parsley-excluded="input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
+            style="background-color: white;">
 
             <div class="col-md-6 col-md-offset-3">
-                <legend>DONATION AMOUNT & SUMMARY <i class="fa fa-question-circle" name="donationSummary"
-                    data-toggle="popover" data-trigger="hover focus"  data-placement="bottom" data-container="body"
-                    data-content="Below is the amount total, and below that your donation options. To change your
-                    options please use the dropdown buttons." >
-                </i></legend>
-                <h4 id="total_amount_display" >${{amount}}</h4>
-                <input type="hidden" id="total_amount" name="total_amount" value="{{amount}}" />
             </div>
             <div class="col-lg-8 col-md-8 col-md-offset-2">
-    			<div class="form-group">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            {{> DonationTo}}
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <label for="donateWith">Method of Payment</label>
-                            <select name="donateWith" id="donateWith" class="form-control select select-primary mbl" required>
-                                <option value="Check">Check</option>
-                                <option value="Card">Card</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <label for="is_recurring" id="frequency_label">Donation Frequency</label>
-                            <select name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an option">
-                                <option selected></option>
-                                <option value="one_time">One-Time</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="daily">Daily</option>
-                            </select>
+
+    			<fieldset>
+                    <h2>THANK YOU</h2>
+
+                    <!-- Amount of donation -->
+    				<div class="donation_amount text-center well well-lg form-group">
+    				    <div id='amount_width' class="{{amountWidth}}">
+                            <label class="control-label" for="amount">Donation Amount</label>
+                            <div class="input-group">
+                                <!--[if lt IE 9]>
+                                <label>Amount</label>
+                            <![endif]-->
+                                <span class="input-group-addon">$</span>
+    				            <input {{attributes_Input_Amount}} value="{{amount}}" class="form-control slim-borders"
+                                   required data-parsley-error-message="Please enter an amount with no commas." data-parsley-errors-container="#show-amount-error-here" />
+    				        </div>
+                            <div id="show-amount-error-here"></div>
+    				    </div>
+                        <div class="text-left col-md-7 col-sm-8 col-xs-12">
+                            {{#if paymentWithCard}}
+                            <!-- Checbox for Covering related fees-->
+                                <input type="checkbox" name="coverTheFees" id="coverTheFees" data-toggle="checkbox" {{coverTheFeesChecked}} />
+                                    I'll cover the credit card processing fees. <span><i id="coverTheFeesQuestion" class="fa fa-question-circle" data-toggle="popover"
+                                     data-placement="bottom" data-trigger="hover focus" title="Processor fees" data-container="body"
+                                     data-content="Our credit card processor charges 2.9% + .30 per transaction. If you check the box to cover these fees we'll do the math and change your gift amount to reflect this amount.">
+                            </i></span>
+                            <label for="total_amount_display">&nbsp;</label>
+                                    <p id="total_amount_display" class=""></p>
+
+                            {{else}}
+                            {{/if}}
+                            <input type="hidden" id="total_amount" name="total_amount" value="{{amount}}" />
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1" style="display: none;" id="calendarSection">
-                        <div class="form-group">
-                            <label>Choose Your Donation Start Date</label>
-                            <div class="input-group">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                {{> DonationTo}}
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <label for="donateWith">Method of Payment</label>
+                                <select name="donateWith" id="donateWith" class="form-control select select-primary mbl" required>
+                                    <option value="Check">Check</option>
+                                    <option value="Card">Card</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <label for="is_recurring" id="frequency_label">Donation Frequency</label>
+                                <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
+                                    <option selected></option>
+                                    <option value="one_time">One-Time</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="daily">Daily</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1" style="display: none;" id="calendarSection">
+                            <div class="form-group">
+                                <label>Choose Your Donation Start Date</label>
+                                <div class="input-group">
 
                                 <span class="input-group-btn">
                                     <button class="btn" type="button"><span class="fui-calendar"></span></button>
                                 </span>
-                                <input type="text" class="form-control" value="{{today}}" id="start_date" />
+                                    <input type="text" class="form-control" value="{{today}}" id="start_date" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="">
                     <div class="">
-                        <label id="giftDesignationText" style="display: none;"><strong>Your gift is designated to "{{writeInValue}}"</strong></label>
+                        <div class="">
+                            <label id="giftDesignationText" style="display: none;"><strong>Your gift is designated to "{{writeInValue}}"</strong></label>
+                        </div>
                     </div>
-                </div>
-                {{#if paymentWithCard}}
 
-                <!-- Checbox for Covering related fees-->
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1 text-center">
-                        <label class="checkbox" for="coverTheFees">
-                            <input type="checkbox" name="coverTheFees" id="coverTheFees" data-toggle="checkbox" {{coverTheFeesChecked}} />
-                            I'll cover the credit card processing fees.&nbsp;&nbsp;
-                            <i id="coverTheFeesQuestion" class="fa fa-question-circle" data-toggle="popover"
-                               data-placement="bottom" data-trigger="hover focus" title="Processor fees" data-container="body"
-                               data-content="Our credit card processor charges 2.9% + .30 per transaction. If you check the box to cover these fees we'll do the math and change your gift amount to reflect this amount.">
-                            </i>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-
-                </div>
-                {{else}}
-                {{/if}}
-    			<fieldset>
-    				<!-- Form Name -->
-    				<legend>CONTACT INFORMATION</legend>
-
-    				<!-- Amount of donation -->
-    				<div class="form-group donation_amount">
-    				    <label class="col-md-4 control-label" for="amount">Donation Amount</label>
-    				    <div class="col-sm-12">
-    				        <div class="input-group col-md-12 col-sm-12 col-xs-12">
-                            <!--[if lt IE 9]>
-                                <label>Amount</label>
-                            <![endif]-->
-    				            <span class="input-group-addon">$</span>
-    				            <input {{attributes_Input_Amount}} value="{{amount}}" class="form-control slim-borders"
-                                   required data-parsley-error-message="Please enter an amount with no commas." />
-    				        </div>
-    				    </div>
-    				</div>
 
     				<!--call the address portion of the form -->
                     {{> RequestAddress}}
-
-                    <legend>PAYMENT DETAILS
-                        {{{paymentQuestionIcon}}}
-                    </legend>
+                    <h5>PAYMENT DETAILS
+                        <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
+                    </h5>
 
                     {{#if paymentWithCard}}
-    					{{> cardPaymentInformation}}
+                        {{> cardPaymentInformation}}
                     {{else}}
-    					{{> checkPaymentInformation}}
+                        {{> checkPaymentInformation}}
                     {{/if}}
+
 
                     <br>
     				<div class="form-group padBottom">
@@ -145,75 +132,13 @@
     	</form>
     </div>
 
-    <div class="modal fade" id="modal_for_initial_donation_error">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title"><strong>Sorry</strong>, that didn't work.</h4>
-                </div>
-                <div class="modal-body">
-                    Please check the listed error and try again. If you continue to have problems processing your
-                    donation please email <a href="mailto:support@trashmountain.com?Subject=Donation Problem">support@trashmountain.com</a> or call
-                    <a href="tel:+17852466845">(785)246-6845</a>.
-                </div>
-                <div class="alert alert-warning">
-                    <p><strong>Error category:</strong> <span id="errorCategory"></span></p>
-                    <p><strong>Error Description:</strong> <span id="errorDescription"></span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--This area is the modal that takes the write in information from the user when they first get to the donation page. 
-    It only appears if they had previously selected "Support a trip participant" -->
-    <div class="modal fade" id="modal_for_write_in">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title"><strong>Enter</strong> a designation below.</h4>
-                </div>
-                <div class="modal-body">
-                    <p>You selected the 'Support a Trip Participant', please enter a description of where you want the
-                        funds to be directed. If you have any questions or don't seem to be finding what you are looking
-                        for please email us. Thanks </p>
-                    <a href="mailto:info@trashmountain.com?Subject=Donation Question">info@trashmountain.com.</a>
-                    <p>
-                        <input id="writeIn" data-parsley-type="text" class="form-control slim-borders"
-                               placeholder="Name or other designation." />
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="write_in_save">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div><!--This area is the modal that takes the write in information from the user when they first get to the donation page.
-    It only appears if they had previously selected "Support a trip participant" -->
-    <div class="modal fade" id="modal_for_login">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Continue as guest</button>
-                    {{> atForm}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Continue as guest</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="spinDiv" class="fadeMe">
-        {{> spinner}}
-    </div>
+    {{> Modals}}
 </template>
 
 <template name="checkPaymentInformation">
 	<!-- Bank Info -->
 	<div class="form-group">
-		<div class="col-sm-12">
+		<div class="col-sm-6">
             <!--[if lt IE 9]>
                 <label>Account Number</label>
             <![endif]-->
@@ -221,26 +146,22 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<div class="col-sm-12">
+		<div class="col-sm-6">
             <!--[if lt IE 9]>
                 <label>Routing Number</label>
             <![endif]-->
 			<input {{attributes_Input_RoutingNumber}} class="form-control slim-borders" />
 		</div>
 	</div>
-    <div class="form-group">
-        <div class="col-lg-6 col-md-7 col-sm-5 col-xs-5">
-            <label class="control-label" for="account_type">Account Type</label>
-            <select class="form-control select select-primary select-block mbl" name="account_type">
-              <option>Checking</option>
-              <option>Savings</option>
-            </select>
-        </div>
-        <div name="checkGraphic" class="center-block check-graphic col-lg-6 col-md-7 col-sm-5 col-xs-10">
-        </div>
+    <!-- Checbox for Covering related fees-->
+    <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} />
+    Save this payment method for future use <span><i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
+             data-placement="bottom" data-trigger="hover focus" title="Save Bank Account" data-container="body"
+             data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
+             method in the future.">
+    </i></span>
+    <div name="checkGraphic" class="center-block check-graphic col-sm-6 col-xs-10">
     </div>
-    
-
 
 </template>
 
@@ -252,21 +173,21 @@
             <!--[if lt IE 9]>
                 <label>Card Number</label>
             <![endif]-->
-          <input type="text" class="form-control slim-borders" name="card_number" id="card_number"
-                 placeholder="Debit/Credit Card Number" data-parsley-type="number" data-parsley-length="[15,16]" required>
+          <input type="text" class="form-control slim-borders" id="card_number"
+                 placeholder="Debit/Credit Card Number" data-parsley-type="number" data-parsley-length="[14,16]" data-parsley-error-message="This should be between 14-16 numbers, no dashes or spaces." required>
         </div> <!-- 4111111111111111 -->
         <div class="col-md-3 col-sm-3 col-xs-4">
             <!--[if lt IE 9]>
                 <label>CVV Code</label>
             <![endif]-->        
-            <input type="text" class="form-control slim-borders" name="cvv" id="cvv"
+            <input type="text" class="form-control slim-borders" id="cvv"
                    placeholder="CVV" data-parsley-type="number" data-parsley-minlength="3" required>
         </div>
     </div>
     <div class="form-group">
         <!--<label class="col-lg-3 col-md-4 col-sm-4 col-xs-3 control-label noRightPadding" for="expiry_month">Expiration Date</label>-->
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="expiry_monthDiv">
-            <select class="form-control  select select-primary select-block mbl" name="expiry_month" id="expiry_month" required="true">
+            <select class="form-control  select select-primary select-block mbl" id="expiry_month" required>
                 <option value="">Month</option>
                 <option value="01">Jan (01)</option>
                 <option value="02">Feb (02)</option>
@@ -283,9 +204,8 @@
             </select>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" name="expiry_yearDiv">
-            <select class="form-control select select-primary select-block mbl" name="expiry_year" id="expiry_year" required="true">
+            <select class="form-control select select-primary select-block mbl" id="expiry_year" required>
                 <option value="">Year</option>
-                <option value="2014">2014</option>
                 <option value="2015">2015</option>
                 <option value="2016">2016</option>
                 <option value="2017">2017</option>
@@ -298,7 +218,13 @@
                 <option value="2024">2024</option>
             </select>
         </div>
-
+        <!-- Checbox for Covering related fees-->
+        <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} />
+         Save this payment method for future use <span><i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
+             data-placement="bottom" data-trigger="hover focus" title="Save Card" data-container="body"
+             data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
+             method in the future.">
+        </i></span>
         
     </div>
 </template>

@@ -2,100 +2,105 @@
     <div class="UserCSS">
         <div class="container">
             <div class="row">
-
-                <div id="giving_section" class="col-md-6 col-lg-6">
-                    <div class="well profile">
-                        <div class="col-sm-12">
-                            <br>
-                            <div class="col-xs-12 col-sm-8">
-                                {{#with user}}
-                                <h5 id="profile_section">{{profile.fname}} {{profile.lname}}</h5>
-                                {{{business_name}}}
-                                <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                    {{profile.address.line1}} <br>
-                                    {{{address_line2}}}
-                                    {{profile.address.city}}, {{profile.address.state}} {{profile.address.postal_code}}<br>
-                                    {{profile.address.country_code}}
-                                </p>
-                                <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                    {{profile.phone}} <br>
-                                </p>
-                                <p><strong>Email:  </strong> <br>
-                                    {{email}} <br>
-                                </p>
-                                {{/with}}
-                                <p>
-                                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_for_address_change">
-                                        Edit Profile
-                                    </button>
-                                </p>
-                                <p>
-                                    <a href="/give" class="btn btn-primary btn-block" role="button"><span class="fa fa-plus-circle"></span> Give </a>
-                                </p>
-                                <div class="col-xs-12 divider text-center">
-                                    <p>
-                                        <ul class="nav nav-list">
-                                            <li class="nav-header text-left"><br>Lifetime Giving Stats</li>
-                                            <li class="active text-left">
-                                                <!--<a href="#">-->
-                                                    <h7>Total Giving</h7>
-                                                    <span class="pull-right"><h7>${{twoDecimalPlaces dt_gifts.total_given}}</h7></span>
-                                                <!--</a>-->
-                                            </li>
-                                            <li class="text-left">
-                                                <!--<a href="#">-->
-                                                    <h7>Number of Gifts</h7>
-                                                    <span class="pull-right"><h7>{{dt_gifts.number_of_gifts}}</h7></span>
-                                                <!--</a>-->
-                                            </li>
-                                            <!--<li class="text-left">
-                                                <a href="#">
-                                                    <h7>Categories</h7>
-                                                    <span class="pull-right"><h7>{{dt_gifts.categories}}</h7></span>
-                                                </a>
-                                            </li>-->
-                                            <!--<li class="divider"></li>
-                                            <li class="nav-header">Heading</li>
-                                            <li class="disabled">
-                                                <a href="#">
-                                                    Title
-                                                    <span class="badge pull-right">21</span>
-                                                </a>
-                                            </li>-->
-                                        </ul>
+                <div class="panel panel-default billing-module">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Profile and History</h3>
+                    </div>
+                <div class="panel-body">
+                    <div id="giving_section" class="col-md-6 col-lg-6">
+                        <div class="well profile">
+                            <div class="col-sm-12">
+                                <br>
+                                <div class="col-xs-12 col-sm-8">
+                                    {{#with user}}
+                                    <h5 id="profile_section">{{profile.fname}} {{profile.lname}}</h5>
+                                    {{{business_name}}}
+                                    <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                        {{profile.address.address_line1}} <br>
+                                        {{{address_line2}}}
+                                        {{profile.address.city}}, {{profile.address.state}} {{profile.address.postal_code}}<br>
+                                        {{profile.address.country}}
                                     </p>
-                                    <!--<div class="col-xs-12 col-sm-4 emphasis">
-                                        &lt;!&ndash; Single button &ndash;&gt;
-                                        <div class="btn-group dropup btn-block fixGroupButton">
-                                            <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                Edit Profile <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu text-left" role="menu">
-                                                <li class="disabled"><a href="#"><span class="fa fa-envelope pull-right"></span> Change My Email Address  </a></li>
-                                                <li class="edit_address"><a href="#"><span class="fa fa-list pull-right"></span> Edit My Address  </a></li>
-                                                <li class="divider"></li>
-                                                <li class="disabled"><a href="#">&lt;!&ndash;<span class="fa fa-warning pull-right" ></span>&ndash;&gt;Change Recurring Gift  </a></li>
+                                    <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                        {{profile.phone}} <br>
+                                    </p>
+                                    <p><strong>Email:  </strong> <br>
+                                        {{email}} <br>
+                                    </p>
+                                    {{/with}}
+                                    <p>
+                                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_for_address_change">
+                                            Edit Profile
+                                        </button>
+                                    </p>
+                                    <p>
+                                        <a href="/" class="btn btn-primary btn-block" role="button"><span class="fa fa-plus-circle"></span> Give </a>
+                                    </p>
+                                    <div class="col-xs-12 divider text-center">
+                                        <p>
+                                            <ul class="nav nav-list">
+                                                <li class="nav-header text-left"><br>Lifetime Giving Stats</li>
+                                                <li class="active text-left">
+                                                    <!--<a href="#">-->
+                                                        <h7>Total Giving</h7>
+                                                        <span class="pull-right"><h7>${{twoDecimalPlaces dt_gifts.total_given}}</h7></span>
+                                                    <!--</a>-->
+                                                </li>
+                                                <li class="text-left">
+                                                    <!--<a href="#">-->
+                                                        <h7>Number of Gifts</h7>
+                                                        <span class="pull-right"><h7>{{dt_gifts.number_of_gifts}}</h7></span>
+                                                    <!--</a>-->
+                                                </li>
+                                                <!--<li class="text-left">
+                                                    <a href="#">
+                                                        <h7>Categories</h7>
+                                                        <span class="pull-right"><h7>{{dt_gifts.categories}}</h7></span>
+                                                    </a>
+                                                </li>-->
+                                                <!--<li class="divider"></li>
+                                                <li class="nav-header">Heading</li>
+                                                <li class="disabled">
+                                                    <a href="#">
+                                                        Title
+                                                        <span class="badge pull-right">21</span>
+                                                    </a>
+                                                </li>-->
                                             </ul>
-                                        </div>
-                                    </div>-->
+                                        </p>
+                                        <!--<div class="col-xs-12 col-sm-4 emphasis">
+                                            &lt;!&ndash; Single button &ndash;&gt;
+                                            <div class="btn-group dropup btn-block fixGroupButton">
+                                                <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    Edit Profile <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu text-left" role="menu">
+                                                    <li class="disabled"><a href="#"><span class="fa fa-envelope pull-right"></span> Change My Email Address  </a></li>
+                                                    <li class="edit_address"><a href="#"><span class="fa fa-list pull-right"></span> Edit My Address  </a></li>
+                                                    <li class="divider"></li>
+                                                    <li class="disabled"><a href="#">&lt;!&ndash;<span class="fa fa-warning pull-right" ></span>&ndash;&gt;Change Recurring Gift  </a></li>
+                                                </ul>
+                                            </div>
+                                        </div>-->
+                                    </div>
                                 </div>
-                            </div>
                             <div class="col-xs-12 col-sm-4 text-center">
-                                <figure data-toggle="popover" data-trigger="hover focus"  data-placement="auto" data-container="body"
-                                        data-content="This is the area that you have had the most giving.">
-                                    <p>Your Giving Focus</p>
-                                    <strong><em>{{{giving_focus}}}</em></strong>
-                                </figure>
+                                <!--<figure data-toggle="popover" data-trigger="hover focus"  data-placement="auto" data-container="body"
+                                        data-content="This is the area that you have had the most giving.">-->
+                                    <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp;<!--Your Giving Focus--></p>
+                                    <!--<strong><em>{{{giving_focus}}}</em></strong>-->
+                                <!--</figure>-->
                             </div>
                             <br>&nbsp;
                             <br>&nbsp;
                         </div>
 
+                        </div>
                     </div>
-                </div>
-                {{#if showHistory}}
+                    {{#if showHistory}}
                     <div id="" class="col-md-6 col-lg-6">
-                        <h5 id="">Your Giving History</h5>
+                        <h5 id="">Your Giving History {{#if db_donations}}<span class="redText">Retrieving...</span>{{else}}{{/if}}</h5>
                         <table class="table table-striped">
                             <tbody>
                             <tr class="responsiveFont">
@@ -104,7 +109,7 @@
                                 <th>Amount</th>
                             </tr>
                             {{#each dt_donations}}
-                                <tr class="responsiveFont {{redText}}">
+                                <tr class="responsiveFont {{redText}} {{clickable_row}}" data-href="{{receipt_link}}" data-dt-transaction-id="{{transaction_id}}">
                                     <td>{{formatDate this.received_on}}</td>
                                     <td style="font-size: .9em">{{#each split}} {{{fundName}}} <br>{{/each}}</td>
                                     <td class="text-right">${{#each split}}{{twoDecimalPlaces this.amount_in_cents }} <br>{{/each}}</td>
@@ -126,8 +131,10 @@
                         </nav>
                     </div>
                 {{/if}}
+                </div>
             </div>
         </div>
+            </div>
         <div id="modal_for_address_change" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -141,13 +148,13 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="email">Address Line 1:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{profile.address.line1}}" required data-parsley-error-message="Please enter an address">
+                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{profile.address.address_line1}}" required data-parsley-error-message="Please enter an address">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="email">Address Line 2:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{profile.address.line2}}" >
+                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{profile.address.address_line2}}" >
                                 </div>
                             </div>
                             <div class="form-group">

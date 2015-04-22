@@ -55,7 +55,7 @@ select {
 }
 
 .check-graphic {
-	background:url(/give/images/check_image.png) no-repeat right center;
+	background:url("/images/check_image.png") no-repeat right center;
 	height:110px;
 	background-size:285px
 }
@@ -99,7 +99,8 @@ select {
 }
 
 #total_amount_display {
-	text-align:center
+    margin-left: 15px;
+    padding-top: 9px;
 }
 
 .fa-question-circle {
@@ -121,7 +122,7 @@ select {
 }
 
 body {
-	background:url(/give/images/bg.jpg) no-repeat center center fixed;
+	background:url(/images/bg.jpg) no-repeat center center fixed;
 	-webkit-background-size:cover;
 	-moz-background-size:cover;
 	-o-background-size:cover;
@@ -444,3 +445,11 @@ div.fadeMe {
     padding: 1em;
 }
 
+.cover-fees{
+    font-size: 80%;
+}
+
+.form-container {
+	margin-top: 30px;
+	background-color: white;
+}

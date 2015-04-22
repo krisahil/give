@@ -1,11 +1,11 @@
 //tests/tests.js
 var assert = require('assert');
 
-suite('Donate', function() {
+suite('Charges', function() {
   test('in the server', function(done, server) {
     server.eval(function() {
-      Donate.insert({fname: 'George'});
-      var docs = Donate.find().fetch();
+      Charges.insert({fname: 'George'});
+      var docs = Charges.find().fetch();
       emit('docs', docs);
     });
 

@@ -1,4 +1,4 @@
-Session.setDefault('dt_donations_cursor', 0);
+
 
 Template.UserProfile.helpers({
     user: function () {
@@ -55,8 +55,8 @@ Template.UserProfile.helpers({
         return Customers.findOne();
     },
     address_line2: function () {
-        if(Meteor.user().profile.address.line2) {
-            return '<span class="">' + Meteor.user().profile.address.line2 + '</span> <br>';
+        if(Meteor.user().profile.address.address_line2) {
+            return '<span class="">' + Meteor.user().profile.address.address_line2 + '</span> <br>';
         } else return;
     },
     email: function () {
@@ -96,13 +96,32 @@ Template.UserProfile.helpers({
         if(DT_funds.findOne({_id: this.fund_id}) && DT_funds.findOne({_id: this.fund_id}).name){
             return DT_funds.findOne({_id: this.fund_id}).name;
         }
-        else return '<span style="color: red;">Fund not found</span>';
+        else return '<span style="color: red;">Finding fund...</span>';
     },
     redText: function(){
         if(this.payment_status && this.payment_status === 'pending'){
             return 'orange-text';
         } else if(this.payment_status && this.payment_status === 'failed'){
             return 'red-text';
+        }
+    },
+    receipt_link: function() {
+        var charge_id, donation_id, customer_id;
+        if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
+            charge_id = this.transaction_id;
+            customer_id = Charges.findOne({_id: charge_id}).customer;
+            donation_id = Donations.findOne({customer_id: customer_id})._id;
+            return '/thanks?c=' + customer_id + '&don=' + donation_id + '&charge=' + charge_id;
+        }else{
+            return;
+        }
+    },
+    clickable_row: function() {
+        if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
+            return 'clickable_row';
+        }
+        else{
+            return;
         }
     }
 
@@ -121,24 +140,24 @@ Template.UserProfile.events({
         evt.stopPropagation();
         var fields = {
             address: {
-                'line1':          $('#line1').val(),
-                'line2':          $('#line2').val(),
-                'city':           $('#city').val(),
-                'state':          $('#state').val(),
-                'postal_code':    $('#zip').val()
+                'address_line1':    $('#line1').val(),
+                'address_line2':    $('#line2').val(),
+                'city':             $('#city').val(),
+                'state':            $('#state').val(),
+                'postal_code':      $('#zip').val()
             },
-            phone:                $('#phone').val()
+            phone:                  $('#phone').val()
         };
         var updateThis = {$set: fields};
 
         // Update the Meteor.user profile
         Meteor.users.update(Meteor.user()._id, {$set: {'profile.address': fields.address, 'profile.phone': fields.phone}});
-
-        var updateCustomer = Customers.update(Customers.findOne()._id, updateThis);
+        var customer_id = Meteor.users.findOne().primary_customer_id;
+        var updateCustomer = Customers.update({_id: customer_id}, updateThis);
         if(updateCustomer === 1) {
             $('#modal_for_address_change').modal('hide')
         }
-        Meteor.call('update_customer', updateThis.$set,  Customers.findOne()._id, DT_donations.findOne().persona_id, function(error, result){
+        Meteor.call('update_customer', updateThis.$set,  customer_id, DT_donations.findOne().persona_id, function(error, result){
            if(result){
                console.log(result);
            } else{
@@ -157,12 +176,17 @@ Template.UserProfile.events({
         evt.preventDefault();
         evt.stopPropagation();
         Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')+10));
+    },
+    'click .clickable_row': function(){
+        var transaction_id = this.transaction_id;
+        Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
     }
 
 });
 
 Template.UserProfile.rendered = function(){
-   Session.set("showHistory", true);
+    Session.setDefault('dt_donations_cursor', 0);
+    Session.set("showHistory", true);
 
     // Make sure the user can't enter anything, except what would go in a phone number field
     $("#phone").mask("(999)999-9999");
@@ -177,8 +201,16 @@ Template.UserProfile.rendered = function(){
 Template.UserNav.events({
     'click #nav-button-password': function(evt){
         evt.preventDefault();
-        evt.stopPropagation();
         Router.go('changePwd');
+    },
+    'click #nav-button-profile': function(evt){
+        evt.preventDefault();
+        Router.go('user.profile');
+    },
+    'click #nav-button-subscriptions': function(evt){
+        evt.preventDefault();
+        Session.set('addingNewCreditCard', false);
+        Router.go('subscriptions');
     }
 });
 

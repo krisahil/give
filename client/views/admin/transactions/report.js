@@ -43,7 +43,7 @@ Template.Report.rendered = function () {
 			$('#reportrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
 			Session.set('startDate', start.format('YYYY-MM-DD'));
 			Session.set('endDate', end.format('YYYY-MM-DD'));
-			Router.go('/give/report?startDate=' + start.format('YYYY-MM-DD') + '&endDate=' + end.format('YYYY-MM-DD') );
+			Router.go('/report?startDate=' + start.format('YYYY-MM-DD') + '&endDate=' + end.format('YYYY-MM-DD') );
 		}
 	);
 
