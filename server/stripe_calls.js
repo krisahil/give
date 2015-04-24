@@ -6,8 +6,8 @@ _.extend(Utils, {
                 returnToCalled = 'Where Most Needed';
                 return returnToCalled;
                 break;
-            case 'FieldProjects':
-                returnToCalled = 'Field Projects';
+            case 'UrgentFieldNeeds':
+                returnToCalled = 'Urgent Field Needs';
                 return returnToCalled;
                 break;
             case 'UrgentOperationalNeeds':
@@ -42,12 +42,12 @@ _.extend(Utils, {
                 returnToCalled = 'BaseCamp - John Kazaklis';
                 return returnToCalled;
                 break;
-            case 'LindseyKell':
-                returnToCalled = 'BaseCamp - John Kazaklis';
+            case 'LindseyKeller':
+                returnToCalled = 'BaseCamp - Lindsey Keller';
                 return returnToCalled;
                 break;
-            case 'JohnKazaklis':
-                returnToCalled = 'BaseCamp - John Kazaklis';
+            case 'EthanPope':
+                returnToCalled = 'BaseCamp - Ethan Pope';
                 return returnToCalled;
                 break;
             case 'ChrisMammoliti':
@@ -62,44 +62,24 @@ _.extend(Utils, {
                 returnToCalled = 'BaseCamp - Isaac Tarwater';
                 return returnToCalled;
                 break;
-            case 'DRUrgent':
-                returnToCalled = 'DR - Most Urgent';
+            case 'DominicanRepublic':
+                returnToCalled = 'Dominican Republic';
                 return returnToCalled;
                 break;
-            case 'DRCS':
-                returnToCalled = 'DR - Community Sponsorship';
+            case 'Honduras':
+                returnToCalled = 'Honduras';
                 return returnToCalled;
                 break;
-            case 'DRInfrastructure':
-                returnToCalled = 'DR - Infrastructure';
+            case 'Bolivia':
+                returnToCalled = 'Bolivia';
                 return returnToCalled;
                 break;
-            case 'PhilippinesUrgent':
-                returnToCalled = 'Philippines - Most Urgent';
+            case 'Philippines':
+                returnToCalled = 'Philippines';
                 return returnToCalled;
                 break;
-            case 'PhilippinesCS':
-                returnToCalled = 'Phil - Tanza Community Sponsor';
-                return returnToCalled;
-                break;
-            case 'PhilippinesInfrastructure':
-                returnToCalled = 'Philippines - Infrastructure';
-                return returnToCalled;
-                break;
-            case 'BoliviaUrgent':
-                returnToCalled = 'Bolivia - Most Urgent';
-                return returnToCalled;
-                break;
-            case 'HondurasUrgent':
-                returnToCalled = 'Honduras - Most Urgent';
-                return returnToCalled;
-                break;
-            case 'HondurasCS':
-                returnToCalled = 'Honduras - Community Sponsorship';
-                return returnToCalled;
-                break;
-            case 'HondurasInfrastructure':
-                returnToCalled = 'Honduras - Infrastructure';
+            case 'Kenya':
+                returnToCalled = 'Kenya';
                 return returnToCalled;
                 break;
             case 'WriteIn':
