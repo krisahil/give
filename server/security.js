@@ -13,7 +13,8 @@ Security.permit(['insert', 'update', 'remove'])
         DT_funds,
         Invoices,
         Subscriptions,
-        Payments
+        Payments,
+        Donate
     ])
     .ifHasRole('admin')
     .apply();

@@ -3,6 +3,78 @@ Future = Meteor.npmRequire("fibers/future");
 Stripe = StripeAPI(Meteor.settings.stripe.secret);
 
 Utils = {
+    get_balanced_id: function (stripe_customer_id) {
+        var stripe_customer = new Future();
+
+        Stripe.customers.retrieve(stripe_customer_id,
+            function (error, customer) {
+                if (error) {
+                    //console.dir(error);
+                    stripe_customer.return(error);
+                } else {
+                    stripe_customer.return(customer);
+                }
+            }
+        );
+
+        stripe_customer = stripe_customer.wait();
+
+        if (!stripe_customer.object) {
+            throw new Meteor.Error(stripe_customer.rawType, stripe_customer.message);
+        }
+
+        console.dir(stripe_customer);
+        console.log(stripe_customer.metadata['balanced.customer_id']);
+        return stripe_customer;
+    },
+    // Used for getting the customer data from balanced
+    get_balanced_customer: function (id) {
+        console.log("Inside get_balanced_customer.");
+        var customer = Donate.findOne({'debit.customer': id}).customer;
+
+        return customer;
+    },
+    // Take the data from balanced and update Stripe with it
+    update_stripe_customer_with_balanced_data: function (data, customer_id, balanced_customer_id){
+        console.log("Inside update_stripe_customer_with_balanced_data.");
+        var stripeCustomerUpdate = new Future();
+        console.dir(data);
+
+        Stripe.customers.update(customer_id, {
+                metadata: {
+                    "city":                     data.city,
+                    "state":                    data.region,
+                    "country":                  data.country,
+                    "address_line1":            data.address_line1,
+                    "address_line2":            data.address_line2,
+                    "postal_code":              data.postal_code,
+                    "phone":                    data.phone_number,
+                    "email":                    data.email_address,
+                    "fname":                    data.fname,
+                    "lname":                    data.lname,
+                    "org":                      data.business_name,
+                    "balanced.customer_id":     null,
+                    "balanced_customer_id":     balanced_customer_id
+                }
+            }, function (error, customer) {
+                if (error) {
+                    //console.dir(error);
+                    stripeCustomerUpdate.return(error);
+                } else {
+                    stripeCustomerUpdate.return(customer);
+                }
+            }
+        );
+
+        stripeCustomerUpdate = stripeCustomerUpdate.wait();
+
+        if (!stripeCustomerUpdate.object) {
+            throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
+        }
+
+        console.dir(stripeCustomerUpdate);
+        return stripeCustomerUpdate;
+    },
     // Check donation form entries
     check_update_customer_form: function(form, customer_id, dt_persona_id) {
         check(dt_persona_id, Number);

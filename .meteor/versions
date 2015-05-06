@@ -53,7 +53,7 @@ meteor-platform@1.2.2
 meteorhacks:meteorx@1.3.1
 meteorhacks:picker@1.0.2
 meteorhacks:sikka@1.0.1
-meteortoys:toykit@0.3.4
+meteortoys:toykit@0.5.0
 minifiers@1.1.5
 minimongo@1.0.8
 mobile-status-bar@1.0.3
@@ -61,8 +61,8 @@ momentjs:moment@2.10.3
 mongo@1.1.0
 mongo-livedata@1.0.8
 mrgalaxy:stripe@2.1.0
-msavin:jetsetter@1.0.11
-msavin:mongol@1.0.22
+msavin:jetsetter@1.0.13
+msavin:mongol@1.0.30
 npm-bcrypt@0.7.8_2
 npm-container@1.0.0
 observe-sequence@1.0.6
@@ -98,5 +98,5 @@ webapp@1.2.0
 webapp-hashing@1.0.3
 wylio:mandrill@0.2.1
 wylio:winston-papertrail@0.1.2
-yogiben:mixpanel@0.0.2
+yogiben:mixpanel@0.0.6
 zimme:iron-router-active@1.0.4

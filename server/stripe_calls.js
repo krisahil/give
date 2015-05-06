@@ -1,65 +1,72 @@
 _.extend(Utils, {
     getDonateTo: function (donateTo) {
         var returnToCalled;
-        switch (donateTo) {
+        switch(donateTo) {
             case 'WhereMostNeeded':
                 returnToCalled = 'Where Most Needed';
                 return returnToCalled;
                 break;
-            case 'UrgentFieldNeeds':
-                returnToCalled = 'Urgent Field Needs';
-                return returnToCalled;
+            case 'WriteIn':
+                return 'Write In';
                 break;
             case 'UrgentOperationalNeeds':
                 returnToCalled = 'Urgent Operational Needs';
                 return returnToCalled;
                 break;
             case 'JoshuaBechard':
-                returnToCalled = 'BaseCamp - Joshua Bechard';
-                return returnToCalled;
-                break;
-            case 'WillieBrooks':
-                returnToCalled = 'BaseCamp - Willie Brooks';
+                returnToCalled = 'Joshua Bechard';
                 return returnToCalled;
                 break;
             case 'TimmCollins':
-                returnToCalled = 'BaseCamp - Timm Collins';
+                returnToCalled = 'Timm Collins';
                 return returnToCalled;
                 break;
             case 'JonDeMeo':
-                returnToCalled = 'BaseCamp - Jon DeMeo';
+                returnToCalled = 'Jon DeMeo';
                 return returnToCalled;
                 break;
             case 'BrettDurbin':
-                returnToCalled = 'BaseCamp - Brett Durbin';
-                return returnToCalled;
-                break;
-            case 'JamesHishmeh':
-                returnToCalled = 'BaseCamp - James Hishmeh';
+                returnToCalled = 'Brett Durbin';
                 return returnToCalled;
                 break;
             case 'JohnKazaklis':
-                returnToCalled = 'BaseCamp - John Kazaklis';
+                returnToCalled = 'John Kazaklis';
                 return returnToCalled;
                 break;
             case 'LindseyKeller':
-                returnToCalled = 'BaseCamp - Lindsey Keller';
+                returnToCalled = 'Lindsey Keller';
                 return returnToCalled;
                 break;
             case 'EthanPope':
-                returnToCalled = 'BaseCamp - Ethan Pope';
+                returnToCalled = 'Ethan Pope';
                 return returnToCalled;
                 break;
             case 'ChrisMammoliti':
-                returnToCalled = 'BaseCamp - Chris Mammoliti';
+                returnToCalled = 'Chris Mammoliti';
                 return returnToCalled;
                 break;
             case 'ShelleySetchell':
-                returnToCalled = 'BaseCamp - Shelley Setchell';
+                returnToCalled = 'Shelley Setchell';
                 return returnToCalled;
                 break;
             case 'IsaacTarwater':
-                returnToCalled = 'BaseCamp - Isaac Tarwater';
+                returnToCalled = 'Isaac Tarwater';
+                return returnToCalled;
+                break;
+            case 'WillieBrooks':
+                returnToCalled = 'Willie Brooks';
+                return returnToCalled;
+                break;
+            case 'JamesHishmeh':
+                returnToCalled = 'James Hishmeh';
+                return returnToCalled;
+                break;
+            case 'UrgentFieldNeeds':
+                returnToCalled = 'Urgent Field Needs';
+                return returnToCalled;
+                break;
+            case 'Bolivia':
+                returnToCalled = 'Bolivia';
                 return returnToCalled;
                 break;
             case 'DominicanRepublic':
@@ -70,23 +77,32 @@ _.extend(Utils, {
                 returnToCalled = 'Honduras';
                 return returnToCalled;
                 break;
-            case 'Bolivia':
-                returnToCalled = 'Bolivia';
-                return returnToCalled;
-                break;
-            case 'Philippines':
-                returnToCalled = 'Philippines';
-                return returnToCalled;
-                break;
             case 'Kenya':
                 returnToCalled = 'Kenya';
                 return returnToCalled;
                 break;
-            case 'WriteIn':
-                return 'Write In';
+            case 'LagunaDeBay':
+                returnToCalled = 'Laguna De Bay';
+                return returnToCalled;
+                break;
+            case 'Payatas':
+                returnToCalled = 'Payatas';
+                return returnToCalled;
+                break;
+            case 'SanMateo':
+                returnToCalled = 'SanMateo';
+                return returnToCalled;
+                break;
+            case 'SmokeyMountain':
+                returnToCalled = 'Smokey Mountain';
+                return returnToCalled;
+                break;
+            case 'Tanza':
+                returnToCalled = 'Philippines';
+                return returnToCalled;
                 break;
             default:
-                returnToCalled = 'Where Most Needed';
+                returnToCalled ='Where Most Needed';
                 return returnToCalled;
         }
     },

@@ -1,11 +1,10 @@
 <template name="DonationTo">
     <label for="donateTo">Donation Designation</label>
     <select {{attributes_Input_DonationTo}} class="form-control select select-primary mbl">
-        <optgroup label="">
-            <option value="Where Most Needed" selected >Where Most Needed</option>
-        </optgroup>
+        <option value="WhereMostNeeded" selected >Where Most Needed</option>
         <optgroup label="BaseCamp" title="Base Camp is used to specify giving toward operational expenses, or to help support a missionary/staff member.">
-            <option value="UrgentOperationalNeeds" >Urgent Operational Needs</option>
+            <option value="Operations">Operations Expenses</option>
+            <option value="BaseCampWhereverNeededMost">Missionary</option>
             <option value="BrettDurbin" >Brett Durbin</option>
             <option value="JoshuaBechard" >Joshua Bechard</option>
             <option value="TimmCollins" >Timm Collins</option>
@@ -14,18 +13,30 @@
             <option value="WillieBrooks">Willie Brooks</option>
             <option value="JohnKazaklis" >John Kazaklis</option>
             <option value="LindseyKeller" >Lindsey Keller</option>
-            <!--<option value="EthanPope" >Ethan Pope</option>-->
+            <option value="EthanPope" >Ethan Pope</option>
             <option value="ChrisMammoliti" >Chris Mammoliti</option>
             <option value="ShelleySetchell" >Shelley Setchell</option>
             <option value="IsaacTarwater">Isaac Tarwater</option>
         </optgroup>
-        <optgroup label="Projects">
-            <option value="UrgentFieldNeeds">Urgent Field Needs</option>
-            <option value="DominicanRepublic">Dominican Republic</option>
-            <option value="Honduras">Honduras</option>
-            <option value="Bolivia">Bolivia</option>
-            <option value="Philippines">Philippines</option>
-            <option value="Kenya">Kenya</option>
+        <optgroup label="International Field Projects">
+            <option value="FieldProjectsWhereverNeededMost">International Field Projects</option>
+            <option value="Bolivia">International Field Projects - Bolivia</option>
+            <option value="DominicanRepublic">International Field Projects - Dominican Republic</option>
+            <option value="Honduras">International Field Projects - Honduras</option>
+            <option value="Kenya">International Field Projects - Kenya</option>
+            <option value="Philippines">International Field Projects - Philippines</option>
+        </optgroup>
+        <optgroup label="Community Sponsorship">
+            <option value="CommunitySponsorshipWhereverNeededMost">Community Sponsorship</option>
+            <option value="CommunitySponsorshipBoliviaCochabamba">Community Sponsorship - Bolivia - Cochabamba</option>
+            <option value="CommunitySponsorshipDominicanRepublicSantiago">Community Sponsorship - Dominican Republic - Santiago</option>
+            <option value="CommunitySponsorshipHondurasTegucigalpa">Community Sponsorship - Honduras - Tegucigalpa</option>
+            <option value="CommunitySponsorshipKenyaDandora">Community Sponsorship - Kenya - Dandora</option>
+            <option value="CommunitySponsorshipPhilippinesPayatas">Community Sponsorship - Philippines - Payatas</option>
+            <option value="CommunitySponsorshipPhilippinesSanMateo">Community Sponsorship - Philippines - San Mateo</option>
+            <option value="CommunitySponsorshipPhilippinesSantiago">Community Sponsorship - Philippines - Santiago City/Isabella</option>
+            <option value="CommunitySponsorshipPhilippinesSmokeyMtn">Community Sponsorship - Philippines - Smokey Mountain</option>
+            <option value="CommunitySponsorshipPhilippinesTanza">Community Sponsorship - Philippines - Tanza</option>
         </optgroup>
         <optgroup label="Write In">
             <option value="WriteIn">Write In</option>

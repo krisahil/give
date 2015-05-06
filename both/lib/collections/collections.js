@@ -19,3 +19,5 @@ Invoices = new Meteor.Collection('invoices');
 Subscriptions = new Meteor.Collection('subscriptions');
 
 Payments = new Meteor.Collection('payments');
+
+Donate = new Meteor.Collection('donate');

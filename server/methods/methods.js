@@ -210,5 +210,30 @@ Meteor.methods({
          throw new Meteor.Error(500, e.reason, e.details);
          }
          }*/
+    },
+    get_balanced_customer_data: function (id) {
+        /*try {*/
+            //check to see that the user is the admin user
+            check(id, String);
+            if(this.userId === Meteor.settings.admin_user){
+                logger.info("Started get_balanced_customer_data");
+                var get_id = Utils.get_balanced_id(id);
+                var get_customer = Utils.get_balanced_customer(get_id.metadata['balanced.customer_id']);
+
+                //send this metadata to Stripe to update the customer
+                logger.info("Updating stripe customer with Balanced data.");
+                var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id.metadata['balanced.customer_id']);
+                return get_customer;
+            }else{
+                console.log("You aren't an admin, you can't do that");
+                return '';
+            }
+
+        /*} catch (e) {
+            console.log(e);
+            //e._id = AllErrors.insert(e.response);
+            var error = (e.response);
+            throw new Meteor.Error(error, e._id);
+        }*/
     }
 });
