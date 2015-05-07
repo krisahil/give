@@ -364,8 +364,21 @@ _.extend(Utils,{
                 data_slug.template_name = "donation-initial-email";
                 data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
                 // TODO: need to determine if we want to keep this pending email bcc_address sending us emails everytime
-                //data_slug.message.bcc_address   = null;
+                data_slug.message.bcc_address  = 'josh@trashmountain.com';
                 Utils.send_mandrill_email(data_slug, 'charge.pending');
+
+            } else if (type === 'payment.created') {
+                if (audit_trail_cursor && audit_trail_cursor.payment && audit_trail_cursor.payment.created && audit_trail_cursor.payment.created.sent) {
+                    logger.info("A 'created' email has already been sent for this charge, exiting email send function.");
+                    return;
+                }
+                Utils.audit_email(id, type);
+                data_slug.template_name = "donation-initial-email";
+                data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
+                // TODO: need to determine if we want to keep this pending email bcc_address sending us emails everytime
+                data_slug.message.bcc_address  = 'josh@trashmountain.com';
+                data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
+                Utils.send_mandrill_email(data_slug, 'payment.created');
 
             } else if (type === 'charge.succeeded') {
                 if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.succeeded && audit_trail_cursor.charge.succeeded.sent) {
@@ -376,6 +389,15 @@ _.extend(Utils,{
                 data_slug.template_name = "fall-2014-donation-receipt-multi-collection";
                 data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
                 Utils.send_mandrill_email(data_slug, 'charge.succeeded');
+            }else if (type === 'payment.paid') {
+                if (audit_trail_cursor && audit_trail_cursor.payment && audit_trail_cursor.payment.paid && audit_trail_cursor.payment.paid.sent) {
+                    logger.info("A 'succeeded' email has already been sent for this charge, exiting email send function.");
+                    return;
+                }
+                Utils.audit_email(id, type);
+                data_slug.template_name = "fall-2014-donation-receipt-multi-collection";
+                data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
+                Utils.send_mandrill_email(data_slug, 'payment.paid');
             } else if (type === 'large_gift') {
                 if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.large_gift && audit_trail_cursor.charge.large_gift.sent) {
                     logger.info("A 'large_gift' email has already been sent for this charge, exiting email send function.");

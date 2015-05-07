@@ -742,7 +742,10 @@ _.extend(Utils, {
         var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
         if(!invoice_cursor){
             //TODO: get the invoice from Stripe here, or wait for a set period of time
-            Utils.get_invoice(event_body.data.object.invoice);
+            var invoice = Utils.get_invoice(event_body.data.object.invoice);
+            invoice._id = invoice.id;
+            Invoices.upsert({_id: invoice._id}, invoice);
+            invoice_cursor = Invoices.findOne({_id: invoice.id});
         }
         var subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
 
