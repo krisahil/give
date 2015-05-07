@@ -210,8 +210,20 @@ Stripe_Events = {
         return;
     },
     'payment.created': function (stripeEvent, res) {
-        Utils.payment_events(stripeEvent);
-        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer);
+        Utils.charge_events(stripeEvent);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'pending');
+        console.log(stripeEvent.type + ': event processed');
+        return;
+    },
+    'payment.paid': function (stripeEvent, res) {
+        Utils.charge_events(stripeEvent);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'succeeded');
+        console.log(stripeEvent.type + ': event processed');
+        return;
+    },
+    'payment.failed': function (stripeEvent, res) {
+        Utils.charge_events(stripeEvent);
+        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'failed');
         console.log(stripeEvent.type + ': event processed');
         return;
     },

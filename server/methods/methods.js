@@ -184,7 +184,15 @@ Meteor.methods({
                      return {error: charge.rawType, message: charge.message};
                  }
              }
-        return {c: customerData.id, don: data._id, charge: charge_object.charge};
+
+            // check for payment rather than charge id here
+            var return_charge_or_payment_id;
+            if(charge_object.payment){
+                return_charge_or_payment_id = charge_object.payment;
+            } else {
+                return_charge_or_payment_id = charge_object.charge;
+            }
+        return {c: customerData.id, don: data._id, charge: return_charge_or_payment_id};
         }
 
         /*} catch (e) {

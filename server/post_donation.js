@@ -243,6 +243,7 @@ _.extend(Utils, {
         //Pull each donation from the array and send them to be inserted
         fundResults.forEach(function (element) {
             Utils.insert_each_dt_fund(element.fund);
+            console.log(element);
         });
     },
     insert_each_dt_fund: function(fund){
@@ -495,6 +496,7 @@ _.extend(Utils, {
     },
     audit_dt_donation: function (charge_id, customer_id, status){
         logger.info("Started audit_dt_donation");
+        logger.info("Charge_id: " + charge_id);
 
         Audit_trail.upsert({_id: charge_id}, {$set: {dt_donation_created: true}});
         Audit_trail.upsert({_id: charge_id}, {$addToSet: {status: {dt_donation_status_updated_to: status, time: moment().format("MMM DD, YYYY hh:mma")}}});

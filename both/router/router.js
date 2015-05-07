@@ -8,7 +8,7 @@ Router.configure({
 });
 
 Router.plugin('ensureSignedIn', {
-    except: ['donation.form', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
+    except: ['donation.form', 'donation.landing', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
 });
 
 Router.route('', function () {
@@ -31,6 +31,12 @@ Router.route('', function () {
     this.render('DonationForm');
 }, {
     name: 'donation.form'
+});
+
+Router.route('/landing', function () {
+    this.render('DonationLanding');
+}, {
+    name: 'donation.landing'
 });
 
 Router.route('/thanks', {

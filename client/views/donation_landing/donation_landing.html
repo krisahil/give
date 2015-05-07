@@ -1,0 +1,229 @@
+
+
+
+    <!--<link href="../system/wp-content/customphp/stylesheets/common.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="../system/wp-content/customphp/stylesheets/donate-test2.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="/system/wp-content/customphp/stylesheets/jquery.custombox.css" rel="stylesheet">-->
+<template name="DonationLanding">
+  <div class="container-fluid scroll-to-here Donation-Landing">
+      <div class="row">
+          <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-4">
+              <h4 class="text-center">Donate Here</h4>
+
+              <div class="well well1 text-center">
+                  <form method="GET">
+                      <input type="hidden" name="donateTo">
+                      <input type="hidden" name="donateWith">
+                      <input type="hidden" id="placeholder_donate_input">
+                      <div class="input-group">
+                          <span class="input-group-addon">$</span> <input class="form-control" min="1" name="amount" placeholder="100"
+                                                                          step="any" type="number">
+                      </div>
+                      <br>
+                      <label class="small_label" for="GiveTo">
+                          What would you like to give to?
+                      </label>
+                      <select class="donateSelect" id="GiveTo" name="to"></select>
+                      <br>
+
+                      <p>
+                          <label class="small_label small_label_two" for="depends-on-Missionary" id="depends-on-Missionary-label">
+                              Who would you like to support?
+                          </label>
+                          <select class="pull-center donateSelect donateSelectTwo" id="depends-on-Missionary" required></select>
+                      </p>
+
+                      <p>
+                          <label class="small_label small_label_two" for="depends-on-field-projects" id="depends-on-field-projects-label">
+                              Is there a specific country you'd like to support?</label>
+                          <select class="pull-center donateSelect donateSelectTwo" id="depends-on-field-projects">
+                              <option value="FieldProjectsWhereverNeededMost">
+                                  Wherever It's Needed Most
+                              </option>
+
+                              <option title="Bolivia" value="Bolivia">
+                                  Bolivia
+                              </option>
+
+                              <option title="Dominican Republic" value="DominicanRepublic">
+                                  Dominican Republic
+                              </option>
+
+                              <option title="Honduras" value="Honduras">
+                                  Honduras
+                              </option>
+
+                              <option title="Kenya" value="Kenya">
+                                  Kenya
+                              </option>
+
+                              <option title="Philippines" value="Philippines">
+                                  Philippines
+                              </option>
+                          </select></p>
+
+                      <p><label class="small_label small_label_two" for="depends-on-community-sponsorship" id=
+                              "depends-on-community-sponsorship-label">Is there a specific community you'd like to sponsor?</label>
+                          <select class="pull-center donateSelect donateSelectTwo" id="depends-on-community-sponsorship">
+                              <option value="CommunitySponsorshipWhereverNeededMost">
+                                  Wherever It's Needed Most
+                              </option>
+
+                              <option title="Bolivia - Cochabamba" value="CommunitySponsorshipBoliviaCochabamba">
+                                  Bolivia - Cochabamba
+                              </option>
+
+                              <option title="Dominican Republic - Santiago" value="CommunitySponsorshipDominicanRepublicSantiago">
+                                  Dominican Republic - Santiago
+                              </option>
+
+                              <option title="Honduras - Tegucigalpa" value="CommunitySponsorshipHondurasTegucigalpa">
+                                  Honduras - Tegucigalpa
+                              </option>
+
+                              <option title="Kenya - Dandora" value="CommunitySponsorshipKenyaDandora">
+                                  Kenya - Dandora
+                              </option>
+
+                              <option title="Philippines - Payatas" value="CommunitySponsorshipPhilippinesPayatas">
+                                  Philippines - Payatas
+                              </option>
+
+                              <option title="Philippines - San Mateo" value="CommunitySponsorshipPhilippinesSanMateo">
+                                  Philippines - San Mateo
+                              </option>
+
+                              <option title="Philippines - Santiago City/Isabella" value="CommunitySponsorshipPhilippinesSantiago">
+                                  Philippines - Santiago City/Isabella
+                              </option>
+
+                              <option title="Philippines - Smokey Mtn" value="CommunitySponsorshipPhilippinesSmokeyMtn">
+                                  Philippines - Smokey Mtn
+                              </option>
+
+                              <option title="Philippines - Tanza" value="CommunitySponsorshipPhilippinesTanza">
+                                  Philippines - Tanza
+                              </option>
+                          </select></p>
+
+                      <p id="depends-on-WriteIn"></p><input name="to" type="hidden" value="">
+                      <!-- onclick="this.form.action='URL'" is used to send the user to different pages depending on which button they press -->
+
+                      <p class="">
+                          <!--onclick="this.form.action='https://give.trashmountain.com'"-->
+                          <button class="btn btn-success btn-success-color btn-sm" id="cardButton"
+                                  title="Donate by card">Donate by <img alt="Credit Card" src="/images/icons/icon-cc.png" title="Donate by card">
+                          </button>
+                          <button class="btn btn-success btn-success-color btn-sm" id="checkButton"
+                                  title="Donate by check">Donate by <img alt="Check" src="/images/icons/icon-check-reduced.png" title="Donate by check">
+                          </button>
+                      </p>
+                  </form>
+              </div>
+              <br>
+
+              <div class="well well1 text-center">
+                  <p><a class="list-group-item btn btn-default btn-small" id="other_ways_to_give">Other Ways To Give.</a></p>
+
+                  <h6><strong>Mailing a check?</strong></h6>
+
+                  <span>1555 NW Gage BLVD
+                  <br>
+                  Topeka, KS 66618</span>
+
+                  <p><strong>Need help giving? <a href="tel:785-246-6845">785-246-6845</a></strong></p>
+              </div>
+          </div>
+
+          <div class="col col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+
+          <div class="col col-lg-7 col-md-7 col-sm-7 col-xs-7">
+              <h4>Your giving guide</h4>
+
+              <h6>I'd like to give to:</h6>
+
+              <div class="row">
+                  <div class="col col-lg-12 sol-md-12 col-sm-12 col-xs-12  giving-detail-area" id="where_most_needed_description">
+                      <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-2"><img class="center-block" height="60" src=
+                              "/images/icons/map_marker.png"></div>
+
+                      <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <p class="small-bottom v-top"><strong>Wherever It's Needed Most</strong></p>
+
+                          <p class=""><em>Your unrestricted gift will be used to meet our most pressing ministry needs.</em></p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="operations_description">
+                      <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-2"><img class="center-block" height="60" src=
+                              "/images/icons/cog.png"></div>
+
+                      <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <p class="small-bottom v-top"><strong>Operations Expenses (Basecamp)</strong></p>
+
+                          <p class=""><em>Your gift to Basecamp will be used to fund TMP's operational expenses.</em></p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="missionary_description">
+                      <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-2"><img class="center-block" height="60" src=
+                              "/images/icons/missionary.png"></div>
+
+                      <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <p class="small-bottom v-top"><strong>TMP Missionary Support (Basecamp)</strong></p>
+
+                          <p class=""><em>Your gift will be used to support the missionary/staff member you specify.</em></p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="field_projects_description">
+                      <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-2"><img class="center-block" height="60" src=
+                              "/images/icons/flag.png"></div>
+
+                      <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <p class="small-bottom v-top"><strong>International Field Projects</strong></p>
+
+                          <p class=""><em>Your gift will go directly to field projects in various international
+                              TMP locations (including building homes and facilities, international leadership training, and
+                              any other community-related needs).</em></p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="community_sponsorship_description">
+                      <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-2"><img class="center-block" height="60" src=
+                              "/images/icons/spoon_fork.png"></div>
+
+                      <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <p class="small-bottom v-top"><strong>Community Sponsorship</strong></p>
+
+                          <p class=""><em>Your gift will go directly to the physical, spiritual, educational and
+                              emotional care of children participating in one of our field programs.</em></p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col col-lg-12 col-md-12 col-sm-12 col-xs-12  giving-detail-area" id="trip_description">
+                      <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-2"><img class="center-block" height="60" src=
+                              "/images/icons/map.png"></div>
+
+                      <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <p class="small-bottom v-top"><strong>Trip Participant</strong></p>
+
+                          <p class=""><em>You can write in a different designation, or give to a trip participant.</em></p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  {{> OtherWaysToGive}}
+</template>

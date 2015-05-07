@@ -22,7 +22,7 @@ _.extend(App, {
                     "donateWith": $('#donateWith').val(),
                     "is_recurring": $('#is_recurring').val(),
                     "coverTheFees": $('#coverTheFees').is(":checked"),
-                    "created_at": moment().format('MM/DD/YYYY, hh:mm'),
+                    "created_at": moment().format('MM/DD/YYYY, hh:mma'),
                     "start_date": moment(new Date($('#start_date').val())).format('X'),
                     "saved": $('#save_payment').is(":checked")
                 },
@@ -52,7 +52,7 @@ _.extend(App, {
                     "donateWith": $("#donateWith").val(),
                     "is_recurring": $('#is_recurring').val(),
                     "coverTheFees": $('#coverTheFees').is(":checked"),
-                    "created_at": moment().format('MM/DD/YYYY, hh:mm'),
+                    "created_at": moment().format('MM/DD/YYYY, hh:mma'),
                     "start_date": moment(new Date($('#start_date').val())).format('X'),
                     "saved": $('#save_payment').is(":checked")
                 },
@@ -376,7 +376,7 @@ _.each(App.helpers, function (helper, key) {
 
 UI.registerHelper('formatTime', function(context, options) {
   if(context)
-    return moment(context).format('MM/DD/YYYY, hh:mm');
+    return moment(context).format('MM/DD/YYYY, hh:mma');
 });
 
 UI.registerHelper('shortIt', function(stringToShorten, maxCharsAmount){

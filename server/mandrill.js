@@ -92,7 +92,7 @@ _.extend(Utils,{
 
     },
     send_donation_email: function (recurring, id, amount, type, body, frequency, subscription) {
-        try {
+        /*try {*/
             logger.info("Started send_donation_email with ID: " + id);
             if (type === "charge.updated") {
                 logger.info("Don't need to send an email when a charge is updated, exiting the send_donation_email method.");
@@ -134,18 +134,12 @@ _.extend(Utils,{
                                     "name": "DEV",
                                     "content": Meteor.settings.dev
                                 }, {
-                                    "name": "DonateWith",
-                                    "content": charge_cursor.source.brand
-                                }, {
                                     "name": "TotalGiftAmount",
                                     "content": (charge_cursor.amount / 100).toFixed(2)
                                 }, {
                                     "name": "GiftAmount",
                                     "content": (amount / 100).toFixed(2)
-                                }, {
-                                    "name": "NAME",
-                                    "content": charge_cursor.source.name
-                                }, {
+                                },  {
                                     "name": "ADDRESS_LINE1",
                                     "content": customer_cursor.metadata.address_line1
                                 }, {
@@ -208,18 +202,34 @@ _.extend(Utils,{
             }
 
             //Get the donation with description for either the card or the bank account
-            if (charge_cursor.source.brand) {
+            if (charge_cursor && charge_cursor.source && charge_cursor.source.brand) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
                         "name": "donateWith",
                         "content": charge_cursor.source.brand + " - ending in, " + charge_cursor.source.last4
+                    }, {
+                        "name": "NAME",
+                        "content": charge_cursor.source.name
                     }
                 );
-            } else {
+            } else if(charge_cursor && charge_cursor.source && charge_cursor.source.bank_name) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
                         "name": "donateWith",
                         "content": charge_cursor.source.bank_name + " - ending in, " + charge_cursor.source.last4
+                    }, {
+                        "name": "NAME",
+                        "content": charge_cursor.source.name
+                    }
+                );
+            } else{
+                data_slug.message.merge_vars[0].vars.push(
+                    {
+                        "name": "donateWith",
+                        "content": charge_cursor.payment_source.bank_name + " - ending in, " + charge_cursor.payment_source.last4
+                    }, {
+                        "name": "NAME",
+                        "content": customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
                     }
                 );
             }
@@ -377,12 +387,12 @@ _.extend(Utils,{
                 data_slug.message.bcc_address = null;
                 Utils.send_mandrill_email(data_slug, 'large-gift');
             }
-        }
+        /*}
         catch (e) {
             logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
             logger.error('Mandril sendEmailOutAPI Method error: ' + e);
             throw new Meteor.error(e);
-        }
+        }*/
     },
 	send_mandrill_email: function(data_slug, type){
         try{

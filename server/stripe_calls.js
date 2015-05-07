@@ -9,96 +9,120 @@ _.extend(Utils, {
             case 'WriteIn':
                 return 'Write In';
                 break;
-            case 'UrgentOperationalNeeds':
-                returnToCalled = 'Urgent Operational Needs';
+            case 'Operations':
+                returnToCalled = 'Basecamp - Operations Expenses';
                 return returnToCalled;
                 break;
             case 'JoshuaBechard':
-                returnToCalled = 'Joshua Bechard';
+                returnToCalled = 'Basecamp - Joshua Bechard';
                 return returnToCalled;
                 break;
             case 'TimmCollins':
-                returnToCalled = 'Timm Collins';
+                returnToCalled = 'Basecamp - Timm Collins';
                 return returnToCalled;
                 break;
             case 'JonDeMeo':
-                returnToCalled = 'Jon DeMeo';
+                returnToCalled = 'Basecamp - Jon DeMeo';
                 return returnToCalled;
                 break;
             case 'BrettDurbin':
-                returnToCalled = 'Brett Durbin';
+                returnToCalled = 'Basecamp - Brett Durbin';
                 return returnToCalled;
                 break;
             case 'JohnKazaklis':
-                returnToCalled = 'John Kazaklis';
+                returnToCalled = 'Basecamp - John Kazaklis';
                 return returnToCalled;
                 break;
             case 'LindseyKeller':
-                returnToCalled = 'Lindsey Keller';
+                returnToCalled = 'Basecamp - Lindsey Keller';
                 return returnToCalled;
                 break;
             case 'EthanPope':
-                returnToCalled = 'Ethan Pope';
+                returnToCalled = 'Basecamp - Ethan Pope';
                 return returnToCalled;
                 break;
             case 'ChrisMammoliti':
-                returnToCalled = 'Chris Mammoliti';
+                returnToCalled = 'Basecamp - Chris Mammoliti';
                 return returnToCalled;
                 break;
             case 'ShelleySetchell':
-                returnToCalled = 'Shelley Setchell';
+                returnToCalled = 'Basecamp - Shelley Setchell';
                 return returnToCalled;
                 break;
             case 'IsaacTarwater':
-                returnToCalled = 'Isaac Tarwater';
+                returnToCalled = 'Basecamp - Isaac Tarwater';
                 return returnToCalled;
                 break;
             case 'WillieBrooks':
-                returnToCalled = 'Willie Brooks';
+                returnToCalled = 'Basecamp - Willie Brooks';
                 return returnToCalled;
                 break;
             case 'JamesHishmeh':
-                returnToCalled = 'James Hishmeh';
+                returnToCalled = 'Basecamp - James Hishmeh';
                 return returnToCalled;
                 break;
-            case 'UrgentFieldNeeds':
-                returnToCalled = 'Urgent Field Needs';
+            case 'FieldProjectsWhereverNeededMost':
+                returnToCalled = 'International Field Projects - Where Most Needed';
                 return returnToCalled;
                 break;
             case 'Bolivia':
-                returnToCalled = 'Bolivia';
+                returnToCalled = 'International Field Projects - Bolivia';
                 return returnToCalled;
                 break;
             case 'DominicanRepublic':
-                returnToCalled = 'Dominican Republic';
+                returnToCalled = 'International Field Projects - Dominican Republic';
                 return returnToCalled;
                 break;
             case 'Honduras':
-                returnToCalled = 'Honduras';
+                returnToCalled = 'International Field Projects - Honduras';
                 return returnToCalled;
                 break;
             case 'Kenya':
-                returnToCalled = 'Kenya';
+                returnToCalled = 'International Field Projects - Kenya';
                 return returnToCalled;
                 break;
-            case 'LagunaDeBay':
-                returnToCalled = 'Laguna De Bay';
+            case 'Philippines':
+                returnToCalled = 'International Field Projects - Philippines';
                 return returnToCalled;
                 break;
-            case 'Payatas':
-                returnToCalled = 'Payatas';
+            case 'CommunitySponsorshipWhereverNeededMost':
+                returnToCalled = 'Community Sponsorship - Where Most Needed';
                 return returnToCalled;
                 break;
-            case 'SanMateo':
-                returnToCalled = 'SanMateo';
+            case 'CommunitySponsorshipBoliviaCochabamba':
+                returnToCalled = 'Community Sponsorship - Bolivia - Cochabamba';
                 return returnToCalled;
                 break;
-            case 'SmokeyMountain':
-                returnToCalled = 'Smokey Mountain';
+            case 'CommunitySponsorshipDominicanRepublicSantiago':
+                returnToCalled = 'Community Sponsorship - Dominican Republic - Santiago';
                 return returnToCalled;
                 break;
-            case 'Tanza':
-                returnToCalled = 'Philippines';
+            case 'CommunitySponsorshipHondurasTegucigalpa':
+                returnToCalled = 'Community Sponsorship - Honduras - Tegucigalpa';
+                return returnToCalled;
+                break;
+            case 'CommunitySponsorshipKenyaDandora':
+                returnToCalled = 'Community Sponsorship - Kenya - Dandora';
+                return returnToCalled;
+                break;
+            case 'CommunitySponsorshipPhilippinesPayatas':
+                returnToCalled = 'Community Sponsorship - Philippines - Payatas';
+                return returnToCalled;
+                break;
+            case 'CommunitySponsorshipPhilippinesSanMateo':
+                returnToCalled = 'Community Sponsorship - Philippines - San Mateo';
+                return returnToCalled;
+                break;
+            case 'CommunitySponsorshipPhilippinesSantiago':
+                returnToCalled = 'Community Sponsorship - Philippines - Santiago City/Isabella';
+                return returnToCalled;
+                break;
+            case 'CommunitySponsorshipPhilippinesSmokeyMtn':
+                returnToCalled = 'Community Sponsorship - Philippines - Smokey Mountain';
+                return returnToCalled;
+                break;
+            case 'CommunitySponsorshipPhilippinesTanza':
+                returnToCalled = 'Community Sponsorship - Philippines - Tanza';
                 return returnToCalled;
                 break;
             default:
@@ -278,6 +302,7 @@ _.extend(Utils, {
             stripeInvoiceList = stripeInvoiceList.wait();
 
             logger.info("Finished Stripe charge_plan. Subscription ID: " + stripeChargePlan.id);
+            console.dir(stripeInvoiceList);
             return stripeInvoiceList.data[0];
         } else {
             Utils.send_scheduled_email(donation_id, stripeChargePlan.id, subscription_frequency, total);
@@ -361,12 +386,19 @@ _.extend(Utils, {
 
         switch(event_body.data.object.object){
             case "customer":
+                if(event_body.data.object.metadata['balanced.customer_id']){
+                    event_body.data.object.metadata['balancedU+FF0Ecustomer_id'] = event_body.data.object.metadata['balanced.customer_id'];
+                    delete event_body.data.object.metadata['balanced.customer_id'];
+                }
                 Customers.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "invoice":
                 Invoices.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "charge":
+                Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                break;
+            case "payment":
                 Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "card":
@@ -708,6 +740,10 @@ _.extend(Utils, {
 
         // Get the subscription cursor
         var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
+        if(!invoice_cursor){
+            //TODO: get the invoice from Stripe here, or wait for a set period of time
+            Utils.get_invoice(event_body.data.object.invoice);
+        }
         var subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
 
         // setup the future for the async Stripe call
