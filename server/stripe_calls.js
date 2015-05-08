@@ -768,6 +768,7 @@ _.extend(Utils, {
 
         stripeCharges = stripeCharges.wait();
 
+        Charges.update({_id: event_body.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
         if (!stripeCharges.object) {
             throw new Meteor.Error(stripeCharges.rawType, stripeCharges.message);
         }

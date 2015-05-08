@@ -130,6 +130,217 @@ _.extend(Utils, {
          throw new Meteor.Error(error, e._id);
          }*/
     },
+    get_fund_id: function (donateTo) {
+        logger.info("Started get_fund_id");
+        // Take the text of donateTo and associate that with a fund id
+        // don't delete any cases below, simply add new ones. If the name
+        // changes on new gifts it may still be there on old gifts.
+
+        // If a fund id changes you'll need to go into every case that fits that fund id and update the id
+        switch(donateTo) {
+            case "BaseCamp - Brett Durbin":
+                return 60463;
+                break;
+            case "Basecamp - Brett Durbin":
+                return 60463;
+                break;
+            case "BaseCamp - Jon DeMeo":
+                return 60464;
+                break;
+            case "Basecamp - Jon DeMeo":
+                return 60464;
+                break;
+            case "BaseCamp - Shelley Setchell":
+                return 60465;
+                break;
+            case "Basecamp - Shelley Setchell":
+                return 60465;
+                break;
+            case "BaseCamp - John Kazaklis":
+                return 60480;
+                break;
+            case "Basecamp - John Kazaklis":
+                return 60480;
+                break;
+            case "BaseCamp":
+                return 63656;
+                break;
+            case "Basecamp":
+                return 63656;
+                break;
+            case "Basecamp - Operations Expenses":
+                return 63656;
+                break;
+            case "Urgent Operational Needs":
+                return 63656;
+                break;
+            case "BaseCamp - Chris Mammoliti":
+                return 63662;
+                break;
+            case "Basecamp - Chris Mammoliti":
+                return 63662;
+                break;
+            case "BaseCamp - Timm Collins":
+                return 63665;
+                break;
+            case "Basecamp - Timm Collins":
+                return 63665;
+                break;
+            case "BaseCamp - Isaac Tarwater":
+                return 63682;
+                break;
+            case "Basecamp - Isaac Tarwater":
+                return 63682;
+                break;
+            case "BaseCamp - Joshua Bechard":
+                return 63683;
+                break;
+            case "Basecamp - Joshua Bechard":
+                return 63683;
+                break;
+            case "BaseCamp - James Hishmeh":
+                return 65262;
+                break;
+            case "Basecamp - James Hishmeh":
+                return 65262;
+                break;
+            case "BaseCamp - Willie Brooks":
+                return 65263;
+                break;
+            case "Basecamp - Willie Brooks":
+                return 65263;
+                break;
+            case "Basecamp - Ethan Pope":
+                return 67051;
+                break;
+            case "Basecamp - Lindsey Keller":
+                return 67052;
+                break;
+            case "Int'l Field Projects - Honduras":
+                return 60489;
+                break;
+            case "International Field Projects - Honduras":
+                return 60489;
+                break;
+            case "Urgent Field Needs":
+                return 63659;
+                break;
+            case "Int'l Field Projects - Where Needed Most":
+                return 63659;
+                break;
+            case "International Field Projects - Where Most Needed":
+                return 63659;
+                break;
+            case "Int'l Field Projects - Bolivia":
+                return 67281;
+                break;
+            case "International Field Projects - Bolivia":
+                return 67281;
+                break;
+            case "Int'l Field Projects - DR":
+                return 60491;
+                break;
+            case "DR Urgent":
+                return 60491;
+                break;
+            case "International Field Projects - Dominican Republic":
+                return 60491;
+                break;
+            case "Int'l Field Projects - Kenya":
+                return 67124;
+                break;
+            case "International Field Projects - Kenya":
+                return 67124;
+                break;
+            case "Philippines Urgent":
+                return 63689;
+                break;
+            case "Int'l Field Projects - Philippines":
+                return 63689;
+                break;
+            case "International Field Projects - Philippines":
+                return 63689;
+                break;
+            case "Comm Spon - Where Most Needed":
+                return 67273;
+                break;
+            case "Community Sponsorship - Where Most Needed":
+                return 67273;
+                break;
+            case "Comm Spon - Cochabamba, Bolivia":
+                return 64197;
+                break;
+            case "Community Sponsorship - Bolivia - Cochabamba":
+                return 64197;
+                break;
+            case "Comm Spon - Santiago, DR":
+                return 63667;
+                break;
+            case "Community Sponsorship - Santiago":
+                return 63667;
+                break;
+            case "Community Sponsorship - Dominican Republic - Santiago":
+                return 63667;
+                break;
+            case "Santiago, DR - Community Sponsorship":
+                return 63667;
+                break;
+            case "Honduras Community Sponsorship":
+                return 63695;
+                break;
+            case "Comm Spon - Tegucigalpa, Honduras":
+                return 63695;
+                break;
+            case "Community Sponsorship - Honduras - Tegucigalpa":
+                return 63695;
+                break;
+            case "Comm Spon - Dandora, Kenya":
+                return 67274;
+                break;
+            case "Community Sponsorship - Kenya - Dandora":
+                return 67274;
+                break;
+            case "Comm Spon - Payatas, Philippines":
+                return 67276;
+                break;
+            case "Community Sponsorship - Philippines - Payatas":
+                return 67276;
+                break;
+            case "Comm Spon - San Mateo, Philippines":
+                return 67282;
+                break;
+            case "Community Sponsorship - Philippines - San Mateo":
+                return 67282;
+                break;
+            case "Comm Spon - Sant-Isabela, Philippines":
+                return 67277;
+                break;
+            case "Community Sponsorship - Philippines - Santiago City/Isabella":
+                return 67277;
+                break;
+            case "Comm Spon - Smokey Mtn, Philippines":
+                return 64590;
+                break;
+            case "Community Sponsorship - Philippines - Smokey Mountain":
+                return 64590;
+                break;
+            case "Tanza, Philippines - Community Sponsorship":
+                return 63692;
+                break;
+            case "Comm Spon - Tanza, Philippines":
+                return 63692;
+                break;
+            case "Community Sponsorship - Philippines - Tanza":
+                return 63692;
+                break;
+            case "Honduras Urgent":
+                return 60489;
+                break;
+            case "Where Most Needed":
+                return 63661;
+                break;
+        }
+    },
     insert_donation_and_donor_into_dt: function (customer_id, user_id, charge_id){
         /*try {*/
         logger.info("Started insert_donation_and_donor_into_dt");
@@ -158,21 +369,22 @@ _.extend(Utils, {
         received_on = moment(new Date(charge.created * 1000)).format("YYYY/MM/DD hh:mma");
 
         var dt_fund, invoice_cursor;
-        if(charge_id.slice(0,2) === 'ch'){
+        if(charge_id.slice(0,2) === 'ch' || charge_id.slice(0,2) === 'py'){
             invoice_cursor = Invoices.findOne({_id: charge.invoice});
             if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
-                dt_fund = DT_funds.findOne({name: invoice_cursor.lines.data[0].metadata.donateTo});
+                dt_fund = Utils.get_fund_id(invoice_cursor.lines.data[0].metadata.donateTo);
+
             } else{
                 var donateTo = charge && charge.metadata && charge.metadata.donateTo;
-                dt_fund = DT_funds.findOne({name: donateTo});
+                dt_fund = Utils.get_fund_id(donateTo);
             }
         } else{
             // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
         }
 
-        //fund_id 65663 is the No-Match-Found fund used to help reconcile
+        // fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
-        var fund_id = dt_fund && dt_fund._id || 65663;
+        var fund_id = dt_fund || Meteor.settings.donor_tools_default_fund_id;
 
         var newDonationResult;
         newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
@@ -234,7 +446,7 @@ _.extend(Utils, {
 
         //Insert each donation into the DT_donations collection
         donation._id = donation.id;
-        logger.info(donation._id);
+        //logger.info(donation._id);
         DT_donations.upsert({_id: donation._id}, donation);
     },
     separate_funds: function(fundResults){
@@ -339,11 +551,11 @@ _.extend(Utils, {
             donateTo = charge.metadata.donateTo;
         }
 
-        dt_fund = DT_funds.findOne({name: donateTo});
+        dt_fund = Utils.get_fund_id(donateTo);
 
         //fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
-        var fund_id = dt_fund && dt_fund._id || 65663;
+        var fund_id = dt_fund || Meteor.settings.donor_tools_default_fund_id;
 
         var source_id;
 

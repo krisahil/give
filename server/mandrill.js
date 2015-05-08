@@ -102,10 +102,15 @@ _.extend(Utils,{
             // Setup a cursor for the Audit_trail document corresponding to this charge_id
             var audit_trail_cursor = Audit_trail.findOne({charge_id: id});
             var charge_cursor = Charges.findOne({_id: id});
+
             if (!charge_cursor) {
                 logger.error("No charge found here, exiting.");
                 return;
             }
+            console.log("******************************************************************************");
+            console.log("?????????????????////////////////////////////??????????????????????????????????");
+            console.log(charge_cursor.metadata.fees);
+            console.dir(charge_cursor.metadata);
 
             var customer_cursor = Customers.findOne({_id: charge_cursor.customer});
             if (!customer_cursor) {
@@ -137,9 +142,6 @@ _.extend(Utils,{
                                     "name": "TotalGiftAmount",
                                     "content": (charge_cursor.amount / 100).toFixed(2)
                                 }, {
-                                    "name": "GiftAmount",
-                                    "content": (amount / 100).toFixed(2)
-                                },  {
                                     "name": "ADDRESS_LINE1",
                                     "content": customer_cursor.metadata.address_line1
                                 }, {
@@ -169,6 +171,9 @@ _.extend(Utils,{
                                 }, {
                                     "name": "failure_code",
                                     "content": charge_cursor.failure_code
+                                }, {
+                                    "name": "URL",
+                                    "content": Meteor.settings.public.URL + "/thanks?"
                                 }
                             ]
                         }
@@ -176,6 +181,25 @@ _.extend(Utils,{
                 }
             };
 
+            if(charge_cursor.metadata.fees){
+                data_slug.message.merge_vars[0].vars.push(
+                    {
+                        "name": "GiftAmountFees",
+                        "content": (charge_cursor.metadata.fees / 100).toFixed(2)
+                    },
+                    {
+                        "name": "GiftAmount",
+                        "content": ((amount / 100).toFixed(2) - (charge_cursor.metadata.fees / 100).toFixed(2))
+                    }
+                );
+            } else {
+                data_slug.message.merge_vars[0].vars.push(
+                    {
+                        "name": "GiftAmount",
+                        "content": (amount / 100).toFixed(2)
+                    }
+                );
+            }
             if (customer_cursor.metadata.address_line2) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
@@ -389,7 +413,7 @@ _.extend(Utils,{
                 data_slug.template_name = "fall-2014-donation-receipt-multi-collection";
                 data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
                 Utils.send_mandrill_email(data_slug, 'charge.succeeded');
-            }else if (type === 'payment.paid') {
+            } else if (type === 'payment.paid') {
                 if (audit_trail_cursor && audit_trail_cursor.payment && audit_trail_cursor.payment.paid && audit_trail_cursor.payment.paid.sent) {
                     logger.info("A 'succeeded' email has already been sent for this charge, exiting email send function.");
                     return;

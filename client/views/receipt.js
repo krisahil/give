@@ -67,6 +67,7 @@ Template.Receipt.helpers({
         }
     },
     donateWith: function () {
+        console.log(this);
         if(this.source) {
             var source = this.source;
             if (source.object.slice(0, 4) === 'card') {
@@ -74,6 +75,9 @@ Template.Receipt.helpers({
             } else if (source.object.slice(0, 4) === 'bank') {
                 return source.bank_name + ", ending in " + source.last4;
             }
+        } else if(this.payment_source) {
+            var source = this.payment_source;
+            return source.bank_name + ", ending in " + source.last4;
         }
    },
    amount: function () {
