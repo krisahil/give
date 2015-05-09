@@ -1,7 +1,7 @@
 <template name="UserNav">
     <div class="text-right">
         <span class="">
-            <p class="text-danger text-center">
+            <p class="text-danger text-center hidden-print">
                 <!--Your giving history may still be updating. It might not reflect the latest numbers we have in our donation system. &nbsp;&nbsp;&nbsp;-->
                 {{#if MeteorUser}}
                     <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}"><span class="fa fa-history"></span> Profile & Giving History</button></a>

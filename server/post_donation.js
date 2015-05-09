@@ -384,7 +384,14 @@ _.extend(Utils, {
 
         // fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
-        var fund_id = dt_fund || Meteor.settings.donor_tools_default_fund_id;
+        var fund_id, memo;
+        if(dt_fund) {
+            fund_id = dt_fund;
+            memo = Meteor.settings.dev + charge.metadata.donateTo;
+        } else {
+            fund_id = Meteor.settings.donor_tools_default_fund_id;
+            memo = Meteor.settings.dev;
+        }
 
         var newDonationResult;
         newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
@@ -393,7 +400,7 @@ _.extend(Utils, {
                     "splits": [{
                         "amount_in_cents": charge.amount,
                         "fund_id": fund_id,
-                        "memo": Meteor.settings.dev
+                        "memo": memo
                     }],
                     "donation_type_id": Meteor.settings.donor_tools_gift_type,
                     "received_on": received_on,
@@ -555,8 +562,14 @@ _.extend(Utils, {
 
         //fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
-        var fund_id = dt_fund || Meteor.settings.donor_tools_default_fund_id;
-
+        var fund_id, memo;
+        if(dt_fund) {
+            fund_id = dt_fund;
+            memo = Meteor.settings.dev + charge.metadata.donateTo;
+        } else {
+            fund_id = Meteor.settings.donor_tools_default_fund_id;
+            memo = Meteor.settings.dev;
+        }
         var source_id;
 
         if (customer && customer.business_name){
@@ -575,7 +588,7 @@ _.extend(Utils, {
                     "splits": [{
                         "amount_in_cents": charge.amount,
                         "fund_id": fund_id,
-                        "memo": Meteor.settings.dev
+                        "memo": memo
                     }],
                     "donation_type_id": Meteor.settings.donor_tools_gift_type,
                     "received_on": moment(new Date(charge.created * 1000)).format("YYYY/MM/DD hh:mma"),

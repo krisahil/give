@@ -107,10 +107,6 @@ _.extend(Utils,{
                 logger.error("No charge found here, exiting.");
                 return;
             }
-            console.log("******************************************************************************");
-            console.log("?????????????????////////////////////////////??????????????????????????????????");
-            console.log(charge_cursor.metadata.fees);
-            console.dir(charge_cursor.metadata);
 
             var customer_cursor = Customers.findOne({_id: charge_cursor.customer});
             if (!customer_cursor) {
