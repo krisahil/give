@@ -368,28 +368,31 @@ _.extend(Utils, {
         payment_status = charge.status;
         received_on = moment(new Date(charge.created * 1000)).format("YYYY/MM/DD hh:mma");
 
-        var dt_fund, invoice_cursor;
+        var dt_fund, invoice_cursor, donateTo;
         if(charge_id.slice(0,2) === 'ch' || charge_id.slice(0,2) === 'py'){
             invoice_cursor = Invoices.findOne({_id: charge.invoice});
+            console.log("LOOOK HERERER LOEIRJEORJELIRELR III *****************???????????????");
+            console.log(charge.invoice);
+            console.dir(invoice_cursor.metadata);
             if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
-                dt_fund = Utils.get_fund_id(invoice_cursor.lines.data[0].metadata.donateTo);
+                donateTo = invoice_cursor.lines.data[0].metadata.donateTo;
 
             } else{
-                var donateTo = charge && charge.metadata && charge.metadata.donateTo;
-                dt_fund = Utils.get_fund_id(donateTo);
+                donateTo = charge && charge.metadata && charge.metadata.donateTo;
             }
         } else{
             // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
         }
+        dt_fund = Utils.get_fund_id(donateTo);
 
         // fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
-        if(dt_fund) {
-            fund_id = dt_fund;
-            memo = Meteor.settings.dev + charge.metadata.donateTo;
-        } else {
+        if(!dt_fund) {
             fund_id = Meteor.settings.donor_tools_default_fund_id;
+            memo = Meteor.settings.dev + donateTo;
+        } else {
+            fund_id = dt_fund;
             memo = Meteor.settings.dev;
         }
 
@@ -546,28 +549,44 @@ _.extend(Utils, {
         var customer = Customers.findOne(customer_id);
         var charge = Charges.findOne(charge_id);
 
-        var dt_fund, donateTo;
-        if(charge.invoice){
-            if(Invoices.findOne({_id: charge.invoice})){
-                donateTo = Invoices.findOne({_id: charge.invoice}).metadata.donateTo;
-            } else{
-                var invoice = Utils.get_invoice(charge.invoice);
-                donateTo = invoice.metadata.donateTo;
+        var dt_fund, donateTo, invoice_cursor;
+
+
+        if(charge_id.slice(0,2) === 'ch' || charge_id.slice(0,2) === 'py') {
+            if (charge.invoice) {
+                invoice_cursor = Invoices.findOne({_id: charge.invoice});
+                console.log("LOOOK HERERER LOEIRJEORJELIRELR III *****************???????????????");
+                console.log(charge.invoice);
+                console.dir(invoice_cursor.metadata);
+                /*if (Invoices.findOne({_id: charge.invoice})) {
+                    donateTo = Invoices.findOne({_id: charge.invoice}).metadata.donateTo;
+                } else {
+                    var invoice = Utils.get_invoice(charge.invoice);
+                    donateTo = invoice.metadata.donateTo;
+                }*/
+                if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
+                    donateTo = invoice_cursor.lines.data[0].metadata.donateTo;
+                } else{
+                    donateTo = charge && charge.metadata && charge.metadata.donateTo;
+                }
+            } else {
+                donateTo = charge.metadata.donateTo;
             }
         } else{
-            donateTo = charge.metadata.donateTo;
+            // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
         }
+
 
         dt_fund = Utils.get_fund_id(donateTo);
 
         //fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
-        if(dt_fund) {
-            fund_id = dt_fund;
-            memo = Meteor.settings.dev + charge.metadata.donateTo;
-        } else {
+        if(!dt_fund) {
             fund_id = Meteor.settings.donor_tools_default_fund_id;
+            memo = Meteor.settings.dev + donateTo;
+        } else {
+            fund_id = dt_fund;
             memo = Meteor.settings.dev;
         }
         var source_id;

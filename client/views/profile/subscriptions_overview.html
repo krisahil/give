@@ -45,6 +45,7 @@
                     </li>
                       <!--<span class="bm-block-label">Payment<strong>{{type}}</strong> {{lastFour}}</span>-->
                     <li class="list-group-item bm-block clearfix">To: <strong>{{metadata.donateTo}}</strong></li>
+                    <li class="list-group-item bm-block clearfix">With: <strong>{{show_donate_with}}</strong></li>
                     <li class="list-group-item bm-block clearfix">Amount: <strong>{{centsToDollars quantity}}</strong></li>
                     {{#unless equals status "canceled"}}
                         <li class="list-group-item bm-block clearfix">Next gift on: <strong>{{epochToString current_period_end}}</strong></li>
@@ -55,9 +56,9 @@
                         <li class="list-group-item bm-block clearfix">
                             <a id="cancel_subscription" href="" class="btn btn-block btn-default cancelButton">Cancel</a>
                         </li>
-                        <li class="list-group-item bm-block clearfix">
+                        {{#if bank_account_subscription}}<li class="list-group-item bm-block clearfix">
                             <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-block btn-default">Update Payment</a>
-                        </li>
+                        </li>{{/if}}
                     {{/if}}
                     {{#if equals status "past_due"}}
                         <li class="list-group-item bm-block clearfix">

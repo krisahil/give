@@ -18,7 +18,7 @@
                                             <a class="cancel-new-card btn btn-default btn-block" href="" >Switch to update expiration form</a>
                                         {{else}}
                                             {{#if customer}}
-                                                <p class="alert alert-info">Card used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
+                                                <p class="alert alert-info">Account used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
                                                     <br><span class="{{expired_class}}"> <strong>Expires: </strong>{{#if customer_device.exp_year}}{{customer_device.exp_month}}/{{customer_device.exp_year}}{{/if}}</span></p>
                                                 <p><a class="add-new-card btn btn-default btn-block" href="#">Switch to add new card form</a></p>
                                             {{/if}}

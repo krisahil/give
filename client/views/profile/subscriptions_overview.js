@@ -54,6 +54,21 @@ Template.SubscriptionsOverview.helpers({
         } else {
             return false;
         }
+    },
+    bank_account_subscription: function () {
+        // check to see if this subscription uses a bank account
+        if(this.metadata && this.metadata.donateWith === 'Check'){
+            return false;
+        } else {
+            return true;
+        }
+    },
+    show_donate_with: function () {
+        if(this.metadata && this.metadata.donateWith === 'Check'){
+            return 'Bank Account';
+        } else if(this.metadata && this.metadata.donateWith === 'Card') {
+            return 'Card';
+        }
     }
 });
 
