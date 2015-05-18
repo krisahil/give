@@ -226,9 +226,9 @@ Meteor.methods({
         /*try {*/
             //check to see that the user is the admin user
             check(id, String);
-            var loggedInUser = Meteor.user()
+            var loggedInUser = Meteor.user();
 
-            if (!loggedInUser || !Roles.userIsInRole(loggedInUser, ['admin'], group)) {
+            if (!loggedInUser || !Roles.userIsInRole(loggedInUser, ['admin'])) {
                 throw new Meteor.Error(403, "Access denied")
             }
             logger.info("Started get_balanced_customer_data");
