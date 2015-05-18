@@ -328,6 +328,22 @@ _.extend(Utils, {
                     }
                 }
             );
+        } else if (type === 'payment.created') {
+            Audit_trail.upsert({charge_id: id}, {
+                    $set: {
+                        'payment.created.sent': true,
+                        'payment.created.time': new Date()
+                    }
+                }
+            );
+        } else if (type === 'payment.paid') {
+            Audit_trail.upsert({charge_id: id}, {
+                    $set: {
+                        'payment.paid.sent': true,
+                        'payment.paid.time': new Date()
+                    }
+                }
+            );
         } else if (type === 'large_gift') {
             Audit_trail.upsert({charge_id: id}, {
                     $set: {

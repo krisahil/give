@@ -35,24 +35,29 @@ Stripe_Events = {
     'charge.succeeded': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
         Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'succeeded');
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.failed': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
         Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'failed');
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.refunded': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
         Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'refunded');
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.captured': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.updated': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'charge.dispute.created': function (stripeEvent, res) {
@@ -69,13 +74,11 @@ Stripe_Events = {
     },
     'customer.created': function (stripeEvent, res) {
         var sync_request = Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.updated': function (stripeEvent, res) {
         var sync_request = Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
@@ -104,49 +107,41 @@ Stripe_Events = {
     },
     'customer.card.created': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.card.updated': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.source.deleted': function (stripeEvent, res) {
         Devices.remove({_id: stripeEvent.data.object.id});
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.card.deleted': function (stripeEvent, res) {
         Devices.remove({_id: stripeEvent.data.object.id});
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.source.created': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.source.updated': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.subscription.created': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
     'customer.subscription.updated': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
@@ -170,7 +165,6 @@ Stripe_Events = {
     },
     'customer.discount.deleted': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
-
         console.log(stripeEvent.type + ': event processed');
         return;
     },
@@ -228,10 +222,10 @@ Stripe_Events = {
         return;
     },
     'plan.created': function (stripeEvent, res) {
-        console.log(stripeEvent.type + ': event processed');
         Meteor.setTimeout(function(){
             console.dir(stripeEvent);
         }, 3000);
+        console.log(stripeEvent.type + ': event processed');
         return;
     },
     'plan.updated': function (stripeEvent, res) {

@@ -266,7 +266,7 @@ Meteor.methods({
         }*/
     },
     get_all_stripe_customers: function (starting_after, limit){
-        check(starting_after, String);
+        check(starting_after, Match.Optional(String));
         check(limit, String);
         // Check that there is an authorized, logged-in user
         var loggedInUser = Meteor.user();
@@ -276,13 +276,22 @@ Meteor.methods({
         logger.info("Started get_all_stripe_customers");
 
         var all_stripe_events = [];
-        var stripe_events = Utils.stripe_get_many_events(starting_after, limit);
-        all_stripe_events = stripe_events.data;
-        while (stripe_events.has_more) {
-            starting_after = stripe_events.data[99].id;
+        var stripe_events = {};
+
+        do{
             stripe_events = Utils.stripe_get_many_events(starting_after, limit);
-            all_stripe_events += stripe_events.data;
-        }
+            all_stripe_events = all_stripe_events.concat(stripe_events.data);
+            if(stripe_events.has_more){
+                starting_after = stripe_events.data[99].id;
+            }
+        } while(stripe_events.has_more);
+
+        all_stripe_events.forEach(function (value){
+            console.log(value.id);
+            var request = value;
+            var event = Stripe_Events[request.type](request);
+        });
+        console.log(typeof all_stripe_events);
         return {"Stripe events number": all_stripe_events.length, "array": all_stripe_events};
     }
 
