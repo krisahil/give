@@ -241,7 +241,7 @@ Meteor.methods({
                     var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, get_id.metadata.balanced_customer_id);
 
                 });
-                return "Updated these customers: " + customers_updated;
+                return "Updated these " + customers_updated.length + " customers: " + customers_updated;
             }
                 else {
                     var get_id = Utils.get_balanced_id(id);

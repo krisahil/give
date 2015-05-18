@@ -33,7 +33,19 @@ Utils = {
     get_balanced_customer: function (id) {
         logger.info("Started get_balanced_customer");
         console.log("customer id from get_id: " + id);
-        var customer = Donate.findOne({'debit.customer': id}).customer;
+        var customer = Donate.findOne({'debit.customer': id});
+        if(customer){
+            customer = customer.customer;
+        } else{
+            var temp_customer_string = '/customers/' + id;
+            customer = Donate.findOne({'debit.billy_customer.processor_url': temp_customer_string});
+            if(customer){
+                customer = customer.customer;
+            } else {
+                logger.error("Couldn't find this customer in the donate collection");
+                return '';
+            }
+        }
         console.log("Balanced customer_id: " + customer);
         return customer;
     },
