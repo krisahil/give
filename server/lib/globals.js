@@ -31,7 +31,7 @@ Utils = {
     get_balanced_customer: function (id) {
         console.log("Inside get_balanced_customer.");
         var customer = Donate.findOne({'debit.customer': id}).customer;
-
+        console.log("Balanced customer_id: " + customer);
         return customer;
     },
     // Take the data from balanced and update Stripe with it
