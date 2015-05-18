@@ -4,6 +4,8 @@ Stripe = StripeAPI(Meteor.settings.stripe.secret);
 
 Utils = {
     get_balanced_id: function (stripe_customer_id) {
+        logger.info("Started get_balanced_id");
+        console.log("Stripe customer id: " + stripe_customer_id);
         var stripe_customer = new Future();
 
         Stripe.customers.retrieve(stripe_customer_id,
@@ -29,14 +31,14 @@ Utils = {
     },
     // Used for getting the customer data from balanced
     get_balanced_customer: function (id) {
-        console.log("Inside get_balanced_customer.");
+        logger.info("Started get_balanced_customer");
         var customer = Donate.findOne({'debit.customer': id}).customer;
         console.log("Balanced customer_id: " + customer);
         return customer;
     },
     // Take the data from balanced and update Stripe with it
     update_stripe_customer_with_balanced_data: function (data, customer_id, balanced_customer_id){
-        console.log("Inside update_stripe_customer_with_balanced_data.");
+        logger.info("Started update_stripe_customer_with_balanced_data");
         var stripeCustomerUpdate = new Future();
         console.dir(data);
 
