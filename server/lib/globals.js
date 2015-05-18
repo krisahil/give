@@ -57,10 +57,11 @@ Utils = {
         return customer;
     },
     // Take the data from balanced and update Stripe with it
-    update_stripe_customer_with_balanced_data: function (data, customer_id, balanced_customer_id){
+    update_stripe_customer_with_balanced_data: function (data, customer_id, stripe_customer){
         logger.info("Started update_stripe_customer_with_balanced_data");
         var stripeCustomerUpdate = new Future();
         console.dir(data);
+        var user_id = stripe_customer && stripe_customer.metadata && stripe_customer.metadata.user_id;
 
         Stripe.customers.update(customer_id, {
                 metadata: {
@@ -76,7 +77,8 @@ Utils = {
                     "lname":                    data.lname,
                     "org":                      data.business_name,
                     "balanced.customer_id":     null,
-                    "balanced_customer_id":     balanced_customer_id
+                    "balanced_customer_id":     balanced_customer_id.metadata.balanced_customer_id,
+                    "user_id":                  user_id
                 }
             }, function (error, customer) {
                 if (error) {

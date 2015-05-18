@@ -238,7 +238,7 @@ Meteor.methods({
 
                         //send this metadata to Stripe to update the customer
                         logger.info("Updating stripe customer with Balanced data.");
-                        var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, get_id.metadata.balanced_customer_id);
+                        var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, get_id);
 
                     });
                     return "Updated these " + customers_updated.length + " customers: " + customers_updated;
@@ -248,7 +248,7 @@ Meteor.methods({
 
                     //send this metadata to Stripe to update the customer
                     logger.info("Updating stripe customer with Balanced data.");
-                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id.metadata.balanced_customer_id);
+                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id);
                     return get_customer;
                 }
             }else{
