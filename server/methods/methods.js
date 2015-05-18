@@ -226,15 +226,32 @@ Meteor.methods({
         /*try {*/
             //check to see that the user is the admin user
             check(id, String);
-            if(this.userId === Meteor.settings.admin_user){
+            if(this.userId === Meteor.settings.admin_user) {
                 logger.info("Started get_balanced_customer_data");
-                var get_id = Utils.get_balanced_id(id);
-                var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
+                if (id === 'all') {
+                    var all_ids = Customers.find();
+                var customers_updated = [];
+                all_ids.forEach(function (value) {
+                    customers_updated.push = value._id;
+                    var get_id = Utils.get_balanced_id(value._id);
+                    var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
 
-                //send this metadata to Stripe to update the customer
-                logger.info("Updating stripe customer with Balanced data.");
-                var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id.metadata.balanced_customer_id);
-                return get_customer;
+                    //send this metadata to Stripe to update the customer
+                    logger.info("Updating stripe customer with Balanced data.");
+                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, get_id.metadata.balanced_customer_id);
+
+                });
+                return "Updated these customers: " + customers_updated;
+            }
+                else {
+                    var get_id = Utils.get_balanced_id(id);
+                    var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
+
+                    //send this metadata to Stripe to update the customer
+                    logger.info("Updating stripe customer with Balanced data.");
+                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id.metadata.balanced_customer_id);
+                    return get_customer;
+                }
             }else{
                 console.log("You aren't an admin, you can't do that");
                 return '';
