@@ -32,6 +32,7 @@ Utils = {
     // Used for getting the customer data from balanced
     get_balanced_customer: function (id) {
         logger.info("Started get_balanced_customer");
+        console.log("customer id from get_id: " + id);
         var customer = Donate.findOne({'debit.customer': id}).customer;
         console.log("Balanced customer_id: " + customer);
         return customer;
