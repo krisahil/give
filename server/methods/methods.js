@@ -226,11 +226,11 @@ Meteor.methods({
             if(this.userId === Meteor.settings.admin_user){
                 logger.info("Started get_balanced_customer_data");
                 var get_id = Utils.get_balanced_id(id);
-                var get_customer = Utils.get_balanced_customer(get_id.metadata['balanced.customer_id']);
+                var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
 
                 //send this metadata to Stripe to update the customer
                 logger.info("Updating stripe customer with Balanced data.");
-                var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id.metadata['balanced.customer_id']);
+                var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id.metadata.balanced_customer_id);
                 return get_customer;
             }else{
                 console.log("You aren't an admin, you can't do that");

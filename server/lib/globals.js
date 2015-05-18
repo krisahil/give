@@ -24,7 +24,7 @@ Utils = {
         }
 
         console.dir(stripe_customer);
-        console.log(stripe_customer.metadata['balanced.customer_id']);
+        console.log(stripe_customer.metadata.balanced_customer_id);
         return stripe_customer;
     },
     // Used for getting the customer data from balanced

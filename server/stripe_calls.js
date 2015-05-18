@@ -387,7 +387,7 @@ _.extend(Utils, {
         switch(event_body.data.object.object){
             case "customer":
                 if(event_body.data.object.metadata['balanced.customer_id']){
-                    event_body.data.object.metadata['balancedU+FF0Ecustomer_id'] = event_body.data.object.metadata['balanced.customer_id'];
+                    event_body.data.object.metadata['balanced_customer_id'] = event_body.data.object.metadata['balanced.customer_id'];
                     delete event_body.data.object.metadata['balanced.customer_id'];
                 }
                 Customers.upsert({_id: event_body.data.object._id}, event_body.data.object);
