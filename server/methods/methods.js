@@ -93,6 +93,9 @@ Meteor.methods({
         /*try {*/
         //Check the form to make sure nothing malicious is being submitted to the server
         Utils.checkFormFields(data);
+        if(data.paymentInformation.coverTheFees === false){
+            data.paymentInformation.fees = '';
+        }
         console.log(data.paymentInformation.start_date);
         var customerData = {};
         var customerInfo, metadata;
