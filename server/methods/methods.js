@@ -226,11 +226,13 @@ Meteor.methods({
         /*try {*/
             //check to see that the user is the admin user
             check(id, String);
-            var loggedInUser = Meteor.user();
 
+            // Check that there is an authorized, logged-in user
+            var loggedInUser = Meteor.user();
             if (!loggedInUser || !Roles.userIsInRole(loggedInUser, ['admin'])) {
                 throw new Meteor.Error(403, "Access denied")
             }
+
             logger.info("Started get_balanced_customer_data");
             if (id === 'all') {
                 var all_ids = Customers.find();
@@ -263,13 +265,25 @@ Meteor.methods({
             throw new Meteor.Error(error, e._id);
         }*/
     },
-    get_all_stripe_customers: function (starting_after){
+    get_all_stripe_customers: function (starting_after, limit){
         check(starting_after, String);
-        if(this.userId === Meteor.settings.admin_user) {
-            logger.info("Started get_all_stripe_customers");
-        } else {
-            console.log("You can't run this as a non-admin");
+        check(limit, String);
+        // Check that there is an authorized, logged-in user
+        var loggedInUser = Meteor.user();
+        if (!loggedInUser || !Roles.userIsInRole(loggedInUser, ['admin'])) {
+            throw new Meteor.Error(403, "Access denied")
         }
+        logger.info("Started get_all_stripe_customers");
+
+        var all_stripe_events = [];
+        var stripe_events = Utils.stripe_get_many_events(starting_after, limit);
+        all_stripe_events = stripe_events.data;
+        while (stripe_events.has_more) {
+            starting_after = stripe_events.data[99].id;
+            stripe_events = Utils.stripe_get_many_events(starting_after, limit);
+            all_stripe_events += stripe_events.data;
+        }
+        return {"Stripe events number": all_stripe_events.length, "array": all_stripe_events};
     }
 
 });
