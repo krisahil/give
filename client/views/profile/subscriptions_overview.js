@@ -57,16 +57,16 @@ Template.SubscriptionsOverview.helpers({
     },
     bank_account_subscription: function () {
         // check to see if this subscription uses a bank account
-        if(this.metadata && this.metadata.donateWith === 'Check'){
+        if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata.donateWith.slice(0,2) == 'ba'){
             return false;
         } else {
             return true;
         }
     },
     show_donate_with: function () {
-        if(this.metadata && this.metadata.donateWith === 'Check'){
+        if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata.donateWith.slice(0,2) == 'ba'){
             return 'Bank Account';
-        } else if(this.metadata && this.metadata.donateWith === 'Card') {
+        } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata.donateWith.slice(0,2) == 'ca') {
             return 'Card';
         }
     }
