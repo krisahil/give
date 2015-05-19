@@ -15,7 +15,7 @@ _.extend(App, {
 
             form = {
                 "paymentInformation": {
-                    "amount": parseInt(($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100),
+                    "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
                     "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
                     "donateTo": $("#donateTo").val(),
                     "writeIn": $("#enteredWriteInValue").val(),

@@ -100,7 +100,7 @@ Router.route('/transactions', {
     },
     action: function () {
         if (this.ready()) {
-            this.render('Transactions');
+            this.render();
         } else {
             this.render('Loading');
         }
