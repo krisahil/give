@@ -55,7 +55,7 @@ Template.SubscriptionsOverview.helpers({
             return false;
         }
     },
-    bank_account_subscription: function () {
+    card_subscription: function () {
         // check to see if this subscription uses a bank account
         if(this.metadata && this.metadata.donateWith === 'Check'){
             return false;
