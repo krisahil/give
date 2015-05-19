@@ -408,7 +408,6 @@ _.extend(Utils, {
         if(charge_id.slice(0,2) === 'ch' || charge_id.slice(0,2) === 'py'){
             invoice_cursor = Invoices.findOne({_id: charge.invoice});
             console.log(charge.invoice);
-            console.dir(invoice_cursor.metadata);
             if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
                 donateTo = invoice_cursor.lines.data[0].metadata.donateTo;
 
