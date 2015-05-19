@@ -237,24 +237,31 @@ Meteor.methods({
             if (id === 'all') {
                 var all_ids = Customers.find();
                 var customers_updated = [];
+                var stripe_customer;
                 all_ids.forEach(function (value) {
                     customers_updated.push(value._id);
-                    var get_id = Utils.get_stripe_customer(value._id);
-                    var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
-
-                    //send this metadata to Stripe to update the customer
-                    logger.info("Updating stripe customer with Balanced data.");
-                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, get_id);
+                    stripe_customer = Utils.get_stripe_customer(value._id);
+                    if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
+                        var get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
+                        //send this metadata to Stripe to update the customer
+                        logger.info("Updating stripe customer with Balanced data.");
+                        var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, stripe_customer);
+                    } else if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata['balanced.customer_id']){
+                        var get_customer = Utils.get_balanced_customer(stripe_customer.metadata['balanced.customer_id']);
+                        //send this metadata to Stripe to update the customer
+                        logger.info("Updating stripe customer with Balanced data.");
+                        var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, stripe_customer);
+                    }
 
                 });
                 return "Updated these " + customers_updated.length + " customers: " + customers_updated;
             } else {
-                var get_id = Utils.get_stripe_customer(id);
-                var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
+                stripe_customer = Utils.get_stripe_customer(id);
+                var get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
 
                 //send this metadata to Stripe to update the customer
                 logger.info("Updating stripe customer with Balanced data.");
-                var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, get_id);
+                var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, stripe_customer);
                 return get_customer;
             }
 

@@ -25,8 +25,6 @@ Utils = {
             throw new Meteor.Error(stripe_customer.rawType, stripe_customer.message);
         }
 
-        console.dir(stripe_customer);
-        console.log(stripe_customer.metadata.balanced_customer_id);
         return stripe_customer;
     },
     // Used for getting the customer data from balanced
@@ -62,7 +60,12 @@ Utils = {
         var stripeCustomerUpdate = new Future();
         console.dir(data);
         var user_id =               stripe_customer && stripe_customer.metadata && stripe_customer.metadata.user_id;
-        var balanced_customer_id =  stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id;
+        var balanced_customer_id;
+        if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
+            balanced_customer_id = stripe_customer.metadata.balanced_customer_id;
+        } else {
+            balanced_customer_id = stripe_customer.metadata['balanced.customer_id'];
+        }
 
         Stripe.customers.update(customer_id, {
                 metadata: {
