@@ -5,7 +5,7 @@ _.extend(App, {
     process_give_form: function(quick_form, customer){
         var form = {};
         if(quick_form){
-            var user_cursor, customer_cursor, business_name;
+            var user_cursor, customer_cursor, business_name, address_line2;
             if(customer){
                 customer_cursor = Customers.findOne({_id: customer});
                 if(!customer_cursor.metadata){
@@ -17,6 +17,11 @@ _.extend(App, {
                     business_name = '';
                 }
 
+                if(customer_cursor.metadata.address_line2){
+                    address_line2 = customer_cursor.metadata.address_line2;
+                } else {
+                    address_line2 = '';
+                }
                 form = {
                     "paymentInformation": {
                         "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
@@ -48,7 +53,6 @@ _.extend(App, {
                 };
             } else{
                 user_cursor = Meteor.user();
-                var business_name;
                 if(user_cursor.profile.business_name){
                     business_name = user_cursor.profile.business_name;
                 } else {

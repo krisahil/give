@@ -96,14 +96,15 @@ Meteor.publish("subscription", function (subscription_id) {
 
 Meteor.publish("customer", function (subscription_id) {
     //Check the subscription_id that came from the client
-    check(subscription_id, String);
+    check(subscription_id, Match.Optional(String));
 
-	if (this.userId) {
+	if (this.userId && subscription_id) {
         var subscription = Subscriptions.findOne({_id: subscription_id});
         console.log(subscription.customer);
         return Customers.find({_id: subscription.customer});
 	} else {
-		this.ready();
+        this.stop();
+        return;
 	}
 });
 
