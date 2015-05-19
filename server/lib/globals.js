@@ -3,6 +3,16 @@ Future = Meteor.npmRequire("fibers/future");
 Stripe = StripeAPI(Meteor.settings.stripe.secret);
 
 Utils = {
+    extractFromPromise: function(promise) {
+        var fut = new Future();
+        promise.then(function (result) {
+            fut.return(result);
+        }, function (error) {
+            logger.info(error);
+            fut.throw(error);
+        });
+        return fut.wait();
+    },
     get_stripe_customer: function (stripe_customer_id) {
         logger.info("Started get_stripe_customer");
         console.log("Stripe customer id: " + stripe_customer_id);
@@ -35,13 +45,35 @@ Utils = {
         customer = Donate.findOne({'customer.id': id});
         if(customer){
             customer = customer.customer;
-        } else{
+        } else {
             customer = Donate.findOne({'debit.customer': id});
             if(customer) {
                 customer = customer.customer;
             } else {
-                logger.error("Couldn't find this customer in the donate collection");
-                return '';
+                balanced.configure(Meteor.settings.balanced_api_key);
+
+                var balanced_customer = Utils.extractFromPromise(balanced.get('/customers/' + id));
+                balanced_customer = balanced_customer._api.cache['/customers/' + id];
+                console.dir(balanced_customer);
+                var name = balanced_customer.name.split(' ');
+
+                customer = {
+                    "fname" : name.slice(0, split_test.length -1).join(' '),
+                    "lname" : name.slice(-1),
+                    "org" : balanced_customer.business_name,
+                    "email_address" : balanced_customer.email,
+                    "phone_number" : balanced_customer.phone,
+                    "address_line1" : balanced_customer.address.line1,
+                    "address_line2" : balanced_customer.address.line2,
+                    "region" : balanced_customer.address.state,
+                    "city" : balanced_customer.address.city,
+                    "postal_code" : balanced_customer.address.postal_code,
+                    "country" : balanced_customer.address.country_code,
+                    "balanced_customer_id" : id
+                };
+
+                /*logger.error("Couldn't find this customer in the donate collection");
+                return '';*/
             }
             /*var temp_customer_string = '/customers/' + id;
             customer = Donate.findOne({'debit.billy_customer.processor_url': temp_customer_string});
@@ -64,7 +96,7 @@ Utils = {
         var balanced_customer_id;
         if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
             balanced_customer_id = stripe_customer.metadata.balanced_customer_id;
-        } else {
+        } else if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata['balanced.customer_id']) {
             balanced_customer_id = stripe_customer.metadata['balanced.customer_id'];
         }
 
