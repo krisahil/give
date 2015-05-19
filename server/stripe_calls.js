@@ -542,10 +542,14 @@ _.extend(Utils, {
         var subscription_cursor = Subscriptions.findOne({_id: stripeEvent.data.object.subscription});
 
         // update the charges document to add the metadata, this way the related gift information is attached to the charge
-        Charges.update({_id: stripeEvent.data.object.charge}, {$set: {metadata: subscription_cursor.metadata}});
+        if(subscription_cursor.metadata){
+            Charges.update({_id: stripeEvent.data.object.charge}, {$set: {metadata: subscription_cursor.metadata}});
+        }
 
         // update the invoices document to add the metadata
-        Invoices.update({_id: stripeEvent.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
+        if(subscription_cursor.metadata){
+            Invoices.update({_id: stripeEvent.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
+        }
 
         // Now send these changes off to Stripe to update the record there.
         Utils.update_invoice_metadata(stripeEvent);
@@ -731,17 +735,21 @@ _.extend(Utils, {
         // Use the metadata from the subscription to udpate the invoice with Stripe
         var stripeInvoice = new Future();
 
-        Stripe.invoices.update(event_body.data.object.id,{
-                "metadata":  subscription_cursor.metadata
-        }, function (error, invoice) {
-                if (error) {
-                    //console.dir(error);
-                    stripeInvoice.return(error);
-                } else {
-                    stripeInvoice.return(invoice);
+        if(subscription_cursor.metadata){
+            Stripe.invoices.update(event_body.data.object.id,{
+                    "metadata":  subscription_cursor.metadata
+                }, function (error, invoice) {
+                    if (error) {
+                        //console.dir(error);
+                        stripeInvoice.return(error);
+                    } else {
+                        stripeInvoice.return(invoice);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            return;
+        }
 
         stripeInvoice = stripeInvoice.wait();
 
@@ -771,21 +779,27 @@ _.extend(Utils, {
 
         console.log("Charge id: " + event_body.data.object.id);
         // Use the metadata from the subscription to udpate the charge with Stripe
-        Stripe.charges.update(event_body.data.object.id,{
-                "metadata":  subscription_cursor.metadata
-        }, function (error, charges) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCharges.return(error);
-                } else {
-                    stripeCharges.return(charges);
+        if(subscription_cursor.metadata){
+            Stripe.charges.update(event_body.data.object.id,{
+                    "metadata":  subscription_cursor.metadata
+                }, function (error, charges) {
+                    if (error) {
+                        //console.dir(error);
+                        stripeCharges.return(error);
+                    } else {
+                        stripeCharges.return(charges);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            return;
+        }
 
         stripeCharges = stripeCharges.wait();
 
-        Charges.update({_id: event_body.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
+        if(subscription_cursor.metadata){
+            Charges.update({_id: event_body.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
+        }
         if (!stripeCharges.object) {
             throw new Meteor.Error(stripeCharges.rawType, stripeCharges.message);
         }
