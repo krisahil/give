@@ -288,10 +288,8 @@ Meteor.methods({
 
         all_stripe_events.forEach(function (value){
             if(value.created < '1431987650'){
-                if(value.data.object.object === 'customer' || value.data.object.object === 'card' || value.data.object.object === 'bank_account') {
-                    var request = value;
-                    var event = Stripe_Events[request.type](request);
-                }
+                var request = value;
+                var event = Stripe_Events[request.type](request);
             }
         });
 
