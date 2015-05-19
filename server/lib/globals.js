@@ -58,7 +58,7 @@ Utils = {
                 var name = balanced_customer.name.split(' ');
 
                 customer = {
-                    "fname" : name.slice(0, split_test.length -1).join(' '),
+                    "fname" : name.slice(0, name.length -1).join(' '),
                     "lname" : name.slice(-1),
                     "org" : balanced_customer.business_name,
                     "email_address" : balanced_customer.email,
