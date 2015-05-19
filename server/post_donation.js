@@ -76,7 +76,7 @@ _.extend(Utils, {
                 lname: lname,
                 address: {
                     address_line1: customer_cursor.metadata.address_line1,
-                    address_line2: customer_cursor.metadata.address_line2,
+                    address_line2: customer_cursor.metadata && customer_cursor.metadata.address_line2,
                     city: customer_cursor.metadata.city,
                     state: customer_cursor.metadata.state,
                     postal_code: customer_cursor.metadata.postal_code,
@@ -424,6 +424,12 @@ _.extend(Utils, {
             dt_fund = null;
         }
 
+        if(customer.metadata.address_line2){
+            address_line2 = customer.metadata.address_line2;
+        } else {
+            address_line2 = '';
+        }
+
         // fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
@@ -453,7 +459,7 @@ _.extend(Utils, {
                         "company_name": business_name,
                         "full_name": customer.metadata.fname + " " + customer.metadata.lname,
                         "email_address": customer.metadata.email,
-                        "street_address": customer.metadata.address_line1 + " \n" + customer.metadata.address_line2,
+                        "street_address": customer.metadata.address_line1 + " \n" + address_line2,
                         "city": customer.metadata.city,
                         "state": customer.metadata.state,
                         "postal_code": customer.metadata.postal_code,
