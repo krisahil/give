@@ -239,7 +239,7 @@ Meteor.methods({
                 var customers_updated = [];
                 all_ids.forEach(function (value) {
                     customers_updated.push(value._id);
-                    var get_id = Utils.get_balanced_id(value._id);
+                    var get_id = Utils.get_stripe_customer(value._id);
                     var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
 
                     //send this metadata to Stripe to update the customer
@@ -249,7 +249,7 @@ Meteor.methods({
                 });
                 return "Updated these " + customers_updated.length + " customers: " + customers_updated;
             } else {
-                var get_id = Utils.get_balanced_id(id);
+                var get_id = Utils.get_stripe_customer(id);
                 var get_customer = Utils.get_balanced_customer(get_id.metadata.balanced_customer_id);
 
                 //send this metadata to Stripe to update the customer
@@ -287,11 +287,11 @@ Meteor.methods({
         } while(stripe_events.has_more);
 
         all_stripe_events.forEach(function (value){
-            console.log(value.id);
-            var request = value;
-            var event = Stripe_Events[request.type](request);
+            if(value.data.object.object === 'customer' || value.data.object.object === 'card' || value.data.object.object === 'bank_account'){
+                var request = value;
+                var event = Stripe_Events[request.type](request);
+            }
         });
-        console.log(typeof all_stripe_events);
         return {"Stripe events number": all_stripe_events.length, "array": all_stripe_events};
     }
 

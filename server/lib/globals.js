@@ -3,8 +3,8 @@ Future = Meteor.npmRequire("fibers/future");
 Stripe = StripeAPI(Meteor.settings.stripe.secret);
 
 Utils = {
-    get_balanced_id: function (stripe_customer_id) {
-        logger.info("Started get_balanced_id");
+    get_stripe_customer: function (stripe_customer_id) {
+        logger.info("Started get_stripe_customer");
         console.log("Stripe customer id: " + stripe_customer_id);
         var stripe_customer = new Future();
 

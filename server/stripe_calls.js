@@ -406,6 +406,7 @@ _.extend(Utils, {
                     event_body.data.object.metadata['balanced_customer_id'] = event_body.data.object.metadata['balanced.customer_id'];
                     delete event_body.data.object.metadata['balanced.customer_id'];
                 }
+
                 Customers.upsert({_id: event_body.data.object._id}, event_body.data.object);
                 break;
             case "invoice":
