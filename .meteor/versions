@@ -84,13 +84,13 @@ spacebars@1.0.6
 spacebars-compiler@1.0.6
 srp@1.0.3
 templating@1.1.1
-themeteorchef:bert@1.0.2
+themeteorchef:bert@1.1.0
 themeteorchef:jquery-validation@1.13.1
 tracker@1.0.7
 twbs:bootstrap@3.3.4
 ui@1.0.6
 underscore@1.0.3
-underscorestring:underscore.string@3.0.3
+underscorestring:underscore.string@3.0.3_1
 url@1.0.4
 useraccounts:bootstrap@1.9.1
 useraccounts:core@1.9.1
