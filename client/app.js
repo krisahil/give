@@ -2,50 +2,94 @@
 /* Client App Namespace  */
 /*****************************************************************************/
 _.extend(App, {
-    process_give_form: function(quick_form){
+    process_give_form: function(quick_form, customer){
         var form = {};
         if(quick_form){
-            var user_cursor = Meteor.user();
-            var business_name;
-            if(user_cursor.profile.business_name){
-                business_name = user_cursor.profile.business_name;
-            } else {
-                business_name = '';
+            var user_cursor, customer_cursor, business_name;
+            if(customer){
+                customer_cursor = Customers.findOne({_id: customer});
+                if(!customer_cursor.metadata){
+                    throw new Meteor.error("402", "Can't find the metadata inside this customer");
+                }
+                if(customer_cursor.metadata.org){
+                    business_name = customer_cursor.metadata.org;
+                } else {
+                    business_name = '';
+                }
+
+                form = {
+                    "paymentInformation": {
+                        "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+                        "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
+                        "donateTo": $("#donateTo").val(),
+                        "writeIn": $("#enteredWriteInValue").val(),
+                        "donateWith": $('#donateWith').val(),
+                        "is_recurring": $('#is_recurring').val(),
+                        "coverTheFees": $('#coverTheFees').is(":checked"),
+                        "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+                        "start_date": moment(new Date($('#start_date').val())).format('X'),
+                        "saved": $('#save_payment').is(":checked")
+                    },
+                    "customer": {
+                        "fname": customer_cursor.metadata.fname,
+                        "lname": customer_cursor.metadata.lname,
+                        "org": business_name,
+                        "email_address": customer_cursor.metadata.email,
+                        "phone_number": customer_cursor.metadata.phone,
+                        "address_line1": customer_cursor.metadata.address_line1,
+                        "address_line2": customer_cursor.metadata.address_line2,
+                        "region": customer_cursor.metadata.state,
+                        "city": customer_cursor.metadata.city,
+                        "postal_code": customer_cursor.metadata.postal_code,
+                        "country": customer_cursor.metadata.country
+                    },
+                    "URL": document.URL,
+                    sessionId: Meteor.default_connection._lastSessionId
+                };
+            } else{
+                user_cursor = Meteor.user();
+                var business_name;
+                if(user_cursor.profile.business_name){
+                    business_name = user_cursor.profile.business_name;
+                } else {
+                    business_name = '';
+                }
+
+                form = {
+                    "paymentInformation": {
+                        "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+                        "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
+                        "donateTo": $("#donateTo").val(),
+                        "writeIn": $("#enteredWriteInValue").val(),
+                        "donateWith": $('#donateWith').val(),
+                        "is_recurring": $('#is_recurring').val(),
+                        "coverTheFees": $('#coverTheFees').is(":checked"),
+                        "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+                        "start_date": moment(new Date($('#start_date').val())).format('X'),
+                        "saved": $('#save_payment').is(":checked")
+                    },
+                    "customer": {
+                        "fname": user_cursor.profile.fname,
+                        "lname": user_cursor.profile.lname,
+                        "org": business_name,
+                        "email_address": user_cursor.emails[0].address,
+                        "phone_number": user_cursor.profile.phone,
+                        "address_line1": user_cursor.profile.address.address_line1,
+                        "address_line2": user_cursor.profile.address.address_line2,
+                        "region": user_cursor.profile.address.state,
+                        "city": user_cursor.profile.address.city,
+                        "postal_code": user_cursor.profile.address.postal_code,
+                        "country": user_cursor.profile.address.country
+                    },
+                    "URL": document.URL,
+                    sessionId: Meteor.default_connection._lastSessionId
+                };
             }
 
-            form = {
-                "paymentInformation": {
-                    "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                    "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
-                    "donateTo": $("#donateTo").val(),
-                    "writeIn": $("#enteredWriteInValue").val(),
-                    "donateWith": $('#donateWith').val(),
-                    "is_recurring": $('#is_recurring').val(),
-                    "coverTheFees": $('#coverTheFees').is(":checked"),
-                    "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                    "start_date": moment(new Date($('#start_date').val())).format('X'),
-                    "saved": $('#save_payment').is(":checked")
-                },
-                "customer": {
-                    "fname": user_cursor.profile.fname,
-                    "lname": user_cursor.profile.lname,
-                    "org": business_name,
-                    "email_address": user_cursor.emails[0].address,
-                    "phone_number": user_cursor.profile.phone,
-                    "address_line1": user_cursor.profile.address.address_line1,
-                    "address_line2": user_cursor.profile.address.address_line2,
-                    "region": user_cursor.profile.address.state,
-                    "city": user_cursor.profile.address.city,
-                    "postal_code": user_cursor.profile.address.postal_code,
-                    "country": user_cursor.profile.address.country
-                },
-                "URL": document.URL,
-                sessionId: Meteor.default_connection._lastSessionId
-            };
         } else{
             form = {
                 "paymentInformation": {
-                    "amount": parseInt(($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100),
+                    "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
                     "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
                     "donateTo": $("#donateTo").val(),
                     "writeIn": $("#enteredWriteInValue").val(),
@@ -158,7 +202,7 @@ _.extend(App, {
             var payment = {id: form.paymentInformation.donateWith};
             if(form.paymentInformation.donateWith.slice(0,3) === 'car'){
                 form.paymentInformation.type = 'card';
-            } else if(form.paymentInformation.donateWith.slice(0,3) === 'ban'){
+            } else if(form.paymentInformation.donateWith.slice(0,2) === 'ba'){
                 form.paymentInformation.type = 'check';
             }
             form.paymentInformation.source_id = form.paymentInformation.donateWith;

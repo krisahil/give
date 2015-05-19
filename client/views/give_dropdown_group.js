@@ -73,7 +73,7 @@ Template.GiveDropdownGroup.events({
 });
 
 Template.AdminGiveDropdownGroup.rendered = function() {
-    $('select').select2({dropdownCssClass: 'dropdown-inverse'});
+    $('select').select2({dropdownCssClass: 'dropdown-inverse', DropdownAdapter: 'DropdownSearch'});
 
     // show the datepicker if the frequency is monthly when the page loads
     if(Session.equals('params.recurring', 'monthly')){

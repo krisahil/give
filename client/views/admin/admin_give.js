@@ -83,9 +83,10 @@ Template.AdminGive.events({
 
         $(window).off('beforeunload');
 
+        var customer = Devices.findOne({_id: $('#donateWith').val()}).customer;
         App.updateTotal();
 
-        App.process_give_form(true);
+        App.process_give_form(true, customer);
     },
     'keyup, change #amount': function() {
         return App.updateTotal();
