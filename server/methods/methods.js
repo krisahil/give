@@ -287,7 +287,7 @@ Meteor.methods({
         } while(stripe_events.has_more);
 
         all_stripe_events.forEach(function (value){
-            if(value.data.type === 'customer.created'){
+            if(value.type === 'customer.created'){
                 var request = value;
                 var event = Stripe_Events[request.type](request);
             }
