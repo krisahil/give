@@ -418,7 +418,12 @@ _.extend(Utils, {
         } else{
             // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
         }
-        dt_fund = Utils.get_fund_id(donateTo);
+        if(donateTo){
+            dt_fund = Utils.get_fund_id(donateTo);
+        }
+        else {
+            dt_fund = null;
+        }
 
         // fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
