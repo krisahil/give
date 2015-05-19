@@ -242,6 +242,11 @@ Meteor.methods({
                 all_ids.forEach(function (value) {
                     customers_updated.push(value._id);
                     stripe_customer = Utils.get_stripe_customer(value._id);
+                    if(!stripe_customer.metadata.balanced_customer_id){
+                        var temp_id = Customers.findOne({_id: value.id});
+                        console.log("TEMP_ID: " + temp_id.metadata.balanced_customer_id);
+                        temp_id = temp_id.metadata.balanced_customer_id;
+                    }
                     if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
                         get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
                         if(!get_customer){
@@ -271,7 +276,7 @@ Meteor.methods({
                 if(!stripe_customer.metadata.balanced_customer_id){
                     var temp_id = Customers.findOne({_id: id});
                     console.log("TEMP_ID: " + temp_id.metadata.balanced_customer_id);
-                    temp_id = temp_id.metadata.balanced_customer_id;
+                    stripe_customer.metadata.balanced_customer_id = temp_id.metadata.balanced_customer_id;
                 }
                 if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
                     get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
