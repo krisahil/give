@@ -243,11 +243,21 @@ Meteor.methods({
                     stripe_customer = Utils.get_stripe_customer(value._id);
                     if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
                         var get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
+                        if(!get_customer){
+                            logger.error("Couldn't find any record matching in get_balanced_customer function: " + value._id);
+                            return;
+                        }
+                        
                         //send this metadata to Stripe to update the customer
                         logger.info("Updating stripe customer with Balanced data.");
                         var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, stripe_customer);
                     } else if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata['balanced.customer_id']){
                         var get_customer = Utils.get_balanced_customer(stripe_customer.metadata['balanced.customer_id']);
+                        if(!get_customer){
+                            logger.error("Couldn't find any record matching in get_balanced_customer function: " + value._id);
+                            return;
+                        }
+
                         //send this metadata to Stripe to update the customer
                         logger.info("Updating stripe customer with Balanced data.");
                         var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, stripe_customer);

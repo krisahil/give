@@ -31,11 +31,12 @@ Utils = {
     get_balanced_customer: function (id) {
         logger.info("Started get_balanced_customer");
         console.log("customer id from get_id: " + id);
-        var customer = Donate.findOne({'debit.customer': id});
+        var customer;
+        customer = Donate.findOne({'customer.id': id});
         if(customer){
             customer = customer.customer;
         } else{
-            customer = Donate.findOne({'customer.id': id});
+            customer = Donate.findOne({'debit.customer': id});
             if(customer) {
                 customer = customer.customer;
             } else {
