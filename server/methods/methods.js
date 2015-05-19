@@ -287,11 +287,14 @@ Meteor.methods({
         } while(stripe_events.has_more);
 
         all_stripe_events.forEach(function (value){
-            if(value.type === 'customer.created'){
-                var request = value;
-                var event = Stripe_Events[request.type](request);
+            if(value.created < '1431987650'){
+                if(value.data.object.object === 'customer' || value.data.object.object === 'card' || value.data.object.object === 'bank_account') {
+                    var request = value;
+                    var event = Stripe_Events[request.type](request);
+                }
             }
         });
+
         return {"Stripe events number": all_stripe_events.length, "array": all_stripe_events};
     }
 
