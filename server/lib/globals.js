@@ -133,6 +133,12 @@ Utils = {
             throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
         }
 
+        if(stripeCustomerUpdate.metadata['balanced.customer_id']){
+            stripeCustomerUpdate.metadata['balanced_customer_id'] = stripeCustomerUpdate.metadata['balanced.customer_id'];
+            delete stripeCustomerUpdate.metadata['balanced.customer_id'];
+        }
+
+        Customers.upsert({_id: stripeCustomerUpdate.id}, stripeCustomerUpdate);
         console.dir(stripeCustomerUpdate);
         return stripeCustomerUpdate;
     },
