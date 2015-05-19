@@ -38,7 +38,7 @@ Utils = {
         return stripe_customer;
     },
     // Used for getting the customer data from balanced
-    get_balanced_customer: function (id) {
+    /*get_balanced_customer: function (id) {
         logger.info("Started get_balanced_customer");
         console.log("customer id from get_id: " + id);
         var customer;
@@ -72,17 +72,17 @@ Utils = {
                     "balanced_customer_id" : id
                 };
 
-                /*logger.error("Couldn't find this customer in the donate collection");
-                return '';*/
+                /!*logger.error("Couldn't find this customer in the donate collection");
+                return '';*!/
             }
-            /*var temp_customer_string = '/customers/' + id;
+            /!*var temp_customer_string = '/customers/' + id;
             customer = Donate.findOne({'debit.billy_customer.processor_url': temp_customer_string});
             if(customer){
                 customer = customer.customer;
             } else {
                 logger.error("Couldn't find this customer in the donate collection");
                 return '';
-            }*/
+            }*!/
         }
         console.log("Balanced customer_id: " + customer);
         return customer;
@@ -92,7 +92,7 @@ Utils = {
         logger.info("Started update_stripe_customer_with_balanced_data");
         var stripeCustomerUpdate = new Future();
         console.dir(data);
-        var user_id =               stripe_customer && stripe_customer.metadata && stripe_customer.metadata.user_id;
+        var user_id = stripe_customer && stripe_customer.metadata && stripe_customer.metadata.user_id;
         var balanced_customer_id;
         if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
             balanced_customer_id = stripe_customer.metadata.balanced_customer_id;
@@ -141,7 +141,7 @@ Utils = {
         Customers.upsert({_id: stripeCustomerUpdate.id}, stripeCustomerUpdate);
         console.dir(stripeCustomerUpdate);
         return stripeCustomerUpdate;
-    },
+    },*/
     // Check donation form entries
     check_update_customer_form: function(form, customer_id, dt_persona_id) {
         check(dt_persona_id, Number);

@@ -90,140 +90,139 @@ Meteor.methods({
     },
     stripeDonation: function(data, paymentDevice){
         logger.info("Started stripeDonation");
-        /*try {*/
-        //Check the form to make sure nothing malicious is being submitted to the server
-        Utils.checkFormFields(data);
-        if(data.paymentInformation.coverTheFees === false){
-            data.paymentInformation.fees = '';
-        }
-        console.log(data.paymentInformation.start_date);
-        var customerData = {};
-        var customerInfo, metadata;
-
-        //Convert donation to more readable format
-        var donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
-
-        if(donateTo === 'Write In') {
-            donateTo = data.paymentInformation.writeIn;
-        }
-        if(!data.customer.id){
-            customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
-            if(!customerData.object){
-                return {error: customerData.rawType, message: customerData.message};
+        try {
+            //Check the form to make sure nothing malicious is being submitted to the server
+            Utils.checkFormFields(data);
+            if(data.paymentInformation.coverTheFees === false){
+                data.paymentInformation.fees = '';
             }
-            Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
-        } else{
-            //TODO: change these to match what you'll be using for a Stripe customer that already exists
-            var customer_cursor = Customers.findOne({_id: data.customer.id});
-            customerData.id = customer_cursor._id;
-            Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
-        }
-        customerInfo = {
-            "city":             data.customer.city,
-            "state":            data.customer.region,
-            "address_line1":    data.customer.address_line1,
-            "address_line2":    data.customer.address_line2,
-            "country":          data.customer.country,
-            "postal_code":      data.customer.postal_code,
-            "phone":            data.customer.phone_number,
-            "business_name":    data.customer.org,
-            "email":            data.customer.email_address,
-            "fname":            data.customer.fname,
-            "lname":            data.customer.lname
-        };
+            console.log(data.paymentInformation.start_date);
+            var customerData = {};
+            var customerInfo, metadata;
 
-        metadata = {
-            created_at:         data.paymentInformation.created_at,
-            sessionId:          data.sessionId,
-            URL:                data.URL,
-            'donateTo':         donateTo,
-            'donateWith':       data.paymentInformation.donateWith,
-            'type':             data.paymentInformation.type,
-            'total_amount':     data.paymentInformation.total_amount,
-            'amount':           data.paymentInformation.amount,
-            'fees':             data.paymentInformation.fees,
-            'coveredTheFees':   data.paymentInformation.coverTheFees,
-            'customer_id':      customerData.id,
-            'status':           'pending',
-            'frequency':        data.paymentInformation.is_recurring,
-            'dt_donation_id':   null
-        };
+            //Convert donation to more readable format
+            var donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
 
-
-        data._id = Donations.insert(metadata);
-        logger.info("Donation ID: " + data._id);
-
-        for (var attrname in customerInfo) { metadata[attrname] = customerInfo[attrname]; }
-        delete metadata.URL;
-        delete metadata.created_at;
-        delete metadata.sessionId;
-        delete metadata.status;
-        delete metadata.type;
-        delete metadata.total_amount;
-
-        if (data.paymentInformation.is_recurring === "one_time") {
-
-            //Charge the card (which also connects this card or bank_account to the customer)
-            var charge = Utils.charge(data.paymentInformation.total_amount, data._id, customerData.id, data.paymentInformation.source_id, metadata);
-            if(!charge.object){
-                return {error: charge.rawType, message: charge.message};
+            if(donateTo === 'Write In') {
+                donateTo = data.paymentInformation.writeIn;
             }
-            Donations.update({_id: data._id}, {$set: {charge_id: charge.id}});
+            if(!data.customer.id){
+                customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
+                if(!customerData.object){
+                    return {error: customerData.rawType, message: customerData.message};
+                }
+                Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
+            } else{
+                //TODO: change these to match what you'll be using for a Stripe customer that already exists
+                var customer_cursor = Customers.findOne({_id: data.customer.id});
+                customerData.id = customer_cursor._id;
+                Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
+            }
+            customerInfo = {
+                "city":             data.customer.city,
+                "state":            data.customer.region,
+                "address_line1":    data.customer.address_line1,
+                "address_line2":    data.customer.address_line2,
+                "country":          data.customer.country,
+                "postal_code":      data.customer.postal_code,
+                "phone":            data.customer.phone_number,
+                "business_name":    data.customer.org,
+                "email":            data.customer.email_address,
+                "fname":            data.customer.fname,
+                "lname":            data.customer.lname
+            };
 
-            return {c: customerData.id, don: data._id, charge: charge.id};
-        } else {
-            // Print how often it it recurs?
-            console.log(data.paymentInformation.is_recurring);
+            metadata = {
+                created_at:         data.paymentInformation.created_at,
+                sessionId:          data.sessionId,
+                URL:                data.URL,
+                'donateTo':         donateTo,
+                'donateWith':       data.paymentInformation.donateWith,
+                'type':             data.paymentInformation.type,
+                'total_amount':     data.paymentInformation.total_amount,
+                'amount':           data.paymentInformation.amount,
+                'fees':             data.paymentInformation.fees,
+                'coveredTheFees':   data.paymentInformation.coverTheFees,
+                'customer_id':      customerData.id,
+                'status':           'pending',
+                'frequency':        data.paymentInformation.is_recurring,
+                'dt_donation_id':   null
+            };
 
-            //Start a subscription (which also connects this card, or bank_account to the customer
-            var charge_object = Utils.charge_plan(data.paymentInformation.total_amount,
-                    data._id, customerData.id, data.paymentInformation.source_id,
-                    data.paymentInformation.is_recurring, data.paymentInformation.start_date, metadata);
-             if (!charge_object.object) {
-                 if(charge_object === 'scheduled') {
-                     return {c: customerData.id, don: data._id, charge: 'scheduled'};
-                 } else{
-                     logger.error("The charge_id object didn't have .object attached.");
-                     return {error: charge.rawType, message: charge.message};
-                 }
-             }
 
-            // check for payment rather than charge id here
-            var return_charge_or_payment_id;
-            if(charge_object.payment){
-                return_charge_or_payment_id = charge_object.payment;
+            data._id = Donations.insert(metadata);
+            logger.info("Donation ID: " + data._id);
+
+            for (var attrname in customerInfo) { metadata[attrname] = customerInfo[attrname]; }
+            delete metadata.URL;
+            delete metadata.created_at;
+            delete metadata.sessionId;
+            delete metadata.status;
+            delete metadata.type;
+            delete metadata.total_amount;
+
+            if (data.paymentInformation.is_recurring === "one_time") {
+
+                //Charge the card (which also connects this card or bank_account to the customer)
+                var charge = Utils.charge(data.paymentInformation.total_amount, data._id, customerData.id, data.paymentInformation.source_id, metadata);
+                if(!charge.object){
+                    return {error: charge.rawType, message: charge.message};
+                }
+                Donations.update({_id: data._id}, {$set: {charge_id: charge.id}});
+
+                return {c: customerData.id, don: data._id, charge: charge.id};
             } else {
-                return_charge_or_payment_id = charge_object.charge;
-            }
-        return {c: customerData.id, don: data._id, charge: return_charge_or_payment_id};
-        }
+                // Print how often it it recurs?
+                console.log(data.paymentInformation.is_recurring);
 
-        /*} catch (e) {
-         logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);
-         logger.error("e.category_code = " + e.category_code + " e.descriptoin = " + e.description);
-         if(e.category_code) {
-         logger.error("Got to catch error area of create_associate. ID: " + data._id + " Category Code: " + e.category_code + ' Description: ' + e.description);
-         var debitSubmitted = '';
-         if(e.category_code === 'invalid-routing-number'){
-         debitSubmitted = false;
-         }
-         Donations.update(data._id, {
-         $set: {
-         'failed.category_code': e.category_code,
-         'failed.description': e.description,
-         'failed.eventID': e.request_id,
-         'debit.status': 'failed',
-         'debit.submitted': debitSubmitted
-         }
-         });
-         throw new Meteor.Error(500, e.category_code, e.description);
-         } else {
-         throw new Meteor.Error(500, e.reason, e.details);
-         }
-         }*/
-    },
+                //Start a subscription (which also connects this card, or bank_account to the customer
+                var charge_object = Utils.charge_plan(data.paymentInformation.total_amount,
+                        data._id, customerData.id, data.paymentInformation.source_id,
+                        data.paymentInformation.is_recurring, data.paymentInformation.start_date, metadata);
+                 if (!charge_object.object) {
+                     if(charge_object === 'scheduled') {
+                         return {c: customerData.id, don: data._id, charge: 'scheduled'};
+                     } else{
+                         logger.error("The charge_id object didn't have .object attached.");
+                         return {error: charge.rawType, message: charge.message};
+                     }
+                 }
+
+                // check for payment rather than charge id here
+                var return_charge_or_payment_id;
+                if(charge_object.payment){
+                    return_charge_or_payment_id = charge_object.payment;
+                } else {
+                    return_charge_or_payment_id = charge_object.charge;
+                }
+                return {c: customerData.id, don: data._id, charge: return_charge_or_payment_id};
+            }
+        } catch (e) {
+            logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);
+            logger.error("e.category_code = " + e.category_code + " e.descriptoin = " + e.description);
+            if(e.category_code) {
+                logger.error("Got to catch error area of create_associate. ID: " + data._id + " Category Code: " + e.category_code + ' Description: ' + e.description);
+                var debitSubmitted = '';
+                if(e.category_code === 'invalid-routing-number'){
+                    debitSubmitted = false;
+                }
+                Donations.update(data._id, {
+                    $set: {
+                    'failed.category_code': e.category_code,
+                    'failed.description': e.description,
+                    'failed.eventID': e.request_id,
+                    'debit.status': 'failed',
+                    'debit.submitted': debitSubmitted
+                    }
+                });
+                throw new Meteor.Error(500, e.category_code, e.description);
+            } else {
+                throw new Meteor.Error(500, e.reason, e.details);
+            }
+        }
+    }/*,
     get_balanced_customer_data: function (id) {
-        /*try {*/
+        /!*try {*!/
             //check to see that the user is the admin user
             check(id, String);
 
@@ -302,12 +301,12 @@ Meteor.methods({
                 return get_customer;
             }
 
-        /*} catch (e) {
+        /!*} catch (e) {
             console.log(e);
             //e._id = AllErrors.insert(e.response);
             var error = (e.response);
             throw new Meteor.Error(error, e._id);
-        }*/
+        }*!/
     },
     get_all_stripe_customers: function (starting_after, limit){
         check(starting_after, Match.Optional(String));
@@ -338,6 +337,6 @@ Meteor.methods({
         });
 
         return {"Stripe events number": all_stripe_events.length, "array": all_stripe_events};
-    }
+    }*/
 
 });

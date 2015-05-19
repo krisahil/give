@@ -91,19 +91,21 @@ Router.route('/dashboard', function () {
     name: 'admin.dashboard'
 });
 
-Router.route('/transactions', function () {
-    this.layout('AdminLayout');
+Router.route('/transactions', {
 
+    layoutTemplate: 'AdminLayout',
 
-    this.subscribe('donate_list').wait();
-
-    if (this.ready()) {
-        this.render('Transactions');
-        this.next();
-    }else {
-        this.render('Loading');
-        this.next();
-    }
+    subscriptions: function(){
+        return Meteor.subscribe('donate_list')
+    },
+    action: function () {
+        if (this.ready()) {
+            this.render('Transactions');
+        } else {
+            this.render('Loading');
+        }
+    },
+    name: 'Transactions'
 });
 
 Router.route('/subscription/:_id', function () {
