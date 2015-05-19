@@ -42,7 +42,7 @@ _.extend(App, {
                         "email_address": customer_cursor.metadata.email,
                         "phone_number": customer_cursor.metadata.phone,
                         "address_line1": customer_cursor.metadata.address_line1,
-                        "address_line2": customer_cursor.metadata.address_line2,
+                        "address_line2": address_line2,
                         "region": customer_cursor.metadata.state,
                         "city": customer_cursor.metadata.city,
                         "postal_code": customer_cursor.metadata.postal_code,
