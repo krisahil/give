@@ -1,4 +1,5 @@
 <template name="Dashboard">
+	{{> AdminGive}}
 	<div class="row">
 		<div class="col col-lg-2"></div>
 			<div class="col-lg-8">
@@ -8,11 +9,11 @@
 					</div>
 					<div class="panel-body">
 						<div class="col-sm-2">
-							<a class="quick-button" href="transactions">
+							<a id="new-gift" class="quick-button" href="">
 								<span class="fa-stack fa-lg">
 									<i class="fa fa-gift"></i>
 								</span>
-								<h5>Gifts</h5>
+								<h5>New Gift</h5>
 							</a>
 						</div>
 						<div class="col-sm-2">

@@ -21,5 +21,12 @@ Template.Dashboard.events({
                 console.log(error);
             }
         });
+    },
+    'click #new-gift': function(evt){
+        evt.preventDefault();
+        $('#modal_for_admin_give_form').modal({
+            show: true,
+            backdrop: 'static'
+        });
     }
 });

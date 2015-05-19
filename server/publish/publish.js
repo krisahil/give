@@ -160,6 +160,21 @@ Meteor.publish("user_date_and_subscriptions_with_only_4", function () {
 	}
 });
 
+Meteor.publish("publish_for_admin_give_form", function () {
+    if (Roles.userIsInRole(this.userId, ['admin'])) {
+
+        var customers = Customers.find({});
+        var devices = Devices.find({});
+        return[customers, devices];
+
+    } else {
+
+        // user not authorized. do not publish
+        this.stop();
+        return;
+
+    }
+});
 
 Meteor.publish("userSubscriptions", function () {
     if (this.userId) {
