@@ -94,3 +94,6 @@
   background: #48c9b0;
   color: #ffffff;
 }
+.UserCSS .change-td-padding {
+  padding-right: 5px;
+}
