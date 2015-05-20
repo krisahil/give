@@ -8,4 +8,12 @@ Template.DonationScheduled.helpers({
     start_date: function () {
         return Session.get('params.start_date');
     }
-})
+});
+
+Template.DonationScheduled.rendered = function () {
+    $('#modal_for_user_give_form').modal('hide');
+    $('#modal_for_admin_give_form').modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+};
+

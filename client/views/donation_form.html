@@ -1,24 +1,6 @@
 <template name="DonationForm">
-    <div class="row text-center" id="spinContainer">
-        <div class="blackBackground">
-            <a href="https://trashmountain.com" target="_blank"><img class="logoImage"
-              src="/images/bw_logo.png"  style="height:60px">
-            </a>
-        </div>
-        <div class="outerTitle">
-            <div class="innerTitle">
-                <div class="centerTitle">
-                    <div class="positionedAbsolute">
-                        {{#if MeteorUser}}
-                            <button class="btn btn-primary" type="button" id="userProfileButton"><span class="fa fa-user"> User Profile Page</span></button>
-                        {{/if}}
-                        <span class="signInOut" >{{> atNavButton}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="loginButton">
-        </div>
+    <div class="container form-container">
+        <div class="row text-center" id="spinContainer">
 
 		<form class="form-horizontal donation-form" role="form" id="donation_form" name="donation_form" data-parsley-focus="first"
             data-parsley-excluded="input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
@@ -130,6 +112,7 @@
             </div>
             <input type="hidden" id="enteredWriteInValue" value="{{writeInValue}}" />
     	</form>
+    </div>
     </div>
 
     {{> Modals}}

@@ -179,7 +179,8 @@ Utils = {
             start_date: Match.Optional(String),
             later: Match.Optional(Boolean),
             type: String,
-            saved: Boolean
+            saved: Boolean,
+            send_scheduled_email: Match.Optional(String)
         },
             customer: {
                 fname: String,

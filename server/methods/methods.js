@@ -133,20 +133,21 @@ Meteor.methods({
             };
 
             metadata = {
-                created_at:         data.paymentInformation.created_at,
-                sessionId:          data.sessionId,
-                URL:                data.URL,
-                'donateTo':         donateTo,
-                'donateWith':       data.paymentInformation.donateWith,
-                'type':             data.paymentInformation.type,
-                'total_amount':     data.paymentInformation.total_amount,
-                'amount':           data.paymentInformation.amount,
-                'fees':             data.paymentInformation.fees,
-                'coveredTheFees':   data.paymentInformation.coverTheFees,
-                'customer_id':      customerData.id,
-                'status':           'pending',
-                'frequency':        data.paymentInformation.is_recurring,
-                'dt_donation_id':   null
+                created_at:             data.paymentInformation.created_at,
+                sessionId:              data.sessionId,
+                URL:                    data.URL,
+                'donateTo':             donateTo,
+                'donateWith':           data.paymentInformation.donateWith,
+                'type':                 data.paymentInformation.type,
+                'total_amount':         data.paymentInformation.total_amount,
+                'amount':               data.paymentInformation.amount,
+                'fees':                 data.paymentInformation.fees,
+                'coveredTheFees':       data.paymentInformation.coverTheFees,
+                'customer_id':          customerData.id,
+                'status':               'pending',
+                'frequency':            data.paymentInformation.is_recurring,
+                'dt_donation_id':       null,
+                'send_scheduled_email': data.paymentInformation.send_scheduled_email
             };
 
 

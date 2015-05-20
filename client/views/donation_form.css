@@ -188,12 +188,24 @@ hr {
 }
 
 .blackBackground {
-	background-color:#262626;
-	padding-top:10px
+	background-color:#3d3d3d;
+	padding: 20px 0;
+	display: table;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-animation: header-anim 1s ease-in-out;
+	animation: header-anim 1s ease-in-out;
+	margin: auto;
 }
 
 .logoImage {
-	vertical-align:baseline;
+	height: auto;
+	max-height: 58px;
+	width: auto;
+	max-width: 100%;
+	padding-left: 20px;
 }
 
 .negativeBottomMargin {
@@ -253,7 +265,7 @@ hr {
     .positionedAbsolute {
         position: absolute;
         right: 10px;
-        top: 0;
+        top: 20px;
     }
 }
 

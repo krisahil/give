@@ -33,7 +33,8 @@ _.extend(App, {
                         "coverTheFees": $('#coverTheFees').is(":checked"),
                         "created_at": moment().format('MM/DD/YYYY, hh:mma'),
                         "start_date": moment(new Date($('#start_date').val())).format('X'),
-                        "saved": $('#save_payment').is(":checked")
+                        "saved": $('#save_payment').is(":checked"),
+                        "send_scheduled_email": "no"
                     },
                     "customer": {
                         "fname": customer_cursor.metadata.fname,

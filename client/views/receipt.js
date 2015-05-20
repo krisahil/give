@@ -23,7 +23,7 @@ Template.Receipt.helpers({
                 return Charges.findOne().metadata.frequency;
             }
         }else{
-            return 'One time';
+            return 'One-time';
         }
     },
    date: function () {

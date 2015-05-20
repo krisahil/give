@@ -274,7 +274,7 @@ _.extend(Utils,{
                 data_slug.message.merge_vars[0].vars.push(
                     {
                         "name": "frequency",
-                        "content": frequency
+                        "content": "one time"
                     }
                 );
             }
@@ -449,11 +449,18 @@ _.extend(Utils,{
         }
     },
     send_scheduled_email: function (id, subscription_id, frequency, amount) {
-        /*try {*/
+        try {
             logger.info("Started send_donation_email with ID: " + id + " subscription_id: " + subscription_id + " frequency: " + frequency + "amount: " + amount);
 
             // Check to see if this email has already been sent before continuing, log it if it hasn't
             var subscription_cursor = Subscriptions.findOne({_id: subscription_id});
+            console.log("LOOK HERE LOOK HERE");
+            console.dir(subscription_cursor.metadata);
+            if(subscription_cursor.metadata &&
+                subscription_cursor.metadata.send_scheduled_email &&
+                subscription_cursor.metadata.send_scheduled_email === 'no'){
+                return;
+            }
             if(Audit_trail.findOne({"subscription_id": subscription_id}) &&
                 Audit_trail.findOne({"subscription_id": subscription_id}).subscription_scheduled &&
                 Audit_trail.findOne({"subscription_id": subscription_id}).subscription_scheduled.sent){
@@ -513,11 +520,11 @@ _.extend(Utils,{
                     ]
                 }
             });
-        /*} //End try
+        } //End try
         catch (e) {
             logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
             logger.error('Mandril sendEmailOutAPI Method error: ' + e);
             throw new Meteor.error(e);
-        }*/
+        }
     }
 });
