@@ -34,6 +34,12 @@ Router.route('', function () {
 });
 
 Router.route('/landing', function () {
+    var params = this.params;
+    if(Meteor.user()){
+        Session.set('params.give', "Yes");
+        Router.go('subscriptions');
+    }
+
     this.render('DonationLanding');
 }, {
     name: 'donation.landing'
