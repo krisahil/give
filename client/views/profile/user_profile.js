@@ -202,6 +202,10 @@ Template.UserNav.events({
         evt.preventDefault();
         Router.go('changePwd');
     },
+    'click #nav-sign-out': function(evt){
+        evt.preventDefault();
+        AccountsTemplates.logout();
+    },
     'click #nav-profile': function(evt){
         evt.preventDefault();
         Router.go('user.profile');
