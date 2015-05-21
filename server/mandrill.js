@@ -123,7 +123,7 @@ _.extend(Utils,{
 
         var donateWith = stripeEvent.data.object.metadata && stripeEvent.data.object.metadata.donateWith;
 
-        var testorlive = Meteor.settings.dev ? 'test' : 'live';
+        var testorlive = Meteor.settings.dev ? '/test' : '';
 
         var data_slug = {
             "template_name": "canceled-recurring-notice",
