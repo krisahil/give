@@ -6,7 +6,7 @@
                     <h4 class="text-center">Donate Here</h4>
 
                     <div class="well well1 text-center">
-                        <form method="GET">
+                        <form method="GET" id="landing_form">
                             <input type="hidden" name="donateTo">
                             <input type="hidden" name="donateWith">
                             <input type="hidden" id="placeholder_donate_input">
@@ -102,10 +102,8 @@
                                 </select></p>
 
                             <p id="depends-on-WriteIn"></p><input name="to" type="hidden" value="">
-                            <!-- onclick="this.form.action='URL'" is used to send the user to different pages depending on which button they press -->
 
                             <p class="">
-                                <!--onclick="this.form.action='https://give.trashmountain.com'"-->
                                 <button class="btn btn-success btn-success-color btn-sm gradiant-button" id="cardButton"
                                         title="Donate by card">Donate by <img alt="Credit Card" src="/images/icons/icon-cc.png" title="Donate by card">
                                 </button>

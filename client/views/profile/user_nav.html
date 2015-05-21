@@ -1,15 +1,32 @@
 <template name="UserNav">
-    <div class="text-right">
-        <p class="text-danger text-center hidden-print">
-            <!--Your giving history may still be updating. It might not reflect the latest numbers we have in our donation system. &nbsp;&nbsp;&nbsp;-->
-            {{#if MeteorUser}}
-                <a href="{{pathFor 'user.profile'}}"><button type="button" id="nav-button-profile" class="btn btn-primary navbar-btn {{isActiveRoute regex='user.profile'}}"><span class="fa fa-history"></span> Profile & Giving History</button></a>
-                <a href="{{pathFor 'subscriptions'}}"><button type="button" id="nav-button-subscriptions" class="btn btn-primary navbar-btn {{isActiveRoute regex='subscriptions'}}"><span class="fa fa-refresh"></span> Recurring Gifts</button></a>
-                <a href="{{pathFor 'subscriptions'}}"><button type="button" id="nav-button-give" class="btn btn-primary navbar-btn"><span class="fa fa-plus-circle"></span> Give</button></a>
-                <button type="button" id="nav-button-password" class="btn btn-primary navbar-btn"><span class="fa fa-unlock-alt"></span> Change Password</button>
-
-            {{/if}}
-            {{> atNavButton}}
-        </p>
-    </div>
+    <nav class="navbar navbar-collapse navbar-top hidden-print" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#example-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://trashmountain.com" target="_blank">
+                <img class="logoImage" src="/images/bw_logo_new.png">
+            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="{{isActiveRoute regex='user.profile'}}">
+                    <a id="nav-profile" class="nav-bar-links" href="{{pathFor 'user.profile'}}"><span class="fa fa-history"></span> Profile & Giving History</a>
+                </li>
+                <li class="{{isActiveRoute regex='subscriptions'}}">
+                    <a id="nav-subscriptions" class="{{isActiveRoute regex='subscriptions'}} nav-bar-links" href="{{pathFor 'subscriptions'}}"><span class="fa fa-refresh"></span> Recurring Gifts</a>
+                </li>
+                <li class="">
+                    <a id="nav-give" class="nav-bar-links" href=""><span class="fa fa-plus-circle"></span> Give</a>
+                </li>
+                <li class="">
+                    <a id="nav-password" class="nav-bar-links" href=""><span class="fa fa-unlock-alt"></span> Change Password</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </template>

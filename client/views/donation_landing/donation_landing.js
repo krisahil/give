@@ -13,8 +13,9 @@ Template.DonationLanding.events({
 
     'click #cardButton': function(e) {
         e.preventDefault();
+        console.log("You clicked the card button");
         var placeholder_value = $('#placeholder_donate_input').val();
-        if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() == "") {
+        if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() === "") {
             $('#depends-on-Missionary > .dd-select').addClass("red-border");
             alert("Please select a missionary");
             return false;
@@ -26,7 +27,7 @@ Template.DonationLanding.events({
                 $('[name="donateTo"]').val($(placeholder_value).val());
                 $('[name="donateWith"]').val('Card');
             }
-            'https://trashmountain.com/give'
+            Router.go('/?'+$("#landing_form").serialize());
         }
     },
     'click #checkButton': function(e) {
@@ -44,6 +45,7 @@ Template.DonationLanding.events({
                 $('[name="donateTo"]').val($(placeholder_value).val());
                 $('[name="donateWith"]').val('Check');
             }
+            Router.go('/?'+$("#landing_form").serialize());
         }
     }
 });
@@ -354,9 +356,6 @@ Template.DonationLanding.rendered = function () {
             $('[name="donateTo"]').val(selectedData.selectedData.value);
         },
     });
-    /*$('html, body').animate({
-     scrollTop: $(".scroll-to-here").offset().top
-     }, 1000);*/
 
 
     $("#depends-on-Missionary").prop('disabled', true);
