@@ -148,6 +148,11 @@ Stripe_Events = {
     'customer.subscription.deleted': function (stripeEvent, res) {
         Utils.store_stripe_event(stripeEvent);
 
+        Utils.send_cancelled_email_to_admin(stripeEvent.data.object.id, stripeEvent);
+
+        // TODO: setup an email for sending to the user as well
+        // TODO: include a link to resubscribe
+
         console.log(stripeEvent.type + ': event processed');
         return;
     },
