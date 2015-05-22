@@ -20,7 +20,7 @@ Template.SubscriptionsOverview.helpers({
         return Subscriptions.find({}, {sort: {status: 1, start: -1}, limit: 4, skip: subscription_page});
     },
     plan_name: function() {
-        return Subscriptions.findOne().plan.name;
+        return this.plan.name;
     },
     show_give_form: function () {
         return Session.equals("params.give", "Yes");

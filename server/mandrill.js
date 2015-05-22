@@ -414,7 +414,7 @@ _.extend(Utils,{
                     );
                     data_slug.message.merge_vars[0].vars.push(
                         {
-                            "name": "donateTo",
+                            "name": "DonateTo",
                             "content": donation_cursor.donateTo
                         }
                     );
@@ -452,7 +452,7 @@ _.extend(Utils,{
                 } else {
                     data_slug.message.merge_vars[0].vars.push(
                         {
-                            "name": "donateTo",
+                            "name": "DonateTo",
                             "content": donation_cursor.donateTo
                         }
                     );
