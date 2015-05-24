@@ -322,7 +322,7 @@ _.extend(Utils,{
             if (charge_cursor && charge_cursor.source && charge_cursor.source.brand) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
-                        "name": "donateWith",
+                        "name": "DonateWith",
                         "content": charge_cursor.source.brand + " - ending in, " + charge_cursor.source.last4
                     }, {
                         "name": "NAME",
@@ -332,7 +332,7 @@ _.extend(Utils,{
             } else if(charge_cursor && charge_cursor.source && charge_cursor.source.bank_name) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
-                        "name": "donateWith",
+                        "name": "DonateWith",
                         "content": charge_cursor.source.bank_name + " - ending in, " + charge_cursor.source.last4
                     }, {
                         "name": "NAME",
@@ -342,7 +342,7 @@ _.extend(Utils,{
             } else{
                 data_slug.message.merge_vars[0].vars.push(
                     {
-                        "name": "donateWith",
+                        "name": "DonateWith",
                         "content": charge_cursor.payment_source.bank_name + " - ending in, " + charge_cursor.payment_source.last4
                     }, {
                         "name": "NAME",
@@ -398,8 +398,35 @@ _.extend(Utils,{
                             }
                         );
                     }
-                } else if (type === 'charge.failed') {
+                }
+                else if (type === 'charge.failed') {
                     data_slug.template_name = "fall-2014-donation-failed-recurring";
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "URL",
+                            "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
+                        }
+                    );
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "PHONE",
+                            "content": donation_cursor.phone
+                        }
+                    );
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "DonateTo",
+                            "content": donation_cursor.donateTo
+                        }
+                    );
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "don",
+                            "content": donation_cursor._id
+                        }
+                    );
+                }
+                else {
                     data_slug.message.merge_vars[0].vars.push(
                         {
                             "name": "URL",
