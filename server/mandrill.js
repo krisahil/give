@@ -426,13 +426,7 @@ _.extend(Utils,{
                         }
                     );
                 }
-                else {
-                    data_slug.message.merge_vars[0].vars.push(
-                        {
-                            "name": "URL",
-                            "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
-                        }
-                    );
+                else if( type === 'charge.succeeded' || type === 'payment.paid'){
                     data_slug.message.merge_vars[0].vars.push(
                         {
                             "name": "PHONE",
