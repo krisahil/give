@@ -27,7 +27,8 @@ Template.Receipt.helpers({
         }
     },
    date: function () {
-   		return moment(this.created_at).format('MM/DD/YYYY');
+       console.log(this);
+   		return moment(this.created * 1000).format('MM/DD/YYYY');
    },
     business_name: function () {
         if (this.business_name){
