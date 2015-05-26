@@ -107,9 +107,6 @@ _.extend(Utils,{
             });
         }
 
-        //var subscription_cursor_here = Subscriptions.findOne({_id: subscription_id});
-        //var start_date = new Date(subscription_cursor_here && subscription_cursor_here.start * 1000);
-
         var start_date = moment( new Date(stripeEvent.data.object.start * 1000) ).format('DD MMM, YYYY');
 
         var last_gift = moment(new Date(stripeEvent.data.object.current_period_start * 1000)).format('DD MMM, YYYY');
@@ -378,6 +375,7 @@ _.extend(Utils,{
 
             if (subscription) {
                 donation_cursor = Donations.findOne({subscription_id: subscription});
+                var subscription_cursor = Subscriptions.findOne({_id: subscription});
                 if (!donation_cursor) {
                     if (!type === 'charge.failed') {
                         logger.error("No donation found here, exiting.");
@@ -409,12 +407,6 @@ _.extend(Utils,{
                     );
                     data_slug.message.merge_vars[0].vars.push(
                         {
-                            "name": "PHONE",
-                            "content": donation_cursor.phone
-                        }
-                    );
-                    data_slug.message.merge_vars[0].vars.push(
-                        {
                             "name": "DonateTo",
                             "content": donation_cursor.donateTo
                         }
@@ -429,14 +421,8 @@ _.extend(Utils,{
                 else if( type === 'charge.succeeded' || type === 'payment.paid'){
                     data_slug.message.merge_vars[0].vars.push(
                         {
-                            "name": "PHONE",
-                            "content": donation_cursor.phone
-                        }
-                    );
-                    data_slug.message.merge_vars[0].vars.push(
-                        {
                             "name": "DonateTo",
-                            "content": donation_cursor.donateTo
+                            "content": subscription_cursor.metadata.donateTo
                         }
                     );
                     data_slug.message.merge_vars[0].vars.push(
@@ -448,9 +434,6 @@ _.extend(Utils,{
                 }
             } else {
                 donation_cursor = Donations.findOne({charge_id: id});
-                console.log("LOOK HERE ***********************");
-                console.dir(donation_cursor);
-                console.log("LOOK HERE ***********************");
                 if (!donation_cursor) {
                     if (!type === 'charge.failed') {
                         logger.error("No donation found here, exiting.");
@@ -555,7 +538,6 @@ _.extend(Utils,{
 	send_mandrill_email: function(data_slug, type){
         try{
             logger.info("Started send_mandrill_email type: " + type);
-            console.dir(data_slug);
             Meteor.Mandrill.sendTemplate(data_slug);
         }//End try
         catch (e) {
@@ -570,8 +552,6 @@ _.extend(Utils,{
 
             // Check to see if this email has already been sent before continuing, log it if it hasn't
             var subscription_cursor = Subscriptions.findOne({_id: subscription_id});
-            console.log("LOOK HERE LOOK HERE");
-            console.dir(subscription_cursor.metadata);
             if(subscription_cursor.metadata &&
                 subscription_cursor.metadata.send_scheduled_email &&
                 subscription_cursor.metadata.send_scheduled_email === 'no'){
