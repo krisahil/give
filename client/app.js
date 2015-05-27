@@ -239,7 +239,7 @@ _.extend(App, {
                     App.updateTotal();
                 } else if(result.charge === 'scheduled'){
                     // Send the user to the scheduled page and include the frequency and the amount in the url for displaying to them
-                    Router.go('/scheduled/?frequency=' + form.paymentInformation.is_recurring + '&amount=' + form.paymentInformation.amount/100 + '&start_date=' + form.paymentInformation.start_date );
+                    Router.go('/scheduled/?frequency=' + form.paymentInformation.is_recurring + '&amount=' + form.paymentInformation.total_amount/100 + '&start_date=' + form.paymentInformation.start_date );
                 }else{
                     Router.go('/thanks?c=' + result.c + "&don=" + result.don + "&charge=" + result.charge);
                 }

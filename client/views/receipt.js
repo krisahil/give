@@ -67,7 +67,6 @@ Template.Receipt.helpers({
         }
     },
     donateWith: function () {
-        console.log(this);
         if(this.source) {
             var source = this.source;
             if (source.object.slice(0, 4) === 'card') {
