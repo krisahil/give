@@ -135,6 +135,12 @@ Template.DonationLanding.rendered = function () {
         description: "Aquaponics Director",
         imageSrc: "/images/team/Chris.jpg"
     }, {
+            text: "Ethan Pope",
+            value: "EthanPope",
+            selected: false,
+            description: "Intern",
+            imageSrc: "/images/team/Ethan.jpg"
+    },{
         text: "Isaac Tarwater",
         value: "IsaacTarwater",
         selected: false,
@@ -153,18 +159,6 @@ Template.DonationLanding.rendered = function () {
         description: "Missions Director for Asia",
         imageSrc: "/images/team/John.jpg"
     }, {
-        text: "Lindsey Keller",
-        value: "LindseyKeller",
-        selected: false,
-        description: "Intern",
-        imageSrc: "/images/team/Lindsey.jpg"
-    }, {
-        text: "Ethan Pope",
-        value: "EthanPope",
-        selected: false,
-        description: "Intern",
-        imageSrc: "/images/team/Ethan.jpg"
-    }, {
         text: "Jon DeMeo",
         value: "JonDeMeo",
         selected: false,
@@ -176,6 +170,12 @@ Template.DonationLanding.rendered = function () {
         selected: false,
         description: "Technology Director",
         imageSrc: "/images/team/Josh.jpg"
+    }, {
+        text: "Lindsey Keller",
+        value: "LindseyKeller",
+        selected: false,
+        description: "Intern",
+        imageSrc: "/images/team/Lindsey.jpg"
     }, {
         text: "Shelley Setchell",
         value: "ShelleySetchell",
