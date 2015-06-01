@@ -2,6 +2,15 @@
 /* Client App Namespace  */
 /*****************************************************************************/
 _.extend(App, {
+    get_fee: function (amount) {
+        var r = (100 - 2.9) / 100;
+        var i = (parseFloat(amount) + .3) / r;
+        var s = i - amount;
+        return {
+            fee: i,
+            total: s
+        }
+    },
     process_give_form: function(quick_form, customer){
         var form = {};
         if(quick_form){
@@ -349,9 +358,11 @@ _.extend(App, {
                     if ($('#coverTheFees').prop('checked')) {
                         $("#show_total").show();
                         Session.set("coverTheFees", true);
-                        var fee = (donationAmount * 0.029 + 0.30).toFixed(2);
+                        var fee_and_total = App.get_fee(donationAmount);
+                        console.log(fee_and_total);
+                        var fee = fee_and_total.fee - donationAmount;
                         var roundedAmount = (+donationAmount + (+fee)).toFixed(2);
-                        $("#total_amount_display").text(" + $" + fee + " = $" + roundedAmount).css({
+                        $("#total_amount_display").text(" + $" + fee.toFixed(2) + " = $" + roundedAmount).css({
                             'color': '#34495e'
                         });
                         $("#total_amount").val(roundedAmount);
