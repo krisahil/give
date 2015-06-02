@@ -81,9 +81,6 @@ Template.SubscriptionsOverview.events({
         var subscription_id = this.id;
         var customer_id = Subscriptions.findOne({_id: subscription_id}).customer;
 
-        console.log(subscription_id);
-        console.log(customer_id);
-
         swal({
             title: "Are you sure?",
             text: "Please let us know why you are stopping your gift. (optional)",
@@ -104,9 +101,7 @@ Template.SubscriptionsOverview.events({
                 swal("Ok, we didn't do anything.", "Your recurring gift is still active :)",
                     "success");
             } else if (inputValue) {
-                console.log(inputValue);
-                console.log(subscription_id);
-                console.log(customer_id);
+            } else if (inputValue) {
                 Meteor.call("stripeCancelSubscription", customer_id, subscription_id, inputValue, function(error, response){
                     if (error){
                         confirm.button("reset");

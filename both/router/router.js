@@ -49,7 +49,6 @@ Router.route('/thanks', {
     name: 'donation.thanks',
     waitOn: function () {
         return  [
-            //Meteor.subscribe('receipt_donations', this.params.query.don),
             Meteor.subscribe('receipt_customers', this.params.query.c),
             Meteor.subscribe('receipt_charges', this.params.query.charge)
         ];
@@ -70,7 +69,7 @@ Router.route('/gift/:_id', function () {
 
     var params = this.params;
 
-    this.subscribe('donate', params._id).wait();
+    this.subscribe('donate', params._id);
 
     if (this.ready()) {
         this.render('Gift', {
@@ -119,7 +118,7 @@ Router.route('/subscription/:_id', function () {
     this.layout('AdminLayout');
 
 
-    this.subscribe('donate', this.params._id).wait();
+    this.subscribe('donate', this.params._id);
 
     if (this.ready()) {
         this.render('Subscription', {
@@ -138,7 +137,7 @@ Router.route('/order/:_id', function () {
     this.layout('AdminLayout');
 
 
-    this.subscribe('donate', this.params._id).wait();
+    this.subscribe('donate', this.params._id);
 
     if (this.ready()) {
         this.render('Order', {
