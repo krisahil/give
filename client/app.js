@@ -2,6 +2,15 @@
 /* Client App Namespace  */
 /*****************************************************************************/
 _.extend(App, {
+    get_fee: function (amount) {
+        var r = (100 - 2.9) / 100;
+        var i = (parseFloat(amount) + .3) / r;
+        var s = i - amount;
+        return {
+            fee: i,
+            total: s
+        }
+    },
     process_give_form: function(quick_form, customer){
         var form = {};
         if(quick_form){
@@ -202,7 +211,6 @@ _.extend(App, {
             App.process_bank(bank_info, form);
         } else{
             //TODO: process the gift with a saved device
-            console.log("Process with saved device");
             form.paymentInformation.saved = true;
             var payment = {id: form.paymentInformation.donateWith};
             if(form.paymentInformation.donateWith.slice(0,3) === 'car'){
@@ -221,7 +229,6 @@ _.extend(App, {
     //This is the callback for the client side tokenization of cards and bank_accounts.
     handleCalls: function(payment, form) {
         // payment is the token returned from Stripe
-        console.dir(payment);
         form.paymentInformation.token_id = payment.id;
         Meteor.call('stripeDonation', form, function (error, result) {
             if (error) {
@@ -231,7 +238,6 @@ _.extend(App, {
                 //run App.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
                 App.updateTotal();
             } else {
-                console.dir(result);
                 if ( result.error ) {
                     var send_error = {code: result.error, message: result.message};
                     App.handleErrors(send_error);
@@ -291,12 +297,9 @@ _.extend(App, {
             } else {
                 // Call your backend
                 if(form){
-                    console.log(form.paymentInformation.start_date);
                     form.paymentInformation.source_id = response.card.id;
-                    console.dir(response);
                     App.handleCalls(response, form);
                 } else{
-                    console.dir(response);
                     return response;
                 }
             }
@@ -310,12 +313,9 @@ _.extend(App, {
             } else {
                 // Call your backend
                 if(form){
-                    console.log(form.paymentInformation.start_date);
                     form.paymentInformation.source_id = response.bank_account.id;
-                    console.dir(response);
                     App.handleCalls(response, form);
                 } else{
-                    console.dir(response);
                     return response;
                 }
             }
@@ -349,9 +349,10 @@ _.extend(App, {
                     if ($('#coverTheFees').prop('checked')) {
                         $("#show_total").show();
                         Session.set("coverTheFees", true);
-                        var fee = (donationAmount * 0.029 + 0.30).toFixed(2);
+                        var fee_and_total = App.get_fee(donationAmount);
+                        var fee = fee_and_total.fee - donationAmount;
                         var roundedAmount = (+donationAmount + (+fee)).toFixed(2);
-                        $("#total_amount_display").text(" + $" + fee + " = $" + roundedAmount).css({
+                        $("#total_amount_display").text(" + $" + fee.toFixed(2) + " = $" + roundedAmount).css({
                             'color': '#34495e'
                         });
                         $("#total_amount").val(roundedAmount);
