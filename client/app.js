@@ -601,3 +601,17 @@ UI.registerHelper('MeteorUser', function(){
         return false;
     }
 });
+
+
+UI.registerHelper('marketplace', function() {
+    var marketplace = Session.get('params.marketplace');
+    if(marketplace === '') {
+        return false;
+    } else if (marketplace === 'rhiza'){
+        Session.set('params.amount', '15');
+        return marketplace;
+    } else if (marketplace === 'karpos'){
+        Session.set('params.amount', '30');
+        return marketplace;
+    }
+});
