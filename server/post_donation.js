@@ -173,6 +173,12 @@ _.extend(Utils, {
 
         // If a fund id changes you'll need to go into every case that fits that fund id and update the id
         switch(donateTo) {
+            case "Aquaponics Marketplace - Karpos":
+                return 67506;
+                break;
+            case "Aquaponics Marketplace - Rhiza":
+                return 67505;
+                break;
             case "BaseCamp":
                 return 63656;
                 break;

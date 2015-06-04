@@ -607,10 +607,10 @@ UI.registerHelper('marketplace', function() {
     var marketplace = Session.get('params.marketplace');
     if(marketplace === '') {
         return false;
-    } else if (marketplace === 'rhiza'){
+    } else if (marketplace === 'Aquaponics Marketplace - Rhiza'){
         Session.set('params.amount', '15');
         return marketplace;
-    } else if (marketplace === 'karpos'){
+    } else if (marketplace === 'Aquaponics Marketplace - Karpos'){
         Session.set('params.amount', '30');
         return marketplace;
     }

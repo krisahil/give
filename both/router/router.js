@@ -27,7 +27,7 @@ Router.route('', function () {
     Session.set('params.exp_year', params.query.exp_year);
     Session.set('params.writeIn', params.query.writeIn);
     Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
-    if(params.query.donateTo === 'rhiza' || params.query.donateTo === 'karpos'){
+    if(params.query.donateTo === 'Aquaponics Marketplace - Rhiza' || params.query.donateTo === 'Aquaponics Marketplace - Karpos'){
         Session.set('params.marketplace', params.query.donateTo);
     } else {
         Session.set('params.marketplace', '');
