@@ -11,7 +11,11 @@
             <div class="col-lg-8 col-md-8 col-md-offset-2">
 
     			<fieldset>
-                    <h2>THANK YOU</h2>
+                    {{#unless marketplace}}
+                        <h2>THANK YOU</h2>
+                    {{else}}
+                        <img src="/images/marketplace.jpeg" />
+                    {{/unless}}
 
                     <!-- Amount of donation -->
     				<div class="donation_amount text-center well well-lg form-group">
