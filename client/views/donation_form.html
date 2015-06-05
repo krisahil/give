@@ -14,7 +14,7 @@
                     {{#unless marketplace}}
                         <h2>THANK YOU</h2>
                     {{else}}
-                        <img src="/images/marketplace.jpeg" style="width: 100%" />
+                        <img src="/images/marketplace.jpeg" style="width: 50%" />
                     {{/unless}}
 
                     <!-- Amount of donation -->
@@ -35,21 +35,21 @@
                                 <div id="show-amount-error-here"></div>
                             {{else}}
                                 <br>
-                                {{amount}}
+                                <span>$</span>{{amount}}
                                 <input {{attributes_Input_Amount}} type="hidden" value="{{amount}}" />
                             {{/unless}}
 
     				    </div>
                         <div class="text-left col-md-7 col-sm-8 col-xs-12">
                             {{#if paymentWithCard}}
-                            <!-- Checbox for Covering related fees-->
+                                <!-- Checbox for Covering related fees-->
                                 <input type="checkbox" name="coverTheFees" id="coverTheFees" data-toggle="checkbox" {{coverTheFeesChecked}} />
                                     I'll cover the credit card processing fees. <span><i id="coverTheFeesQuestion" class="fa fa-question-circle" data-toggle="popover"
                                      data-placement="bottom" data-trigger="hover focus" title="Processor fees" data-container="body"
                                      data-content="Our credit card processor charges 2.9% + .30 per transaction. If you check the box to cover these fees we'll do the math and change your gift amount to reflect this amount.">
-                            </i></span>
-                            <label for="total_amount_display">&nbsp;</label>
-                                    <p id="total_amount_display" class=""></p>
+                                </i></span>
+                                <label for="total_amount_display">&nbsp;</label>
+                                <p id="total_amount_display" class=""></p>
 
                             {{else}}
                             {{/if}}

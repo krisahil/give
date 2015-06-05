@@ -1,17 +1,3 @@
-Template.SubscriptionsOverview.rendered = function() {
-    Session.setDefault('paymentMethod', 'default');
-    Session.setDefault('subscription_cursor', 0);
-
-
-    //setup modal for entering give toward information
-    if (Session.equals('params.give', 'Yes')) {
-        $('#modal_for_user_give_form').modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
-};
-
 Template.SubscriptionsOverview.helpers({
     subscriptions: function(){
         var subscription_page = Session.get('subscription_cursor');
@@ -73,13 +59,20 @@ Template.SubscriptionsOverview.helpers({
         } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) == 'ca') {
             return 'Card';
         }
+    },
+    canceled_reason: function () {
+        return this.metadata && this.metadata.canceled_reason;
     }
 });
 
 Template.SubscriptionsOverview.events({
-    'click #cancel_subscription': function () {
+    'click #cancel_subscription': function (e) {
+        e.preventDefault();
         var subscription_id = this.id;
         var customer_id = Subscriptions.findOne({_id: subscription_id}).customer;
+        console.log("Got to cancel subscription call");
+        console.log("subscription id: " + subscription_id);
+        console.log("Customer id: " + customer_id);
 
         swal({
             title: "Are you sure?",
@@ -101,15 +94,23 @@ Template.SubscriptionsOverview.events({
                 swal("Ok, we didn't do anything.", "Your recurring gift is still active :)",
                     "success");
             } else if (inputValue) {
-            } else if (inputValue) {
+                console.log("Got to before method call with input of " + inputValue);
+                var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
+                var target = document.getElementById('spinContainer');
+                spinner = new Spinner(opts).spin(target);
+                $("#spinDiv").show();
                 Meteor.call("stripeCancelSubscription", customer_id, subscription_id, inputValue, function(error, response){
                     if (error){
                         confirm.button("reset");
                         Bert.alert(error.message, "danger");
+                        spinner.stop();
+                        $("#spinDiv").hide();
                     } else {
                         // If we're resubscribed, go ahead and confirm by returning to the
                         // subscriptions page and show the alert
                         console.log(response);
+                        spinner.stop();
+                        $("#spinDiv").hide();
                         swal("Cancelled", "Your recurring gift has been stopped.", "error");
                     }
                 });
@@ -130,3 +131,18 @@ Template.SubscriptionsOverview.events({
         Session.set('subscription_cursor', Number(Session.get('subscription_cursor')+4));
     }
 });
+
+Template.SubscriptionsOverview.rendered = function() {
+    Session.setDefault('paymentMethod', 'default');
+    Session.setDefault('subscription_cursor', 0);
+
+
+    //setup modal for entering give toward information
+    if (Session.equals('params.give', 'Yes')) {
+        $('#modal_for_user_give_form').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+};
