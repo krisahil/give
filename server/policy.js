@@ -6,7 +6,6 @@ BrowserPolicy.content.allowFontDataUrl();
 
 var trusted = [
     'js.stripe.com',
-    'js.balancedpayments.com',
     'checkout.stripe.com',
     'give.trashmountain.com',
     'trashmountain.com',

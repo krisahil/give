@@ -52,6 +52,11 @@
                     {{else}}
                         <li class="list-group-item bm-block clearfix">Ended on: <strong>{{epochToString ended_at}}</strong></li>
                     {{/unless}}
+                    {{#if equals status "canceled"}}
+                    <li class="list-group-item bm-block clearfix">
+                        <span>Canceled Reason: {{canceled_reason}}</span>
+                    </li>
+                    {{/if}}
                     {{#if equals status "active"}}
                         <li class="list-group-item bm-block clearfix">
                             <a id="cancel_subscription" href="" class="btn btn-block btn-default cancelButton">Cancel</a>

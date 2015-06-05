@@ -39,7 +39,6 @@ iron:location@1.0.9
 iron:middleware-stack@1.0.9
 iron:router@1.0.9
 iron:url@1.0.9
-j4507:balanced-payments-production@0.3.4
 j4507:datatables-bootstrap-3@0.2.5
 jquery@1.11.3_2
 json@1.0.3
