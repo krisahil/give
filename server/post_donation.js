@@ -302,6 +302,9 @@ _.extend(Utils, {
             case "International Field Projects - Honduras":
                 return 60489;
                 break;
+            case "Honduras Urgent":
+                return 60489;
+                break;
             case "Urgent Field Needs":
                 return 63659;
                 break;
@@ -318,10 +321,10 @@ _.extend(Utils, {
                 return 67281;
                 break;
             case "Int'l Field Projects - DR":
-                return 60491;
+                return 67322;
                 break;
             case "DR Urgent":
-                return 60491;
+                return 67322;
                 break;
             case "International Field Projects - Dominican Republic":
                 return 67322;
@@ -412,9 +415,6 @@ _.extend(Utils, {
                 break;
             case "Community Sponsorship - Philippines - Tanza":
                 return 63692;
-                break;
-            case "Honduras Urgent":
-                return 60489;
                 break;
             case "Where Most Needed":
                 return 63661;
@@ -676,7 +676,7 @@ _.extend(Utils, {
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
         if(!dt_fund) {
-            fund_id = 65663;
+            fund_id = Meteor.settings.donor_tools_default_fund_id;
             //TODO: Need to update this to put the ACH or CC bank and last4
             memo = Meteor.settings.dev + donateTo;
         } else {
