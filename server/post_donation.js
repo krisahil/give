@@ -672,7 +672,7 @@ _.extend(Utils, {
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
         if(!dt_fund) {
-            fund_id = Meteor.settings.donor_tools_default_fund_id;
+            fund_id = 65663;
             //TODO: Need to update this to put the ACH or CC bank and last4
             memo = Meteor.settings.dev + donateTo;
         } else {
