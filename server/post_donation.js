@@ -668,6 +668,7 @@ _.extend(Utils, {
             dt_fund = null;
         }
 
+        console.log("dt_fund: " + dt_fund);
         //fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
