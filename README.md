@@ -21,38 +21,40 @@ This is a live giving page, which is being used by Trash Mountain Project.
 
 Here is an example settings.json file
 
-  {
-    "dev": "****TEST****",
-    "mandrillUsername": "email@domain.com",
-    "mandrillKey": "",
-    "kadiraAppId": "",
-    "kadiraAppSecret": "",
-    "admin_user": "user _id of any user that can use the dashboard as an admin",
-    "donor_tools_site": "https://your_name.donortools.com",
-    "donor_tools_user": "email@domain.com",
-    "donor_tools_password": "",
-    "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",
-    "donor_tools_default_fund_id": "If a match can't be found 'Give' will use this id",
+```
+{
+  "dev": "****TEST****",
+  "mandrillUsername": "email@domain.com",
+  "mandrillKey": "",
+  "kadiraAppId": "",
+  "kadiraAppSecret": "",
+  "admin_user": "user _id of any user that can use the dashboard as an admin",
+  "donor_tools_site": "https://your_name.donortools.com",
+  "donor_tools_user": "email@domain.com",
+  "donor_tools_password": "",
+  "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",
+  "donor_tools_default_fund_id": "If a match can't be found 'Give' will use this id",
+  "stripe": {
+    "secret": "Secrete Stripe key",
+    "plan": {
+      "monthly": "Stripe plan name associated with monthly gifts",
+      "weekly": "Stripe plan name associated with weekly gifts",
+      "daily": "Stripe plan name associated with daily gifts
+    }
+  },
+  "sikka": {
+    "rateLimits": {
+      "perIp": "100"
+    }
+  },
+  "public": {
+    "URL": "giving page URL, you should use https://"
     "stripe": {
-      "secret": "Secrete Stripe key",
-      "plan": {
-        "monthly": "Stripe plan name associated with monthly gifts",
-        "weekly": "Stripe plan name associated with weekly gifts",
-        "daily": "Stripe plan name associated with daily gifts
-      }
-    },
-    "sikka": {
-      "rateLimits": {
-        "perIp": "100"
-      }
-    },
-    "public": {
-      "URL": "giving page URL, you should use https://"
-      "stripe": {
-        "publishable": "publishable Stripe Key"
-      }
+      "publishable": "publishable Stripe Key"
     }
   }
+}
+```
 
 
 ## More
