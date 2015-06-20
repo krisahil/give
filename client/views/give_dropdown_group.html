@@ -1,20 +1,26 @@
 <template name="GiveDropdownGroup">
     <div class="form-group">
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="text-center col-lg-4 col-md-4 col-sm-4">
                 {{> DonationTo}}
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="text-center col-lg-4 col-md-4 col-sm-4">
                 <label for="is_recurring" id="frequency_label">Donation Frequency</label>
-                <select name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
-                    <option selected></option>
-                    <option value="one_time">One-Time</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="daily">Daily</option>
-                </select>
+                {{#unless marketplace}}
+                    <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
+                        <option selected></option>
+                        <option value="one_time">One-Time</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="daily">Daily</option>
+                    </select>
+                {{else}}
+                    <br>
+                    <div class="text-center"><p class="uppercase_this">Monthly</p></div>
+                    <input type="hidden" name="is_recurring" id="is_recurring" value="monthly" />
+                {{/unless}}
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="text-center col-lg-4 col-md-4 col-sm-4">
                 <label for="donateWith" id="donateWith_label">Pay With</label>
                 <select name="donateWith" id="donateWith" class="form-control select select-primary mbl" required data-placeholder="Select an Option">
                     <option value="Card">New Card</option>

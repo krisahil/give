@@ -6,11 +6,11 @@ BrowserPolicy.content.allowFontDataUrl();
 
 var trusted = [
     'js.stripe.com',
-    'js.balancedpayments.com',
     'checkout.stripe.com',
     'give.trashmountain.com',
     'trashmountain.com',
-    'cdn.mxpnl.com/libs/mixpanel-2-latest.min.js'
+    'cdn.mxpnl.com/libs/mixpanel-2-latest.min.js',
+    'use.typekit.net'
 ];
 
 _.each(trusted, function(origin) {

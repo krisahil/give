@@ -1,4 +1,7 @@
 .Donation-Landing {
+  p, h1, h2, h3, h4, h5, h6 {
+    font-size: .8em;
+  }
   a:link {color:#128c84;}     /* unvisited link  */
   a:visited {color:#128c84;}  /* visited link */
   a:hover {color:#128c84;}   /* mouse over link */
@@ -13,18 +16,6 @@
 
   .Wide1 {
     background: transparent;
-  }
-
-  /* changed this to get the right height after adding a larger image */
-  .container_12 .grid_8 {
-    width: 985px;
-    height: 620px;
-    margin-left: 18px;
-  }
-
-  .second-section {
-    background-image:url('/system/wp-content/customphp/images/donate-smile.jpg');
-    background-repeat:no-repeat;
   }
 
   .well1 {
@@ -77,34 +68,6 @@
     margin-left: 0;
   }
 
-  #givingModel {
-    position: absolute;
-    background-image: url('/system/wp-content/customphp/images/solo-header.png');
-    width: 985px;
-    height: 304px;
-    top: 615px;
-    background-repeat: no-repeat;
-  }
-  #givingNoDetails {
-    position: absolute;
-    background-image: url('/system/wp-content/customphp/images/bottom-icons-only.png');
-    height: 448px;
-    width: 985px;
-    top: 960px;
-  }
-  #givingDetails {
-    position: absolute;
-    background-image: url('/system/wp-content/customphp/images/details-and-bottom-icons.png');
-    height: 899px;
-    width: 985px;
-    top: 960px;
-  }
-
-  #recent_posts-2 a img {
-    width: 60px;
-    height: 60px;
-    border:0;
-  }
   /* iphone */
   @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
     img { max-width: 100%; }
@@ -138,9 +101,10 @@
   .giving-detail-area {
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   .small-bottom {
-    margin-bottom: 5px;
+    margin-bottom: 0;
   }
 
   .red-border {
@@ -153,14 +117,21 @@
     margin-right: auto;
   }
   .gradiant-button {
-    background-image: -webkit-linear-gradient(top,#5cb85c 0,#419641 100%);
+    /*background-image: -webkit-linear-gradient(top,#5cb85c 0,#419641 100%);
     background-image: -o-linear-gradient(top,#5cb85c 0,#419641 100%);
     background-image: -webkit-gradient(linear,left top,left bottom,from(#5cb85c),to(#419641));
     background-image: linear-gradient(to bottom,#5cb85c 0,#419641 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5cb85c', endColorstr='#ff419641', GradientType=0);
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
     background-repeat: repeat-x;
-    border-color: #3e8f3e;
+    border-color: #3e8f3e;*/
+    /*background-image: -webkit-linear-gradient(top,#128c84 0,#00A89D 100%);
+    background-image: -o-linear-gradient(top,#128c84 0,#00A89D 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#128c84),to(#00A89D));
+    background-image: linear-gradient(to bottom,#128c84 0,#00A89D 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5cb85c', endColorstr='#ff419641', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);*/
+    background-color: #128c84;
   }
   .gradiant-button-gray {
     background-image: -webkit-linear-gradient(top,#ebeef0 0,#99a7b0 100%);
@@ -177,5 +148,11 @@
   }
   .white-button-text:hover {
     color: #128c84;
+  }
+  .uppercase-this {
+    text-transform: uppercase;
+  }
+  .v-top {
+    padding-top: 12px;
   }
 }

@@ -191,7 +191,6 @@ Template.DonationForm.helpers({
         return {
             name: "amount",
             id: "amount",
-            type: "digits",
             min: 1,
             required: true
         };

@@ -41,6 +41,9 @@
 .capitalize_this {
 	text-transform:capitalize
 }
+.uppercase_this {
+	text-transform: uppercase;
+}
 
 select {
 	text-transform:capitalize

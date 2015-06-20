@@ -11,32 +11,45 @@
             <div class="col-lg-8 col-md-8 col-md-offset-2">
 
     			<fieldset>
-                    <h2>THANK YOU</h2>
+                    {{#unless marketplace}}
+                        <h2>THANK YOU</h2>
+                    {{else}}
+                        <img src="/images/marketplace.jpeg" style="width: 50%" />
+                    {{/unless}}
 
                     <!-- Amount of donation -->
     				<div class="donation_amount text-center well well-lg form-group">
     				    <div id='amount_width' class="{{amountWidth}}">
                             <label class="control-label" for="amount">Donation Amount</label>
-                            <div class="input-group">
-                                <!--[if lt IE 9]>
-                                <label>Amount</label>
-                            <![endif]-->
-                                <span class="input-group-addon">$</span>
-    				            <input {{attributes_Input_Amount}} value="{{amount}}" class="form-control slim-borders"
+
+                            {{#unless marketplace}}
+                                <div class="input-group">
+                                    <!--[if lt IE 9]>
+                                        <label>Amount</label>
+                                    <![endif]-->
+
+                                    <span class="input-group-addon">$</span>
+                                        <input {{attributes_Input_Amount}} type="digits" value="{{amount}}" class="form-control slim-borders"
                                    required data-parsley-error-message="Please enter an amount with no commas." data-parsley-errors-container="#show-amount-error-here" />
-    				        </div>
-                            <div id="show-amount-error-here"></div>
+                                </div>
+                                <div id="show-amount-error-here"></div>
+                            {{else}}
+                                <br>
+                                <span>$</span>{{amount}}
+                                <input {{attributes_Input_Amount}} type="hidden" value="{{amount}}" />
+                            {{/unless}}
+
     				    </div>
                         <div class="text-left col-md-7 col-sm-8 col-xs-12">
                             {{#if paymentWithCard}}
-                            <!-- Checbox for Covering related fees-->
+                                <!-- Checbox for Covering related fees-->
                                 <input type="checkbox" name="coverTheFees" id="coverTheFees" data-toggle="checkbox" {{coverTheFeesChecked}} />
                                     I'll cover the credit card processing fees. <span><i id="coverTheFeesQuestion" class="fa fa-question-circle" data-toggle="popover"
                                      data-placement="bottom" data-trigger="hover focus" title="Processor fees" data-container="body"
                                      data-content="Our credit card processor charges 2.9% + .30 per transaction. If you check the box to cover these fees we'll do the math and change your gift amount to reflect this amount.">
-                            </i></span>
-                            <label for="total_amount_display">&nbsp;</label>
-                                    <p id="total_amount_display" class=""></p>
+                                </i></span>
+                                <label for="total_amount_display">&nbsp;</label>
+                                <p id="total_amount_display" class=""></p>
 
                             {{else}}
                             {{/if}}
@@ -57,18 +70,24 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <label for="is_recurring" id="frequency_label">Donation Frequency</label>
-                                <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
-                                    <option selected></option>
-                                    <option value="one_time">One-Time</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="daily">Daily</option>
-                                </select>
+                                {{#unless marketplace}}
+                                        <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
+                                        <option selected></option>
+                                        <option value="one_time">One-Time</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="daily">Daily</option>
+                                    </select>
+                                {{else}}
+                                    <br>
+                                    <p class="uppercase_this">Monthly</p>
+                                    <input type="hidden" name="is_recurring" id="is_recurring" value="monthly" />
+                                {{/unless}}
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1" style="display: none;" id="calendarSection">
+                        <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1" style="{{#unless marketplace}}display: none;{{/unless}}" id="calendarSection">
                             <div class="form-group">
                                 <label>Choose Your Donation Start Date</label>
                                 <div class="input-group">

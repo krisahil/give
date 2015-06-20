@@ -19,33 +19,47 @@ _.extend(Utils, {
             // check that there was a customer record and that record had an email address
             if(email_address) {
                 //create user
-                var user_id = Utils.create_user(email_address, customer_id);
+
 
                 //check dt for user, persona_ids will be an array of 0 to many persona_ids
-                var persona_ids = Utils.check_for_dt_user(email_address);
+                var persona_result = {};
+                persona_result = Utils.check_for_dt_user(email_address);
+                console.log(persona_result);
+                /*return_to_called.persona_ids = personaIDs;
+                 return_to_called.dt_account_has_main = dt_account_has_main;
+                 return_to_called.matching_main_account = matching_main_account;*/
+
+                //TODO: when looking to create the user, does it meet the main account criteria? If so, creeate normally
+                //TODO: if it doesn't, create an account for the main email, or check if one is already created.
+                //TODO: Does this cover the case where a main exists one month and not the next?
+                //TODO: Does this cover the case where an email isn't a main one month, but is the next?
+                var user_id = Utils.create_user(email_address, customer_id, persona_result);
+
 
                 //create dt user since one wasn't found in DT
-                if (persona_ids == '') {
+                //TODO: fix this area, doesn't work with the change I've made to personIDs, since a user account shouldn't
+                // be made if the user doesn't match the main email criteria
+                if (!persona_result || !persona_result.persona_ids || persona_result.persona_ids == '') {
                     //Call DT create function
                     var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
 
                     // the persona_ids is expected to be an array
-                    persona_ids = [single_persona_id];
+                    persona_result.persona_ids = [single_persona_id];
 
                     // Send me an email letting me know a new user was created in DT.
                     Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
                 } else {
-                    Utils.insert_donation_into_dt(customer_id, user_id, persona_ids, charge_id);
+                    Utils.insert_donation_into_dt(customer_id, user_id, persona_result.persona_ids, charge_id);
                 }
 
                 Utils.update_stripe_customer_user(customer_id, user_id, email_address);
 
                 // Get all of the donations related to the persona_id that was either just created or that was just used when
                 // the user gave
-                Utils.get_all_dt_donations(persona_ids);
+                Utils.get_all_dt_donations(persona_result.persona_ids );
 
                 // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
-                persona_ids.forEach(function(element){
+                persona_result.persona_ids.forEach(function(element){
                     Utils.insert_persona_id_into_user(user_id, element);
                 });
             } else {
@@ -54,7 +68,7 @@ _.extend(Utils, {
             }
         }
     },
-    create_user: function (email, customer_id) {
+    create_user: function (email, customer_id, persona_results) {
         logger.info("Started create_user.");
 
         //Check to see if the user exists
@@ -104,7 +118,7 @@ _.extend(Utils, {
         return user_id;
     },
     check_for_dt_user: function (email){
-        /*try {*/
+        try {
         //This function is used to get all of the persona_id s from DT if they exist or return false if none do
         logger.info("Started check_for_dt_user");
 
@@ -117,18 +131,39 @@ _.extend(Utils, {
             return [];
         } else {
             var personaIDs = [];
+            var dt_account_has_main;
+            var matching_main_account;
             personResult.data.forEach(function (element) {
-                personaIDs.push(element.persona.id)
+                personaIDs.push(element.persona.id);
+                console.log("LOOK HERE LOOOK HERE");
+                console.log(element.persona.email_addresses);
+                element.persona.email_addresses.forEach(function (element) {
+                   if(element.address_type_id === 5){
+                       dt_account_has_main = true;
+                   }
+                    if(element.email_address === email){
+                        if(element.address_type_id === 5){
+                            matching_main_account = true;
+                        }
+                       // So it matches for one of the persona's, but what if it doesn't match for the other?
+                       // Also, this should still work if it ends up that there are no main emails.
+                       console.log("Yup, this is a main email address for the account you searched for");
+                   }
+                });
             });
-            return personaIDs;
+            var return_to_called = {};
+            return_to_called.persona_ids = personaIDs;
+            return_to_called.dt_account_has_main = dt_account_has_main;
+            return_to_called.matching_main_account = matching_main_account;
+            return return_to_called;
         }
 
-        /*} catch (e) {
+        } catch (e) {
          console.log(e);
          //e._id = AllErrors.insert(e.response);
          var error = (e.response);
          throw new Meteor.Error(error, e._id);
-         }*/
+         }
     },
     get_fund_id: function (donateTo) {
         logger.info("Started get_fund_id");
@@ -138,6 +173,15 @@ _.extend(Utils, {
 
         // If a fund id changes you'll need to go into every case that fits that fund id and update the id
         switch(donateTo) {
+            case "Aquaponics":
+                return 63660;
+                break;
+            case "Aquaponics Marketplace - Karpos":
+                return 67506;
+                break;
+            case "Aquaponics Marketplace - Rhiza":
+                return 67505;
+                break;
             case "BaseCamp":
                 return 63656;
                 break;
@@ -258,6 +302,9 @@ _.extend(Utils, {
             case "International Field Projects - Honduras":
                 return 60489;
                 break;
+            case "Honduras Urgent":
+                return 60489;
+                break;
             case "Urgent Field Needs":
                 return 63659;
                 break;
@@ -274,13 +321,13 @@ _.extend(Utils, {
                 return 67281;
                 break;
             case "Int'l Field Projects - DR":
-                return 60491;
+                return 67322;
                 break;
             case "DR Urgent":
-                return 60491;
+                return 67322;
                 break;
             case "International Field Projects - Dominican Republic":
-                return 60491;
+                return 67322;
                 break;
             case "Int'l Field Projects - Kenya":
                 return 67124;
@@ -368,9 +415,6 @@ _.extend(Utils, {
                 break;
             case "Community Sponsorship - Philippines - Tanza":
                 return 63692;
-                break;
-            case "Honduras Urgent":
-                return 60489;
                 break;
             case "Where Most Needed":
                 return 63661;
@@ -627,11 +671,13 @@ _.extend(Utils, {
             dt_fund = null;
         }
 
+        console.log("dt_fund: " + dt_fund);
         //fund_id 65663 is the No-Match-Found fund used to help reconcile
         // write-in gifts and those not matching a fund in DT
         var fund_id, memo;
         if(!dt_fund) {
             fund_id = Meteor.settings.donor_tools_default_fund_id;
+            //TODO: Need to update this to put the ACH or CC bank and last4
             memo = Meteor.settings.dev + donateTo;
         } else {
             fund_id = dt_fund;

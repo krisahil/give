@@ -17,6 +17,46 @@ https://give.trashmountain.com
 
 This is a live giving page, which is being used by Trash Mountain Project. 
 
+## Settings.json file
+
+Here is an example settings.json file
+
+```
+{
+  "dev": "****TEST****",
+  "mandrillUsername": "Get a free Mandrill account http://mandrill.com/",
+  "mandrillKey": "http://mandrill.com/",
+  "kadiraAppId": "Get a free account here https://kadira.io/",
+  "kadiraAppSecret": "https://kadira.io/",
+  "admin_user": "user _id of any user that can use the dashboard as an admin",
+  "donor_tools_site": "Get a DonorTools site, there is a two week free trial. http://www.donortools.com. Then use the site name that is assigned to you. It should look like this https://your_name.donortools.com",
+  "donor_tools_user": "",
+  "donor_tools_password": "",
+  "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",
+  "donor_tools_default_fund_id": "If a match can't be found 'Give' will use this id",
+  "stripe": {
+    "secret": "Secrete Stripe key",
+    "plan": {
+      "monthly": "Stripe plan name associated with monthly gifts",
+      "weekly": "Stripe plan name associated with weekly gifts",
+      "daily": "Stripe plan name associated with daily gifts
+    }
+  },
+  "sikka": {
+    "rateLimits": {
+      "perIp": "100"
+    }
+  },
+  "public": {
+    "URL": "giving page URL, you should use https://"
+    "stripe": {
+      "publishable": "publishable Stripe Key"
+    }
+  }
+}
+```
+
+
 ## More
 
 These are the integrations built into Give already

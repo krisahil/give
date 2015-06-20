@@ -91,6 +91,100 @@ _.extend(Utils,{
         return data_slug;
 
     },
+    send_cancelled_email_to_admin: function (subscription_id, stripeEvent) {
+        var audit_trail_cursor = Audit_trail.findOne({subscription_id: subscription_id});
+
+        // Check to see if the deleted subscription email has already been sent for this charge
+        if (audit_trail_cursor && audit_trail_cursor.subscription_deleted && audit_trail_cursor.subscription_deleted.sent_to_admin) {
+            logger.info("A 'subscription deleted' email has already been sent, exiting email send function.");
+            return;
+        } else {
+            Audit_trail.upsert({subscription_id: subscription_id}, {
+                $set: {
+                    'subscription_deleted.sent_to_admin': true,
+                    'subscription_deleted.time': new Date()
+                }
+            });
+        }
+
+        var start_date = moment( new Date(stripeEvent.data.object.start * 1000) ).format('DD MMM, YYYY');
+
+        var last_gift = moment(new Date(stripeEvent.data.object.current_period_start * 1000)).format('DD MMM, YYYY');
+
+        var canceled_date = new Date(stripeEvent.data.object.canceled_at * 1000);
+        canceled_date = moment(canceled_date).format('DD MMM, YYYY hh:mma');
+
+        var customer_cursor = Customers.findOne({_id: stripeEvent.data.object.customer});
+
+        var donor_name = customer_cursor && customer_cursor.metadata && customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname;
+
+        var donateWith = stripeEvent.data.object.metadata && stripeEvent.data.object.metadata.donateWith;
+
+        var testorlive = Meteor.settings.dev ? '/test' : '';
+
+        var data_slug = {
+            "template_name": "canceled-recurring-notice",
+            "template_content": [
+                {}
+            ],
+            "message": {
+                "to": [
+                    {"email": "canceledgift@trashmountain.com"}
+                ],
+                "bcc_address": "",
+                "merge_vars": [
+                    {
+                        "rcpt": "canceledgift@trashmountain.com",
+                        "vars": [
+                            {
+                                "name": "DEV",
+                                "content": Meteor.settings.dev
+                            }, {
+                                "name": "testorlive",
+                                "content": testorlive
+                            }, {
+                                "name": "Request",
+                                "content": stripeEvent.request
+                            }, {
+                                "name": "START",
+                                "content": start_date
+                            }, {
+                                "name": "SubscriptionId",
+                                "content": subscription_id
+                            }, {
+                                "name": "DonateWith",
+                                "content": donateWith
+                            }, {
+                                "name": "LastGift",
+                                "content": last_gift
+                            }, {
+                                "name": "Frequency",
+                                "content": stripeEvent.data.object.plan.name
+                            }, {
+                                "name": "TotalGiftAmount",
+                                "content": (stripeEvent.data.object.quantity / 100).toFixed(2)
+                            }, {
+                                "name": "CANCELED_AT",
+                                "content": canceled_date
+                            }, {
+                                "name": "CancelReason",
+                                "content": stripeEvent.data.object.metadata.canceled_reason
+                            }, {
+                                "name": "NAME",
+                                "content": donor_name
+                            }, {
+                                "name": "PHONE",
+                                "content": customer_cursor.metadata && customer_cursor.metadata && customer_cursor.metadata.phone
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        Utils.send_mandrill_email(data_slug, 'customer.subscription.deleted');
+
+    },
     send_donation_email: function (recurring, id, amount, type, body, frequency, subscription) {
         /*try {*/
             logger.info("Started send_donation_email with ID: " + id);
@@ -225,7 +319,7 @@ _.extend(Utils,{
             if (charge_cursor && charge_cursor.source && charge_cursor.source.brand) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
-                        "name": "donateWith",
+                        "name": "DonateWith",
                         "content": charge_cursor.source.brand + " - ending in, " + charge_cursor.source.last4
                     }, {
                         "name": "NAME",
@@ -235,7 +329,7 @@ _.extend(Utils,{
             } else if(charge_cursor && charge_cursor.source && charge_cursor.source.bank_name) {
                 data_slug.message.merge_vars[0].vars.push(
                     {
-                        "name": "donateWith",
+                        "name": "DonateWith",
                         "content": charge_cursor.source.bank_name + " - ending in, " + charge_cursor.source.last4
                     }, {
                         "name": "NAME",
@@ -245,7 +339,7 @@ _.extend(Utils,{
             } else{
                 data_slug.message.merge_vars[0].vars.push(
                     {
-                        "name": "donateWith",
+                        "name": "DonateWith",
                         "content": charge_cursor.payment_source.bank_name + " - ending in, " + charge_cursor.payment_source.last4
                     }, {
                         "name": "NAME",
@@ -281,6 +375,7 @@ _.extend(Utils,{
 
             if (subscription) {
                 donation_cursor = Donations.findOne({subscription_id: subscription});
+                var subscription_cursor = Subscriptions.findOne({_id: subscription});
                 if (!donation_cursor) {
                     if (!type === 'charge.failed') {
                         logger.error("No donation found here, exiting.");
@@ -301,26 +396,33 @@ _.extend(Utils,{
                             }
                         );
                     }
-                } else {
-                    if (type === 'charge.failed') {
-                        data_slug.template_name = "fall-2014-donation-failed-recurring";
-                        data_slug.message.merge_vars[0].vars.push(
-                            {
-                                "name": "URL",
-                                "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
-                            }
-                        );
-                        data_slug.message.merge_vars[0].vars.push(
-                            {
-                                "name": "PHONE",
-                                "content": donation_cursor.phone
-                            }
-                        );
-                    }
+                }
+                else if (type === 'charge.failed') {
+                    data_slug.template_name = "fall-2014-donation-failed-recurring";
                     data_slug.message.merge_vars[0].vars.push(
                         {
-                            "name": "donateTo",
+                            "name": "URL",
+                            "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
+                        }
+                    );
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "DonateTo",
                             "content": donation_cursor.donateTo
+                        }
+                    );
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "don",
+                            "content": donation_cursor._id
+                        }
+                    );
+                }
+                else if( type === 'charge.succeeded' || type === 'payment.paid'){
+                    data_slug.message.merge_vars[0].vars.push(
+                        {
+                            "name": "DonateTo",
+                            "content": subscription_cursor.metadata.donateTo
                         }
                     );
                     data_slug.message.merge_vars[0].vars.push(
@@ -332,9 +434,6 @@ _.extend(Utils,{
                 }
             } else {
                 donation_cursor = Donations.findOne({charge_id: id});
-                console.log("LOOK HERE ***********************");
-                console.dir(donation_cursor);
-                console.log("LOOK HERE ***********************");
                 if (!donation_cursor) {
                     if (!type === 'charge.failed') {
                         logger.error("No donation found here, exiting.");
@@ -357,7 +456,7 @@ _.extend(Utils,{
                 } else {
                     data_slug.message.merge_vars[0].vars.push(
                         {
-                            "name": "donateTo",
+                            "name": "DonateTo",
                             "content": donation_cursor.donateTo
                         }
                     );
@@ -439,7 +538,6 @@ _.extend(Utils,{
 	send_mandrill_email: function(data_slug, type){
         try{
             logger.info("Started send_mandrill_email type: " + type);
-            console.dir(data_slug);
             Meteor.Mandrill.sendTemplate(data_slug);
         }//End try
         catch (e) {
@@ -454,8 +552,6 @@ _.extend(Utils,{
 
             // Check to see if this email has already been sent before continuing, log it if it hasn't
             var subscription_cursor = Subscriptions.findOne({_id: subscription_id});
-            console.log("LOOK HERE LOOK HERE");
-            console.dir(subscription_cursor.metadata);
             if(subscription_cursor.metadata &&
                 subscription_cursor.metadata.send_scheduled_email &&
                 subscription_cursor.metadata.send_scheduled_email === 'no'){

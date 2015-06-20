@@ -1,40 +1,3 @@
-
-Template.UserGiveForm.rendered = function () {
-
-    if($('#donateWith option').length > 2){
-        $('#donateWith').val($('#donateWith option').eq(2).val());
-        if($('#donateWith').val().slice(0,3) === 'car'){
-            Session.set("savedDevice", "Card");
-            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
-        } else if($('#donateWith').val().slice(0,3) === 'ban'){
-            Session.set("savedDevice", "Check");
-            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
-        }
-    } else if(Session.get('params.donateWith')){
-        Session.set("paymentMethod", Session.get('params.donateWith'));
-    }
-
-    if($('#donateWith').val() === 'Card'){
-            Session.set("paymentMethod", "Card");
-    } else if($('#donateWith').val() === 'Check'){
-            Session.set("paymentMethod", "Check");
-    }
-    // Setup parsley form validation
-    $('#quick_give').parsley();
-
-    $("#spinDiv").hide();
-
-    _.each(_.uniq(_.pluck($("select[name='donateWith'] > option")
-        .get(), 'text')), function(name) { $("select[name='donateWith'] > option:contains(" + name + ")")
-        .not(":first").remove(); });
-
-    $('#donateWith').change();
-
-    /*Bert.defaults.autoHide = false;
-    Bert.alert('We see you already have an account and you are logged in, here is the quick give form.', 'success', 'fixed-top');*/
-
-};
-
 Template.UserGiveForm.helpers({
     paymentWithCard: function() {
         return Session.equals("UserPaymentMethod", "Card");
@@ -46,7 +9,6 @@ Template.UserGiveForm.helpers({
         return {
             name: "amount",
             id: "amount",
-            type: "digits",
             min: 1,
             required: true
         };
@@ -129,3 +91,39 @@ Template.UserGiveForm.events({
         }
     }
 });
+
+
+Template.UserGiveForm.rendered = function () {
+
+    if($('#donateWith option').length > 2){
+        $('#donateWith').val($('#donateWith option').eq(2).val());
+        if($('#donateWith').val().slice(0,3) === 'car'){
+            Session.set("savedDevice", "Card");
+            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
+        } else if($('#donateWith').val().slice(0,3) === 'ban'){
+            Session.set("savedDevice", "Check");
+            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
+        }
+    } else if(Session.get('params.donateWith')){
+        Session.set("paymentMethod", Session.get('params.donateWith'));
+    }
+
+    if($('#donateWith').val() === 'Card'){
+        Session.set("paymentMethod", "Card");
+    } else if($('#donateWith').val() === 'Check'){
+        Session.set("paymentMethod", "Check");
+    }
+    // Setup parsley form validation
+    $('#quick_give').parsley();
+
+    $("#spinDiv").hide();
+
+    _.each(_.uniq(_.pluck($("select[name='donateWith'] > option")
+        .get(), 'text')), function(name) { $("select[name='donateWith'] > option:contains(" + name + ")")
+        .not(":first").remove(); });
+
+    $('#donateWith').change();
+
+    $('[data-toggle="popover"]').popover();
+
+};

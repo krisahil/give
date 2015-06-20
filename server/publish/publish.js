@@ -16,32 +16,37 @@ Meteor.publish('receipt_donations', function (input) {
 Meteor.publish('receipt_customers', function (input) {
 	//Check the input that came from the client
 	check(input, String);
-	return Customers.find({_id: input}, {fields: {'id': 0}});
-    /*, {fields: {
-        'links.source': 1,
-            'name': 1,
-            'address': 1,
-            'phone': 1,
-            'email': 1,
-            'id': 1,
-            'business_name': 1,
-            'cards.id': 1,
-            'cards.links.customer': 1,
-            'cards.number': 1,
-            'cards.brand': 1,
-            'bank_accounts.id': 1,
-            'bank_accounts.links.customer': 1,
-            'bank_accounts.account_number': 1,
-            'bank_accounts.bank_name': 1,
-            'bank_accounts.account_type': 1
-    }}*/
+	return Customers.find({_id: input},
+        {
+            fields: {
+                _id: 1,
+                email: 1,
+                metadata: 1
+            }
+        }
+    );
 });
 
 Meteor.publish('receipt_charges', function (input) {
 	//Check the input that came from the client
 	check(input, String);
 
-	return Charges.find({_id: input}, {fields: {'id': 0}});
+	return Charges.find({_id: input},
+        {
+            fields:
+            {
+                _id: 1,
+                metadata: 1,
+                created: 1,
+                status: 1,
+                amount: 1,
+                'source.bank_name': 1,
+                'source.brand': 1,
+                'source.last4': 1,
+                'source.object': 1
+            }
+        }
+    );
 });
 
 //TODO: These functions are from the old dashboard, need to replicate in the new one

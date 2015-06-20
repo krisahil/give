@@ -27,7 +27,7 @@ Template.Receipt.helpers({
         }
     },
    date: function () {
-   		return moment(this.created_at).format('MM/DD/YYYY');
+   		return moment(this.created * 1000).format('MM/DD/YYYY');
    },
     business_name: function () {
         if (this.business_name){
@@ -67,7 +67,6 @@ Template.Receipt.helpers({
         }
     },
     donateWith: function () {
-        console.log(this);
         if(this.source) {
             var source = this.source;
             if (source.object.slice(0, 4) === 'card') {

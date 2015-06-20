@@ -198,20 +198,24 @@ Template.UserProfile.rendered = function(){
 };
 
 Template.UserNav.events({
-    'click #nav-button-password': function(evt){
+    'click #nav-password': function(evt){
         evt.preventDefault();
         Router.go('changePwd');
     },
-    'click #nav-button-profile': function(evt){
+    'click #nav-sign-out': function(evt){
+        evt.preventDefault();
+        AccountsTemplates.logout();
+    },
+    'click #nav-profile': function(evt){
         evt.preventDefault();
         Router.go('user.profile');
     },
-    'click #nav-button-subscriptions': function(evt){
+    'click #nav-subscriptions': function(evt){
         evt.preventDefault();
         Session.set('addingNewCreditCard', false);
         Router.go('subscriptions');
     },
-    'click #nav-button-give': function(evt){
+    'click #nav-give': function(evt){
         evt.preventDefault();
         Session.set('addingNewCreditCard', false);
         Session.set('params.give', 'Yes');
