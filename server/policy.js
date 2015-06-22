@@ -11,7 +11,9 @@ var trusted = [
     'trashmountain.com',
     'cdn.mxpnl.com/libs/mixpanel-2-latest.min.js',
     'mixpanel.com',
+    'BrowserPolicymixpanel.com',
     'kadira.io',
+    'enginex.kadira.io',
     'use.typekit.net'
 ];
 
