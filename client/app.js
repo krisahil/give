@@ -26,10 +26,12 @@ _.extend(App, {
                     business_name = '';
                 }
 
+                console.log(customer_cursor.metadata);
                 if(customer_cursor.metadata.address_line2){
                     address_line2 = customer_cursor.metadata.address_line2;
                 } else {
                     address_line2 = '';
+
                 }
                 form = {
                     "paymentInformation": {
