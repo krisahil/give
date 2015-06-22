@@ -71,6 +71,13 @@ _.extend(App, {
                     business_name = '';
                 }
 
+                if(user_cursor.profile.address.address_line2){
+                    address_line2 = user_cursor.profile.address.address_line2;
+                } else {
+                    address_line2 = '';
+
+                }
+
                 form = {
                     "paymentInformation": {
                         "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
@@ -91,7 +98,7 @@ _.extend(App, {
                         "email_address": user_cursor.emails[0].address,
                         "phone_number": user_cursor.profile.phone,
                         "address_line1": user_cursor.profile.address.address_line1,
-                        "address_line2": user_cursor.profile.address.address_line2,
+                        "address_line2": address_line2,
                         "region": user_cursor.profile.address.state,
                         "city": user_cursor.profile.address.city,
                         "postal_code": user_cursor.profile.address.postal_code,
