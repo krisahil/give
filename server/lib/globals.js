@@ -35,7 +35,7 @@ Utils = {
             {
                 'address':{
                     'address_line1': String,
-                    'address_line2': String,
+                    'address_line2': Match.Optional(String),
                     'city': String,
                     'state': String,
                     'postal_code': String
@@ -74,11 +74,11 @@ Utils = {
                 email_address: String,
                 phone_number: Match.Optional(String),
                 address_line1: String,
-                address_line2: String,
+                address_line2: Match.Optional(String),
                 region: String,
                 city: String,
                 postal_code: String,
-                country: String,
+                country: Match.Optional(String),
                 created_at: String,
                 id: Match.Optional(String)
             },
