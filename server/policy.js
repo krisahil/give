@@ -10,6 +10,8 @@ var trusted = [
     'give.trashmountain.com',
     'trashmountain.com',
     'cdn.mxpnl.com/libs/mixpanel-2-latest.min.js',
+    'api.mixpanel.com',
+    'kadira.io',
     'use.typekit.net'
 ];
 
