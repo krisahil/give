@@ -85,7 +85,7 @@ Template.TransactionDetail.helpers({
           if(this.debit.amount){
           return (this.debit.amount / 100);   
           }else {
-            return '';   
+            return;
           }
          
    },
@@ -93,13 +93,12 @@ Template.TransactionDetail.helpers({
       if(this.debit.total_amount){
         return (this.debit.total_amount / 100);   
       }else {
-       return '';   
+       return;
       }
    },
     fees: function () {
         if(this.debit.fees && this.debit.total_amount){
-            return '\
-            <tr>\
+            return '<tr>\
                 <th>Covered fees:</th>\
                 <td></td>\
                 <td>$' + (this.debit.fees / 100) + '</td>\
@@ -110,7 +109,7 @@ Template.TransactionDetail.helpers({
                 <td>$' + (this.debit.total_amount / 100)+ '</td>\
             </tr>';
         } else {
-        return "";
+        return;
         }
     },
     paymentLink: function() {

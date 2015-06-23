@@ -4,20 +4,6 @@
  */
 
 Meteor.methods({
-    admin_search: function(search_string) {
-        if(this.userId !== Meteor.settings.admin_user) {
-            throw new Meteor.Error(500, "This user can't run this method");
-        }else{
-            if (search_string.substring(0, 2) == "TX") {
-                logger.info("Looking up a transaction from inside the admin panel");
-                var record = Donate.find({'transactions.guid': search_string}).fetch();
-                return record;
-            } else{
-                var records = Donate.find({$or: [ {_id: search_string}, {'customer.lname': search_string}, {'customer.fname': search_string}]}).fetch();
-                return records;
-            }
-        }
-    },
     cancel_recurring: function(id, guid) {
         logger.info("Started the cancel_recurring method call");
         var resultSet;
@@ -185,7 +171,7 @@ Meteor.methods({
                          return {c: customerData.id, don: data._id, charge: 'scheduled'};
                      } else{
                          logger.error("The charge_id object didn't have .object attached.");
-                         return {error: charge.rawType, message: charge.message};
+                         return {error: charge_object.rawType, message: charge_object.message};
                      }
                  }
 
@@ -221,123 +207,5 @@ Meteor.methods({
                 throw new Meteor.Error(500, e.reason, e.details);
             }
         }
-    }/*,
-    get_balanced_customer_data: function (id) {
-        /!*try {*!/
-            //check to see that the user is the admin user
-            check(id, String);
-
-            // Check that there is an authorized, logged-in user
-            var loggedInUser = Meteor.user();
-            if (!loggedInUser || !Roles.userIsInRole(loggedInUser, ['admin'])) {
-                throw new Meteor.Error(403, "Access denied")
-            }
-
-            logger.info("Started get_balanced_customer_data");
-            if (id === 'all') {
-                var all_ids = Customers.find();
-                var customers_updated = [];
-                var stripe_customer;
-                var get_customer;
-                all_ids.forEach(function (value) {
-                    customers_updated.push(value._id);
-                    stripe_customer = Utils.get_stripe_customer(value._id);
-                    if(!stripe_customer.metadata.balanced_customer_id){
-                        var temp_id = Customers.findOne({_id: value.id});
-                        console.log("TEMP_ID: " + temp_id.metadata.balanced_customer_id);
-                        stripe_customer.metadata.balanced_customer_id = temp_id.metadata.balanced_customer_id;
-                    }
-                    if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
-                        get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
-                        if(!get_customer){
-                            logger.error("Couldn't find any record matching in get_balanced_customer function: " + value._id);
-                            return;
-                        }
-
-                        //send this metadata to Stripe to update the customer
-                        logger.info("Updating stripe customer with Balanced data.");
-                        var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, stripe_customer);
-                    } else if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata['balanced.customer_id']){
-                        get_customer = Utils.get_balanced_customer(stripe_customer.metadata['balanced.customer_id']);
-                        if(!get_customer){
-                            logger.error("Couldn't find any record matching in get_balanced_customer function: " + value._id);
-                            return;
-                        }
-
-                        //send this metadata to Stripe to update the customer
-                        logger.info("Updating stripe customer with Balanced data.");
-                        var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, value._id, stripe_customer);
-                    }
-
-                });
-                return "Updated these " + customers_updated.length + " customers: " + customers_updated;
-            } else {
-                stripe_customer = Utils.get_stripe_customer(id);
-                if(!stripe_customer.metadata.balanced_customer_id){
-                    var temp_id = Customers.findOne({_id: id});
-                    console.log("TEMP_ID: " + temp_id.metadata.balanced_customer_id);
-                    stripe_customer.metadata.balanced_customer_id = temp_id.metadata.balanced_customer_id;
-                }
-                if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata.balanced_customer_id){
-                    get_customer = Utils.get_balanced_customer(stripe_customer.metadata.balanced_customer_id);
-                    if(!get_customer){
-                        logger.error("Couldn't find any record matching in get_balanced_customer function: " + id);
-                        return;
-                    }
-
-                    //send this metadata to Stripe to update the customer
-                    logger.info("Updating stripe customer with Balanced data.");
-                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, stripe_customer);
-                } else if(stripe_customer && stripe_customer.metadata && stripe_customer.metadata['balanced.customer_id']){
-                    get_customer = Utils.get_balanced_customer(stripe_customer.metadata['balanced.customer_id']);
-                    if(!get_customer){
-                        logger.error("Couldn't find any record matching in get_balanced_customer function: " + id);
-                        return;
-                    }
-
-                    //send this metadata to Stripe to update the customer
-                    logger.info("Updating stripe customer with Balanced data.");
-                    var updated_customer = Utils.update_stripe_customer_with_balanced_data(get_customer, id, stripe_customer);
-                }
-                return get_customer;
-            }
-
-        /!*} catch (e) {
-            console.log(e);
-            //e._id = AllErrors.insert(e.response);
-            var error = (e.response);
-            throw new Meteor.Error(error, e._id);
-        }*!/
-    },
-    get_all_stripe_customers: function (starting_after, limit){
-        check(starting_after, Match.Optional(String));
-        check(limit, String);
-        // Check that there is an authorized, logged-in user
-        var loggedInUser = Meteor.user();
-        if (!loggedInUser || !Roles.userIsInRole(loggedInUser, ['admin'])) {
-            throw new Meteor.Error(403, "Access denied")
-        }
-        logger.info("Started get_all_stripe_customers");
-
-        var all_stripe_events = [];
-        var stripe_events = {};
-
-        do{
-            stripe_events = Utils.stripe_get_many_events(starting_after, limit);
-            all_stripe_events = all_stripe_events.concat(stripe_events.data);
-            if(stripe_events.has_more){
-                starting_after = stripe_events.data[99].id;
-            }
-        } while(stripe_events.has_more);
-
-        all_stripe_events.forEach(function (value){
-            if(value.created < '1431987650'){
-                var request = value;
-                var event = Stripe_Events[request.type](request);
-            }
-        });
-
-        return {"Stripe events number": all_stripe_events.length, "array": all_stripe_events};
-    }*/
-
+    }
 });

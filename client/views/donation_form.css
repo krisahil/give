@@ -416,7 +416,7 @@ legend {
     font-weight: bold;
 }
 
-div.fadeMe {
+.fadeMe {
     opacity:    0.5;
     background: #000;
     width:      100%;

@@ -1,3 +1,4 @@
+/*
 Template.Report.helpers({
 	list: function () {
 		return Donate.find(); //The subscription filters out the records marked viewable: false
@@ -56,3 +57,4 @@ Template.Report.rendered = function () {
 	//order by the date field
 	$('#mainTable').dataTable().api().order(2, 'desc').draw();
 };
+*/

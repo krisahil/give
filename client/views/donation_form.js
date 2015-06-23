@@ -15,7 +15,7 @@ Template.DonationForm.events({
 
         var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
         var target = document.getElementById('spinContainer');
-        spinner = new Spinner(opts).spin(target);
+        spinnerObject = new Spinner(opts).spin(target);
 
         if($('#donateWith').val() === 'Card'){
             if(!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())){

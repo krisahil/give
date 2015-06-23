@@ -266,7 +266,7 @@ _.extend(App, {
     // amount that is shown to the user and passed as total_amount through the form
     //display error modal if there is an error while initially submitting data from the form.
     handleErrors: function(error) {
-        spinner.stop();
+        spinnerObject.stop();
         $("#spinDiv").hide();
         console.dir(error);
 

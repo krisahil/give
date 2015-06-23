@@ -1,3 +1,4 @@
+/*
 function format ( d ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
@@ -26,10 +27,10 @@ Template.Transactions.rendered = function () {
 	//order by the date field
 	$('#mainTable').dataTable().api().order(2, 'desc').draw();
 
-/*	this.autorun(function(){
+/!*	this.autorun(function(){
 		var data = Router.current().data();
 		computation(data);
-	});*/
+	});*!/
 };
 
 Template.Transactions.helpers({
@@ -58,4 +59,4 @@ Template.Transactions.events({
 	'click #exportButton': function () {
 		$('#mainTable').tableExport({type:'excel',escape:'false', tableName: 'transactions'});
 	}
-});
+});*/

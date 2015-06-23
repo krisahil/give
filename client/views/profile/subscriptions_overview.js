@@ -97,19 +97,19 @@ Template.SubscriptionsOverview.events({
                 console.log("Got to before method call with input of " + inputValue);
                 var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
                 var target = document.getElementById('spinContainer');
-                spinner = new Spinner(opts).spin(target);
+                spinnerObject = new Spinner(opts).spin(target);
                 $("#spinDiv").show();
                 Meteor.call("stripeCancelSubscription", customer_id, subscription_id, inputValue, function(error, response){
                     if (error){
                         confirm.button("reset");
                         Bert.alert(error.message, "danger");
-                        spinner.stop();
+                        spinnerObject.stop();
                         $("#spinDiv").hide();
                     } else {
                         // If we're resubscribed, go ahead and confirm by returning to the
                         // subscriptions page and show the alert
                         console.log(response);
-                        spinner.stop();
+                        spinnerObject.stop();
                         $("#spinDiv").hide();
                         swal("Cancelled", "Your recurring gift has been stopped.", "error");
                     }
