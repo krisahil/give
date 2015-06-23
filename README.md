@@ -1,4 +1,4 @@
-[![Codacy Badge](https://www.codacy.com/project/badge/cd0a18c7433547279f5409d4ec3297c1)](https://www.codacy.com/app/josh-bechard/give)
+[![Codacy Badge](https://www.codacy.com/project/badge/cd0a18c7433547279f5409d4ec3297c1)](https://www.codacy.com/app/c316/give)
 
 
 A donation page for Non-profits using <a href="https://stripe.com">Stripe</a> written in <a href="http://meteor.com">Meteor</a>
