@@ -6,5 +6,11 @@
   },
   "scripts": {
     "start": "node server"
+  },
+  "jshintConfig": {
+    "undef": true,
+    "unused": true,
+    "predef": [ "App", "Meteor", "AllErrors", "Audit_trail", "Charges", "Customers", "Devices", "Donations", "DT_donations", "DT_funds",
+      "Invoices", "Subscriptions", "Donate", "Payments", "Router", "Session" ]
   }
 }
