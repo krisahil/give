@@ -62,6 +62,11 @@ Template.SubscriptionsOverview.helpers({
     },
     canceled_reason: function () {
         return this.metadata && this.metadata.canceled_reason;
+    },
+    bank: function () {
+        var id = this._id;
+        var subscription = Subscriptions.findOne({id: _id});
+        console.log(subscription.metadata.donateWith);
     }
 });
 

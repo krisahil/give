@@ -191,7 +191,8 @@ Router.route('FixSubscription', {
     subscriptions: function(){
         return [
             Meteor.subscribe('subscription', this.params.query.sub),
-            Meteor.subscribe('customer', this.params.query.sub)
+            //Meteor.subscribe('payment', this.params.query.payment),
+            Meteor.subscribe('customer', this.params.query.cus)
         ]
     },
     action: function () {

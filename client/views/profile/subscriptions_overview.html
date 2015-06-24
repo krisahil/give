@@ -72,7 +72,7 @@
                     {{/if}}
                     {{#if equals status "canceled"}}
                         <li class="list-group-item bm-block clearfix">
-                            <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-block btn-default">Activate</a>
+                            <a href="{{pathFor 'FixSubscription'}}?sub={{id}}&cus={{customer}}&bank={{metadata.donateWith}}" class="btn btn-block btn-default">Activate</a>
                         </li>
                     {{/if}}
                       <!--<a href="{{pathFor 'PaymentDevice'}}" class="btn btn-block btn-default">Update Payment Method</a>-->

@@ -108,14 +108,13 @@ Meteor.publish("subscription", function (subscription_id) {
 	}
 });
 
-Meteor.publish("customer", function (subscription_id) {
+Meteor.publish("customer", function (customer) {
     //Check the subscription_id that came from the client
-    check(subscription_id, Match.Optional(String));
+    check(customer, String);
 
-	if (this.userId && subscription_id) {
-        var subscription = Subscriptions.findOne({_id: subscription_id});
-        console.log(subscription.customer);
-        return Customers.find({_id: subscription.customer});
+	if (this.userId && Customers.find({_id: customer}, {'metadata.user_id': this.userId})) {
+
+        return Customers.find({_id: customer});
 	} else {
         this.stop();
         return;
