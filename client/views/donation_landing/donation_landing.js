@@ -65,7 +65,7 @@ Template.DonationLanding.events({
     'click #checkButton': function(e) {
         e.preventDefault();
         var placeholder_value = $('#placeholder_donate_input').val();
-        if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() == "") {
+        if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() === "") {
             $('#depends-on-Missionary > .dd-select').addClass("red-border");
             alert("Please select a missionary");
             return false;
