@@ -67,17 +67,26 @@ Meteor.publish('receipt_charges', function (input) {
 	}
 
 });
+*/
 
+/*
 Meteor.publish('card_expiring', function () {
 	//check to see that the user is the admin user
-	if(this.userId === Meteor.settings.admin_user){
-		var today = new Date();
-		var future_date = new Date(new Date(today).setMonth(today.getMonth()+3));
-		return Donate.find( { $and : [ {'card.expires' : {$lte : future_date }}, { isRecurring: true}] }, { card : true } );
-	}else{
-		return '';
-	}
-});*/
+    if (Roles.userIsInRole(this.userId, ['admin'])) {
+
+        var today = new Date();
+        var future_date = new Date(new Date(today).setMonth(today.getMonth()+3));
+        return Devices.find( { $and : [ {expires : {$lte : future_date }}, { object : 'card' }] } );
+
+    } else {
+
+        // user not authorized. do not publish
+        this.stop();
+        return;
+
+    }
+});
+*/
 
 Meteor.publish("userDonations", function () {
 	if (this.userId) {
