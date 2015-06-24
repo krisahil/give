@@ -2,10 +2,10 @@ Meteor.startup(function() {
     Stripe.setPublishableKey(Meteor.settings.public.stripe.publishable);
 
     // Initialize Mixpanel Analytics
-    mixpanel.init(Meteor.settings.public.mixpanel.token); //YOUR TOKEN
+    //mixpanel.init(Meteor.settings.public.mixpanel.token); //YOUR TOKEN
 
     // Link their account
-    Deps.autorun(function() {
+    /*Deps.autorun(function() {
         var user = Meteor.user();
 
         if (! user)
@@ -20,4 +20,5 @@ Meteor.startup(function() {
             "$email": user.emails[0].address //IF YOU HAVE IT
         });
     });
+    */
 });

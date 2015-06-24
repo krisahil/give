@@ -229,9 +229,9 @@
 }
 .Admin .breadcrumb {
   background: white;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   height: 40px;
   position: relative;
   border: 1px solid #e1e6ef;
@@ -386,9 +386,9 @@
   border: none;
   border-bottom: 1px solid #e1e6ef;
   background: white;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   color: #384042;
   line-height: 60px;
 }
@@ -429,9 +429,9 @@
 }
 .Admin .navbar .navbar-form input[type=text] {
   border: none;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   margin-top: -5px;
   margin-left: -20px;
   padding-left: 30px;
@@ -490,9 +490,9 @@
 .Admin .navbar .navbar-nav li .dropdown-menu {
   margin-top: 3px;
   border: none;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   border: 1px solid #e1e6ef;
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.125);
   -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.125);
@@ -548,9 +548,9 @@
   background-color: #f2f4f8;
 }
 .Admin .navbar .navbar-nav li .dropdown-menu li a {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   line-height: 40px;
   height: 40px;
   margin: 0 -15px;
@@ -565,7 +565,7 @@
   -moz-border-radius: 50em;
   border-radius: 50em;
   border: 1px solid #e1e6ef;
-  margin: 0px 10px 0 -5px;
+  margin: 0 10px 0 -5px;
   float: left;
 }
 .Admin .navbar .navbar-nav li .dropdown-menu li a div {
@@ -592,7 +592,7 @@
 .Admin .navbar .navbar-nav li .dropdown-menu li.avatar {
   min-width: 300px;
   height: 60px;
-  padding: 0px 15px;
+  padding: 0 15px;
 }
 .Admin .navbar .navbar-nav li .dropdown-menu li.avatar a {
   line-height: 59px;
@@ -710,7 +710,7 @@
   min-height: 40px;
   width: 200px;
   padding-left: 15px;
-  top: 0px;
+  top: 0;
   left: 60px;
   display: none !important;
   text-align: left;
@@ -999,9 +999,9 @@
   background: transparent;
   border: none;
   border-left: 1px solid #e1e6ef;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   margin: 0;
   font-size: 14px;
   line-height: 16px;
@@ -1028,8 +1028,8 @@
   padding: 0;
 }
 .Admin .form-horizontal .form-group {
-  margin-right: 0px;
-  margin-left: 0px;
+  margin-right: 0;
+  margin-left: 0;
 }
 .Admin .form-control {
   border: 1px solid #e1e6ef;
@@ -1345,12 +1345,12 @@
 .Admin body.modal-open,
 .Admin .modal-open .navbar-fixed-top,
 .Admin .modal-open .navbar-fixed-bottom {
-  margin-right: 0px;
+  margin-right: 0;
 }
 .Admin .panel-group .panel {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -1426,9 +1426,9 @@
   border-color: #20a8d8;
 }
 .Admin .panel {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -1439,9 +1439,9 @@
   line-height: 40px;
   padding: 0 15px;
   min-height: 40px;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   border-color: #e1e6ef;
 }
 .Admin .panel .panel-heading .panel-title {
@@ -1449,18 +1449,18 @@
 }
 .Admin .panel .panel-heading h2 {
   float: left;
-  padding: 10px 0px;
-  margin: 0px 0px 0px 10px;
+  padding: 10px 0;
+  margin: 0 0 0 10px;
   color: #374767;
 }
 .Admin .panel .panel-heading h2 i {
   color: #e1e6ef;
-  padding: 12px 0px;
+  padding: 12px 0;
   height: 40px;
   width: 40px;
   display: inline-block;
   text-align: center;
-  margin: -10px 0px -10px -20px;
+  margin: -10px 0 -10px -20px;
   font-size: 16px;
 }
 .Admin .panel .panel-heading .panel-actions {
@@ -1473,7 +1473,7 @@
   text-align: center;
   height: 40px;
   width: 40px;
-  padding: 12px 0px;
+  padding: 12px 0;
   -webkit-transition: all 0.1s ease-in-out;
   -moz-transition: all 0.1s ease-in-out;
   -ms-transition: all 0.1s ease-in-out;
@@ -1495,9 +1495,9 @@
 }
 .Admin .panel .panel-footer {
   background: white;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   border-color: #e1e6ef;
 }
 .Admin .panel.panel-default {
@@ -1627,7 +1627,7 @@
   color: white;
   min-height: 60px;
   line-height: 60px;
-  padding: 0px 20px;
+  padding: 0 20px;
   margin: 0;
   position: relative;
   z-index: 1;
@@ -1672,7 +1672,7 @@
   width: 100%;
   height: 20px;
   color: white;
-  text-shadow: 0px -1px 0px #79c447, 0px 1px 0px #79c447, 1px 0px 0px #79c447, -1px 0px 0px #79c447, -1px -1px 0px #79c447, -1px 1px 0px #79c447, 1px 1px 0px #79c447, 1px -1px 0px #79c447;
+  text-shadow: 0 -1px 0 #79c447, 0 1px 0 #79c447, 1px 0 0 #79c447, -1px 0 0 #79c447, -1px -1px 0 #79c447, -1px 1px 0 #79c447, 1px 1px 0 #79c447, 1px -1px 0 #79c447;
   display: none;
   text-align: center;
 }
@@ -1686,14 +1686,14 @@
   width: 49%;
   text-align: center;
   margin-bottom: 20px;
-  padding: 0px;
+  padding: 0;
 }
 .Admin .browserStat {
   display: inline-block;
   width: 32%;
   text-align: center;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 .Admin .browserStat span {
   display: block;
@@ -1711,7 +1711,7 @@
   background: #c0cadd;
 }
 .Admin .smallchart .content {
-  padding: 40px 0px;
+  padding: 40px 0;
   background: #e1e6ef;
 }
 .Admin .smallchart .content i {
@@ -1774,18 +1774,18 @@
 .Admin .sparkLineStats ul li .number {
   font-size: 17px;
   font-weight: 700;
-  padding: 0px 0px 0px 2px;
+  padding: 0 0 0 2px;
   color: #fa603d;
 }
 .Admin .sparkLineStats ul li h4 {
   position: relative;
   border-bottom: 1px solid #c4c4c4;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   margin-bottom: 10px;
   line-height: 37px;
-  -webkit-box-shadow: 0 1px 0px #ffffff;
-  -moz-box-shadow: 0 1px 0px #ffffff;
-  box-shadow: 0 1px 0px #ffffff;
+  -webkit-box-shadow: 0 1px 0 #ffffff;
+  -moz-box-shadow: 0 1px 0 #ffffff;
+  box-shadow: 0 1px 0 #ffffff;
 }
 .Admin canvas.chartjs {
   width: 100% !important;
@@ -1960,7 +1960,7 @@
   padding: 0;
   border-top: 1px solid #e1e6ef;
   background: #f2f4f8;
-  margin: 20px -15px 0px -15px;
+  margin: 20px -15px 0 -15px;
   *zoom: 1;
 }
 .Admin ul.stats:before,
@@ -1979,7 +1979,7 @@
   border-right: 1px solid #e1e6ef;
   float: left;
   text-align: center;
-  padding: 20px 0px;
+  padding: 20px 0;
   margin: 0;
   overflow: hidden;
 }
@@ -1991,8 +1991,8 @@
   height: 100%;
   position: absolute;
   z-index: -1;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
 }
 .Admin .info-box .backgroundColor {
   color: white;
@@ -2071,7 +2071,7 @@
 }
 .Admin .info-box .quarters .verticalChart .singleBar {
   width: 10.5%;
-  margin: 0 0px 0 3px;
+  margin: 0 0 0 3px;
 }
 .Admin .info-box .quarters .verticalChart .singleBar .bar {
   height: 22px;
@@ -2121,7 +2121,7 @@
   z-index: 1;
   width: 60px;
   float: left;
-  top: 0px;
+  top: 0;
   left: -70px;
 }
 .Admin .discussions ul li .author img {
@@ -2157,7 +2157,7 @@
 }
 .Admin .discussions ul li .message {
   border-bottom: 1px solid #e1e6ef;
-  margin: 20px -10px 0px -10px;
+  margin: 20px -10px 0 -10px;
   padding: 20px;
   font-size: 12px;
 }
@@ -2301,7 +2301,7 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
   width: 30px;
-  margin: 10px 0px 10px 10px;
+  margin: 10px 0 10px 10px;
 }
 .Admin .chat .conversation ul {
   height: 516px;
@@ -2389,7 +2389,7 @@
 }
 .Admin .calendar {
   background: white;
-  padding: 0px;
+  padding: 0;
 }
 .Admin .calendar .calendar-small {
   margin: -21px;
@@ -2591,7 +2591,7 @@
   border-radius: 50em;
 }
 .Admin ul.users-list li .name {
-  margin: 5px 0 0px 0;
+  margin: 5px 0 0 0;
   font-size: 14px;
   font-weight: bold;
 }
@@ -2672,19 +2672,19 @@
 }
 .Admin .todo ul {
   list-style: none;
-  padding: 0px;
+  padding: 0;
   margin: -10px;
 }
 .Admin .todo ul li {
   background: white;
-  margin-left: 0px !important;
+  margin-left: 0 !important;
   padding: 10px 10px 10px 35px;
   border-bottom: 1px solid #e1e6ef;
   font-size: 12px;
   position: relative;
 }
 .Admin .todo ul li:last-child {
-  border-bottom: 0px;
+  border-bottom: 0;
 }
 .Admin .todo ul li .label {
   position: absolute;
@@ -2692,7 +2692,7 @@
 }
 .Admin .todo ul li .todo-actions {
   position: absolute;
-  left: 0px;
+  left: 0;
   margin-top: 2px;
 }
 .Admin .todo ul li .todo-actions a {
@@ -2701,7 +2701,7 @@
 .Admin .todo ul li .todo-actions i {
   font-size: 14px;
   color: #e1e6ef;
-  margin: -1px 5px 0px 10px;
+  margin: -1px 5px 0 10px;
   display: block;
 }
 .Admin .todo ul li .todo-actions i.done {
@@ -2728,7 +2728,7 @@
   border: none;
   position: relative;
   z-index: 10;
-  margin: 5px 0px !important;
+  margin: 5px 0 !important;
 }
 .Admin .slider .ui-slider-range {
   position: absolute;
@@ -2865,7 +2865,7 @@
   border: 1px solid #e1e6ef;
   background: #f2f4f8;
   margin-bottom: -1px;
-  padding: 30px 0px 10px 0px;
+  padding: 30px 0 10px 0;
   font-size: 14px;
   display: block;
   text-align: center;
@@ -2890,7 +2890,7 @@
   font-size: 32px;
 }
 .Admin .quick-button.small {
-  padding: 15px 0px 0px 0px;
+  padding: 15px 0 0 0;
   font-size: 10px;
 }
 .Admin .quick-button.small i {
@@ -2901,7 +2901,7 @@
 }
 .Admin .tempStatBox {
   width: 120px;
-  padding: 25px 0px;
+  padding: 25px 0;
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -2935,17 +2935,17 @@
   -moz-border-radius: 50em;
   border-radius: 50em;
   background: transparent;
-  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.3), 0px 1px 0px #ffffff;
-  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.3), 0px 1px 0px #ffffff;
-  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.3), 0px 1px 0px #ffffff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px 0 #ffffff;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px 0 #ffffff;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px 0 #ffffff;
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
 .Admin .tempStatBox .tempStat:after {
   content: "";
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   height: 98px;
   width: 98px;
   position: absolute;
@@ -2954,9 +2954,9 @@
   border-radius: 50em;
   border: 1px solid #fff;
   background: transparent;
-  -webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -2984,7 +2984,7 @@
   text-align: center;
   display: block;
   margin-top: 10px;
-  text-shadow: 0px 1px 0px #fff;
+  text-shadow: 0 1px 0 #fff;
 }
 .Admin .circleStats {
   text-align: center;
@@ -2993,9 +2993,9 @@
 .Admin .circleStatsItem {
   position: relative;
   background: rgba(255, 255, 255, 0.7);
-  -webkit-box-shadow: inset 0 0px 0 2px rgba(0, 0, 0, 0.2), 0 0px 0 4px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 0px 0 2px rgba(0, 0, 0, 0.2), 0 0px 0 4px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 0px 0 2px rgba(0, 0, 0, 0.2), 0 0px 0 4px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(0, 0, 0, 0.1);
   -webkit-border-radius: 50em;
   -moz-border-radius: 50em;
   border-radius: 50em;
@@ -3007,7 +3007,7 @@
   font-size: 30px;
   position: absolute;
   top: 30%;
-  margin-top: 0px;
+  margin-top: 0;
   width: 100%;
   text-align: center;
 }
@@ -3021,7 +3021,7 @@
   position: absolute;
   top: 15px;
   left: 120px;
-  padding: 5px 0px !important;
+  padding: 5px 0 !important;
   border-color: rgba(0, 0, 0, 0.8);
 }
 .Admin .circleStatsItem input:focus {
@@ -3084,9 +3084,9 @@
   color: rgba(255, 255, 255, 0.9);
   width: 100%;
   height: 20px;
-  padding: 5px 0px;
+  padding: 5px 0;
   position: absolute;
-  top: 0px;
+  top: 0;
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -3096,9 +3096,9 @@
   color: rgba(255, 255, 255, 0.9);
   width: 100%;
   height: 20px;
-  padding: 5px 0px;
+  padding: 5px 0;
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -3114,7 +3114,7 @@
   position: absolute;
   top: 110px;
   width: 100%;
-  left: 0px;
+  left: 0;
   text-align: center;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -3127,7 +3127,7 @@
   height: auto;
   position: absolute;
   top: 30px;
-  padding: 5px 0px !important;
+  padding: 5px 0 !important;
   border-color: rgba(0, 0, 0, 0.8);
 }
 .Admin .circleStatsItemBox input:focus {
@@ -3204,7 +3204,7 @@
   position: absolute;
   content: '';
   top: 20px;
-  left: 0px;
+  left: 0;
   width: 100%;
   border-bottom: 1px solid #e1e6ef;
   z-index: -1;
@@ -3860,9 +3860,9 @@
 .Admin .wizard-type1 ul.steps li a {
   padding: 0 10px;
   height: 39px;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   color: #374767;
   margin: 0;
   font-size: 12px;
@@ -3917,9 +3917,9 @@
 .Admin .wizard-type2 ul.steps li a {
   padding: 0 20px;
   height: 40px;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   color: #e1e6ef;
   margin: 0;
   font-size: 12px;
@@ -4211,9 +4211,9 @@
 }
 .Admin .bootstrap-timepicker .input-group-addon {
   cursor: pointer;
-  -webkit-border-radius: 4px 0px 0px 4px !important;
-  border-radius: 4px 0px 0px 4px !important;
-  border-right: 0px;
+  -webkit-border-radius: 4px 0 0 4px !important;
+  border-radius: 4px 0 0 4px !important;
+  border-right: 0;
 }
 .Admin .bootstrap-timepicker-widget.dropdown-menu {
   padding: 2px 3px 2px 2px;
@@ -4348,7 +4348,7 @@
   height: 20px;
   line-height: 20px;
   margin-bottom: 2px;
-  text-shadow: #fff 1px 1px 0px;
+  text-shadow: #fff 1px 1px 0;
   text-transform: uppercase;
   width: 74px;
 }
@@ -4531,9 +4531,9 @@
   height: 5px;
   width: 5px;
   border: 1px solid #000;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
   position: absolute;
   top: 0;
   left: 0;
@@ -4544,9 +4544,9 @@
   height: 5px;
   width: 5px;
   border: 1px solid #fff;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
 }
 .Admin .colorpicker-hue,
 .Admin .colorpicker-alpha {
@@ -4723,7 +4723,7 @@
   background: #f2f4f8;
 }
 .Admin .inbox .inbox-menu ul li.title {
-  margin: 20px 0px -5px 0px;
+  margin: 20px 0 -5px 0;
   text-transform: uppercase;
   font-size: 10px;
   color: #e1e6ef;
@@ -4877,7 +4877,7 @@
 .Admin .inbox .message .attachments {
   border-top: 3px solid #f2f4f8;
   border-bottom: 3px solid #f2f4f8;
-  padding: 10px 0px;
+  padding: 10px 0;
   margin-bottom: 20px;
   font-size: 12px;
 }
@@ -4898,7 +4898,7 @@
 .Admin .inbox .message .attachments ul li span.quickMenu .fa {
   padding: 5px 0 5px 25px;
   font-size: 14px;
-  margin: -2px 0px 0px 5px;
+  margin: -2px 0 0 5px;
   color: #e1e6ef;
 }
 .Admin .inbox .contacts ul {
@@ -4920,14 +4920,14 @@
   width: 6px;
   height: 6px;
   padding: 0;
-  margin: 0 5px 2px 0px;
+  margin: 0 5px 2px 0;
 }
 .Admin .inbox .contacts ul li:hover {
   background: #f2f4f8;
 }
 .Admin .invoice .header .well p {
   padding: 0;
-  margin: 0px 0;
+  margin: 0 0;
 }
 .Admin .invoice table {
   margin-bottom: 20px !important;
@@ -4996,12 +4996,12 @@
 .Admin .page-todo .task .time {
   display: inline-block;
   width: 15%;
-  padding: 10px 10px 10px 0px;
+  padding: 10px 10px 10px 0;
   font-size: 12px;
   text-align: right;
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
 }
 .Admin .page-todo .task .time .date {
   font-size: 18px;
@@ -5038,7 +5038,7 @@
   display: inline-block;
   position: relative;
   width: 100%;
-  margin: 5px 0px;
+  margin: 5px 0;
 }
 .Admin .page-todo .timeslot .task {
   position: absolute;
@@ -5066,14 +5066,14 @@
   font-size: 14px;
 }
 .Admin .page-todo .timeslot .task span span {
-  border: 0px;
+  border: 0;
   background: transparent;
-  padding: 0px;
+  padding: 0;
 }
 .Admin .page-todo .timeslot .task .arrow {
   position: absolute;
   top: 6px;
-  right: 0px;
+  right: 0;
   height: 20px;
   width: 20px;
   border-left: 12px solid #67c2ef;
@@ -5135,7 +5135,7 @@
 .Admin .page-todo .timeslot.alt .task .arrow {
   position: absolute;
   top: 6px;
-  left: 0px;
+  left: 0;
   height: 20px;
   width: 20px;
   border-left: none;
@@ -5216,13 +5216,13 @@
     font-size: 10px;
   }
   .Admin .page-todo .timeslot .task span span {
-    border: 0px;
+    border: 0;
     background: transparent;
-    padding: 0px;
+    padding: 0;
   }
   .Admin .page-todo .timeslot .task span span.details {
     font-size: 14px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
   .Admin .page-todo .timeslot .task span span.remaining {
     font-size: 12px;
@@ -5231,11 +5231,11 @@
 @media only screen and (max-width: 767px) {
   .Admin .page-todo .tasks {
     position: relative;
-    margin: 0px !important;
+    margin: 0 !important;
   }
   .Admin .page-todo .graph {
     position: relative;
-    margin: 0px !important;
+    margin: 0 !important;
   }
   .Admin .page-todo .task {
     margin-bottom: 1px;
@@ -5269,13 +5269,13 @@
     font-size: 10px;
   }
   .Admin .page-todo .timeslot .task span span {
-    border: 0px;
+    border: 0;
     background: transparent;
-    padding: 0px;
+    padding: 0;
   }
   .Admin .page-todo .timeslot .task span span.details {
     font-size: 14px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
   .Admin .page-todo .timeslot .task span span.remaining {
     font-size: 12px;
@@ -5350,8 +5350,8 @@
   z-index: 1;
   list-style: none;
   float: left;
-  margin: 0px -1px 0px -1px;
-  padding: 0px;
+  margin: 0 -1px 0 -1px;
+  padding: 0;
   text-align: center;
   border: 1px solid #e1e6ef;
   background: #f2f4f8;
@@ -5365,7 +5365,7 @@
   font-size: 18px;
   font-weight: bold;
   text-shadow: none;
-  padding: 20px 0px;
+  padding: 20px 0;
   height: 58px;
 }
 .Admin .price-table.type1 ul li.strike {
@@ -5374,20 +5374,20 @@
 .Admin .price-table.type1 ul li {
   font-size: 12px;
   text-shadow: none;
-  padding: 10px 0px;
+  padding: 10px 0;
 }
 .Admin .price-table.type1 ul li span {
   font-weight: bold;
 }
 .Admin .price-table.type1 ul.best-option {
   border: 3px solid #20a8d8;
-  margin: -27px -3px 0px -3px;
+  margin: -27px -3px 0 -3px;
   z-index: 2;
 }
 .Admin .price-table.type1 ul.best-option li.header {
   font-size: 16px;
   font-weight: bold;
-  padding: 20px 0px;
+  padding: 20px 0;
   position: relative;
   overflow: hidden;
 }
@@ -5408,7 +5408,7 @@
 .Admin .price-table.type1 ul.best-option li.price {
   font-size: 24px;
   font-weight: bold;
-  padding: 20px 0px;
+  padding: 20px 0;
   background: #20a8d8;
 }
 .Admin .price-table.type2 {
@@ -5420,8 +5420,8 @@
   z-index: 1;
   list-style: none;
   float: left;
-  margin: 0px -1px 0px -1px;
-  padding: 0px;
+  margin: 0 -1px 0 -1px;
+  padding: 0;
   text-align: center;
   border: 1px solid #e1e6ef;
   background: white;
@@ -5438,7 +5438,7 @@
   color: white;
   font-size: 40px;
   font-weight: bold;
-  padding: 26px 0px;
+  padding: 26px 0;
   border: 4px solid #e1e6ef;
   -webkit-border-radius: 50em;
   -moz-border-radius: 50em;
@@ -5459,7 +5459,7 @@
 }
 .Admin .price-table.type2 ul li {
   font-size: 12px;
-  padding: 10px 0px;
+  padding: 10px 0;
   border-bottom: 1px solid #e1e6ef;
   background: white;
 }
@@ -5469,7 +5469,7 @@
 .Admin .price-table.type2 ul li.select {
   position: relative;
   background: #c0cadd;
-  padding: 0px;
+  padding: 0;
 }
 .Admin .price-table.type2 ul li.select a {
   color: white;
@@ -5479,7 +5479,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  padding: 10px 0px;
+  padding: 10px 0;
 }
 .Admin .price-table.type2 ul li.select:before {
   content: '';
