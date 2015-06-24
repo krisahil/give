@@ -23,3 +23,5 @@ _.each(trusted, function(origin) {
     dup_origin = "http://" + dup_origin;
     BrowserPolicy.content.allowOriginForAll(dup_origin);
 });
+
+BrowserPolicy.content.allowInlineScripts("https://give.trashmountain.com");
