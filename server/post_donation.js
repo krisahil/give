@@ -194,6 +194,12 @@ _.extend(Utils, {
             case "Urgent Operational Needs":
                 return 63656;
                 break;
+            case "Basecamp - Russell West":
+                return 67649;
+                break;
+            case "BaseCamp - Russell West":
+                return 67649;
+                break;
             case "BaseCamp - Brett Durbin":
                 return 60463;
                 break;

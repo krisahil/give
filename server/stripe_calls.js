@@ -37,6 +37,10 @@ _.extend(Utils, {
                 returnToCalled = 'Basecamp - Brett Durbin';
                 return returnToCalled;
                 break;
+            case 'RussellWest':
+                returnToCalled = 'Basecamp - Russell West';
+                return returnToCalled;
+                break;
             case 'JohnKazaklis':
                 returnToCalled = 'Basecamp - John Kazaklis';
                 return returnToCalled;

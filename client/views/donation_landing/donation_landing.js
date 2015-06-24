@@ -129,6 +129,12 @@ Template.DonationLanding.rendered = function () {
         description: "Executive Director",
         imageSrc: "/images/team/Brett.jpg"
     }, {
+        text: "Russ West",
+        value: "RussellWest",
+        selected: false,
+        description: "Strategy Impact Officer",
+        imageSrc: "/images/team/Russ.jpg"
+    }, {
         text: "Chris Mammoliti",
         value: "ChrisMammoliti",
         selected: false,
