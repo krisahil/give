@@ -12,7 +12,6 @@ amr:parsley.js
 iron:router
 npm-container
 wylio:mandrill
-j4507:datatables-bootstrap-3
 useraccounts:bootstrap
 accounts-password
 zimme:iron-router-active
@@ -31,3 +30,4 @@ alanning:roles
 ongoworks:security
 msavin:jetsetter
 wylio:winston-papertrail
+twbs:bootstrap
