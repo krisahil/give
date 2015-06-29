@@ -1,5 +1,3 @@
-
-
 Template.UserProfile.helpers({
     user: function () {
         return Meteor.user();
@@ -196,42 +194,3 @@ Template.UserProfile.rendered = function(){
     $('[data-toggle="popover"]').popover({html: true});
 
 };
-
-Template.UserNav.events({
-    'click #nav-password': function(evt){
-        evt.preventDefault();
-        Router.go('changePwd');
-    },
-    'click #nav-sign-out': function(evt){
-        evt.preventDefault();
-        AccountsTemplates.logout();
-    },
-    'click #nav-profile': function(evt){
-        evt.preventDefault();
-        Router.go('user.profile');
-    },
-    'click #nav-subscriptions': function(evt){
-        evt.preventDefault();
-        Session.set('addingNewCreditCard', false);
-        Router.go('subscriptions');
-    },
-    'click #nav-give': function(evt){
-        evt.preventDefault();
-        Session.set('addingNewCreditCard', false);
-        Session.set('params.give', 'Yes');
-        /*$('#modal_for_user_give_form').modal({
-            show: true,
-            backdrop: 'static'
-        });*/
-        if(Router.current().route.getName() === 'subscriptions'){
-            $('#modal_for_user_give_form').modal({
-                show: true,
-                backdrop: 'static'
-            });
-        } else {
-            Router.go('subscriptions');
-        }
-    }
-});
-
-

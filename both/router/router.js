@@ -16,7 +16,7 @@ Router.route('', function () {
     var params = this.params;
     if(Meteor.user()){
         Session.set('params.give', "Yes");
-        Router.go('subscriptions');
+        Router.go('user.give');
     }
 
     Session.set('params.donateTo', params.query.donateTo);
@@ -121,6 +121,27 @@ Router.route('/user',{
         }
     },
     name: 'user.profile'
+});
+
+
+Router.route('/user/give',{
+    layoutTemplate: 'UserLayout',
+
+    subscriptions: function(){
+        return [
+            Meteor.subscribe('userStripeData'),
+            Meteor.subscribe('userDT'),
+            Meteor.subscribe('userDTFunds')
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+            this.render();
+        } else {
+            this.render('Loading');
+        }
+    },
+    name: 'user.give'
 });
 
 Router.route('Subscriptions', function() {

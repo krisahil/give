@@ -1,4 +1,4 @@
-Template.UserGiveForm.helpers({
+Template.UserGive.helpers({
     paymentWithCard: function() {
         return Session.equals("UserPaymentMethod", "Card");
     },
@@ -30,7 +30,7 @@ Template.UserGiveForm.helpers({
     }
 });
 
-Template.UserGiveForm.events({
+Template.UserGive.events({
     'submit form': function(e) {
         //prevent the default reaction to submitting this form
         e.preventDefault();
@@ -93,7 +93,7 @@ Template.UserGiveForm.events({
 });
 
 
-Template.UserGiveForm.rendered = function () {
+Template.UserGive.rendered = function () {
 
     if($('#donateWith option').length > 2){
         $('#donateWith').val($('#donateWith option').eq(2).val());
