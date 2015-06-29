@@ -1,0 +1,42 @@
+<template name="FixBankSubscription">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-6 center-block" style="float: none;">
+            <div class="panel panel-default billing-module">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Activate this subscription with the below payment details?</h3>
+                </div>
+                <form id="resubscribe">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    {{#if customer}}
+                                        <p class="alert alert-info">Account used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
+
+                                            {{#with subscription}}
+                                                <br>
+                                                Amount: ${{twoDecimalPlaces metadata.amount}}
+                                                <br>
+                                                Donate To: {{metadata.donateTo}}
+                                                <br>
+                                                Frequency: {{capitalize metadata.frequency}}
+                                                <br>
+                                                Recurring date: Today
+                                            {{/with}}
+                                        </p>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div> <!-- end .row -->
+
+                    </div> <!-- end .panel-body -->
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-success resubscribe" data-loading-text="Resubscribing...">Restart Recurring Gift</button>
+                        <a href="{{pathFor 'subscriptions'}}" class="btn btn-default">Cancel</a>
+                    </div>
+                </form> <!-- end #resubscribe -->
+            </div>
+        </div> <!-- end .col-xs-12 -->
+    </div> <!-- end .row -->
+    {{> Modals}}
+</template>

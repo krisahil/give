@@ -1,4 +1,4 @@
-Template.FixSubscription.rendered = function(){
+Template.FixCardSubscription.rendered = function(){
 
 
     Session.setDefault('isRepair', true);
@@ -16,7 +16,7 @@ Template.FixSubscription.rendered = function(){
     $("[name='square-switch']").bootstrapSwitch();
 };
 
-Template.FixSubscription.events({
+Template.FixCardSubscription.events({
     'submit form': function(e){
         e.preventDefault();
         // In order to account for the possibility of our customer resubscribing
@@ -107,7 +107,7 @@ Template.FixSubscription.events({
     }
 });
 
-Template.FixSubscription.helpers({
+Template.FixCardSubscription.helpers({
     subscription: function () {
         return Subscriptions.find();
     },

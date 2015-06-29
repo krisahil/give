@@ -62,7 +62,7 @@
                             <a id="cancel_subscription" href="" class="btn btn-block btn-default cancelButton">Cancel</a>
                         </li>
                         {{#if card_subscription}}<li class="list-group-item bm-block clearfix">
-                            <a href="{{pathFor 'FixSubscription'}}?sub={{id}}" class="btn btn-block btn-default">Update Payment</a>
+                            <a href="{{pathFor 'FixCardSubscription'}}?sub={{id}}" class="btn btn-block btn-default">Update Payment</a>
                         </li>{{/if}}
                     {{/if}}
                     {{#if equals status "past_due"}}
@@ -71,9 +71,15 @@
                         </li>
                     {{/if}}
                     {{#if equals status "canceled"}}
-                        <li class="list-group-item bm-block clearfix">
-                            <a href="{{pathFor 'FixSubscription'}}?sub={{id}}&cus={{customer}}&bank={{metadata.donateWith}}" class="btn btn-block btn-default">Activate</a>
-                        </li>
+                        {{#if card_subscription}}
+                            <li class="list-group-item bm-block clearfix">
+                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-default">Activate</a>
+                            </li>
+                        {{else}}
+                            <li class="list-group-item bm-block clearfix">
+                                <a href="{{pathFor 'FixBankSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-default">Activate</a>
+                            </li>
+                        {{/if}}
                     {{/if}}
                       <!--<a href="{{pathFor 'PaymentDevice'}}" class="btn btn-block btn-default">Update Payment Method</a>-->
                   </ul>

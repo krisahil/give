@@ -76,6 +76,36 @@ Meteor.methods({
             }
         }
     },
+    stripeRestartBankSubscription: function (restart_data) {
+        logger.info("Started method stripeUpdateCard.");
+
+        // Check our arguments against their expected patterns. This is especially
+        // important here because we're dealing with sensitive customer information.
+        check(restart_data, {
+            customer_id: String,
+            subscription_id: String,
+            status: String,
+            bank: String
+        });
+        console.log(restart_data.status);
+
+        if(restart_data.status === 'canceled') {
+            var subscription_amount = Subscriptions.findOne({_id: restart_data.subscription_id}).quantity;
+            var subscription_metadata = Subscriptions.findOne({_id: restart_data.subscription_id}).metadata;
+            var subscription_plan = Subscriptions.findOne({_id: restart_data.subscription_id}).plan.name;
+
+            var created_subscription = Utils.stripe_create_subscription(restart_data.customer_id, restart_data.bank, subscription_plan, subscription_amount, subscription_metadata);
+            if (!created_subscription.object) {
+                return {error: created_subscription.rawType, message: created_subscription.message};
+            }
+            else {
+                Subscriptions.update({_id: restart_data.subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
+                return 'new';
+            }
+        } else {
+            throw new Meteor.Error(500, "This gift is already not in the canceled state");
+        }
+    },
     //TODO: update this method to work with the subscriptions page
     stripeCancelSubscription: function (customer_id, subscription_id, reason) {
         logger.info("Started method stripeCancelSubscription.");

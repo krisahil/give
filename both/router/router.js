@@ -131,7 +131,8 @@ Router.route('/user/give',{
         return [
             Meteor.subscribe('userStripeData'),
             Meteor.subscribe('userDT'),
-            Meteor.subscribe('userDTFunds')
+            Meteor.subscribe('userDTFunds'),
+            Meteor.subscribe('devices')
         ]
     },
     action: function () {
@@ -162,22 +163,6 @@ Router.route('Subscriptions', function() {
     }
 );
 
-Router.route('PaymentDevice', {
-        layoutTemplate: 'UserLayout',
-        path: '/user/paymentDevice',
-        subscriptions: function() {
-            return Meteor.subscribe('userStripeDataWithSubscriptions');
-        },
-        action: function () {
-            if (this.ready()) {
-                this.render();
-            } else {
-                this.render('Loading');
-            }
-        }
-    }
-);
-
 Router.route('/scheduled', {
     name: 'donation.scheduled',
 
@@ -205,21 +190,41 @@ Router.route('/webhooks/stripe', function () {
     name: 'stripe_webhooks'
 });
 
-Router.route('FixSubscription', {
+Router.route('FixCardSubscription', {
     layoutTemplate: 'UserLayout',
-    path: '/user/subscriptions/resubscribe',
-    template: 'FixSubscription',
+    path: '/user/subscriptions/card/resubscribe',
+    template: 'FixCardSubscription',
     subscriptions: function(){
         return [
-            Meteor.subscribe('subscription', this.params.query.sub),
-            //Meteor.subscribe('payment', this.params.query.payment),
-            Meteor.subscribe('customer', this.params.query.cus)
+            Meteor.subscribe('subscription', this.params.query.s),
+            Meteor.subscribe('customer', this.params.query.c)
         ]
     },
     action: function () {
         if (this.ready()) {
         var query = this.params.query;
-        Session.set('sub', query.sub);
+        Session.set('sub', query.s);
+        this.render();
+    } else {
+            this.render('Loading');
+        }
+    }
+});
+
+Router.route('FixBankSubscription', {
+    layoutTemplate: 'UserLayout',
+    path: '/user/subscriptions/bank/resubscribe',
+    template: 'FixBankSubscription',
+    subscriptions: function(){
+        return [
+            Meteor.subscribe('subscription', this.params.query.s),
+            Meteor.subscribe('customer', this.params.query.c)
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+        var query = this.params.query;
+        Session.set('sub', query.s);
         this.render();
     } else {
             this.render('Loading');

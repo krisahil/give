@@ -108,6 +108,21 @@ Meteor.publish("subscription", function (subscription_id) {
 	}
 });
 
+Meteor.publish("devices", function () {
+
+    var customers = Customers.find({'metadata.user_id': this.userId});
+    var customer_ids = [];
+
+    customers.forEach(function(element) {
+        customer_ids.push(element.id);
+    });
+	if (this.userId) {
+        return Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
+	} else {
+		this.ready();
+	}
+});
+
 Meteor.publish("customer", function (customer) {
     //Check the subscription_id that came from the client
     check(customer, String);
