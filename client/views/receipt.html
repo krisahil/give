@@ -14,7 +14,7 @@
 
         <header id="header">
             <div class="invoice-intro">
-                <h1 class="noTopPadding">Trash Mountain Project</h1>
+                <h1 class="noTopPadding">{{org_name}}</h1>
                 <p>Developing Christ-centered environments for children and families living in trash dump communities wordldwide.</p>
             </div>
 
@@ -40,14 +40,14 @@
             <div class="invoice-to">
                 <h2>Donation To:</h2>
                 <div id="hcard-Trash-Mountain-Project" class="vcard">
-                    <a class="url fn" href="https://trashmountain.com">Trash Mountain Project</a>
-                    <a class="email" href="mailto:info@trashmountain.com">Info@trashmountain.com</a>
+                    <a class="url fn" href={{org_homepage_url}}>{{org_name}}</a>
+                    <a class="email" href="mailto:{{contact_address}}">{{contact_address}}</a>
 
                     <div class="adr">
-                        <div class="street-address">1555 NW Gage Boulevard</div>
-                        <span class="locality">Topeka</span>
-                        <span class="region">KS</span>
-                        <span class="postal-code">66618</span>
+                        <div class="street-address">{{org_street_address}}</div>
+                        <span class="locality">{{org_city}}</span>
+                        <span class="region">{{org_state_short}}</span>
+                        <span class="postal-code">{{org_zip}}</span>
                     </div>
 
                     <div class="tel">785-246-6845</div>
@@ -105,7 +105,7 @@
 
                 <div class="invoice-notes">
                     <h6>For Your Tax Purposes:</h6>
-                    <p>Thank you for your donation of ${{#with charges}}{{total_amount}}{{/with}} to Trash Mountain Project, Inc. We know that our efforts are only possible because of the contributions we receive from generous donors like you, and we thank you again for believing in and supporting our mission.</p>
+                    <p>Thank you for your donation of ${{#with charges}}{{total_amount}}{{/with}} to {{org_name}}, Inc. We know that our efforts are only possible because of the contributions we receive from generous donors like you, and we thank you again for believing in and supporting our mission.</p>
                     <p>The estimated value of any goods or services provided in return for your donation is $0.
                     Please keep this written acknowledgment of your donation for your tax records.</p>
                     <h6 class="hidden-print">Matching Gifts.</h6>
@@ -119,7 +119,7 @@
 
         <footer id="footer">
             <p>
-                As a 501(c)3 non-profit organization, all contributions to Trash Mountain Project, Inc. are tax deductible under 170(c)2 of the Internal Revenue Code. Trash Mountain Project, Inc.  EIN #26-4775012
+                As a 501(c)3 non-profit organization, all contributions to {{org_name}} are tax deductible under 170(c)2 of the Internal Revenue Code. {{org_name}}  EIN {{org_ein}}
             </p>
                 <p><a id="printLink" class="hidden-print" href="" onclick="javascript:window.print();">Click to Print</a></p>
 

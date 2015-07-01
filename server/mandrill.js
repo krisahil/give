@@ -129,12 +129,12 @@ _.extend(Utils,{
             ],
             "message": {
                 "to": [
-                    {"email": "canceledgift@trashmountain.com"}
+                    {"email": Meteor.settings.public.canceled_gift_address}
                 ],
                 "bcc_address": "",
                 "merge_vars": [
                     {
-                        "rcpt": "canceledgift@trashmountain.com",
+                        "rcpt": Meteor.settings.public.canceled_gift_address,
                         "vars": [
                             {
                                 "name": "DEV",
@@ -186,7 +186,7 @@ _.extend(Utils,{
 
     },
     send_donation_email: function (recurring, id, amount, type, body, frequency, subscription) {
-        /*try {*/
+        try {
             logger.info("Started send_donation_email with ID: " + id);
             if (type === "charge.updated") {
                 logger.info("Don't need to send an email when a charge is updated, exiting the send_donation_email method.");
@@ -482,8 +482,7 @@ _.extend(Utils,{
                 Utils.audit_email(id, type);
                 data_slug.template_name = "donation-initial-email";
                 data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-                // TODO: need to determine if we want to keep this pending email bcc_address sending us emails everytime
-                data_slug.message.bcc_address  = 'josh@trashmountain.com';
+                data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
                 Utils.send_mandrill_email(data_slug, 'charge.pending');
 
             } else if (type === 'payment.created') {
@@ -494,8 +493,7 @@ _.extend(Utils,{
                 Utils.audit_email(id, type);
                 data_slug.template_name = "donation-initial-email";
                 data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-                // TODO: need to determine if we want to keep this pending email bcc_address sending us emails everytime
-                data_slug.message.bcc_address  = 'josh@trashmountain.com';
+                data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
                 data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
                 Utils.send_mandrill_email(data_slug, 'payment.created');
 
@@ -523,17 +521,17 @@ _.extend(Utils,{
                     return;
                 }
                 Utils.audit_email(id, type);
-                data_slug = Utils.add_recipient_to_email(data_slug, "large_gift@trashmountain.com");
+                data_slug = Utils.add_recipient_to_email(data_slug, Meteor.settings.public.large_gift_address);
                 data_slug.template_name = "large-gift-notice-multi-collection";
                 data_slug.message.bcc_address = null;
                 Utils.send_mandrill_email(data_slug, 'large-gift');
             }
-        /*}
+        }
         catch (e) {
             logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
             logger.error('Mandril sendEmailOutAPI Method error: ' + e);
             throw new Meteor.error(e);
-        }*/
+        }
     },
 	send_mandrill_email: function(data_slug, type){
         try{
@@ -548,7 +546,7 @@ _.extend(Utils,{
     },
     send_scheduled_email: function (id, subscription_id, frequency, amount) {
         try {
-            logger.info("Started send_donation_email with ID: " + id + " subscription_id: " + subscription_id + " frequency: " + frequency + "amount: " + amount);
+            logger.info("Started send_scheduled_email with ID: " + id + " subscription_id: " + subscription_id + " frequency: " + frequency + "amount: " + amount);
 
             // Check to see if this email has already been sent before continuing, log it if it hasn't
             var subscription_cursor = Subscriptions.findOne({_id: subscription_id});
@@ -572,7 +570,7 @@ _.extend(Utils,{
             var start_at = subscription_cursor.trial_end;
             start_at = moment(start_at * 1000).format("MMM DD, YYYY");
 
-            var bcc_address = "support@trashmountain.com";
+            var bcc_address = Meteor.settings.public.bcc_address;
             var email_address = customer_cursor.email;
 
             // convert the amount from an integer to a two decimal place number

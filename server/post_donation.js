@@ -428,7 +428,7 @@ _.extend(Utils, {
         }
     },
     insert_donation_and_donor_into_dt: function (customer_id, user_id, charge_id){
-        /*try {*/
+        try {
         logger.info("Started insert_donation_and_donor_into_dt");
 
         var customer =  Customers.findOne(customer_id);
@@ -530,13 +530,13 @@ _.extend(Utils, {
             throw new Meteor.Error("Couldn't get the persona_id for some reason");
         }
 
-        /*}
+        }
          catch (e) {
          console.log(e);
          //e._id = AllErrors.insert(e.response);
          var error = (e.response);
          throw new Meteor.Error(error, e._id);
-         }*/
+         }
     },
     separate_donations: function(serverResponse){
         logger.info("Inside separate_donations");
@@ -618,8 +618,8 @@ _.extend(Utils, {
         //Send email to reconcile DT personas
 
         Email.send({
-            from: 'support@trashmountain.com',
-            to: 'josh@trashmountain.com',
+            from: Meteor.settings.public.support_address,
+            to: Meteor.settings.public.support_address,
             subject: "DT account not found.",
             html: html
         });
@@ -630,7 +630,7 @@ _.extend(Utils, {
         Meteor.users.update({_id: user_id}, {$addToSet: {'persona_id': parseInt(persona_id)}});
     },
     insert_donation_into_dt: function (customer_id, user_id, persona_ids, charge_id){
-        /*try {*/
+        try {
         logger.info("Started insert_donation_into_dt");
 
         //TODO: still need to fix the below for any time when the charge isn't being passed here, like for scheduled gifts
@@ -729,13 +729,13 @@ _.extend(Utils, {
             throw new Meteor.Error("Couldn't get the persona_id for some reason");
         }
 
-        /*}
+        }
          catch (e) {
          console.log(e);
          //e._id = AllErrors.insert(e.response);
          var error = (e.response);
          throw new Meteor.Error(error, e._id);
-         }*/
+         }
     },
     send_dt_new_dt_account_added: function (email, user_id, personaID){
 
@@ -749,8 +749,8 @@ _.extend(Utils, {
         //Send email
 
         Email.send({
-            from: 'support@trashmountain.com',
-            to: 'josh@trashmountain.com',
+            from: Meteor.settings.public.support_address,
+            to: Meteor.settings.public.support_address,
             subject: "DT Account inserted.",
             html: html
         });

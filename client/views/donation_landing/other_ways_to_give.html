@@ -12,18 +12,18 @@
                           <h6 class="heading">DONATE STOCK</h6>
                           <p class="p-1">We're able to accept donations in the form of stock, government (including municipal) debt and corporate debt through the Depository Trust Company (DTC). For security, settlement and reduced paperwork, electronic transfer through the DTC is preferred.
                               This can be arranged from most brokerage accounts.</p>
-                            <p class="p-1">*Please contact info@trashmountain.com in advance so your stock donation can be easily tracked for tax purposes.</p>
+                            <p class="p-1">*Please contact {{contact_address}} in advance so your stock donation can be easily tracked for tax purposes.</p>
                         </span>
                         <span class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                           <h6 class="heading">INTERNATIONAL GIVING</h6>
-                          <p class="p-1">We apologize but we don't accept foreign checks at this time. However, international banks can issue money orders in USD. Money orders should be made payable to Trash Mountain Project and can be mailed to the address listed below. </p>
+                          <p class="p-1">We apologize but we don't accept foreign checks at this time. However, international banks can issue money orders in USD. Money orders should be made payable to {{org_name}} and can be mailed to the address listed below. </p>
                           <p class="p-1">*Please note, only donations from within the U.S. are tax-deductible.</p>
 
-                        <p>Trash Mountain Project<br/>
-                            1555 NW Gage Blvd.<br/>
-                            Topeka, KS 66618<br/>
-                            EIN: 26-4775012<br/>
-                            Trash Mountain Project is a 501(c)(3)<br/>
+                        <p>{{org_name}}<br/>
+                            {{org_street_address}}<br/>
+                            {{org_city}}, {{org_state}} {{org_zip}}<br/>
+                            EIN: {{org_ein}}<br>
+                            {{#if org_is_501c3}}{{org_name}} is a 501(c)(3)<br>{{/if}}
                         </p>
                         </span>
                     </div>

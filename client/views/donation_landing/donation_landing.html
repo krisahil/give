@@ -116,15 +116,21 @@
                     <br>
 
                     <div class="well well1 text-center">
-                        <p><a class="list-group-item btn btn-default white-button-text" id="other_ways_to_give">Other Ways To Give</a></p>
+                        <p>
+                            <a class="list-group-item btn btn-default white-button-text" id="other_ways_to_give">Other Ways To Give</a>
+                        </p>
 
                         <h6><strong>Mailing a check?</strong></h6>
 
-                  <span>1555 NW Gage Blvd.
-                  <br>
-                  Topeka, KS 66618</span>
+                        <span>
+                            {{org_name}}<br>
+                            {{org_street_address}}<br>
+                            {{org_city}}, {{org_state_short}} {{org_zip}}
+                        </span>
 
-                        <p><strong>Need help giving? <a href="tel:785-246-6845">785-246-6845</a></strong></p>
+                        <p>
+                            <strong>Need help giving? <a href="tel:{{org_phone}}">{{org_phone}}</a></strong>
+                        </p>
                     </div>
                 </div>
 
