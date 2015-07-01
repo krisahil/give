@@ -53,7 +53,22 @@ Here is an example settings.json file
     "URL": "giving page URL, you should use https://"
     "stripe": {
       "publishable": "publishable Stripe Key"
-    }
+    },
+    "contact_address": "general contact email address",
+    "support_address": "support email address",
+    "canceled_gift_address": "group email for notifying when a recurring gift is canceled",
+    "bcc_address": "this email is bcc'd anytime a gift receipt, schedule or pending email is sent",
+    "large_gift_address": "group email for notifiying when gifts larger than $500 are given",
+    "org_name": "Your org name",
+    "org_street_address": "Your org street address, for example '1555 NW Gage BLVD",
+    "org_city": "Your org city",
+    "org_state": "Your org state",
+    "org_state_short": "Your org state abbreviation, for instance 'KS' for Kansas",
+    "org_zip": "Your org zip",
+    "org_phone": "Your org phone number",
+    "org_ein": "Your org tax id/EIN",
+    "org_is_501c3": true,
+    "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'"
   }
 }
 ```
