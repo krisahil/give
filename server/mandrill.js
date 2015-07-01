@@ -217,7 +217,7 @@ _.extend(Utils,{
                     "to": [
                         {"email": ""}
                     ],
-                    "bcc_address": "support@trashmountain.com",
+                    "bcc_address": "",
                     "merge_vars": [
                         {
                             "rcpt": "",
@@ -590,7 +590,7 @@ _.extend(Utils,{
                     "to": [
                         {"email": email_address}
                     ],
-                    "bcc_address": "support@trashmountain.com",
+                    "bcc_address": "",
                     "merge_vars": [
                         {
                             "rcpt": email_address,
