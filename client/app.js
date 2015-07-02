@@ -13,8 +13,8 @@ _.extend(App, {
     },
     process_give_form: function(quick_form, customer){
         var form = {};
+        var user_cursor, customer_cursor, business_name, address_line2;
         if(quick_form){
-            var user_cursor, customer_cursor, business_name, address_line2;
             if(customer){
                 customer_cursor = Customers.findOne({_id: customer});
                 if(!customer_cursor.metadata){
@@ -506,7 +506,7 @@ UI.registerHelper('logged_in', function(context) {
 UI.registerHelper('epochToString', function(timestamp){
     if (timestamp){
         var length = timestamp.toString().length;
-        if ( length == 10 ) {
+        if ( length === 10 ) {
             return moment.unix(timestamp).format("MMMM Do, YYYY");
         } else {
             return moment.unix(timestamp / 1000).format("MMMM Do, YYYY");

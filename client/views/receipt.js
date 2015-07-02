@@ -16,13 +16,11 @@ Template.Receipt.helpers({
         return Charges.findOne();
     },
     frequency: function () {
-        if(Charges.findOne() && Charges.findOne().invoice){
-            if(!Charges.findOne().metadata.frequency){
-                return 'Retrieving...';
-            } else{
-                return Charges.findOne().metadata.frequency;
-            }
-        }else{
+        if(Charges.findOne() && Charges.findOne().metadata && !Charges.findOne().metadata.frequency){
+            return 'Retrieving...';
+        } else if(Charges.findOne() && Charges.findOne().metadata && Charges.findOne().metadata.frequency !== 'one_time') {
+            return Charges.findOne().metadata.frequency;
+        } else if (Charges.findOne() && Charges.findOne().metadata && Charges.findOne().metadata.frequency === 'one_time') {
             return 'One-time';
         }
     },
@@ -118,8 +116,6 @@ Template.Receipt.helpers({
 /*****************************************************************************/
 /* Receipt: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Receipt.created = function () {
-};
 
 Template.Receipt.rendered = function () {
 
@@ -137,8 +133,5 @@ Template.Receipt.rendered = function () {
     if (Session.equals('print', 'yes')) {
         return window.print();
     }
-};
-
-Template.Receipt.destroyed = function () {
 };
 

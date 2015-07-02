@@ -55,7 +55,7 @@ $('#billing-card').validate({
                     Bert.alert(error.reason.message, 'danger');
                     updateCardButton.button('reset');
                 } else {
-                    if (response.rawType != undefined && response.rawType == "card_error"){
+                    if (response.rawType !== undefined && response.rawType === "card_error"){
                         Bert.alert(response.message, "danger");
                         updateCardButton.button('reset');
                     } else {
@@ -81,7 +81,7 @@ $('#billing-card').validate({
                     // Notice here that we're looking at response.rawType instead of response.error.
                     // This is because Stripe will return card error's differently than other errors.
                     // This just allows us to confirm the type and alert the appropriate message.
-                    if (response.rawType != undefined && response.rawType == "card_error"){
+                    if (response.rawType !== undefined && response.rawType === "card_error"){
                         Bert.alert(response.message, "danger");
                         updateCardButton.button('reset');
                     } else {

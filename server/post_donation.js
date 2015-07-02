@@ -39,7 +39,7 @@ _.extend(Utils, {
                 //create dt user since one wasn't found in DT
                 //TODO: fix this area, doesn't work with the change I've made to personIDs, since a user account shouldn't
                 // be made if the user doesn't match the main email criteria
-                if (!persona_result || !persona_result.persona_ids || persona_result.persona_ids == '') {
+                if (!persona_result || !persona_result.persona_ids || persona_result.persona_ids === '') {
                     //Call DT create function
                     var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
 
@@ -127,7 +127,7 @@ _.extend(Utils, {
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
         });
 
-        if(personResult.data == ''){
+        if(personResult.data === ''){
             return [];
         } else {
             var personaIDs = [];
@@ -574,7 +574,7 @@ _.extend(Utils, {
         try {
             logger.info("Started get_all_dt_donations");
 
-            if(persona_ids == '') {return;}
+            if(persona_ids === '') {return;}
             persona_ids.forEach(function(id){
                 var responseData;
                 responseData = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + '/donations.json?per_page=1000', {
@@ -604,7 +604,7 @@ _.extend(Utils, {
 
         logger.info("Started send_dt_search_email");
         var html;
-        if(personaIDs != ''){
+        if(personaIDs !== ''){
             html = "<h1>DT account not found</h1><p><a href='https://trashmountain.donortools.com/personas?search=" + name + "&go=true'>Search DT for this person</a></p>";
             personaIDs.forEach(function (persona_id) {
                 html += "<p><a href='https://trashmountain.com/give/donorTools?id=" + id + "&persona_id=" + persona_id + "&email=" + email + "&donation_id=" + donation_id + "'>Insert after finding or creating in DT</a></p>";

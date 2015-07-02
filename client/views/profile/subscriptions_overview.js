@@ -54,9 +54,9 @@ Template.SubscriptionsOverview.helpers({
         }
     },
     show_donate_with: function () {
-        if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) == 'ba'){
+        if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ba'){
             return 'Bank Account';
-        } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) == 'ca') {
+        } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ca') {
             return 'Card';
         }
     },
