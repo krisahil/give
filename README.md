@@ -15,7 +15,7 @@ At this point you will need a developer to use this software. Give is a working 
 
 ## Example
 
-https://give.trashmountain.com
+https://give.trashmountain.com/landing
 
 This is a live giving page, which is being used by Trash Mountain Project. 
 
