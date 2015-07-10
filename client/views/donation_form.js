@@ -10,6 +10,14 @@ Template.DonationForm.events({
 
         if($("#is_recurring").val() === ''){
             $("#s2id_is_recurring").children().addClass("redText");
+            $.fn.scrollView = function () {
+                return this.each(function () {
+                    $('html, body').animate({
+                        scrollTop: $(this).offset().top
+                    }, 1000);
+                });
+            };
+            $('#spinContainer').scrollView();
             return;
         }
 

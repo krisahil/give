@@ -8,9 +8,6 @@ Template.SubscriptionsOverview.helpers({
     plan_name: function() {
         return this.plan.name;
     },
-    show_give_form: function () {
-        return Session.equals("params.give", "Yes");
-    },
     lastFour: function () {
         var device = Devices.findOne({customer: this.customer});
         if(device){
@@ -66,7 +63,6 @@ Template.SubscriptionsOverview.helpers({
     bank: function () {
         var id = this._id;
         var subscription = Subscriptions.findOne({id: _id});
-        console.log(subscription.metadata.donateWith);
     }
 });
 
@@ -140,14 +136,4 @@ Template.SubscriptionsOverview.events({
 Template.SubscriptionsOverview.rendered = function() {
     Session.setDefault('paymentMethod', 'default');
     Session.setDefault('subscription_cursor', 0);
-
-
-    //setup modal for entering give toward information
-    if (Session.equals('params.give', 'Yes')) {
-        $('#modal_for_user_give_form').modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
-
 };

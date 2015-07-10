@@ -15,7 +15,6 @@ Router.route('', function () {
 
     var params = this.params;
     if(Meteor.user()){
-        Session.set('params.give', "Yes");
         Router.go('user.give');
     }
 
@@ -146,22 +145,20 @@ Router.route('/user/give',{
 });
 
 Router.route('Subscriptions', function() {
-        var params = this.params;
-        var fix_it = this.params.fix_it;
-        Session.set('fix_it', params.query.fix_it);
+    var params = this.params;
+    Session.set('fix_it', params.query.fix_it);
 
-        this.wait(Meteor.subscribe('user_date_and_subscriptions_with_only_4'));
-        if (this.ready()) {
-            this.render();
-        } else {
-            this.render('Loading');
-        }
-    }, {
-        name: 'subscriptions',
-        layoutTemplate: 'UserLayout',
-        path: '/user/subscriptions'
+    this.wait(Meteor.subscribe('user_date_and_subscriptions_with_only_4'));
+    if (this.ready()) {
+        this.render();
+    } else {
+        this.render('Loading');
     }
-);
+}, {
+    name: 'subscriptions',
+    layoutTemplate: 'UserLayout',
+    path: '/user/subscriptions'
+});
 
 Router.route('/scheduled', {
     name: 'donation.scheduled',
@@ -194,16 +191,19 @@ Router.route('FixCardSubscription', {
     layoutTemplate: 'UserLayout',
     path: '/user/subscriptions/card/resubscribe',
     template: 'FixCardSubscription',
+
     subscriptions: function(){
+        var query = this.params.query;
+        console.log(query.s);
         return [
-            Meteor.subscribe('subscription', this.params.query.s),
-            Meteor.subscribe('customer', this.params.query.c)
+            Meteor.subscribe('subscription', query.s),
+            Meteor.subscribe('customer', query.c)
         ]
     },
     action: function () {
         if (this.ready()) {
-        var query = this.params.query;
-        Session.set('sub', query.s);
+        var query1 = this.params.query;
+        Session.set('sub', query1.s);
         this.render();
     } else {
             this.render('Loading');
