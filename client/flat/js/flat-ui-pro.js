@@ -8589,7 +8589,8 @@ if (typeof jQuery === 'undefined') {
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
+//Commented this section and used a new version of tabs.
+/*
 +function ($) {
   'use strict';
 
@@ -8733,7 +8734,7 @@ if (typeof jQuery === 'undefined') {
     .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
     .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
 
-}(jQuery);
+}(jQuery);*/
 
 /* ========================================================================
  * Bootstrap: affix.js v3.3.1

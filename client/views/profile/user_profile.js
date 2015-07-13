@@ -62,7 +62,14 @@ Template.UserProfile.helpers({
     business_name: function () {
         if(Meteor.user().profile.business_name) {
             return '<h5>' + Meteor.user().profile.business_name + '</h5>';
-        } else return;
+        }
+        else return;
+    },
+    company_name: function () {
+        if(Meteor.user().profile.business_name) {
+            return '<h5>' + this.company_name + '</h5>';
+        }
+        else return;
     },
     giving_focus: function () {
         var donations = Donations.find().fetch();
@@ -197,15 +204,7 @@ Template.UserProfile.events({
     'click .clickable_row': function(){
         var transaction_id = this.transaction_id;
         Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
-    },
-    'click #myTabs a': function (e) {
-        //e.preventDefault();
-        //$('#myTabs a[href="' + e.currentTarget.hash + '"]').tab('show');
-        /*$('.liForTabs a').removeClass('active');
-        $('.tab-pane').removeClass('active');
-        $(e.currentTarget.hash).addClass('active');*/
     }
-
 });
 
 Template.UserProfile.rendered = function(){
@@ -219,5 +218,8 @@ Template.UserProfile.rendered = function(){
     $('#userAddressForm').parsley();
 
     $('[data-toggle="popover"]').popover({html: true});
+
+    $('#myTabs li:first').addClass('active');
+    $('.tab-pane:first').addClass('active');
 
 };
