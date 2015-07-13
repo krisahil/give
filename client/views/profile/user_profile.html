@@ -7,14 +7,16 @@
             <!-- Tabs -->
             <h3>Your accounts</h3>
             <ul id="myTabs" class="nav nav-tabs nav-append-content">
-                {{#each persona_info}}<li class="">
-
-                    <a href="#{{this.id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a></li>{{/each}}
+                {{#each personas}}
+                    <li class="">
+                        <a href="#{{this.id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a>
+                    </li>
+                {{/each}}
             </ul>
 
             <!-- Tab content -->
             <div class="tab-content">
-                {{#each persona_info}}
+                {{#each personas}}
                     <div class="tab-pane" role="tabpanel" id="{{id}}">
                     <!--<div class="panel panel-default billing-module">-->
                         <div class="panel-body billing-module">

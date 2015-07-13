@@ -32,7 +32,8 @@ Template.UserProfile.helpers({
         return {total: total/100, count: count};
     },
     dt_gifts: function () {
-        var donations = DT_donations.find({});
+        console.log(this.id);
+        var donations = DT_donations.find({persona_id: this.id});
         var fullSplitList = [];
         var number_of_gifts = 0;
         var total_given = 0;
@@ -66,7 +67,7 @@ Template.UserProfile.helpers({
         else return;
     },
     company_name: function () {
-        if(Meteor.user().profile.business_name) {
+        if(this.company_name) {
             return '<h5>' + this.company_name + '</h5>';
         }
         else return;
@@ -89,7 +90,7 @@ Template.UserProfile.helpers({
     },
     dt_donations: function() {
         var page = Session.get('dt_donations_cursor');
-        return DT_donations.find({}, {sort: {received_on: -1}, limit: 10, skip: page});
+        return DT_donations.find({'persona_id': this.id}, {sort: {received_on: -1}, limit: 10, skip: page});
     },
     split: function () {
         return this.splits;
@@ -129,10 +130,11 @@ Template.UserProfile.helpers({
         return Meteor.users.findOne().persona_info && Meteor.users.findOne().persona_info.length > 1;
     },
     personas : function () {
-        return Meteor.users.findOne().persona_ids;
-    },
-    persona_info : function () {
-        return Meteor.users.findOne().persona_info;
+        if(Meteor.users.findOne() && Meteor.users.findOne().persona_info) {
+            return Meteor.users.findOne().persona_info;
+        } else {
+            return Meteor.users.findOne().persona_id
+        }
     },
     company_or_name: function () {
         return this.company_name ? this.company_name : Meteor.users.findOne().profile.fname + ' ' + Meteor.users.findOne().profile.lname;
