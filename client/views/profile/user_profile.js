@@ -117,6 +117,29 @@ Template.UserProfile.helpers({
         else{
             return;
         }
+    },
+    more_than_one_persona: function () {
+        return Meteor.users.findOne().persona_info && Meteor.users.findOne().persona_info.length > 1;
+    },
+    personas : function () {
+        return Meteor.users.findOne().persona_ids;
+    },
+    persona_info : function () {
+        return Meteor.users.findOne().persona_info;
+    },
+    company_or_name: function () {
+        return this.company_name ? this.company_name : Meteor.users.findOne().profile.fname + ' ' + Meteor.users.findOne().profile.lname;
+    },
+    active: function () {
+        var persona_array = Meteor.users.findOne().persona_id;
+        Array.max = function( persona_array ){
+            return Math.max.apply( Math, persona_array );
+        };
+        if(Array.max(persona_array) === this.id){
+            return 'active';
+        } else {
+            return '';
+        }
     }
 
 });
@@ -174,6 +197,13 @@ Template.UserProfile.events({
     'click .clickable_row': function(){
         var transaction_id = this.transaction_id;
         Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
+    },
+    'click #myTabs a': function (e) {
+        //e.preventDefault();
+        //$('#myTabs a[href="' + e.currentTarget.hash + '"]').tab('show');
+        /*$('.liForTabs a').removeClass('active');
+        $('.tab-pane').removeClass('active');
+        $(e.currentTarget.hash).addClass('active');*/
     }
 
 });

@@ -19,8 +19,6 @@ _.extend(Utils, {
             // check that there was a customer record and that record had an email address
             if(email_address) {
                 //create user
-
-
                 //check dt for user, persona_ids will be an array of 0 to many persona_ids
                 var persona_result = {};
                 persona_result = Utils.check_for_dt_user(email_address);
@@ -59,9 +57,11 @@ _.extend(Utils, {
                 Utils.get_all_dt_donations(persona_result.persona_ids );
 
                 // forEach of the persona ids stored in the array run the insert_persona_id_into_user function
-                persona_result.persona_ids.forEach(function(element){
+                persona_result.persona_info.forEach(function(element){
                     Utils.insert_persona_id_into_user(user_id, element);
                 });
+                Meteor.users.update(user_id, {$set: {'persona_info': persona_result.persona_info}});
+
             } else {
                 logger.error("Didn't find the customer record, exiting.");
                 throw new Meteor.Error("Email doesn't exist", "Customer didn't have an email address", "Customers.findOne(customer_id) && Customers.findOne(customer_id).email from post_donation.js didn't find an email");
@@ -131,11 +131,12 @@ _.extend(Utils, {
             return [];
         } else {
             var personaIDs = [];
+            var persona_info = [];
             var dt_account_has_main;
             var matching_main_account;
             personResult.data.forEach(function (element) {
                 personaIDs.push(element.persona.id);
-                console.log("LOOK HERE LOOOK HERE");
+                persona_info.push(element.persona);
                 console.log(element.persona.email_addresses);
                 element.persona.email_addresses.forEach(function (element) {
                    if(element.address_type_id === 5){
@@ -152,6 +153,7 @@ _.extend(Utils, {
                 });
             });
             var return_to_called = {};
+            return_to_called.persona_info = persona_info;
             return_to_called.persona_ids = personaIDs;
             return_to_called.dt_account_has_main = dt_account_has_main;
             return_to_called.matching_main_account = matching_main_account;
@@ -624,10 +626,10 @@ _.extend(Utils, {
             html: html
         });
     },
-    insert_persona_id_into_user: function(user_id, persona_id) {
+    insert_persona_id_into_user: function(user_id, persona_info) {
         //Insert the donor tools persona id into the user record
         logger.info("Started insert_persona_id_into_user");
-        Meteor.users.update({_id: user_id}, {$addToSet: {'persona_id': parseInt(persona_id)}});
+        Meteor.users.update(user_id, {$addToSet: {'persona_id': parseInt(persona_info.id)}});
     },
     insert_donation_into_dt: function (customer_id, user_id, persona_ids, charge_id){
         try {
