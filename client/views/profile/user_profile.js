@@ -32,7 +32,6 @@ Template.UserProfile.helpers({
         return {total: total/100, count: count};
     },
     dt_gifts: function () {
-        console.log(this.id);
         var donations = DT_donations.find({persona_id: this.id});
         var fullSplitList = [];
         var number_of_gifts = 0;
@@ -129,7 +128,7 @@ Template.UserProfile.helpers({
     more_than_one_persona: function () {
         return Meteor.users.findOne().persona_info && Meteor.users.findOne().persona_info.length > 1;
     },
-    personas : function () {
+    personas : function (id) {
         if(Meteor.users.findOne() && Meteor.users.findOne().persona_info) {
             return Meteor.users.findOne().persona_info;
         } else {
@@ -149,8 +148,15 @@ Template.UserProfile.helpers({
         } else {
             return '';
         }
+    },
+    this_persona: function () {
+        if(Session.get('activeTab')) {
+            var persona_info = Meteor.users.findOne().persona_info;
+            return _.where(persona_info, {id: Number(Session.get('activeTab'))});
+        } else {
+            return;
+        }
     }
-
 });
 
 Template.UserProfile.events({
@@ -174,10 +180,12 @@ Template.UserProfile.events({
             },
             phone:                  $('#phone').val()
         };
-        var updateThis = {$set: fields};
+        var updateThis = {};
+        updateThis.profile = Meteor.users.findOne().profile;
+        updateThis.profile[Session.get('activeTab')] = fields;
 
         // Update the Meteor.user profile
-        Meteor.users.update(Meteor.user()._id, {$set: {'profile.address': fields.address, 'profile.phone': fields.phone}});
+        Meteor.users.update(Meteor.user()._id, {$set:  updateThis});
         var customer_id = Meteor.users.findOne().primary_customer_id;
         var updateCustomer = Customers.update({_id: customer_id}, updateThis);
         if(updateCustomer === 1) {
@@ -206,10 +214,13 @@ Template.UserProfile.events({
     'click .clickable_row': function(){
         var transaction_id = this.transaction_id;
         Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
+    },
+    'click #myTabs a': function () {
+        Session.set('activeTab', this.id);
     }
 });
 
-Template.UserProfile.rendered = function(){
+Template.UserProfile.rendered = function() {
     Session.setDefault('dt_donations_cursor', 0);
     Session.set("showHistory", true);
 
@@ -222,6 +233,17 @@ Template.UserProfile.rendered = function(){
     $('[data-toggle="popover"]').popover({html: true});
 
     $('#myTabs li:first').addClass('active');
+
+    //$("a[href='" + Session.get('activeTab') + "' ]").addClass('active');
+
     $('.tab-pane:first').addClass('active');
 
+    Session.set('activeTab', $('.active a').attr('value'));
+
+    //TODO: check for persona_info, retrieve if it doesn't exist in the user's record
+    // if(Meteor.users.findOne().persona_info){
+    // } else {
+    //  Meteor.call('get_persona_info', err, success){
+    //}
+    // }
 };

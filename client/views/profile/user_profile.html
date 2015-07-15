@@ -9,7 +9,7 @@
             <ul id="myTabs" class="nav nav-tabs nav-append-content">
                 {{#each personas}}
                     <li class="">
-                        <a href="#{{this.id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a>
+                        <a href="#{{this.id}}" value="{{this.id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -18,111 +18,110 @@
             <div class="tab-content">
                 {{#each personas}}
                     <div class="tab-pane" role="tabpanel" id="{{id}}">
-                    <!--<div class="panel panel-default billing-module">-->
                         <div class="panel-body billing-module">
                             <div id="giving_section" class="col col-lg-6 col-md-6">
                                 <div class="col-sm-12">
-                                        <br>
-                                        <div class="col-xs-12 col-sm-8">
-                                            {{#if more_than_one_persona}}
-                                                <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
-                                                {{{company_name}}}
+                                    <br>
+                                    <div class="col-xs-12 col-sm-8">
+                                        {{#if more_than_one_persona}}
+                                            <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
+                                            {{{company_name}}}
+                                            <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                                {{addresses.[0].street_address}}<br>
+                                                {{addresses.[0].city}}, {{addresses.[0].state}} {{addresses.[0].postal_code}}<br>
+                                                {{addresses.[0].country}}
+                                            </p>
+                                            <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                                {{phone_numbers.[0].phone_number}} <br>
+                                            </p>
+                                            <p><strong>Email:  </strong> <br>
+                                                {{email}} <br>
+                                            </p>
+                                        {{else}}
+                                            {{#with user}}
+                                                <h5 id="profile_section">{{profile.fname}} {{profile.lname}}</h5>
+                                                {{{business_name}}}
                                                 <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                    {{addresses.[0].street_address}}<br>
-                                                    {{addresses.[0].city}}, {{addresses.[0].state}} {{addresses.[0].postal_code}}<br>
-                                                    {{addresses.[0].country}}
+                                                    {{profile.address.address_line1}} <br>
+                                                    {{{address_line2}}}
+                                                    {{profile.address.city}}, {{profile.address.state}} {{profile.address.postal_code}}<br>
+                                                    {{profile.address.country}}
                                                 </p>
                                                 <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                    {{phone_numbers.[0].phone_number}} <br>
+                                                    {{profile.phone}} <br>
                                                 </p>
                                                 <p><strong>Email:  </strong> <br>
                                                     {{email}} <br>
                                                 </p>
-                                            {{else}}
-                                                {{#with user}}
-                                                    <h5 id="profile_section">{{profile.fname}} {{profile.lname}}</h5>
-                                                    {{{business_name}}}
-                                                    <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                        {{profile.address.address_line1}} <br>
-                                                        {{{address_line2}}}
-                                                        {{profile.address.city}}, {{profile.address.state}} {{profile.address.postal_code}}<br>
-                                                        {{profile.address.country}}
-                                                    </p>
-                                                    <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                        {{profile.phone}} <br>
-                                                    </p>
-                                                    <p><strong>Email:  </strong> <br>
-                                                        {{email}} <br>
-                                                    </p>
-                                                {{/with}}
-                                            {{/if}}
+                                            {{/with}}
+                                        {{/if}}
+                                        <p>
+                                            <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_for_address_change">
+                                                Edit Profile
+                                            </button>
+                                        </p>
+                                        <p>
+                                            <a href="/" class="btn btn-primary btn-block" role="button"><span class="fa fa-plus-circle"></span> Give </a>
+                                        </p>
+                                        <div class="col-xs-12 divider text-center">
                                             <p>
-                                                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_for_address_change">
-                                                    Edit Profile
-                                                </button>
+                                            <ul class="nav nav-list">
+                                                <li class="nav-header text-left"><br>Lifetime Giving Stats</li>
+                                                <li class="active text-left">
+                                                    <!--<a href="#">-->
+                                                    <h7>Total Giving</h7>
+                                                    <span class="pull-right"><h7>${{twoDecimalPlaces dt_gifts.total_given}}</h7></span>
+                                                    <!--</a>-->
+                                                </li>
+                                                <li class="text-left">
+                                                    <!--<a href="#">-->
+                                                    <h7>Number of Gifts</h7>
+                                                    <span class="pull-right"><h7>{{dt_gifts.number_of_gifts}}</h7></span>
+                                                    <!--</a>-->
+                                                </li>
+                                                <!--<li class="text-left">
+                                            <a href="#">
+                                                <h7>Categories</h7>
+                                                <span class="pull-right"><h7>{{dt_gifts.categories}}</h7></span>
+                                            </a>
+                                        </li>-->
+                                                <!--<li class="divider"></li>
+                                                <li class="nav-header">Heading</li>
+                                                <li class="disabled">
+                                                    <a href="#">
+                                                        Title
+                                                        <span class="badge pull-right">21</span>
+                                                    </a>
+                                                </li>-->
+                                            </ul>
                                             </p>
-                                            <p>
-                                                <a href="/" class="btn btn-primary btn-block" role="button"><span class="fa fa-plus-circle"></span> Give </a>
-                                            </p>
-                                            <div class="col-xs-12 divider text-center">
-                                                <p>
-                                                <ul class="nav nav-list">
-                                                    <li class="nav-header text-left"><br>Lifetime Giving Stats</li>
-                                                    <li class="active text-left">
-                                                        <!--<a href="#">-->
-                                                        <h7>Total Giving</h7>
-                                                        <span class="pull-right"><h7>${{twoDecimalPlaces dt_gifts.total_given}}</h7></span>
-                                                        <!--</a>-->
-                                                    </li>
-                                                    <li class="text-left">
-                                                        <!--<a href="#">-->
-                                                        <h7>Number of Gifts</h7>
-                                                        <span class="pull-right"><h7>{{dt_gifts.number_of_gifts}}</h7></span>
-                                                        <!--</a>-->
-                                                    </li>
-                                                    <!--<li class="text-left">
-                                                <a href="#">
-                                                    <h7>Categories</h7>
-                                                    <span class="pull-right"><h7>{{dt_gifts.categories}}</h7></span>
-                                                </a>
-                                            </li>-->
-                                                    <!--<li class="divider"></li>
-                                                    <li class="nav-header">Heading</li>
-                                                    <li class="disabled">
-                                                        <a href="#">
-                                                            Title
-                                                            <span class="badge pull-right">21</span>
-                                                        </a>
-                                                    </li>-->
-                                                </ul>
-                                                </p>
-                                                <!--<div class="col-xs-12 col-sm-4 emphasis">
-                                                    &lt;!&ndash; Single button &ndash;&gt;
-                                                    <div class="btn-group dropup btn-block fixGroupButton">
-                                                        <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                            Edit Profile <span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu text-left" role="menu">
-                                                            <li class="disabled"><a href="#"><span class="fa fa-envelope pull-right"></span> Change My Email Address  </a></li>
-                                                            <li class="edit_address"><a href="#"><span class="fa fa-list pull-right"></span> Edit My Address  </a></li>
-                                                            <li class="divider"></li>
-                                                            <li class="disabled"><a href="#">&lt;!&ndash;<span class="fa fa-warning pull-right" ></span>&ndash;&gt;Change Recurring Gift  </a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>-->
-                                            </div>
+                                            <!--<div class="col-xs-12 col-sm-4 emphasis">
+                                                &lt;!&ndash; Single button &ndash;&gt;
+                                                <div class="btn-group dropup btn-block fixGroupButton">
+                                                    <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        Edit Profile <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu text-left" role="menu">
+                                                        <li class="disabled"><a href="#"><span class="fa fa-envelope pull-right"></span> Change My Email Address  </a></li>
+                                                        <li class="edit_address"><a href="#"><span class="fa fa-list pull-right"></span> Edit My Address  </a></li>
+                                                        <li class="divider"></li>
+                                                        <li class="disabled"><a href="#">&lt;!&ndash;<span class="fa fa-warning pull-right" ></span>&ndash;&gt;Change Recurring Gift  </a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>-->
                                         </div>
-                                        <div class="col-xs-12 col-sm-4 text-center">
-                                            <!--<figure data-toggle="popover" data-trigger="hover focus"  data-placement="auto" data-container="body"
-                                                    data-content="This is the area that you have had the most giving.">-->
-                                            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                                &nbsp; &nbsp; &nbsp;<!--Your Giving Focus--></p>
-                                            <!--<strong><em>{{{giving_focus}}}</em></strong>-->
-                                            <!--</figure>-->
-                                        </div>
-                                        <br>&nbsp;
-                                        <br>&nbsp;
                                     </div>
+                                    <div class="col-xs-12 col-sm-4 text-center">
+                                        <!--<figure data-toggle="popover" data-trigger="hover focus"  data-placement="auto" data-container="body"
+                                                data-content="This is the area that you have had the most giving.">-->
+                                        <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp;<!--Your Giving Focus--></p>
+                                        <!--<strong><em>{{{giving_focus}}}</em></strong>-->
+                                        <!--</figure>-->
+                                    </div>
+                                    <br>&nbsp;
+                                    <br>&nbsp;
+                                </div>
                             </div>
                             {{#if showHistory}}
                                 <div id="" class="col-md-6 col-lg-6">
@@ -157,7 +156,6 @@
                                     </nav>
                                 </div>
                             {{/if}}
-                        <!--</div>-->
                     </div>
                 </div>
                 {{/each}}
@@ -173,37 +171,37 @@
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" role="form" id="userAddressForm">
-                        {{#with user}}
+                        {{#with this_persona}}
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="email">Address Line 1:</label>
+                                <label class="control-label col-sm-3" for="line1">Address Line 1:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{profile.address.address_line1}}" required data-parsley-error-message="Please enter an address">
+                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{[0].addresses.[0].street_address}}" required data-parsley-error-message="Please enter an address">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="email">Address Line 2:</label>
+                                <label class="control-label col-sm-3" for="line2">Address Line 2:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{profile.address.address_line2}}" >
+                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{addresses.address.address_line2}}" >
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-1" for="email">City</label>
+                                <label class="control-label col-sm-1" for="city">City</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control" id="city" placeholder="City" value="{{profile.address.city}}" required data-parsley-error-message="Please enter a city">
+                                    <input type="text" class="form-control" id="city" placeholder="City" value="{{[0].addresses.[0].city}}" required data-parsley-error-message="Please enter a city">
                                 </div>
-                                <label class="control-label col-sm-1" for="email">State</label>
+                                <label class="control-label col-sm-1" for="state">State</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control" id="state" placeholder="State" value="{{profile.address.state}}" required data-parsley-error-message="Please enter a state">
+                                    <input type="text" class="form-control" id="state" placeholder="State" value="{{[0].addresses.[0].state}}" required data-parsley-error-message="Please enter a state">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-1" for="pwd">Zip</label>
+                                <label class="control-label col-sm-1" for="zip">Zip</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control" id="zip" placeholder="Postal Code" value="{{profile.address.postal_code}}" required data-parsley-error-message="Please enter a postal code">
+                                    <input type="text" class="form-control" id="zip" placeholder="Postal Code" value="{{[0].addresses.[0].postal_code}}" required data-parsley-error-message="Please enter a postal code">
                                 </div>
-                                <label class="control-label col-sm-1" for="email">Phone</label>
+                                <label class="control-label col-sm-1" for="phone">Phone</label>
                                 <div class="col-sm-5">
-                                    <input type="tel" class="form-control" id="phone" placeholder="Phone" value="{{profile.phone}}" required data-parsley-error-message="Please enter a phone number" >
+                                    <input type="tel" class="form-control" id="phone" placeholder="Phone" value="{{[0].phone_numbers.[0].phone_number}}" required data-parsley-error-message="Please enter a phone number" >
                                 </div>
                             </div>
                             <div class="form-group">
