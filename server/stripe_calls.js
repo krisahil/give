@@ -409,7 +409,7 @@ _.extend(Utils, {
     store_stripe_event: function (event_body) {
         logger.info("Started store_stripe_event");
         
-        console.dir(event_body);
+        console.log(event_body.data.object.id);
         event_body.data.object._id = event_body.data.object.id;
 
         switch(event_body.data.object.object){
@@ -703,7 +703,7 @@ _.extend(Utils, {
 
         // Because the pending status is the only one that couldn't have been the second event thrown we need to check
         // if there is already a stored charge and if so then I don't want to override it with a pending status
-        var check_status = Charges.find({_id: charge_id});
+        var check_status = Charges.findOne({_id: charge_id});
 
         if(check_status){
             return true;
