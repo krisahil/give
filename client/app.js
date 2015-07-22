@@ -400,8 +400,8 @@ _.extend(App, {
             $('#fname').val("John");
             $('#lname').val("Doe");
             $('#org').val("");
-            $('#email_address').val("support@trashmountain.com");
-            $('#email_address_verify').val('support@trashmountain.com');
+            $('#email_address').val("josh@trashmountain.org");
+            $('#email_address_verify').val('josh@trashmountain.org');
             $('#phone').val("(785) 246-6845");
             $('#address_line1').val("Address Line 1");
             $('#address_line2').val("Address Line 2");

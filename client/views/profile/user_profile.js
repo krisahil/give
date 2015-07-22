@@ -125,30 +125,16 @@ Template.UserProfile.helpers({
             return;
         }
     },
-    more_than_one_persona: function () {
-        return Meteor.users.findOne().persona_info && Meteor.users.findOne().persona_info.length > 1;
-    },
-    personas : function (id) {
-        if(Meteor.users.findOne() && Meteor.users.findOne().persona_info) {
+    personas : function () {
+        if(Meteor.users.findOne().persona_info){
             return Meteor.users.findOne().persona_info;
         } else {
-            return Meteor.users.findOne().persona_id
+            return;
         }
     },
     company_or_name: function () {
         var user = Meteor.users.findOne();
         return this.company_name ? this.company_name : this.names ? this.names[0].first_name + ' ' + this.names[0].last_name : user.profile.fname + ' ' + user.profile.lname;
-    },
-    active: function () {
-        var persona_array = Meteor.users.findOne().persona_id;
-        Array.max = function( persona_array ){
-            return Math.max.apply( Math, persona_array );
-        };
-        if(Array.max(persona_array) === this.id){
-            return 'active';
-        } else {
-            return '';
-        }
     },
     this_persona: function () {
         if(Session.get('activeTab')) {
@@ -222,6 +208,18 @@ Template.UserProfile.events({
 });
 
 Template.UserProfile.rendered = function() {
+
+    if(Meteor.users.findOne() && !Meteor.users.findOne().persona_info) {
+        Meteor.call('update_persona_info', function(error, result){
+            if(result){
+                console.log(result);
+            } else{
+                console.log(error);
+            }
+        });
+    }
+
+
     Session.setDefault('dt_donations_cursor', 0);
     Session.set("showHistory", true);
 

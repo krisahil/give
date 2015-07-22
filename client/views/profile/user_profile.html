@@ -23,38 +23,22 @@
                                 <div class="col-sm-12">
                                     <br>
                                     <div class="col-xs-12 col-sm-8">
-                                        {{#if more_than_one_persona}}
-                                            <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
-                                            {{{company_name}}}
-                                            <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                {{addresses.[0].street_address}}<br>
-                                                {{addresses.[0].city}}, {{addresses.[0].state}} {{addresses.[0].postal_code}}<br>
-                                                {{addresses.[0].country}}
-                                            </p>
-                                            <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                {{phone_numbers.[0].phone_number}} <br>
-                                            </p>
-                                            <p><strong>Email:  </strong> <br>
-                                                {{email}} <br>
-                                            </p>
-                                        {{else}}
-                                            {{#with user}}
-                                                <h5 id="profile_section">{{profile.fname}} {{profile.lname}}</h5>
-                                                {{{business_name}}}
-                                                <p><strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                    {{profile.address.address_line1}} <br>
-                                                    {{{address_line2}}}
-                                                    {{profile.address.city}}, {{profile.address.state}} {{profile.address.postal_code}}<br>
-                                                    {{profile.address.country}}
-                                                </p>
-                                                <p><strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                                    {{profile.phone}} <br>
-                                                </p>
-                                                <p><strong>Email:  </strong> <br>
-                                                    {{email}} <br>
-                                                </p>
-                                            {{/with}}
-                                        {{/if}}
+                                        {{{company_name}}}
+                                        <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
+                                        <p>
+                                            <strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                            {{addresses.[0].street_address}}<br>
+                                            {{addresses.[0].city}}, {{addresses.[0].state}} {{addresses.[0].postal_code}}<br>
+                                            {{addresses.[0].country}}
+                                        </p>
+                                        <p>
+                                            <strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                            {{phone_numbers.[0].phone_number}} <br>
+                                        </p>
+                                        <p>
+                                            <strong>Email:  </strong> <br>
+                                            {{email}} <br>
+                                        </p>
                                         <p>
                                             <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_for_address_change">
                                                 Edit Profile
@@ -137,7 +121,7 @@
                                                 <tr class="responsiveFont {{redText}} {{clickable_row}}" data-href="{{receipt_link}}" data-dt-transaction-id="{{transaction_id}}">
                                                     <td class="change-td-padding">{{formatDate this.received_on}}</td>
                                                     <td class="change-td-padding">{{#each split}} {{{fundName}}} <br>{{/each}}</td>
-                                                    <td class="text-right">${{#each split}}{{twoDecimalPlaces this.amount_in_cents }} <br>{{/each}}</td>
+                                                    <td class="text-right">${{#each split}}{{twoDecimalPlaces this.amount_in_cents}} <br>{{/each}}</td>
                                                 </tr>
                                             {{/each}}
                                         </tbody>

@@ -36,7 +36,7 @@ Meteor.methods({
             });
             return getSubscription;
         } else{
-            throw new Meteor.Error(500, "Something went wronge here");
+            throw new Meteor.Error(500, "Something went wrong here");
         }
 
     },
@@ -207,5 +207,16 @@ Meteor.methods({
                 throw new Meteor.Error(500, e.reason, e.details);
             }
         }
+    },
+    update_persona_info: function () {
+        logger.info("Started update_persona_info");
+
+        var persona_ids;
+        persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
+        console.log(persona_ids);
+        var email_address = Meteor.users.findOne({_id: this.userId}).emails.address;
+        var persona_info = Utils.check_for_dt_user(email_address, persona_ids, true);
+        Meteor.users.update({_id: this.userId}, {$set: {'persona_info': persona_info.persona_info}});
+        Meteor.users.update({_id: this.userId}, {$set: {'persona_ids': persona_info.persona_ids}});
     }
 });
