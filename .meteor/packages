@@ -21,13 +21,11 @@ audit-argument-checks
 meteor-platform
 sacha:spin
 momentjs:moment
-msavin:mongol
 mrgalaxy:stripe
 meteorhacks:sikka
 themeteorchef:jquery-validation
 themeteorchef:bert
 alanning:roles
 ongoworks:security
-msavin:jetsetter
 wylio:winston-papertrail
 twbs:bootstrap

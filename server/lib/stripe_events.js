@@ -26,11 +26,12 @@ Stripe_Events = {
             Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'pending');
             console.log(stripeEvent.type + ': event processed');
             return;
+        } else {
+            Utils.charge_events(stripeEvent);
+            Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'pending');
+            console.log(stripeEvent.type + ': event processed');
+            return;
         }
-        Utils.charge_events(stripeEvent);
-        Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'pending');
-        console.log(stripeEvent.type + ': event processed');
-        return;
     },
     'charge.succeeded': function (stripeEvent, res) {
         Utils.charge_events(stripeEvent);

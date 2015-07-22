@@ -136,7 +136,8 @@ Template.UserProfile.helpers({
         }
     },
     company_or_name: function () {
-        return this.company_name ? this.company_name : Meteor.users.findOne().profile.fname + ' ' + Meteor.users.findOne().profile.lname;
+        var user = Meteor.users.findOne();
+        return this.company_name ? this.company_name : this.names ? this.names[0].first_name + ' ' + this.names[0].last_name : user.profile.fname + ' ' + user.profile.lname;
     },
     active: function () {
         var persona_array = Meteor.users.findOne().persona_id;
