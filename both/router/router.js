@@ -11,6 +11,14 @@ Router.plugin('ensureSignedIn', {
     except: ['donation.form', 'donation.landing', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
 });
 
+Router.onBeforeAction(function() {
+    if (!Roles.userIsInRole(Meteor.user(), 'admin')) {
+        this.render("NotFound");
+    } else {
+        this.next();
+    }
+}, {only : 'admin.dashboard'});
+
 Router.route('', function () {
 
     var params = this.params;

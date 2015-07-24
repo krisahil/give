@@ -30,9 +30,6 @@ Template.AdminGive.rendered = function () {
 
     $('#donateWith').change();
 
-    /*Bert.defaults.autoHide = false;
-     Bert.alert('We see you already have an account and you are logged in, here is the quick give form.', 'success', 'fixed-top');*/
-
 };
 
 Template.AdminGive.helpers({

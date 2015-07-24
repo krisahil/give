@@ -23,5 +23,12 @@ Template.Dashboard.events({
             show: true,
             backdrop: 'static'
         });
+    },
+    'click #move-gift': function(evt){
+        evt.preventDefault();
+        $('#modal_for_admin_move_gift').modal({
+            show: true,
+            backdrop: 'static'
+        });
     }
 });

@@ -18,7 +18,7 @@
                                         {{else}}
                                             {{#if customer}}
                                                 <p class="alert alert-info">Account used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
-                                                    <br><span class="{{expired_class}}"> <strong>Expires: </strong>{{#if customer_device.exp_year}}{{customer_device.exp_month}}/{{customer_device.exp_year}}{{/if}}</span></p>
+                                                    <br><span class="{{expired_class}}">Expires: <strong>{{#if customer_device.exp_year}}{{customer_device.exp_month}}/{{customer_device.exp_year}}{{/if}}</strong></span></p>
                                                 <p><a class="add-new-card btn btn-default btn-block" href="#">Switch to add new card form</a></p>
                                             {{/if}}
                                         {{/if}}
@@ -83,7 +83,7 @@
                         </div>
                     </div> <!-- end .panel-body -->
                     <div class="panel-footer">
-                        <button type="submit" class="btn btn-success resubscribe" data-loading-text="Resubscribing...">Update</button>
+                        <button type="submit" class="btn btn-success resubscribe" data-loading-text="Processing...">Update</button>
                         <a href="{{pathFor 'subscriptions'}}" class="btn btn-default">Cancel</a>
                     </div>
                 </form> <!-- end #resubscribe -->

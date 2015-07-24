@@ -1,6 +1,7 @@
 <template name="Dashboard">
-	{{> AdminGive}}
-	<div class="row">
+    {{> AdminGive}}
+    {{> AdminMoveGift}}
+    <div class="row">
 		<div class="col col-lg-2"></div>
 			<div class="col-lg-8">
 				<div class="panel panel-default">
@@ -22,6 +23,14 @@
 									<i class="fa fa-cc-visa"></i>
 								</span>
 								<h5>Expiring Cards</h5>
+							</a>
+						</div>
+                        <div class="col-sm-2">
+							<a id="move-gift" class="quick-button" href="">
+								<span class="fa-stack fa-lg">
+									<i class="fa fa-arrows"></i>
+								</span>
+								<h5>Move Gift</h5>
 							</a>
 						</div>
                         {{> DonorToolsFunds}}

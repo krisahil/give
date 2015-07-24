@@ -419,19 +419,22 @@ _.extend(Utils, {
                     delete event_body.data.object.metadata['balanced.customer_id'];
                 }
 
-                Customers.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                Customers.upsert({_id: event_body.data.object.id}, event_body.data.object);
                 break;
             case "invoice":
-                Invoices.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                Invoices.upsert({_id: event_body.data.object.id}, event_body.data.object);
                 break;
             case "charge":
-                Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
                 break;
             case "payment":
-                Charges.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
                 break;
             case "card":
-                Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
+                Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
+                var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
+                console.log("Got Here");
+                console.log(result_of_update);
                 break;
             case "bank_account":
                 Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);

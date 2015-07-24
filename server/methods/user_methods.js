@@ -48,7 +48,6 @@ Meteor.methods({
         });
         console.log(updated_data.status);
 
-        if(updated_data.status === 'canceled') {
             var subscription_amount = Subscriptions.findOne({_id: updated_data.subscription_id}).quantity;
             var subscription_metadata = Subscriptions.findOne({_id: updated_data.subscription_id}).metadata;
             var subscription_plan = Subscriptions.findOne({_id: updated_data.subscription_id}).plan.name;
@@ -68,13 +67,16 @@ Meteor.methods({
                 }
             } else {
                 var updated_card = Utils.update_stripe_customer_card(updated_data);
+                // Store the updated information with both the device and the customer records that use that device.
+                Devices.update({_id: updated_card.id}, updated_card);
+                var result_of_update = Customers.update({_id: updated_card.customer, 'sources.data.id': updated_card.id}, {$set: {'sources.data.$': updated_card}});
+
                 if (!updated_card.object) {
                     return {error: updated_card.rawType, message: updated_card.message};
                 } else {
                     return 'success';
                 }
             }
-        }
     },
     stripeRestartBankSubscription: function (restart_data) {
         logger.info("Started method stripeUpdateCard.");
