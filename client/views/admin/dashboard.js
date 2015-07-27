@@ -1,4 +1,7 @@
 Template.Dashboard.helpers({
+    showGetStripeEvent: function(){
+        return Session.get("showGetStripeEvent");
+    }
 });
 
 Template.Dashboard.events({
@@ -30,5 +33,9 @@ Template.Dashboard.events({
             show: true,
             backdrop: 'static'
         });
+    },
+    'click #show-get-stripe-event': function(evt){
+        evt.preventDefault();
+        Session.set("showGetStripeEvent", true);
     }
 });

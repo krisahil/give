@@ -251,5 +251,43 @@ Meteor.methods({
             logger.info("You aren't an admin, you can't do that");
             return;
         }
+    },
+    GetStripeEvent: function (id) {
+        logger.info("Started GetStripeEvent");
+        if (Roles.userIsInRole(this.userId, ['admin'])) {
+            try {
+                //Check the form to make sure nothing malicious is being submitted to the server
+                check(id, String);
+                var stripe_event = new Future();
+
+                Stripe.events.retrieve(id,
+                    function (error, events) {
+                        if (error) {
+                            stripe_event.return(error);
+                        } else {
+                            stripe_event.return(events);
+                        }
+                    }
+                );
+
+                stripe_event = stripe_event.wait();
+
+                if (!stripe_event.object) {
+                    throw new Meteor.Error(stripe_event.rawType, stripe_event.message);
+                }
+
+                var event = Stripe_Events[stripe_event.type](stripe_event);
+                return stripe_event;
+
+            } catch (e) {
+                logger.info(e);
+                //e._id = AllErrors.insert(e.response);
+                var error = (e.response);
+                throw new Meteor.Error(error, e._id);
+            }
+        } else {
+            logger.info("You aren't an admin, you can't do that");
+            return;
+        }
     }
 });
