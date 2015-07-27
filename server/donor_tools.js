@@ -43,7 +43,6 @@ _.extend(Utils, {
                 data: {"persona": persona},
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
             });
-        console.log("***********LOOK HERE************");
         console.dir(update_persona.data.persona);
         //DT_donations.update(dt_donation, {$set: {'payment_status': debit_cursor.status}});
 

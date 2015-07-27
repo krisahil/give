@@ -171,14 +171,12 @@ _.extend(Utils, {
                     //console.dir(error);
                     stripeCustomer.return(error);
                 } else {
-                    console.log("LOOK HERE ************_____________");
-                    console.dir(customer);
                     stripeCustomer.return(customer);
                 }
             });
         } else if (paymentDevice.slice(0, 2) === 'bt') {
             /**/
-            console.log("Bank_account");
+            logger.info("Bank_account");
             type = "bank_account";
             Stripe.customers.create({
                 bank_account: paymentDevice,
@@ -250,7 +248,7 @@ _.extend(Utils, {
     },
     charge_plan: function (total, donation_id, customer_id, payment_id, frequency, start_date, metadata) {
         logger.info("Inside charge_plan.");
-        console.log("Start date: " + start_date);
+        logger.info("Start date: " + start_date);
 
         var plan, subscription_frequency;
         subscription_frequency = frequency;
@@ -293,7 +291,7 @@ _.extend(Utils, {
             throw new Meteor.Error(stripeChargePlan.rawType, stripeChargePlan.message);
         }
         stripeChargePlan._id = stripeChargePlan.id;
-        console.log("Stripe charge Plan information");
+        logger.info("Stripe charge Plan information");
         console.dir(stripeChargePlan);
         // Add charge response from Stripe to the collection
         Subscriptions.insert(stripeChargePlan);
@@ -409,7 +407,7 @@ _.extend(Utils, {
     store_stripe_event: function (event_body) {
         logger.info("Started store_stripe_event");
         
-        console.log(event_body.data.object.id);
+        logger.info(event_body.data.object.id);
         event_body.data.object._id = event_body.data.object.id;
 
         switch(event_body.data.object.object){
@@ -433,8 +431,6 @@ _.extend(Utils, {
             case "card":
                 Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
                 var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
-                console.log("Got Here");
-                console.log(result_of_update);
                 break;
             case "bank_account":
                 Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
@@ -575,7 +571,7 @@ _.extend(Utils, {
     },
     update_stripe_customer: function(form, customer_id){
         logger.info("Inside update_stripe_customer.");
-        console.log(form.address.city);
+        logger.info(form.address.city);
 
         var stripeCustomerUpdate = new Future();
 
@@ -792,7 +788,7 @@ _.extend(Utils, {
         // setup the future for the async Stripe call
         var stripeCharges = new Future();
 
-        console.log("Charge id: " + event_body.data.object.id);
+        logger.info("Charge id: " + event_body.data.object.id);
         // Use the metadata from the subscription to udpate the charge with Stripe
         if(subscription_cursor.metadata){
             Stripe.charges.update(event_body.data.object.id,{
@@ -824,7 +820,7 @@ _.extend(Utils, {
     },
     cancel_stripe_subscription: function(customer_id, subscription_id, reason){
         logger.info("Inside cancel_stripe_subscription");
-        console.log(customer_id + " " + " " + subscription_id + " " + reason);
+        logger.info(customer_id + " " + " " + subscription_id + " " + reason);
 
         // setup the future for the async Stripe call
         var stripe_update= new Future();
@@ -878,7 +874,7 @@ _.extend(Utils, {
     },
     stripe_create_subscription: function (customer_id, source_id, plan, quantity, metadata) {
         logger.info("Inside stripe_create_subscription.");
-        console.log(customer_id);
+        logger.info(customer_id);
 
         // don't want to copy the canceled reason to the new subscription
         delete metadata.reason;
@@ -903,7 +899,7 @@ _.extend(Utils, {
             throw new Meteor.Error(stripeCreateSubscription.rawType, stripeCreateSubscription.message);
         }
         stripeCreateSubscription._id = stripeCreateSubscription.id;
-        console.log("Stripe charge plan information");
+        logger.info("Stripe charge plan information");
         console.dir(stripeCreateSubscription);
         // Add charge response from Stripe to the collection
         Subscriptions.insert(stripeCreateSubscription);
@@ -914,7 +910,7 @@ _.extend(Utils, {
     },
     stripe_get_many_events: function(starting_after, limit) {
         logger.info("Inside stripe_get_many_events.");
-        console.log("Stripe customer id to start after(if any): " + starting_after);
+        logger.info("Stripe customer id to start after(if any): " + starting_after);
         var stripe_events= new Future();
         var stripe_params = {};
         if(starting_after) {

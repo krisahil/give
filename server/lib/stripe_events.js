@@ -99,7 +99,6 @@ Stripe_Events = {
         // check to see if the customer that was deleted was also set as the primary customer for this user
         // if so, put the next customer record in its place, copying the data from the first into the second.
         if(other_customers && user_with_customer_email.primary_customer_id === stripeEvent.data.object.id){
-            console.log("LOOK HERE, found another customer");
             Meteor.users.update({'emails.address': stripeEvent.data.object.email}, {$set: {primary_customer_id: other_customers._id}});
         }
 

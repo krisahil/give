@@ -544,8 +544,6 @@ _.extend(Utils, {
             });
 
             if(newDonationResult && newDonationResult.data && newDonationResult.data.donation && newDonationResult.data.donation.persona_id){
-                logger.info("Look here first");
-                console.dir(newDonationResult.data);
                 return newDonationResult.data.donation.persona_id;
             } else {
                 logger.error("The persona ID wasn't returned from DT, or something else happened with the connection to DT.");
@@ -683,12 +681,8 @@ _.extend(Utils, {
             }else{
                 source_id = 42754;
             }
-            //logger.info("FIRST PERSONA ID ** " + persona_info && persona_info[0]);
-            logger.info("Look here ");
-            logger.info(persona_info[0]);
-            logger.info("and here** ");
-            logger.info(persona_info);
             var persona_id;
+
             if(customer.metadata && customer.metadata.business_name && persona_info.length > 1) {
                 //We want to use a specific id if we have a business and there are more than one dt account involved
                 persona_id = Utils.get_business_persona(persona_info, true);
