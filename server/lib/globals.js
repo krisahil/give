@@ -53,6 +53,7 @@ Utils = {
             total_amount: Match.Integer,
             donateTo: String,
             donateWith: Match.Optional(String),
+            dt_source: Match.Optional(String),
             is_recurring: Match.OneOf("one_time", "monthly", "weekly", "daily"),
             coverTheFees: Boolean,
             created_at: String,

@@ -26,14 +26,15 @@ Router.route('', function () {
         Router.go('user.give');
     }
 
-    Session.set('params.donateTo', params.query.donateTo);
     Session.set('params.amount', params.query.amount);
+    Session.set('params.donateTo', params.query.donateTo);
     Session.set('params.donateWith', params.query.donateWith);
-    Session.set('params.recurring', params.query.recurring);
+    Session.set('params.dt_source', params.query.dt_source);
+    Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
     Session.set('params.exp_month', params.query.exp_month);
     Session.set('params.exp_year', params.query.exp_year);
+    Session.set('params.recurring', params.query.recurring);
     Session.set('params.writeIn', params.query.writeIn);
-    Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
     if(params.query.donateTo === 'Aquaponics Marketplace - Rhiza' || params.query.donateTo === 'Aquaponics Marketplace - Karpos'){
         Session.set('params.marketplace', params.query.donateTo);
     } else {

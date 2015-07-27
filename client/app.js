@@ -88,6 +88,7 @@ _.extend(App, {
                         "is_recurring": $('#is_recurring').val(),
                         "coverTheFees": $('#coverTheFees').is(":checked"),
                         "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+                        "dt_source": $('#dt_source').val(),
                         "start_date": moment(new Date($('#start_date').val())).format('X'),
                         "saved": $('#save_payment').is(":checked")
                     },
@@ -120,6 +121,7 @@ _.extend(App, {
                     "is_recurring": $('#is_recurring').val(),
                     "coverTheFees": $('#coverTheFees').is(":checked"),
                     "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+                    "dt_source": $('#dt_source').val(),
                     "start_date": moment(new Date($('#start_date').val())).format('X'),
                     "saved": $('#save_payment').is(":checked")
                 },

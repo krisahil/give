@@ -83,21 +83,22 @@ Meteor.methods({
             };
 
             metadata = {
-                created_at:             data.paymentInformation.created_at,
-                sessionId:              data.sessionId,
-                URL:                    data.URL,
+                'amount':               data.paymentInformation.amount,
+                'coveredTheFees':       data.paymentInformation.coverTheFees,
+                'created_at':             data.paymentInformation.created_at,
+                'customer_id':          customerData.id,
                 'donateTo':             donateTo,
                 'donateWith':           data.paymentInformation.donateWith,
-                'type':                 data.paymentInformation.type,
-                'total_amount':         data.paymentInformation.total_amount,
-                'amount':               data.paymentInformation.amount,
-                'fees':                 data.paymentInformation.fees,
-                'coveredTheFees':       data.paymentInformation.coverTheFees,
-                'customer_id':          customerData.id,
-                'status':               'pending',
-                'frequency':            data.paymentInformation.is_recurring,
                 'dt_donation_id':       null,
-                'send_scheduled_email': data.paymentInformation.send_scheduled_email
+                'dt_source':            data.paymentInformation.dt_source,
+                'fees':                 data.paymentInformation.fees,
+                'frequency':            data.paymentInformation.is_recurring,
+                'sessionId':            data.sessionId,
+                'status':               'pending',
+                'send_scheduled_email': data.paymentInformation.send_scheduled_email,
+                'total_amount':         data.paymentInformation.total_amount,
+                'type':                 data.paymentInformation.type,
+                'URL':                  data.URL
             };
 
 
@@ -105,12 +106,13 @@ Meteor.methods({
             logger.info("Donation ID: " + data._id);
 
             for (var attrname in customerInfo) { metadata[attrname] = customerInfo[attrname]; }
-            delete metadata.URL;
             delete metadata.created_at;
+            delete metadata.dt_source;
             delete metadata.sessionId;
             delete metadata.status;
-            delete metadata.type;
             delete metadata.total_amount;
+            delete metadata.type;
+            delete metadata.URL;
 
             if (data.paymentInformation.is_recurring === "one_time") {
 

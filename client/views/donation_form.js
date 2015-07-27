@@ -215,6 +215,9 @@ Template.DonationForm.helpers({
     writeInValue: function () {
         return Session.get('params.enteredWriteInValue');
     },
+    dt_source: function () {
+        return Session.get('params.dt_source');
+    },
     today: function () {
         return moment().format('D MMM, YYYY');
     },
