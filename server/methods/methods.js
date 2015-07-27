@@ -85,12 +85,12 @@ Meteor.methods({
             metadata = {
                 'amount':               data.paymentInformation.amount,
                 'coveredTheFees':       data.paymentInformation.coverTheFees,
-                'created_at':             data.paymentInformation.created_at,
+                'created_at':           data.paymentInformation.created_at,
                 'customer_id':          customerData.id,
                 'donateTo':             donateTo,
                 'donateWith':           data.paymentInformation.donateWith,
                 'dt_donation_id':       null,
-                'dt_source':            data.paymentInformation.dt_source,
+                'dt_source':            data.paymentInformation.dt_source[0],
                 'fees':                 data.paymentInformation.fees,
                 'frequency':            data.paymentInformation.is_recurring,
                 'sessionId':            data.sessionId,
@@ -107,7 +107,6 @@ Meteor.methods({
 
             for (var attrname in customerInfo) { metadata[attrname] = customerInfo[attrname]; }
             delete metadata.created_at;
-            delete metadata.dt_source;
             delete metadata.sessionId;
             delete metadata.status;
             delete metadata.total_amount;
@@ -209,8 +208,6 @@ Meteor.methods({
             delete get_donation.data.donation.id;
             delete get_donation.data.donation.splits[0].donation_id;
             delete get_donation.data.donation.splits[0].id;
-            //TODO: if moving from individual to company we need to change the source_id
-            //Meteor.settings.donor_tools_org_source_id
 
             // Insert the donation into the move_to_id persona
             var movedDonation;

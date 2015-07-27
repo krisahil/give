@@ -461,8 +461,10 @@ _.extend(Utils, {
             if (customer && customer.metadata.business_name){
                 business_name = customer.metadata.business_name;
                 source_id = 42776;
-            }else{
-                business_name = '';
+            }
+            if(charge.metadata && charge.metadata.dt_source){
+                source_id = charge.metadata.dt_source;
+            } else {
                 source_id = 42754;
             }
 
