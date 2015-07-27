@@ -146,12 +146,6 @@ Template.DonationLanding.rendered = function () {
             selected: false,
             description: "Intern",
             imageSrc: "/images/team/Ethan.jpg"
-    },{
-        text: "Isaac Tarwater",
-        value: "IsaacTarwater",
-        selected: false,
-        description: "Aquaponics",
-        imageSrc: "/images/team/Isaac.jpg"
     }, {
         text: "James Hishmeh",
         value: "JamesHishmeh",
@@ -164,12 +158,6 @@ Template.DonationLanding.rendered = function () {
         selected: false,
         description: "Missions Director for Asia",
         imageSrc: "/images/team/John.jpg"
-    }, {
-        text: "Jon DeMeo",
-        value: "JonDeMeo",
-        selected: false,
-        description: "Director of Operations",
-        imageSrc: "/images/team/Jon.jpg"
     }, {
         text: "Joshua Bechard",
         value: "JoshuaBechard",
