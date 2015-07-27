@@ -25,7 +25,7 @@ Here is an example settings.json file
 
 ```
 {
-  "dev": "****TEST****",
+  "dev": "****TEST****", //Remove this text. If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
   "mandrillUsername": "Get a free Mandrill account http://mandrill.com/",
   "mandrillKey": "http://mandrill.com/",
   "kadiraAppId": "Get a free account here https://kadira.io/",
@@ -44,7 +44,7 @@ Here is an example settings.json file
       "daily": "Stripe plan name associated with daily gifts
     }
   },
-  "sikka": {
+  "sikka": { //Remove this text, sikka is a firewall for Meteor (prevents DOS) https://atmospherejs.com/meteorhacks/sikka
     "rateLimits": {
       "perIp": "100"
     }
