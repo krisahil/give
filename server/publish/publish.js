@@ -40,10 +40,12 @@ Meteor.publish('receipt_charges', function (input) {
                 created: 1,
                 status: 1,
                 amount: 1,
-                'source.bank_name': 1,
                 'source.brand': 1,
                 'source.last4': 1,
-                'source.object': 1
+                'source.object': 1,
+                'payment_source.bank_name': 1,
+                'payment_source.last4': 1,
+                'payment_source.object': 1
             }
         }
     );
