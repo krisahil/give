@@ -16,12 +16,12 @@ Meteor.methods({
                 Utils.separate_funds(fundResults.data);
                 return fundResults.data;
             } else{
-                console.log("You aren't an admin, you can't do that");
+                logger.info("You aren't an admin, you can't do that");
                 return '';
             }
 
         } catch (e) {
-            console.log(e);
+            logger.info(e);
             //e._id = AllErrors.insert(e.response);
             var error = (e.response);
             throw new Meteor.Error(error, e._id);
@@ -46,7 +46,7 @@ Meteor.methods({
             if(data.paymentInformation.coverTheFees === false){
                 data.paymentInformation.fees = '';
             }
-            console.log(data.paymentInformation.start_date);
+            logger.info(data.paymentInformation.start_date);
             var customerData = {};
             var customerInfo, metadata;
 
@@ -124,7 +124,7 @@ Meteor.methods({
                 return {c: customerData.id, don: data._id, charge: charge.id};
             } else {
                 // Print how often it it recurs?
-                console.log(data.paymentInformation.is_recurring);
+                logger.info(data.paymentInformation.is_recurring);
 
                 //Start a subscription (which also connects this card, or bank_account to the customer
                 var charge_object = Utils.charge_plan(data.paymentInformation.total_amount,
@@ -177,7 +177,7 @@ Meteor.methods({
 
         var persona_ids;
         persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
-        console.log(persona_ids);
+        logger.info(persona_ids);
         var email_address = Meteor.users.findOne({_id: this.userId}).emails.address;
         var persona_info = Utils.check_for_dt_user(email_address, persona_ids, true);
         Meteor.users.update({_id: this.userId}, {$set: {'persona_info': persona_info.persona_info}});
@@ -219,8 +219,6 @@ Meteor.methods({
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
             });
 
-            console.dir(movedDonation.data.donation);
-
             // Check that the response from the DT server is what of the expected format
             if(movedDonation && movedDonation.data && movedDonation.data.donation && movedDonation.data.donation.persona_id){
                 // Send the id of this new DT donation to the function which will update the charge to add that meta text.
@@ -238,7 +236,6 @@ Meteor.methods({
                     }
                 });
 
-                console.dir(deleteDonation);
                 DT_donations.remove(Number(donation_id));
                 var persona_ids = [moved_from_id, move_to_id];
 
@@ -251,7 +248,7 @@ Meteor.methods({
                 throw new Meteor.Error("Couldn't get the persona_id for some reason");
             }
         } else {
-            console.log("You aren't an admin, you can't do that");
+            logger.info("You aren't an admin, you can't do that");
             return;
         }
     }

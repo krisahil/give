@@ -154,7 +154,7 @@ _.extend(Utils, {
             }
             return user_id;
         } catch(e) {
-            console.log(e);
+            logger.info(e);
             //e._id = AllErrors.insert(e.response);
             var error = (e.response);
             throw new Meteor.Error(error, e._id);
@@ -181,7 +181,7 @@ _.extend(Utils, {
             return persona_info;
 
         /*} catch (e) {
-             console.log(e);
+             logger.info(e);
              //e._id = AllErrors.insert(e.response);
              var error = (e.response);
              throw new Meteor.Error(error, e._id);
@@ -554,7 +554,7 @@ _.extend(Utils, {
 
         }
          catch (e) {
-             console.log(e);
+             logger.info(e);
              //e._id = AllErrors.insert(e.response);
              var error = (e.response);
              throw new Meteor.Error(error, e._id);
@@ -608,7 +608,7 @@ _.extend(Utils, {
             });
 
         } catch (e) {
-            console.log(e);
+            logger.info(e);
             //e._id = AllErrors.insert(e.response);
             var error = (e.response);
             throw new Meteor.Error(error, e._id);
@@ -685,9 +685,9 @@ _.extend(Utils, {
             }
             //logger.info("FIRST PERSONA ID ** " + persona_info && persona_info[0]);
             logger.info("Look here ");
-            console.log(persona_info[0]);
+            logger.info(persona_info[0]);
             logger.info("and here** ");
-            console.log(persona_info);
+            logger.info(persona_info);
             var persona_id;
             if(customer.metadata && customer.metadata.business_name && persona_info.length > 1) {
                 //We want to use a specific id if we have a business and there are more than one dt account involved
@@ -730,7 +730,7 @@ _.extend(Utils, {
 
         }
         catch (e) {
-            console.log(e);
+            logger.info(e);
             //e._id = AllErrors.insert(e.response);
             var error = (e.response);
             throw new Meteor.Error(error, e._id);
@@ -832,9 +832,9 @@ _.extend(Utils, {
                             return result;
                         } else {
                             if(!interval || interval < 10){
-                                console.log(error + '\nFailed...retrying');
+                                logger.info(error + '\nFailed...retrying');
                                 Meteor.setTimeout(function(){
-                                    console.log(interval);
+                                    logger.info(interval);
                                     Utils.update_dt_status(charge_id, status, interval+=1);
                                 },60000);
                             } else{
