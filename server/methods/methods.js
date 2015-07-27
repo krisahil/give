@@ -90,7 +90,7 @@ Meteor.methods({
                 'donateTo':             donateTo,
                 'donateWith':           data.paymentInformation.donateWith,
                 'dt_donation_id':       null,
-                'dt_source':            data.paymentInformation.dt_source[0],
+                'dt_source':            data.paymentInformation.dt_source,
                 'fees':                 data.paymentInformation.fees,
                 'frequency':            data.paymentInformation.is_recurring,
                 'sessionId':            data.sessionId,
