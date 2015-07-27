@@ -507,10 +507,10 @@ _.extend(Utils, {
             var fund_id, memo;
             if(!dt_fund) {
                 fund_id = Meteor.settings.donor_tools_default_fund_id;
-                memo = Meteor.settings.dev + donateTo;
+                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).toUpperCase() + charge.metadata.frequency.slice(1) + " " + donateTo;
             } else {
                 fund_id = dt_fund;
-                memo = Meteor.settings.dev;
+                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).toUpperCase() + charge.metadata.frequency.slice(1);
             }
 
             var newDonationResult;
@@ -670,11 +670,11 @@ _.extend(Utils, {
             var fund_id, memo;
             if(!dt_fund) {
                 fund_id = Meteor.settings.donor_tools_default_fund_id;
-                //TODO: Need to update this to put the ACH or CC bank and last4
-                memo = Meteor.settings.dev + donateTo;
+                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).toUpperCase() + charge.metadata.frequency.slice(1) + " " + donateTo;
+
             } else {
                 fund_id = dt_fund;
-                memo = Meteor.settings.dev;
+                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).toUpperCase() + charge.metadata.frequency.slice(1);
             }
             var source_id;
 
