@@ -87,7 +87,9 @@
                 </div>
             {{/each}}
         {{else}}
-            <h2>No recurring gifts found</h2>
+            <div class="col col-lg-6 col-lg-offset-3">
+                <a href="{{pathFor 'donation.form'}}?recurring=monthly" class="btn btn-block btn-success">Setup a recurring gift</a>
+            </div>
         {{/if}}
 
     </div>
