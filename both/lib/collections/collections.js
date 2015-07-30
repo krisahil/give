@@ -8,16 +8,18 @@ Customers = new Meteor.Collection('customers');
 
 Devices = new Meteor.Collection('devices');
 
+Donate = new Meteor.Collection('donate');
+
 Donations = new Meteor.Collection('donations');
 
 DT_donations = new Meteor.Collection('dt_donations');
 
 DT_funds = new Meteor.Collection('dt_funds');
 
-Invoices = new Meteor.Collection('invoices');
+DT_sources = new Meteor.Collection('dt_sources');
 
-Subscriptions = new Meteor.Collection('subscriptions');
+Invoices = new Meteor.Collection('invoices');
 
 Payments = new Meteor.Collection('payments');
 
-Donate = new Meteor.Collection('donate');
+Subscriptions = new Meteor.Collection('subscriptions');

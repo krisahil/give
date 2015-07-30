@@ -584,12 +584,27 @@ _.extend(Utils, {
             Utils.insert_each_dt_fund(element.fund);
         });
     },
+    separate_sources: function(sourceResults){
+        logger.info("Inside separate_sources");
+
+        //Pull each donation from the array and send them to be inserted
+        sourceResults.forEach(function (element) {
+            Utils.insert_each_dt_source(element.source);
+        });
+    },
     insert_each_dt_fund: function(fund){
         logger.info("Inside insert_each_dt_fund with " + fund.id);
 
         //Insert each donation into the DT_funds collection
         fund._id = fund.id;
         DT_funds.upsert({_id: fund._id}, fund);
+    },
+    insert_each_dt_source: function(source){
+        logger.info("Inside insert_each_dt_source with " + source.id);
+
+        //Insert each donation into the DT_funds collection
+        source._id = source.id;
+        DT_sources.upsert({_id: source._id}, source);
     },
     get_all_dt_donations: function(persona_ids) {
         try {

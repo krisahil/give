@@ -27,6 +27,29 @@ Meteor.methods({
             throw new Meteor.Error(error, e._id);
         }
     },
+    get_dt_sources: function () {
+        try {
+            //check to see that the user is the admin user
+            if (Roles.userIsInRole(this.userId, ['admin'])) {
+                logger.info("Started get_dt_sources");
+                var sourceResults;
+                sourceResults = HTTP.get(Meteor.settings.donor_tools_site + '/settings/sources.json?per_page=1000', {
+                    auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+                });
+                Utils.separate_sources(sourceResults.data);
+                return sourceResults.data;
+            } else{
+                logger.info("You aren't an admin, you can't do that");
+                return '';
+            }
+
+        } catch (e) {
+            logger.info(e);
+            //e._id = AllErrors.insert(e.response);
+            var error = (e.response);
+            throw new Meteor.Error(error, e._id);
+        }
+    },
     update_customer: function (form, customer_id, dt_persona_id) {
 
         //Check the client side form fields with the Meteor 'check' method

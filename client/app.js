@@ -614,15 +614,34 @@ UI.registerHelper('MeteorUser', function(){
 });
 
 
-UI.registerHelper('marketplace', function() {
-    var marketplace = Session.get('params.marketplace');
-    if(marketplace === '') {
+UI.registerHelper('campaign', function() {
+    var campaign = Session.get('params.campaign');
+    if(campaign === '') {
         return false;
-    } else if (marketplace === 'Aquaponics Marketplace - Rhiza'){
-        Session.set('params.amount', '15');
-        return marketplace;
-    } else if (marketplace === 'Aquaponics Marketplace - Karpos'){
-        Session.set('params.amount', '30');
-        return marketplace;
+    } else if (campaign === 'Aquaponics Marketplace - Rhiza'){
+        return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
+    } else if (campaign === 'Aquaponics Marketplace - Karpos'){
+        return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
+    } else if (campaign === 'OTR'){
+        return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
+    }
+});
+
+
+UI.registerHelper('locked_amount', function () {
+    var locked = Session.get("params.locked_amount");
+    if(locked === 'true') {
+        return true;
+    } else {
+        return false;
+    }
+});
+
+UI.registerHelper('locked_frequency', function () {
+    var locked = Session.get("params.locked_frequency");
+    if(locked === 'true') {
+        return true;
+    } else {
+        return false;
     }
 });

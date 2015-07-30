@@ -37,5 +37,39 @@ Template.Dashboard.events({
     'click #show-get-stripe-event': function(evt){
         evt.preventDefault();
         Session.set("showGetStripeEvent", true);
+    },
+    'click #get-dt-funds': function(e) {
+        //prevent the default reaction to submitting this form
+        e.preventDefault();
+        // Stop propagation prevents the form from being submitted more than once.
+        //e.stopPropagation();
+
+        console.log("Got Here");
+
+        Meteor.call("get_dt_funds", function (error, result) {
+            if (result) {
+                console.dir(result);
+                alert("Got 'em.")
+            } else {
+                console.log(error);
+            }
+        });
+    },
+    'click #get-dt-sources': function(e) {
+        //prevent the default reaction to submitting this form
+        e.preventDefault();
+        // Stop propagation prevents the form from being submitted more than once.
+        e.stopPropagation();
+
+        console.log("Got Here");
+
+        Meteor.call("get_dt_sources", function (error, result) {
+            if (result) {
+                console.dir(result);
+                alert("Got 'em.")
+            } else {
+                console.log(error);
+            }
+        });
     }
 });
