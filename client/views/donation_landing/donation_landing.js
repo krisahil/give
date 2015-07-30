@@ -141,12 +141,6 @@ Template.DonationLanding.rendered = function () {
         description: "Aquaponics Director",
         imageSrc: "/images/team/Chris.jpg"
     }, {
-            text: "Ethan Pope",
-            value: "EthanPope",
-            selected: false,
-            description: "Intern",
-            imageSrc: "/images/team/Ethan.jpg"
-    }, {
         text: "James Hishmeh",
         value: "JamesHishmeh",
         selected: false,
