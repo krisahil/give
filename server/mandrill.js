@@ -324,6 +324,9 @@ _.extend(Utils,{
                     }, {
                         "name": "NAME",
                         "content": charge_cursor.source.name
+                    }, {
+                        "name": "TYPE",
+                        "content": "card"
                     }
                 );
             } else if(charge_cursor && charge_cursor.source && charge_cursor.source.bank_name) {
@@ -334,6 +337,9 @@ _.extend(Utils,{
                     }, {
                         "name": "NAME",
                         "content": charge_cursor.source.name
+                    }, {
+                        "name": "TYPE",
+                        "content": "bank"
                     }
                 );
             } else{
@@ -376,6 +382,8 @@ _.extend(Utils,{
             if (subscription) {
                 donation_cursor = Donations.findOne({subscription_id: subscription});
                 var subscription_cursor = Subscriptions.findOne({_id: subscription});
+                var payment_type = subscription_cursor.metadata.donateWith.slice(0,4);
+
                 if (!donation_cursor) {
                     if (!type === 'charge.failed') {
                         logger.error("No donation found here, exiting.");
@@ -392,7 +400,7 @@ _.extend(Utils,{
                         data_slug.message.merge_vars[0].vars.push(
                             {
                                 "name": "URL",
-                                "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
+                                "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type + "/resubscribe?sub=" + subscription)
                             }
                         );
                     }
@@ -402,7 +410,7 @@ _.extend(Utils,{
                     data_slug.message.merge_vars[0].vars.push(
                         {
                             "name": "URL",
-                            "content": Meteor.absoluteUrl("user/subscriptions/resubscribe?sub=" + subscription)
+                            "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type +  "/resubscribe?sub=" + subscription)
                         }
                     );
                     data_slug.message.merge_vars[0].vars.push(
