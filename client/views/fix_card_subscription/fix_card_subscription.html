@@ -1,10 +1,8 @@
 <template name="FixCardSubscription">
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 center-block" style="float: none;">
+            <h4>{{#if addNew}} Complete Card Form {{else}} Update Expiration Date {{/if}}</h4>
             <div class="panel panel-default billing-module">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{#if addNew}} Complete Card Form {{else}} Update Expiration Date {{/if}}</h3>
-                </div>
                 <form id="resubscribe">
                     <div class="panel-body">
                         <div class="row">
@@ -14,12 +12,12 @@
                                         {{#if addNewCard}}
                                             <label class="text-success"><i class="fa fa-lock"></i> Card Number (Secure, Like a Bank)</label>
                                             <input type="text" name="cardNumber" class="form-control card-number" placeholder="Card Number"><br>
-                                            <a class="cancel-new-card btn btn-default btn-block" href="" >Switch to update expiration form</a>
+                                            <a class="cancel-new-card btn btn-primary btn-block" href="" >Switch to update expiration form</a>
                                         {{else}}
                                             {{#if customer}}
                                                 <p class="alert alert-info">Account used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
                                                     <br><span class="{{expired_class}}">Expires: <strong>{{#if customer_device.exp_year}}{{customer_device.exp_month}}/{{customer_device.exp_year}}{{/if}}</strong></span></p>
-                                                <p><a class="add-new-card btn btn-default btn-block" href="#">Switch to add new card form</a></p>
+                                                <p><a class="add-new-card btn btn-primary btn-block" href="#">Switch to add new card form</a></p>
                                             {{/if}}
                                         {{/if}}
                                     {{else}}
@@ -83,7 +81,7 @@
                         </div>
                     </div> <!-- end .panel-body -->
                     <div class="panel-footer">
-                        <button type="submit" class="btn btn-success resubscribe" data-loading-text="Processing...">Update</button>
+                        <button type="submit" class="btn btn-primary resubscribe" data-loading-text="Processing...">Update</button>
                         <a href="{{pathFor 'subscriptions'}}" class="btn btn-default">Cancel</a>
                     </div>
                 </form> <!-- end #resubscribe -->
