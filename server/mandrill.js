@@ -382,6 +382,8 @@ _.extend(Utils,{
             if (subscription) {
                 donation_cursor = Donations.findOne({subscription_id: subscription});
                 var subscription_cursor = Subscriptions.findOne({_id: subscription});
+
+                // payment_type is for setting the payment type used for this subscription, commonly "card", or "bank"
                 var payment_type = subscription_cursor.metadata.donateWith.slice(0,4);
 
                 if (!donation_cursor) {
