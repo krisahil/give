@@ -1,8 +1,6 @@
 <template name="SubscriptionsOverview">
-  <div class="panel panel-default billing-module">
-    <div class="panel-heading">
-      <h3 class="panel-title">Recurring Gifts Overview</h3>
-    </div>
+    <h3>Recurring Gifts Overview</h3>
+    <div class="panel panel-default billing-module">
     <div class="panel-body">
         {{#if subscriptions}}
             {{#each subscriptions}}
@@ -88,7 +86,7 @@
             {{/each}}
         {{else}}
             <div class="col col-lg-6 col-lg-offset-3">
-                <a href="{{pathFor 'donation.form'}}?recurring=monthly" class="btn btn-block btn-success">Setup a recurring gift</a>
+                <a href="{{pathFor 'donation.form'}}?recurring=monthly" class="btn btn-primary btn-block">Setup a recurring gift</a>
             </div>
         {{/if}}
 

@@ -3,7 +3,7 @@ Template.SubscriptionsOverview.helpers({
         var subscription_page = Session.get('subscription_cursor');
         var subscriptions = Subscriptions.find();
         Session.set("number_of_subscriptions", subscriptions.count());
-        if(Session.set("number_of_subscriptions", subscriptions.count())){
+        if(Session.get("number_of_subscriptions", subscriptions.count())){
             return Subscriptions.find({}, {sort: {status: 1, start: -1}, limit: 4, skip: subscription_page});
         } else {
             return;
