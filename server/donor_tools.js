@@ -36,15 +36,20 @@ _.extend(Utils, {
             phone_number: form.phone
         };
 
-        console.dir(persona);
 
         var update_persona = HTTP.call("PUT", Meteor.settings.donor_tools_site + '/people/'+ dt_persona_id + '.json',
             {
                 data: {"persona": persona},
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
             });
-        console.dir(update_persona.data.persona);
-        //DT_donations.update(dt_donation, {$set: {'payment_status': debit_cursor.status}});
+
+        var insertedPersonaInfo = Meteor.users.update({_id: Meteor.userId(), 'persona_info.id': dt_persona_id},
+            {
+                $set:
+                {
+                    'persona_info.$': update_persona.data.persona
+                }
+            });
 
     }
 });

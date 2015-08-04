@@ -167,22 +167,24 @@ Template.UserProfile.events({
             },
             phone:                  $('#phone').val()
         };
+
         var updateThis = {};
         updateThis.profile = Meteor.users.findOne().profile;
         updateThis.profile[Session.get('activeTab')] = fields;
+        console.log(updateThis);
 
         // Update the Meteor.user profile
-        Meteor.users.update(Meteor.user()._id, {$set:  updateThis});
+        Meteor.users.update({_id: Meteor.users.findOne()._id}, {$set:  updateThis});
         var customer_id = Meteor.users.findOne().primary_customer_id;
-        var updateCustomer = Customers.update({_id: customer_id}, updateThis);
-        if(updateCustomer === 1) {
-            $('#modal_for_address_change').modal('hide')
-        }
-        Meteor.call('update_customer', updateThis.$set,  customer_id, DT_donations.findOne().persona_id, function(error, result){
+
+        Meteor.call('update_customer', fields,  customer_id, DT_donations.findOne().persona_id, function(error, result){
            if(result){
                console.log(result);
+               $('#modal_for_address_change').modal('hide');
            } else{
                console.log(error);
+               Bert.alert(error.message, "That didn't work. Please try again. If it still doesn't work, " +
+                   "we'll look into it.");
            }
         });
     },
