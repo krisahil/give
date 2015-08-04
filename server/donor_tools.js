@@ -50,6 +50,5 @@ _.extend(Utils, {
                     'persona_info.$': update_persona.data.persona
                 }
             });
-
     }
 });

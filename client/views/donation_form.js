@@ -25,6 +25,8 @@ Template.DonationForm.events({
         var target = document.getElementById('spinContainer');
         spinnerObject = new Spinner(opts).spin(target);
 
+        var loadingSubmitButton = $(':submit').button('loading');
+
         if($('#donateWith').val() === 'Card'){
             if(!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())){
                 var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"}

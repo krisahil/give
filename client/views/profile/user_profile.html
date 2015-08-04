@@ -27,7 +27,10 @@
                                         <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
                                         <p>
                                             <strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
-                                            {{addresses.[0].street_address}}<br>
+                                            {{street_address.[0]}}<br>
+                                            {{#if street_address.[1]}}
+                                                {{street_address.[1]}}<br>
+                                            {{/if}}
                                             {{addresses.[0].city}}, {{addresses.[0].state}} {{addresses.[0].postal_code}}<br>
                                             {{addresses.[0].country}}
                                         </p>
@@ -159,13 +162,13 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="line1">Address Line 1:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{[0].addresses.[0].street_address}}" required data-parsley-error-message="Please enter an address">
+                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{personaStreetAddress.[0]}}" required data-parsley-error-message="Please enter an address">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="line2">Address Line 2:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{addresses.address.address_line2}}" >
+                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{personaStreetAddress.[1]}}" >
                                 </div>
                             </div>
                             <div class="form-group">
@@ -190,7 +193,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-8 col-sm-4 text-right">
-                                    <button type="submit" class="btn btn-primary text-right">Submit</button>
+                                    <button type="submit" class="btn btn-primary text-right" data-loading-text="Processing...">Submit</button>
                                 </div>
                             </div>
                         {{/with}}

@@ -136,6 +136,16 @@ Template.UserProfile.helpers({
         var user = Meteor.users.findOne();
         return this.company_name ? this.company_name : this.names ? this.names[0].first_name + ' ' + this.names[0].last_name : user.profile.fname + ' ' + user.profile.lname;
     },
+    street_address: function () {
+        var street_address = this.addresses[0].street_address;
+        street_address = street_address.split("\n");
+        return street_address;
+    },
+    personaStreetAddress: function () {
+        var street_address = this[0].addresses[0].street_address;
+        street_address = street_address.split("\n");
+        return street_address;
+    },
     this_persona: function () {
         if(Session.get('activeTab')) {
             var persona_info = Meteor.users.findOne().persona_info;
@@ -168,23 +178,26 @@ Template.UserProfile.events({
             phone:                  $('#phone').val()
         };
 
+        var loadingButton = $(':submit').button('loading');
+
         var updateThis = {};
         updateThis.profile = Meteor.users.findOne().profile;
         updateThis.profile[Session.get('activeTab')] = fields;
-        console.log(updateThis);
 
         // Update the Meteor.user profile
         Meteor.users.update({_id: Meteor.users.findOne()._id}, {$set:  updateThis});
         var customer_id = Meteor.users.findOne().primary_customer_id;
 
-        Meteor.call('update_customer', fields,  customer_id, DT_donations.findOne().persona_id, function(error, result){
+        Meteor.call('update_customer', fields,  customer_id, Number(Session.get('activeTab')), function(error, result){
            if(result){
                console.log(result);
                $('#modal_for_address_change').modal('hide');
+               loadingButton.button("reset");
            } else{
                console.log(error);
-               Bert.alert(error.message, "That didn't work. Please try again. If it still doesn't work, " +
-                   "we'll look into it.");
+               loadingButton.button("reset");
+               Bert.alert("That didn't work. Please try again. If it still doesn't work, " +
+                   "then please let us know, we'll check into this error." + error, "danger");
            }
         });
     },

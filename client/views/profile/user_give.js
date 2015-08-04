@@ -37,6 +37,8 @@ Template.UserGive.events({
         // Stop propagation prevents the form from being submitted more than once.
         e.stopPropagation();
 
+        var loadingSubmitButton = $(':submit').button('loading');
+
         var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
         var target = document.getElementById('spinContainer');
         spinnerObject = new Spinner(opts).spin(target);
@@ -48,6 +50,8 @@ Template.UserGive.events({
         App.updateTotal();
 
         App.process_give_form(true);
+        loadingSubmitButton.button('reset');
+
     },
     'keyup, change #amount': function() {
         return App.updateTotal();

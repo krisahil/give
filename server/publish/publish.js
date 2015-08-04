@@ -174,6 +174,7 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
 
 Meteor.publish("user_date_and_subscriptions_with_only_4", function () {
     if (this.userId) {
+        console.log("Started publish function, user_date_and_subscriptions_with_only_4");
         var customers = Customers.find({'metadata.user_id': this.userId});
         var customer_ids = [];
         var subscription_ids = [];

@@ -1,5 +1,6 @@
 Meteor.startup(function() {
     Stripe.setPublishableKey(Meteor.settings.public.stripe.publishable);
+    Bert.defaults.autoHide = false;
 
     // Initialize Mixpanel Analytics
     //mixpanel.init(Meteor.settings.public.mixpanel.token); //YOUR TOKEN

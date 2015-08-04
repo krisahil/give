@@ -248,6 +248,7 @@ _.extend(App, {
                 App.handleErrors(error);
                 //run App.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
                 App.updateTotal();
+                $(':submit').button('reset');
             } else {
                 if ( result.error ) {
                     var send_error = {code: result.error, message: result.message};

@@ -60,6 +60,7 @@ Meteor.methods({
 
         // Send the user's contact updates to Donor Tools
         Utils.update_dt_account(form, dt_persona_id);
+        return '1';
     },
     stripeDonation: function(data, paymentDevice){
         logger.info("Started stripeDonation");

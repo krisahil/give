@@ -417,6 +417,7 @@ _.extend(Utils, {
                     delete event_body.data.object.metadata['balanced.customer_id'];
                 }
 
+                console.log(event_body.data.object);
                 Customers.upsert({_id: event_body.data.object.id}, event_body.data.object);
                 break;
             case "invoice":
@@ -600,9 +601,6 @@ _.extend(Utils, {
             throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
         }
 
-        console.dir(stripeCustomerUpdate);
-
-        return stripeCustomerUpdate;
     },
     update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
         logger.info("Inside update_stripe_customer_subscription.");
