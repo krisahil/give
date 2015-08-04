@@ -168,11 +168,12 @@ Template.DonationForm.events({
             return rtn;
         }
         var goHere = removeParam('enteredCampaignValue', window.location.href);
-        console.log(goHere);
         Session.set('showOTR', 'no');
-        var goHere = goHere + '&enteredCampaignValue=' + $('#otr').val();
+        var goHere = goHere + '&enteredCampaignValue=' + $('#churchID').val();
         Router.go(goHere);
+
         $('#campaignText').show();
+        Session.set("campaignName", $('#churchID option:selected').text());
     },
     'blur #donation_form input': function (e){
         // TODO: remove this area and use iron-router instead.
@@ -243,6 +244,9 @@ Template.DonationForm.helpers({
     },
     campaignValue: function () {
         return Session.get('params.enteredCampaignValue');
+    },
+    campaignName: function () {
+        return Session.get('campaignName');
     },
     dt_source: function () {
         return Session.get('params.dt_source');

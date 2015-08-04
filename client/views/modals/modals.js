@@ -20,3 +20,7 @@ Template.Modals.helpers({
         return this.id;
     }
 });
+
+Template.Modals.rendered = function() {
+    $('select').select2({dropdownCssClass: 'dropdown-inverse'});
+};
