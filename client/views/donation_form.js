@@ -148,6 +148,32 @@ Template.DonationForm.events({
         Router.go(goHere);
         $('#giftDesignationText').show();
     },
+    'click #otr_save': function (e) {
+        $('#modal_for_otr').modal('hide');
+        function removeParam(key, sourceURL) {
+            var rtn = sourceURL.split("?")[0],
+                param,
+                params_arr = [],
+                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+            if (queryString !== "") {
+                params_arr = queryString.split("&");
+                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                    param = params_arr[i].split("=")[0];
+                    if (param === key) {
+                        params_arr.splice(i, 1);
+                    }
+                }
+                rtn = rtn + "?" + params_arr.join("&");
+            }
+            return rtn;
+        }
+        var goHere = removeParam('enteredCampaignValue', window.location.href);
+        console.log(goHere);
+        Session.set('showOTR', 'no');
+        var goHere = goHere + '&enteredCampaignValue=' + $('#otr').val();
+        Router.go(goHere);
+        $('#campaignText').show();
+    },
     'blur #donation_form input': function (e){
         // TODO: remove this area and use iron-router instead.
         // http://stackoverflow.com/questions/24367914/aborting-navigation-with-meteor-iron-router
@@ -215,6 +241,9 @@ Template.DonationForm.helpers({
     writeInValue: function () {
         return Session.get('params.enteredWriteInValue');
     },
+    campaignValue: function () {
+        return Session.get('params.enteredCampaignValue');
+    },
     dt_source: function () {
         return Session.get('params.dt_source');
     },
@@ -240,9 +269,7 @@ Template.DonationForm.helpers({
 /*****************************************************************************/
 /* DonationForm: Lifecycle Hooks */
 /*****************************************************************************/
-Template.DonationForm.destroyed = function() {
 
-};
 Template.DonationForm.rendered = function() {
     // Setup parsley form validation
     $('#donation_form').parsley();
@@ -259,6 +286,19 @@ Template.DonationForm.rendered = function() {
     //setup modal for entering give toward information
     if (Session.equals('params.donateTo', 'WriteIn') && !(Session.equals('showWriteIn', 'no'))) {
         $('#modal_for_write_in').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+    //setup modal for entering OTR church information
+    var campaignSession = Session.get('params.campaign');
+
+    // Regex for "OTR - "
+    var re = /^OTR\s-\s/;
+
+    if (re.exec(campaignSession) && !(Session.equals('showOTR', 'no'))) {
+        $('#modal_for_otr').modal({
             show: true,
             backdrop: 'static'
         });

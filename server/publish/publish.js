@@ -249,6 +249,15 @@ Meteor.publish("userDTFunds", function () {
     }
 });
 
+Meteor.publish("DTSources", function () {
+    return DT_sources.find();
+});
+
+Meteor.publish("OTRDTSources2015", function () {
+    return DT_sources.find({'name': {$regex : /^OTR\s-\s2015\s-\s/}});
+});
+
+
 
 
 /*

@@ -59,8 +59,14 @@
                         Questions? -> please <a href="mailto:{{contact_address}}?Subject=Donation Question - OTR event">email us.</a> Thanks </p>
                     <a href="mailto:{{contact_address}}?Subject=Donation Question">{{contact_address}}.</a>
                     <p>
-                        <input id="otr" data-parsley-type="text" class="form-control slim-borders"
-                               placeholder="Name or other designation." />
+                        <!--<input id="otr" data-parsley-type="text" class="form-control slim-borders"
+                               placeholder="Name or other designation." />-->
+                        <select id="churchID">
+                                <option value="">Select One</option>
+                            {{#each churchSources}}
+                                <option value="{{sourceId}}">{{OTRSourceName}}</option>
+                            {{/each}}
+                        </select>
                     </p>
                 </div>
                 <div class="modal-footer">
