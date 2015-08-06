@@ -19,31 +19,38 @@ Router.onBeforeAction(function() {
     }
 }, {only : 'admin.dashboard'});
 
-Router.route('', function () {
+Router.route('', {
 
-    var params = this.params;
-    this.subscribe('OTRDTSources2015');
-    if(Meteor.user()){
-        Router.go('user.give');
+    name: 'donation.form',
+    path: '',
+    subscriptions: function () {
+        this.subscribe('OTRDTSources2015').wait();
+    },
+    waitOn: function () {
+      return Meteor.subscribe('OTRDTSources2015');
+    },
+    action: function () {
+        var params = this.params;
+
+        if (Meteor.user()) {
+            Router.go('user.give');
+        }
+        this.render('DonationForm');
+
+        Session.set('params.amount', params.query.amount);
+        Session.set('params.campaign', params.query.campaign);
+        Session.set('params.donateTo', params.query.donateTo);
+        Session.set('params.donateWith', params.query.donateWith);
+        Session.set('params.dt_source', params.query.dt_source);
+        Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
+        Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
+        Session.set('params.exp_month', params.query.exp_month);
+        Session.set('params.exp_year', params.query.exp_year);
+        Session.set('params.locked_amount', params.query.locked_amount);
+        Session.set('params.locked_frequency', params.query.locked_frequency);
+        Session.set('params.recurring', params.query.recurring);
+        Session.set('params.writeIn', params.query.writeIn);
     }
-
-    Session.set('params.amount', params.query.amount);
-    Session.set('params.campaign', params.query.campaign);
-    Session.set('params.donateTo', params.query.donateTo);
-    Session.set('params.donateWith', params.query.donateWith);
-    Session.set('params.dt_source', params.query.dt_source);
-    Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
-    Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
-    Session.set('params.exp_month', params.query.exp_month);
-    Session.set('params.exp_year', params.query.exp_year);
-    Session.set('params.locked_amount', params.query.locked_amount);
-    Session.set('params.locked_frequency', params.query.locked_frequency);
-    Session.set('params.recurring', params.query.recurring);
-    Session.set('params.writeIn', params.query.writeIn);
-
-    this.render('DonationForm');
-}, {
-    name: 'donation.form'
 });
 
 Router.route('/landing', function () {

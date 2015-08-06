@@ -47,22 +47,6 @@
 
     <!--This area is the modal that takes the OTR campaign information from the user when they first get to the donation page.
     It only appears if the campaign param has a value of OTR -->
-
-    <!-- TODO:
-
-        1. Gather information about the combobox
-            - Textbox (H: 60px, W:260px)
-            - Button (H: 60px, w: 60px, bg: #1f7f5c)
-            - Unordered List (H: x, W: 320px, bg: #1f7f5c, item-border: #2a8664)
-            - Font (@import url(https://fonts.googleapis.com/css?family=Montserrat);)
-
-        2. Style textbox
-        3. Style button
-        4. Style ul
-        5. Show/hide ul when button is clicked
-
-
-    -->
     <div class="modal fade" id="modal_for_otr">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -72,20 +56,10 @@
                 </div>
                 <div class="modal-body">
                     <p>Thanks for attending an "On the Road" event. Please pick a church.</p>
-                    <!--
-                    <div class="combobox">
-                        <input type="text" value="Hello" class="txtbox" id="campaignDropdown">
-                        <a href="#" class="txtbox-btn">Go</a>
-                    </div>
-                    <ul class="combobox-options">
-                        {{#each churchSources}}
-                            <li value="{{sourceId}}"><span>{{OTRSourceName}}</span></li>
-                        {{/each}}
-                    </ul>
-                    -->
                     <select id="options">
-                        <option>Options1</option>
-                        <option>Options2</option>
+                        {{#each churchSources}}
+                            <option value="{{sourceId}}">{{OTRSourceName}}</option>
+                        {{/each}}
                     </select>
                     <p>
                         Questions? -> please <a href="mailto:{{contact_address}}?Subject=Donation Question - OTR event">email us.</a> Thanks
