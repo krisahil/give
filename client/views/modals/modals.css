@@ -1,3 +1,76 @@
 /*****************************************************************************/
 /* Modals: Style */
 /*****************************************************************************/
+/* reset some UL styles for this combobox */
+.combobox + ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Text style for textbox for combobox */
+input[type="text"].txtbox {
+    color: #000000;
+    height: 60px;
+    width: 260px;
+    font-size: 18px;
+    border: 1px solid #f0f0f0;
+    padding-left: 21px;
+    outline: none;
+    display: inline-block;
+}
+
+.txtbox-btn {
+    width: 60px;
+    height: 60px;
+    background: #1abc9c;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    line-height: 60px;
+    color: #ffffff;
+    link: #ffffff;
+    display: inline-block;
+}
+
+.txtbox-btn:hover, .txtbox-btn:visited, .txtbox-btn:focus {
+    color: #FFFFFF;
+}
+
+.combobox {
+    position: relative;
+    width: 320px;
+    height: 60px;
+}
+
+.combobox input[type="text"].txtbox,
+.combobox .txtbox-btn {
+    position: absolute;
+}
+
+.combobox .txtbox-btn {
+    right: 0;
+}
+
+.combobox + .combobox-options {
+    width: 320px;
+    position: absolute;
+    background: #1abc9c;
+    color: #FFFFFF;
+}
+
+.combobox + .combobox-options li {
+    height: 50px;
+    padding: 12px;
+    border-bottom: 1px solid #16a085;
+    display: table;
+    width: 100%;
+}
+
+.combobox + .combobox-options li span {
+    display: table-cell;
+    vertical-align: middle;
+}

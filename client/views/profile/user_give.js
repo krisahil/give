@@ -50,6 +50,7 @@ Template.UserGive.events({
         App.updateTotal();
 
         App.process_give_form(true);
+
         loadingSubmitButton.button('reset');
 
     },
