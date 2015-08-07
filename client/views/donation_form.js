@@ -282,7 +282,7 @@ Template.DonationForm.rendered = function() {
     var campaignSession = Session.get('params.campaign');
 
     // Regex for "OTR - "
-    var re = /^OTR\s-\s/;
+    var re = /^OTR/;
 
     if (re.exec(campaignSession) && !(Session.equals('showOTR', 'no'))) {
         $('#modal_for_otr').modal({

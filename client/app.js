@@ -624,8 +624,6 @@ UI.registerHelper('campaign', function() {
         return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
     } else if (campaign === 'Aquaponics Marketplace - Karpos'){
         return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
-    } else if (campaign === 'OTR'){
-        return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
     }
 });
 
