@@ -73,10 +73,11 @@
                                 {{#unless locked_frequency}}
                                         <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
                                         <option selected></option>
-                                        <option value="one_time">One-Time</option>
+                                        <!--<option value="daily">Daily</option>-->
                                         <option value="monthly">Monthly</option>
+                                        <option value="one_time">One-Time</option>
                                         <option value="weekly">Weekly</option>
-                                        <option value="daily">Daily</option>
+                                        <option value="yearly">Yearly</option>
                                     </select>
                                 {{else}}
                                     <br>
@@ -131,7 +132,6 @@
     			</fieldset>
             </div>
             <input type="hidden" id="enteredWriteInValue" value="{{writeInValue}}" />
-            <input type="hidden" id="enteredCampaignValue" value="{{campaignValue}}" />
             <input type="hidden" id="dt_source" value="{{dt_source}}" />
     	</form>
     </div>

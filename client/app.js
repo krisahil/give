@@ -114,16 +114,17 @@ _.extend(App, {
             form = {
                 "paymentInformation": {
                     "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                    "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
-                    "donateTo": $("#donateTo").val(),
-                    "writeIn": $("#enteredWriteInValue").val(),
-                    "donateWith": $("#donateWith").val(),
-                    "is_recurring": $('#is_recurring').val(),
+                    "campaign": $('#dt_source').val(),
                     "coverTheFees": $('#coverTheFees').is(":checked"),
                     "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+                    "donateTo": $("#donateTo").val(),
+                    "donateWith": $("#donateWith").val(),
                     "dt_source": $('#dt_source').val(),
+                    "is_recurring": $('#is_recurring').val(),
+                    "saved": $('#save_payment').is(":checked"),
                     "start_date": moment(new Date($('#start_date').val())).format('X'),
-                    "saved": $('#save_payment').is(":checked")
+                    "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
+                    "writeIn": $("#enteredWriteInValue").val()
                 },
                 "customer": {
                     "fname": $('#fname').val(),

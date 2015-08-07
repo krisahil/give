@@ -1,6 +1,32 @@
 /* DonationForm: Event Handlers and Helpers */
 /*****************************************************************************/
 
+function removeParam(key, sourceURL) {
+    var rtn = sourceURL.split("?")[0],
+        param,
+        params_arr = [],
+        queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+    if (queryString !== "") {
+        params_arr = queryString.split("&");
+        for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+            param = params_arr[i].split("=")[0];
+            if (param === key) {
+                params_arr.splice(i, 1);
+            }
+        }
+        rtn = rtn + "?" + params_arr.join("&");
+    }
+    return rtn;
+}
+
+$.fn.scrollView = function () {
+    return this.each(function () {
+        $('html, body').animate({
+            scrollTop: $(this).offset().top
+        }, 1000);
+    });
+};
+
 Template.DonationForm.events({
     'submit form': function(e) {
         //prevent the default reaction to submitting this form
@@ -10,13 +36,7 @@ Template.DonationForm.events({
 
         if($("#is_recurring").val() === ''){
             $("#s2id_is_recurring").children().addClass("redText");
-            $.fn.scrollView = function () {
-                return this.each(function () {
-                    $('html, body').animate({
-                        scrollTop: $(this).offset().top
-                    }, 1000);
-                });
-            };
+
             $('#spinContainer').scrollView();
             return;
         }
@@ -39,13 +59,6 @@ Template.DonationForm.events({
             }
         }
 
-        $.fn.scrollView = function () {
-            return this.each(function () {
-                $('html, body').animate({
-                    scrollTop: $(this).offset().top
-                }, 1000);
-            });
-        };
         $('#spinContainer').scrollView();
         $("#spinDiv").show();
 
@@ -126,23 +139,7 @@ Template.DonationForm.events({
     },
     'click #write_in_save': function (e) {
         $('#modal_for_write_in').modal('hide');
-        function removeParam(key, sourceURL) {
-            var rtn = sourceURL.split("?")[0],
-                param,
-                params_arr = [],
-                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
-            if (queryString !== "") {
-                params_arr = queryString.split("&");
-                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
-                    param = params_arr[i].split("=")[0];
-                    if (param === key) {
-                        params_arr.splice(i, 1);
-                    }
-                }
-                rtn = rtn + "?" + params_arr.join("&");
-            }
-            return rtn;
-        }
+
         var goHere = removeParam('enteredWriteInValue', window.location.href);
         console.log(goHere);
         Session.set('showWriteIn', 'no');
@@ -152,30 +149,14 @@ Template.DonationForm.events({
     },
     'click #otr_save': function (e) {
         $('#modal_for_otr').modal('hide');
-        function removeParam(key, sourceURL) {
-            var rtn = sourceURL.split("?")[0],
-                param,
-                params_arr = [],
-                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
-            if (queryString !== "") {
-                params_arr = queryString.split("&");
-                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
-                    param = params_arr[i].split("=")[0];
-                    if (param === key) {
-                        params_arr.splice(i, 1);
-                    }
-                }
-                rtn = rtn + "?" + params_arr.join("&");
-            }
-            return rtn;
-        }
-        var goHere = removeParam('enteredCampaignValue', window.location.href);
+
+        var goHere = removeParam('campaign', window.location.href);
         Session.set('showOTR', 'no');
-        var goHere = goHere + '&enteredCampaignValue=' + $('#churchID').val();
+        var goHere = goHere + '&dt_source=' + $('#options').val();
         Router.go(goHere);
 
         $('#campaignText').show();
-        Session.set("campaignName", $('#churchID option:selected').text());
+        Session.set("campaignName", $('#options option:selected').text());
     },
     'blur #donation_form input': function (e){
         // TODO: remove this area and use iron-router instead.
@@ -245,7 +226,7 @@ Template.DonationForm.helpers({
         return Session.get('params.enteredWriteInValue');
     },
     campaignValue: function () {
-        return Session.get('params.enteredCampaignValue');
+        return Session.get('params.enteredCampaignValueignValue');
     },
     campaignName: function () {
         return Session.get('campaignName');

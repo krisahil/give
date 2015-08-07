@@ -260,6 +260,9 @@ _.extend(Utils, {
             case "weekly":
                 plan = Meteor.settings.stripe.plan.weekly;
                 break;
+            case "yearly":
+                plan = Meteor.settings.stripe.plan.yearly;
+                break;
             case "daily":
                 plan = Meteor.settings.stripe.plan.daily;
                 break;

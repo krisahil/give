@@ -39,6 +39,7 @@ Here is an example settings.json file
   "stripe": {
     "secret": "Secrete Stripe key",
     "plan": {
+      "yearly": "Stripe plan name associated with yearly (annual) gifts",
       "monthly": "Stripe plan name associated with monthly gifts",
       "weekly": "Stripe plan name associated with weekly gifts",
       "daily": "Stripe plan name associated with daily gifts

@@ -47,27 +47,29 @@ Utils = {
     // Check donation form entries
     checkFormFields: function(form) {
 
-    check(form,
-        {paymentInformation: {
-            amount: Match.Integer,
-            total_amount: Match.Integer,
-            donateTo: String,
-            donateWith: Match.Optional(String),
-            dt_source: Match.Optional(String),
-            is_recurring: Match.OneOf("one_time", "monthly", "weekly", "daily"),
-            coverTheFees: Boolean,
-            created_at: String,
-            href: Match.Optional(String),
-            token_id: Match.Optional(String),
-            source_id: Match.Optional(String),
-            fees: Match.Optional(Number),
-            writeIn: Match.Optional(String),
-            start_date: Match.Optional(String),
-            later: Match.Optional(Boolean),
-            type: String,
-            saved: Boolean,
-            send_scheduled_email: Match.Optional(String)
-        },
+        // Check all the form fields from the donation forms
+        check(form, {
+            paymentInformation: {
+                amount: Match.Integer,
+                campaign: Match.Optional(String),
+                coverTheFees: Boolean,
+                created_at: String,
+                donateTo: String,
+                donateWith: Match.Optional(String),
+                dt_source: Match.Optional(String),
+                fees: Match.Optional(Number),
+                href: Match.Optional(String),
+                is_recurring: Match.OneOf("one_time", "monthly", "weekly", "daily", "yearly"),
+                later: Match.Optional(Boolean),
+                saved: Boolean,
+                send_scheduled_email: Match.Optional(String),
+                source_id: Match.Optional(String),
+                start_date: Match.Optional(String),
+                token_id: Match.Optional(String),
+                total_amount: Match.Integer,
+                type: String,
+                writeIn: Match.Optional(String)
+            },
             customer: {
                 fname: String,
                 lname: String,

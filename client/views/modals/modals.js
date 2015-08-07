@@ -21,10 +21,6 @@ Template.Modals.helpers({
     }
 });
 
-Template.Modals.events({
-
-});
-
 Template.Modals.rendered = function() {
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
     $("#options").select2('destroy');
