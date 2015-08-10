@@ -56,7 +56,9 @@
                 </div>
                 <div class="modal-body">
                     <p>Thanks for attending an "On the Road" event. Please pick a church.</p>
-                    <select id="options">
+                    <select id="options" data-placeholder="Choose an event
+                    location...">
+                        <option></option>
                         {{#each churchSources}}
                             <option value="{{sourceId}}">{{OTRSourceName}}</option>
                         {{/each}}

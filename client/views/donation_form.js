@@ -137,7 +137,7 @@ Template.DonationForm.events({
             e.preventDefault();
         });
     },
-    'click #write_in_save': function (e) {
+    'click #write_in_save': function () {
         $('#modal_for_write_in').modal('hide');
 
         var goHere = removeParam('enteredWriteInValue', window.location.href);
@@ -147,7 +147,10 @@ Template.DonationForm.events({
         Router.go(goHere);
         $('#giftDesignationText').show();
     },
-    'click #otr_save': function (e) {
+    'click #otr_save': function () {
+      if($('#options').val() === "") {
+        return;
+      } else {
         $('#modal_for_otr').modal('hide');
 
         var goHere = removeParam('campaign', window.location.href);
@@ -157,6 +160,7 @@ Template.DonationForm.events({
 
         $('#campaignText').show();
         Session.set("campaignName", $('#options option:selected').text());
+      }
     },
     'blur #donation_form input': function (e){
         // TODO: remove this area and use iron-router instead.
