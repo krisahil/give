@@ -1,33 +1,57 @@
 <template name="GivingOptions">
   <div class="container-fluid">
       <div class="row">
-          <div class="col-lg-6">
-              <h3>Construct your giving options</h3>
+          <div class="col-lg-9">
+              <h3>Construct your giving list</h3>
               <p>Drag and drop groups and options within them</p>
               <p>As you do this the dropdown at the right will update,
               showing you a preview of what your donors will see on the
                   donation page.</p>
-              <!--{{#sortable items=multi_config}}
-                  Test
-              {{/sortable}}-->
+                  <section>
+                      <ul id="sortable1" class="connectedSortable">
+                          <lh> Sortable 1</lh>
+                          <li value="CommunitySponsorshipWhereverNeededMost">Community Sponsorship - Where Most Needed  </li>
+                          <li value="CommunitySponsorshipBoliviaCochabamba">Community Sponsorship - Bolivia - Cochabamba </li>
+                          <li value="CommunitySponsorshipDominicanRepublicSantiago">Community Sponsorship - Dominican Republic - Santiago </li>
+                          <li value="CommunitySponsorshipHondurasTegucigalpa">Community Sponsorship - Honduras - Tegucigalpa </li>
+                          <li value="CommunitySponsorshipKenyaDandora">Community Sponsorship - Kenya - Dandora </li>
+                          <li value="CommunitySponsorshipPhilippinesPayatas">Community Sponsorship - Philippines - Payatas </li>
+                          <li value="CommunitySponsorshipPhilippinesSanMateo">Community Sponsorship - Philippines - San Mateo </li>
+                          <li value="CommunitySponsorshipPhilippinesSantiago">Community Sponsorship - Philippines - Santiago City/Isabella </li>
+                          <li value="CommunitySponsorshipPhilippinesSmokeyMtn">Community Sponsorship - Philippines - Smokey Mountain </li>
+                          <li value="CommunitySponsorshipPhilippinesTanza">Community Sponsorship - Philippines - Tanza </li>
+                      </ul>
+                  </section>
 
-              {{#each multi_config}}
-                  {{#sortable items=all_items animation="100" handle=".fa-bars"
-                  ghostClass="sortable-ghost" sortField="order"}}
-
-                        <div data-id="{{order}}" class="sortable-item removable well well-sm">
-                            <i class="fa fa-bars"></i>
-                          <span class="name">{{name}}</span>
-                          <span class="badge">{{order}}</span>
-
-                          <button type="button" class="close" data-dismiss="alert">
-                              <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                          </button>
-                        </div>
-                {{/sortable}}
-              {{/each}}
+              <ul id="sortable2" class="connectedSortable">
+                  <lh> Sortable 2</lh>
+                  <li value="Operations"><a href="#">Basecamp - Operations Expenses </a></li>
+                  <li value="BrettDurbin" ><a href="#">Basecamp - Brett Durbin </a></li>
+                  <li value="RussellWest" ><a href="#">Basecamp - Russell West </a></li>
+                  <li value="ChrisMammoliti" ><a href="#">Basecamp - Chris Mammoliti </a></li>
+                  <li value="JamesHishmeh"><a href="#">Basecamp - James Hishmeh </a></li>
+                  <li value="JoshuaBechard" ><a href="#">Basecamp - Joshua Bechard </a></li>
+                  <li value="JohnKazaklis" ><a href="#">Basecamp - John Kazaklis </a></li>
+                  <li value="LindseyKeller" ><a href="#">Basecamp - Lindsey Keller </a></li>
+                  <li value="ShelleySetchell" ><a href="#">Basecamp - Shelley Setchell </a></li>
+                  <li value="TimmCollins" ><a href="#">Basecamp - Timm Collins </a></li>
+                  <li value="WillieBrooks"><a href="#">Basecamp - Willie Brooks </a></li>
+              </ul>
+              <ul id="sortable3" class="connectedSortable">
+                  <lh> Sortable 3</lh>
+                  <li value="FieldProjectsWhereverNeededMost"><a href="#">International Field Projects - Where Most Needed </a></li>
+                  <li value="Bolivia"><a href="#">International Field Projects - Bolivia </a></li>
+                  <li value="DominicanRepublic"><a href="#">International Field Projects - Dominican Republic </a></li>
+                  <li value="Honduras"><a href="#">International Field Projects - Honduras </a></li>
+                  <li value="Kenya"><a href="#">International Field Projects - Kenya </a></li>
+                  <li value="Philippines"><a href="#">International Field Projects - Philippines </a></li>
+              </ul>
+              <ul id="sortable4" class="connectedSortable">
+                  <lh> Sortable 4</lh>
+                  <li value="WriteIn"><a href="#">Write In </a></li>
+              </ul>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-3">
               <h3>Dropdown Preview</h3>
               <select>Test</select>
           </div>

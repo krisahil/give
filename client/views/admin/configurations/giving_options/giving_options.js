@@ -18,11 +18,6 @@ Template.GivingOptions.helpers({
     });*/
 
     return menu_items;
-  },
-  all_items: function () {
-    var self = this;
-    console.log(self);
-    return [self];
   }
 });
 
@@ -33,6 +28,10 @@ Template.GivingOptions.onCreated(function () {
 });
 
 Template.GivingOptions.onRendered(function () {
+  $( "#sortable1, #sortable2, #sortable3, #sortable4" ).sortable({
+    connectWith: ".connectedSortable",
+    cursor: "move"
+  }).disableSelection();
 });
 
 Template.GivingOptions.onDestroyed(function () {
