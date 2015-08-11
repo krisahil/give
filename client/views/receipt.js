@@ -117,7 +117,7 @@ Template.Receipt.helpers({
 /* Receipt: Lifecycle Hooks */
 /*****************************************************************************/
 
-Template.Receipt.rendered = function () {
+Template.Receipt.onRendered(function () {
 
 
     $.fn.scrollView = function () {
@@ -133,5 +133,5 @@ Template.Receipt.rendered = function () {
     if (Session.equals('print', 'yes')) {
         return window.print();
     }
-};
+});
 

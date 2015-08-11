@@ -1,10 +1,10 @@
-Template.Thanks.rendered = function() {
+Template.Thanks.onRendered(function() {
     // Turn it off - remove the function entirely
     window.onbeforeunload = null;
     $('#modal_for_user_give_form').modal('hide');
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
-};
+});
 
 Template.Thanks.helpers({
     displayReceipt: function () {

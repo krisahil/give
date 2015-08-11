@@ -222,7 +222,7 @@ Template.UserProfile.events({
     }
 });
 
-Template.UserProfile.rendered = function() {
+Template.UserProfile.onRendered(function() {
 
     if(Meteor.users.findOne() && !Meteor.users.findOne().persona_info) {
         Meteor.call('update_persona_info', function(error, result){
@@ -260,4 +260,4 @@ Template.UserProfile.rendered = function() {
     //  Meteor.call('get_persona_info', err, success){
     //}
     // }
-};
+});

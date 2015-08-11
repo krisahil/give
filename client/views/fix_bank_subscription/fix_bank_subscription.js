@@ -1,4 +1,4 @@
-Template.FixBankSubscription.rendered = function(){
+Template.FixBankSubscription.onRendered(function(){
 
 
     Session.setDefault('isRepair', true);
@@ -14,7 +14,7 @@ Template.FixBankSubscription.rendered = function(){
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
     $("[name='square-switch']").bootstrapSwitch();
-};
+});
 
 Template.FixBankSubscription.events({
     'submit form': function(e){

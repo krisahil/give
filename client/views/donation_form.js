@@ -261,7 +261,7 @@ Template.DonationForm.helpers({
 /* DonationForm: Lifecycle Hooks */
 /*****************************************************************************/
 
-Template.DonationForm.rendered = function() {
+Template.DonationForm.onRendered(function() {
     // Setup parsley form validation
     $('#donation_form').parsley();
 
@@ -312,7 +312,8 @@ Template.DonationForm.rendered = function() {
     datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
 
 
-};
+});
+
 Template.checkPaymentInformation.helpers({
     attributes_Input_AccountNumber: function() {
         return {
@@ -332,14 +333,15 @@ Template.checkPaymentInformation.helpers({
     }
 });
 //Check Payment Template mods
-Template.checkPaymentInformation.rendered = function() {
+Template.checkPaymentInformation.onRendered(function() {
     $('[data-toggle="popover"]').popover();
     $("#routing_number").mask("999999999");
 
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
-};
+});
+
 //Card Payment Template mods
-Template.cardPaymentInformation.rendered = function() {
+Template.cardPaymentInformation.onRendered(function() {
     $('[data-toggle="popover"]').popover();
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
@@ -350,4 +352,4 @@ Template.cardPaymentInformation.rendered = function() {
     if (Session.get('params.exp_year')) {
         $("#expiry_year").val(Session.get('params.exp_year'));
     }
-};
+});

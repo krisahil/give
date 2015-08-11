@@ -124,9 +124,9 @@ Template.RequestAddress.helpers({
 Template.RequestAddress.created = function () {
 };
 
-Template.RequestAddress.rendered = function () {
-    $("#phone").mask("(999) 999-9999");
- };
+Template.RequestAddress.onRendered(function () {
+  $("#phone").mask("(999) 999-9999");
+});
 
 Template.RequestAddress.destroyed = function () {
 };

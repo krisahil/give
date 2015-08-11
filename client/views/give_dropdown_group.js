@@ -1,4 +1,4 @@
-Template.GiveDropdownGroup.rendered = function() {
+Template.GiveDropdownGroup.onRendered(function() {
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
     // show the datepicker if the frequency is monthly when the page loads
@@ -22,7 +22,7 @@ Template.GiveDropdownGroup.rendered = function() {
     // Now let's align datepicker with the prepend button
     datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
 
-};
+});
 
 Template.GiveDropdownGroup.helpers({
     give_home: function() {
@@ -72,7 +72,7 @@ Template.GiveDropdownGroup.events({
     }
 });
 
-Template.AdminGiveDropdownGroup.rendered = function() {
+Template.AdminGiveDropdownGroup.onRendered(function() {
     $('select').select2({dropdownCssClass: 'dropdown-inverse', DropdownAdapter: 'DropdownSearch'});
 
     // show the datepicker if the frequency is monthly when the page loads
@@ -96,7 +96,7 @@ Template.AdminGiveDropdownGroup.rendered = function() {
     // Now let's align datepicker with the prepend button
     datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
 
-};
+});
 
 Template.AdminGiveDropdownGroup.helpers({
     give_home: function() {

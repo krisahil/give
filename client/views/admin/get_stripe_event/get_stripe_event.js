@@ -19,21 +19,3 @@ Template.GetStripeEvent.events({
         })
     }
 });
-
-/*****************************************************************************/
-/* GetStripeEvent: Helpers */
-/*****************************************************************************/
-Template.GetStripeEvent.helpers({
-});
-
-/*****************************************************************************/
-/* GetStripeEvent: Lifecycle Hooks */
-/*****************************************************************************/
-Template.GetStripeEvent.created = function () {
-};
-
-Template.GetStripeEvent.rendered = function () {
-};
-
-Template.GetStripeEvent.destroyed = function () {
-};

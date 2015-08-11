@@ -84,7 +84,7 @@ Template.DonationLanding.events({
     }
 });
 
-Template.DonationLanding.rendered = function () {
+Template.DonationLanding.onRendered(function () {
     //Dropdown plugin data for GiveTo
     var GiveTo = [{
         text: "Wherever It's Needed Most",
@@ -394,4 +394,4 @@ Template.DonationLanding.rendered = function () {
     $("#depends-on-Missionary-label").hide();
     $("#depends-on-field-projects-label").hide();
     $("#depends-on-community-sponsorship-label").hide();
-};
+});

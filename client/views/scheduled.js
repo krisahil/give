@@ -10,10 +10,10 @@ Template.DonationScheduled.helpers({
     }
 });
 
-Template.DonationScheduled.rendered = function () {
+Template.DonationScheduled.onRendered(function () {
     $('#modal_for_user_give_form').modal('hide');
     $('#modal_for_admin_give_form').modal('hide');
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
-};
+});
 

@@ -260,7 +260,9 @@ Meteor.publish("OTRDTSources2015", function () {
 });
 
 
-
+Meteor.publish("MultiConfig", function () {
+  return MultiConfig.find();
+});
 
 /*
 Meteor.publish("userGivingFocus", function () {

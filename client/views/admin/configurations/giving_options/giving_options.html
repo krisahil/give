@@ -1,0 +1,36 @@
+<template name="GivingOptions">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-lg-6">
+              <h3>Construct your giving options</h3>
+              <p>Drag and drop groups and options within them</p>
+              <p>As you do this the dropdown at the right will update,
+              showing you a preview of what your donors will see on the
+                  donation page.</p>
+              <!--{{#sortable items=multi_config}}
+                  Test
+              {{/sortable}}-->
+
+              {{#each multi_config}}
+                  {{#sortable items=all_items animation="100" handle=".fa-bars"
+                  ghostClass="sortable-ghost" sortField="order"}}
+
+                        <div data-id="{{order}}" class="sortable-item removable well well-sm">
+                            <i class="fa fa-bars"></i>
+                          <span class="name">{{name}}</span>
+                          <span class="badge">{{order}}</span>
+
+                          <button type="button" class="close" data-dismiss="alert">
+                              <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                          </button>
+                        </div>
+                {{/sortable}}
+              {{/each}}
+          </div>
+          <div class="col-lg-6">
+              <h3>Dropdown Preview</h3>
+              <select>Test</select>
+          </div>
+      </div>
+  </div>
+</template>

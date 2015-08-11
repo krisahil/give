@@ -98,7 +98,7 @@ Template.UserGive.events({
 });
 
 
-Template.UserGive.rendered = function () {
+Template.UserGive.onRendered(function () {
 
     if($('#donateWith option').length > 2){
         $('#donateWith').val($('#donateWith option').eq(2).val());
@@ -131,4 +131,4 @@ Template.UserGive.rendered = function () {
 
     $('[data-toggle="popover"]').popover();
 
-};
+});

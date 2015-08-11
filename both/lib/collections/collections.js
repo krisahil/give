@@ -1,25 +1,28 @@
-AllErrors = new Meteor.Collection('allerrors');
+AllErrors = new Mongo.Collection('allerrors');
 
-Audit_trail = new Meteor.Collection('audit_trail');
+Audit_trail = new Mongo.Collection('audit_trail');
 
-Charges = new Meteor.Collection('charges');
+Charges = new Mongo.Collection('charges');
 
-Customers = new Meteor.Collection('customers');
+Customers = new Mongo.Collection('customers');
 
-Devices = new Meteor.Collection('devices');
+Devices = new Mongo.Collection('devices');
 
-Donate = new Meteor.Collection('donate');
+Donate = new Mongo.Collection('donate');
 
-Donations = new Meteor.Collection('donations');
+Donations = new Mongo.Collection('donations');
 
-DT_donations = new Meteor.Collection('dt_donations');
+DT_donations = new Mongo.Collection('dt_donations');
 
-DT_funds = new Meteor.Collection('dt_funds');
+DT_funds = new Mongo.Collection('dt_funds');
 
-DT_sources = new Meteor.Collection('dt_sources');
+DT_sources = new Mongo.Collection('dt_sources');
 
-Invoices = new Meteor.Collection('invoices');
+Invoices = new Mongo.Collection('invoices');
 
-Payments = new Meteor.Collection('payments');
+// For Multi-tenancy
+MultiConfig = new Mongo.Collection('multi_config');
 
-Subscriptions = new Meteor.Collection('subscriptions');
+Payments = new Mongo.Collection('payments');
+
+Subscriptions = new Mongo.Collection('subscriptions');

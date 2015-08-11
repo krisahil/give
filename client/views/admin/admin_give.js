@@ -1,5 +1,5 @@
 
-Template.AdminGive.rendered = function () {
+Template.AdminGive.onRendered(function () {
 
     if($('#donateWith option').length > 2){
         $('#donateWith').val($('#donateWith option').eq(2).val());
@@ -30,7 +30,7 @@ Template.AdminGive.rendered = function () {
 
     $('#donateWith').change();
 
-};
+});
 
 Template.AdminGive.helpers({
     paymentWithCard: function() {

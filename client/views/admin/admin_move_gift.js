@@ -1,9 +1,9 @@
 
-Template.AdminMoveGift.rendered = function () {
+Template.AdminMoveGift.onRendered(function () {
     // Setup parsley form validation
     $('#quick_move').parsley();
 
-};
+});
 
 Template.AdminMoveGift.helpers({
 });

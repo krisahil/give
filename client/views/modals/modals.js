@@ -21,10 +21,10 @@ Template.Modals.helpers({
   }
 });
 
-Template.Modals.rendered = function() {
+Template.Modals.onRendered(function() {
   $('select').select2({dropdownCssClass: 'dropdown-inverse'});
   $("#options").select2('destroy');
 
   $('#options').chosen({width: "95%"});
 
-};
+});

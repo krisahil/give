@@ -137,7 +137,7 @@ Template.SubscriptionsOverview.events({
     }
 });
 
-Template.SubscriptionsOverview.rendered = function() {
+Template.SubscriptionsOverview.onRendered(function() {
     Session.setDefault('paymentMethod', 'default');
     Session.setDefault('subscription_cursor', 0);
-};
+});

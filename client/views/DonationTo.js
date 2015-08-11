@@ -11,7 +11,7 @@ Template.DonationTo.helpers({
     }
 });
 
-Template.DonationTo.rendered = function () {
+Template.DonationTo.onRendered(function () {
 	if (Session.get('params.donateTo')) {
 		$("#donateTo").val(Session.get('params.donateTo'));
 	}
@@ -29,4 +29,4 @@ Template.DonationTo.rendered = function () {
 	if(Session.get('params.recurring')) {
 		$("#is_recurring").val(Session.get('params.recurring'));
 	}
-};
+});

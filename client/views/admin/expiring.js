@@ -31,7 +31,7 @@ Template.Expiring.helpers({
     }
 });
 
-Template.Expiring.rendered = function () {
+Template.Expiring.onRendered(function () {
     $('.datatable').dataTable( {
         "columnDefs": [
             { className: "details-control", "targets": [ 0 ] }
@@ -40,4 +40,4 @@ Template.Expiring.rendered = function () {
 
     //order by the date field
     $('#mainTable').dataTable().api().order(1, 'asc').draw();
-};
+});

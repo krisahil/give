@@ -8,13 +8,15 @@ Security.permit(['insert', 'update', 'remove'])
         Charges,
         Customers,
         Devices,
+        Donate,
         Donations,
         DT_donations,
         DT_funds,
+        DT_sources,
         Invoices,
-        Subscriptions,
+        MultiConfig,
         Payments,
-        Donate
+        Subscriptions
     ])
     .ifHasRole('admin')
     .apply();
