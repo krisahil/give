@@ -147,15 +147,17 @@ Template.DonationForm.events({
         Router.go(goHere);
         $('#giftDesignationText').show();
     },
-    'click #otr_save': function () {
+    'click #serve1000_save': function () {
+      var goHere;
+
       if($('#options').val() === "") {
         return;
       } else {
-        $('#modal_for_otr').modal('hide');
+        $('#modal_for_serve1000').modal('hide');
 
-        var goHere = removeParam('campaign', window.location.href);
-        Session.set('showOTR', 'no');
-        var goHere = goHere + '&dt_source=' + $('#options').val();
+
+        Session.set('showserve1000', 'no');
+        var goHere = window.location.href + '&dt_source=' + $('#options').val();
         Router.go(goHere);
 
         $('#campaignText').show();
@@ -235,6 +237,13 @@ Template.DonationForm.helpers({
     campaignName: function () {
         return Session.get('campaignName');
     },
+    campaign: function () {
+      if(Session.equals('params.campaign', "Serve 1000")){
+        return "<h3>Thank You for giving to the Serve 1000 Campaign</h3>";
+      } else {
+        return false;
+      }
+    },
     dt_source: function () {
         return Session.get('params.dt_source');
     },
@@ -282,14 +291,14 @@ Template.DonationForm.onRendered(function() {
         });
     }
 
-    //setup modal for entering OTR church information
+    //setup modal for entering serve1000 church information
     var campaignSession = Session.get('params.campaign');
 
-    // Regex for "OTR - "
-    var re = /^OTR/;
+    // Regex for "Serve 1000 - "
+    var re = /^Serve\s1000/;
 
-    if (re.exec(campaignSession) && !(Session.equals('showOTR', 'no'))) {
-        $('#modal_for_otr').modal({
+    if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no'))) {
+        $('#modal_for_serve1000').modal({
             show: true,
             backdrop: 'static'
         });

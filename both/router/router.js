@@ -24,10 +24,10 @@ Router.route('', {
     name: 'donation.form',
     path: '',
     subscriptions: function () {
-        this.subscribe('OTRDTSources2015').wait();
+        this.subscribe('Serve1000Sources2015').wait();
     },
     waitOn: function () {
-      return Meteor.subscribe('OTRDTSources2015');
+      return Meteor.subscribe('Serve1000Sources2015');
     },
     action: function () {
         var params = this.params;
