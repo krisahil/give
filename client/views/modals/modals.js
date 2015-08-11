@@ -11,9 +11,9 @@ Template.Modals.helpers({
   churchSources: function () {
     return DT_sources.find();
   },
-  OTRSourceName: function () {
-    var regOTR = /^OTR\s-\s2015\s-\s/;
-    var nameReplaced = this.name.replace(regOTR, "")
+  thousandChildrenSourceName: function () {
+    var regthousandChildren = /^1000\sChildren\s-\s2015\s-\s/;
+    var nameReplaced = this.name.replace(regthousandChildren, "")
     return nameReplaced;
   },
   sourceId: function () {

@@ -255,8 +255,8 @@ Meteor.publish("DTSources", function () {
     return DT_sources.find();
 });
 
-Meteor.publish("OTRDTSources2015", function () {
-    return DT_sources.find({'name': {$regex : /^OTR\s-\s2015\s-\s/}});
+Meteor.publish("ThousandChildrenSources2015", function () {
+  return DT_sources.find({'name': {$regex : /^1000\sChildren\s-\s2015\s-\s/}});
 });
 
 

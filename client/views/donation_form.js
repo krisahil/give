@@ -147,15 +147,17 @@ Template.DonationForm.events({
         Router.go(goHere);
         $('#giftDesignationText').show();
     },
-    'click #otr_save': function () {
+    'click #1000children_save': function () {
+      var goHere;
+
       if($('#options').val() === "") {
         return;
       } else {
-        $('#modal_for_otr').modal('hide');
+        $('#modal_for_1000children').modal('hide');
 
-        var goHere = removeParam('campaign', window.location.href);
-        Session.set('showOTR', 'no');
-        var goHere = goHere + '&dt_source=' + $('#options').val();
+
+        Session.set('show1000children', 'no');
+        var goHere = window.location.href + '&dt_source=' + $('#options').val();
         Router.go(goHere);
 
         $('#campaignText').show();
@@ -235,6 +237,13 @@ Template.DonationForm.helpers({
     campaignName: function () {
         return Session.get('campaignName');
     },
+    campaign: function () {
+      if(Session.equals('params.campaign', "1000 Children")){
+        return "<h3>Thank You for giving to the 1,000 Children Campaign</h3>";
+      } else {
+        return false;
+      }
+    },
     dt_source: function () {
         return Session.get('params.dt_source');
     },
@@ -282,14 +291,14 @@ Template.DonationForm.rendered = function() {
         });
     }
 
-    //setup modal for entering OTR church information
+    //setup modal for entering 1000children church information
     var campaignSession = Session.get('params.campaign');
 
-    // Regex for "OTR - "
-    var re = /^OTR/;
+    // Regex for "1000children - "
+    var re = /^1000\sChildren/;
 
-    if (re.exec(campaignSession) && !(Session.equals('showOTR', 'no'))) {
-        $('#modal_for_otr').modal({
+    if (re.exec(campaignSession) && !(Session.equals('show1000children', 'no'))) {
+        $('#modal_for_1000children').modal({
             show: true,
             backdrop: 'static'
         });
