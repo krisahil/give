@@ -147,16 +147,16 @@ Template.DonationForm.events({
         Router.go(goHere);
         $('#giftDesignationText').show();
     },
-    'click #1000children_save': function () {
+    'click #serve1000_save': function () {
       var goHere;
 
       if($('#options').val() === "") {
         return;
       } else {
-        $('#modal_for_1000children').modal('hide');
+        $('#modal_for_serve1000').modal('hide');
 
 
-        Session.set('show1000children', 'no');
+        Session.set('showserve1000', 'no');
         var goHere = window.location.href + '&dt_source=' + $('#options').val();
         Router.go(goHere);
 
@@ -238,8 +238,8 @@ Template.DonationForm.helpers({
         return Session.get('campaignName');
     },
     campaign: function () {
-      if(Session.equals('params.campaign', "1000 Children")){
-        return "<h3>Thank You for giving to the 1,000 Children Campaign</h3>";
+      if(Session.equals('params.campaign', "Serve 1000")){
+        return "<h3>Thank You for giving to the Serve 1000 Campaign</h3>";
       } else {
         return false;
       }
@@ -291,14 +291,14 @@ Template.DonationForm.rendered = function() {
         });
     }
 
-    //setup modal for entering 1000children church information
+    //setup modal for entering serve1000 church information
     var campaignSession = Session.get('params.campaign');
 
-    // Regex for "1000children - "
-    var re = /^1000\sChildren/;
+    // Regex for "Serve 1000 - "
+    var re = /^Serve\s1000/;
 
-    if (re.exec(campaignSession) && !(Session.equals('show1000children', 'no'))) {
-        $('#modal_for_1000children').modal({
+    if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no'))) {
+        $('#modal_for_serve1000').modal({
             show: true,
             backdrop: 'static'
         });

@@ -11,9 +11,9 @@ Template.Modals.helpers({
   churchSources: function () {
     return DT_sources.find();
   },
-  thousandChildrenSourceName: function () {
-    var regthousandChildren = /^1000\sChildren\s-\s2015\s-\s/;
-    var nameReplaced = this.name.replace(regthousandChildren, "")
+  serve1000SourceName: function () {
+    var regServe1000 = /^Serve\s1000\s-\s/;
+    var nameReplaced = this.name.replace(regServe1000, "")
     return nameReplaced;
   },
   sourceId: function () {
