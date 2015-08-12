@@ -251,11 +251,7 @@ Router.route('FixBankSubscription', {
 Router.route('/dashboard/giving_options', {
   name: 'GivingOptions',
   where: 'client',
-
-  subscriptions: function () {
-    this.subscribe('MultiConfig').wait();
-  },
   waitOn: function () {
-    return Meteor.subscribe('MultiConfig');
+    return [ Meteor.subscribe('MultiConfig'), Meteor.subscribe('userDTFunds')];
   }
 });

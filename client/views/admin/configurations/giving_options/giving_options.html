@@ -1,60 +1,59 @@
 <template name="GivingOptions">
-  <div class="container-fluid">
+  <div class="ResponsiveTable">
+    <div class="container-fluid">
       <div class="row">
-          <div class="col-lg-9">
-              <h3>Construct your giving list</h3>
-              <p>Drag and drop groups and options within them</p>
-              <p>As you do this the dropdown at the right will update,
-              showing you a preview of what your donors will see on the
-                  donation page.</p>
-                  <section>
-                      <ul id="sortable1" class="connectedSortable">
-                          <lh> Sortable 1</lh>
-                          <li value="CommunitySponsorshipWhereverNeededMost">Community Sponsorship - Where Most Needed  </li>
-                          <li value="CommunitySponsorshipBoliviaCochabamba">Community Sponsorship - Bolivia - Cochabamba </li>
-                          <li value="CommunitySponsorshipDominicanRepublicSantiago">Community Sponsorship - Dominican Republic - Santiago </li>
-                          <li value="CommunitySponsorshipHondurasTegucigalpa">Community Sponsorship - Honduras - Tegucigalpa </li>
-                          <li value="CommunitySponsorshipKenyaDandora">Community Sponsorship - Kenya - Dandora </li>
-                          <li value="CommunitySponsorshipPhilippinesPayatas">Community Sponsorship - Philippines - Payatas </li>
-                          <li value="CommunitySponsorshipPhilippinesSanMateo">Community Sponsorship - Philippines - San Mateo </li>
-                          <li value="CommunitySponsorshipPhilippinesSantiago">Community Sponsorship - Philippines - Santiago City/Isabella </li>
-                          <li value="CommunitySponsorshipPhilippinesSmokeyMtn">Community Sponsorship - Philippines - Smokey Mountain </li>
-                          <li value="CommunitySponsorshipPhilippinesTanza">Community Sponsorship - Philippines - Tanza </li>
-                      </ul>
-                  </section>
-
-              <ul id="sortable2" class="connectedSortable">
-                  <lh> Sortable 2</lh>
-                  <li value="Operations"><a href="#">Basecamp - Operations Expenses </a></li>
-                  <li value="BrettDurbin" ><a href="#">Basecamp - Brett Durbin </a></li>
-                  <li value="RussellWest" ><a href="#">Basecamp - Russell West </a></li>
-                  <li value="ChrisMammoliti" ><a href="#">Basecamp - Chris Mammoliti </a></li>
-                  <li value="JamesHishmeh"><a href="#">Basecamp - James Hishmeh </a></li>
-                  <li value="JoshuaBechard" ><a href="#">Basecamp - Joshua Bechard </a></li>
-                  <li value="JohnKazaklis" ><a href="#">Basecamp - John Kazaklis </a></li>
-                  <li value="LindseyKeller" ><a href="#">Basecamp - Lindsey Keller </a></li>
-                  <li value="ShelleySetchell" ><a href="#">Basecamp - Shelley Setchell </a></li>
-                  <li value="TimmCollins" ><a href="#">Basecamp - Timm Collins </a></li>
-                  <li value="WillieBrooks"><a href="#">Basecamp - Willie Brooks </a></li>
-              </ul>
-              <ul id="sortable3" class="connectedSortable">
-                  <lh> Sortable 3</lh>
-                  <li value="FieldProjectsWhereverNeededMost"><a href="#">International Field Projects - Where Most Needed </a></li>
-                  <li value="Bolivia"><a href="#">International Field Projects - Bolivia </a></li>
-                  <li value="DominicanRepublic"><a href="#">International Field Projects - Dominican Republic </a></li>
-                  <li value="Honduras"><a href="#">International Field Projects - Honduras </a></li>
-                  <li value="Kenya"><a href="#">International Field Projects - Kenya </a></li>
-                  <li value="Philippines"><a href="#">International Field Projects - Philippines </a></li>
-              </ul>
-              <ul id="sortable4" class="connectedSortable">
-                  <lh> Sortable 4</lh>
-                  <li value="WriteIn"><a href="#">Write In </a></li>
-              </ul>
+          <div class="col col-lg-6">
+            <p>Construct your giving list drag the <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+             icon to the correct order. Click the <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+             icon to delete a group.</p>
+              <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
+              <section>
+                  <table id="firstTable" class="rwd-table sortableTables">
+                      <caption contenteditable>Group name</caption>
+                      <tr>
+                          <th><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Delete
+                          </th>
+                          <th>Fund Name</th>
+                          <th>Donor Tools ID</th>
+                      </tr>
+                      <tr>
+                          <td><span class="glyphicon glyphicon-move" aria-hidden="true"></span></td>
+                          <td class="table-editable-content" contenteditable data-th="Name" value="Operations">Basecamp - Operations Expenses</td>
+                          <td class="table-editable-content" contenteditable data-th="Donor Tools ID">Adventure, Sci-fi</td>
+                      </tr>
+                  </table>
+              </section>
           </div>
-          <div class="col-lg-3">
-              <h3>Dropdown Preview</h3>
-              <select>Test</select>
+          <div class="col col-lg-6">
+            <div class="row">
+                <label for="testDropdown">Dropdown Preview </label>
+                <select type="text" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
+                    <option>Test</option>
+                </select>
+            </div>
+              <div class="row">
+                  <section>
+                      <button id="updateDTFunds" class="btn btn-primary"><i class="fa fa-refresh"></i> Update DT Funds</button>
+                      <table class="rwd-table sortableTables" id="DTFundsTable">
+                          <caption contenteditable>Existing DonorTools Funds</caption>
+                          <tr>
+                              <th><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Delete
+                              </th>
+                              <th>Fund Name</th>
+                              <th>Donor Tools ID</th>
+                          </tr>
+                          {{#each dt_funds}}
+                              <tr id="{{id}}" data-name="{{nameValue}}">
+                                  <td><span class="glyphicon glyphicon-move" aria-hidden="true"></span></td>
+                                  <td data-th="Name">{{name}}</td>
+                                  <td data-th="Donor Tools ID">{{id}}</td>
+                              </tr>
+                          {{/each}}
+                      </table>
+                  </section>
+              </div>
           </div>
       </div>
+    </div>
   </div>
 </template>

@@ -18,6 +18,8 @@ DT_funds = new Mongo.Collection('dt_funds');
 
 DT_sources = new Mongo.Collection('dt_sources');
 
+GivingOptions = new Mongo.Collection('giving_options');
+
 Invoices = new Mongo.Collection('invoices');
 
 // For Multi-tenancy
