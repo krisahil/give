@@ -42,6 +42,7 @@ Router.route('', {
         Session.set('params.donateTo', params.query.donateTo);
         Session.set('params.donateWith', params.query.donateWith);
         Session.set('params.dt_source', params.query.dt_source);
+        Session.set('params.note', params.query.note);
         Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
         Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
         Session.set('params.exp_month', params.query.exp_month);

@@ -117,12 +117,12 @@ Meteor.methods({
                 'dt_source':            data.paymentInformation.dt_source,
                 'fees':                 data.paymentInformation.fees,
                 'frequency':            data.paymentInformation.is_recurring,
-                'sessionId':            data.sessionId,
+                'note':                 data.paymentInformation.note,
                 'status':               'pending',
                 'send_scheduled_email': data.paymentInformation.send_scheduled_email,
                 'total_amount':         data.paymentInformation.total_amount,
                 'type':                 data.paymentInformation.type,
-                'URL':                  data.URL
+                'sessionId':            data.sessionId
             };
 
 
@@ -131,14 +131,15 @@ Meteor.methods({
 
             for (var attrname in customerInfo) { metadata[attrname] = customerInfo[attrname]; }
             delete metadata.created_at;
+            delete metadata.customer_id;
             delete metadata.sessionId;
             delete metadata.status;
             delete metadata.total_amount;
             delete metadata.type;
-            delete metadata.URL;
 
             if (data.paymentInformation.is_recurring === "one_time") {
 
+              console.log(metadata);
                 //Charge the card (which also connects this card or bank_account to the customer)
                 var charge = Utils.charge(data.paymentInformation.total_amount, data._id, customerData.id, data.paymentInformation.source_id, metadata);
                 if(!charge.object){

@@ -56,15 +56,16 @@
                         1000</strong></h4>
                 </div>
                 <div class="modal-body">
-                    <p>We’re excited that you were able to join us recently
-                        for the “Serve 1000 Campaign.” Which event did
-                        you attend?</p>
+                    <p>We’re excited to have you join us for "Serve 1000" as we
+                        seek sustainability for 1000 children living in trash
+                        dumps communities worldwide. How did you hear about the
+                        campaign?</p>
                     <select id="options" data-placeholder="Choose an event
                     location...">
                         <option></option>
                         {{#each churchSources}}
                             <option
-                                    value="{{sourceId}}">{{serve1000SourceName}}</option>
+                                    value="{{this}}">{{this}}</option>
                         {{/each}}
                     </select>
                     <p>

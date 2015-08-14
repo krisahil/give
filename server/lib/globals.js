@@ -61,6 +61,7 @@ Utils = {
                 href: Match.Optional(String),
                 is_recurring: Match.OneOf("one_time", "monthly", "weekly", "daily", "yearly"),
                 later: Match.Optional(Boolean),
+                note: Match.Optional(String),
                 saved: Boolean,
                 send_scheduled_email: Match.Optional(String),
                 source_id: Match.Optional(String),
@@ -85,7 +86,6 @@ Utils = {
                 created_at: String,
                 id: Match.Optional(String)
             },
-            URL: String,
             sessionId: String
         });
     },

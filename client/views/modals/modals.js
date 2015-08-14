@@ -9,15 +9,20 @@ Template.Modals.helpers({
     return Meteor.settings.public.support_address;
   },
   churchSources: function () {
-    return DT_sources.find();
-  },
-  serve1000SourceName: function () {
-    var regServe1000 = /^Serve\s1000\s-\s/;
-    var nameReplaced = this.name.replace(regServe1000, "")
-    return nameReplaced;
-  },
-  sourceId: function () {
-    return this.id;
+    return [
+      "New Community Christian Church Salina, KS",
+      "The Heights Church Spokane, WA",
+      "Topeka Bible Church Topeka, KS",
+      "Fountain Springs Church Rapid City, SD",
+      "Gracepoint Church Topeka, KS",
+      "Gracepoint Church North Topeka, KS",
+      "Western Hills Church Topeka, KS",
+      "Fellowship Bible Church Topeka, KS",
+      "Church On The Hill Dundee, FL",
+      "Ridgepoint Church Winter Haven, FL",
+      "A Mailer",
+      "Other"
+    ]
   }
 });
 

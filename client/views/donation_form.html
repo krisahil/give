@@ -104,9 +104,11 @@
                     <div class="">
                         <div class="">
                             <label id="giftDesignationText" style="display: none;"><strong>Your gift is designated to "{{writeInValue}}"</strong></label>
-                            <label id="campaignText" style="display: none;
-                            "><strong>Attended the Serve 1000 event at
-                                "{{campaignName}}"</strong></label>
+                            {{#if donation_note}}
+                                    <label id="campaignText">
+                                        <strong>Heard about "Serve 1000" through
+                                "{{donation_note}}"</strong></label>
+                                {{/if}}
                         </div>
                     </div>
 
@@ -135,6 +137,7 @@
             </div>
             <input type="hidden" id="enteredWriteInValue" value="{{writeInValue}}" />
             <input type="hidden" id="dt_source" value="{{dt_source}}" />
+            <input type="hidden" id="donation_note" value="Serve 1000 {{donation_note}}" />
     	</form>
     </div>
     </div>
