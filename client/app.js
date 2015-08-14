@@ -60,7 +60,6 @@ _.extend(App, {
                         "postal_code": customer_cursor.metadata.postal_code,
                         "country": customer_cursor.metadata.country
                     },
-                    "URL": document.URL,
                     sessionId: Meteor.default_connection._lastSessionId
                 };
             } else{
@@ -89,6 +88,7 @@ _.extend(App, {
                         "coverTheFees": $('#coverTheFees').is(":checked"),
                         "created_at": moment().format('MM/DD/YYYY, hh:mma'),
                         "dt_source": $('#dt_source').val(),
+                        "note": $('#donation_note').val(),
                         "start_date": moment(new Date($('#start_date').val())).format('X'),
                         "saved": $('#save_payment').is(":checked")
                     },
@@ -105,7 +105,6 @@ _.extend(App, {
                         "postal_code": user_cursor.profile.address.postal_code,
                         "country": user_cursor.profile.address.country
                     },
-                    "URL": document.URL,
                     sessionId: Meteor.default_connection._lastSessionId
                 };
             }
@@ -120,6 +119,7 @@ _.extend(App, {
                     "donateTo": $("#donateTo").val(),
                     "donateWith": $("#donateWith").val(),
                     "dt_source": $('#dt_source').val(),
+                    "note": $('#donation_note').val(),
                     "is_recurring": $('#is_recurring').val(),
                     "saved": $('#save_payment').is(":checked"),
                     "start_date": moment(new Date($('#start_date').val())).format('X'),
@@ -140,7 +140,6 @@ _.extend(App, {
                     "country": $('#country').val(),
                     "created_at": moment().format('MM/DD/YYYY, hh:mma')
                 },
-                "URL": document.URL,
                 sessionId: Meteor.default_connection._lastSessionId
             };
         }

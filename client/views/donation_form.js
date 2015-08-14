@@ -157,11 +157,8 @@ Template.DonationForm.events({
 
 
         Session.set('showserve1000', 'no');
-        var goHere = window.location.href + '&dt_source=' + $('#options').val();
+        var goHere = window.location.href + '&note=' + $('#options').val();
         Router.go(goHere);
-
-        $('#campaignText').show();
-        Session.set("campaignName", $('#options option:selected').text());
       }
     },
     'blur #donation_form input': function (e){
@@ -246,6 +243,9 @@ Template.DonationForm.helpers({
     },
     dt_source: function () {
         return Session.get('params.dt_source');
+    },
+    donation_note: function () {
+      return Session.get('params.note');
     },
     today: function () {
         return moment().format('D MMM, YYYY');
