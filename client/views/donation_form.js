@@ -157,7 +157,8 @@ Template.DonationForm.events({
 
 
         Session.set('showserve1000', 'no');
-        var goHere = window.location.href + '&note=' + $('#options').val();
+        var goHere = window.location.href + '&note=' +
+          $('#options').val() + '&dt_source=' + 46583; //46583 is for Serve 1000
         Router.go(goHere);
       }
     },
