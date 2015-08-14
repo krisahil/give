@@ -236,7 +236,7 @@ Template.DonationForm.helpers({
     },
     campaign: function () {
       if(Session.equals('params.campaign', "Serve 1000")){
-        return "<h3>Thank You for giving to the Serve 1000 Campaign</h3>";
+        return "<h3>Thank You for Giving to the Serve 1000 Campaign</h3>";
       } else {
         return false;
       }
