@@ -16,10 +16,10 @@
                           <th>Fund Name</th>
                           <th>Donor Tools ID</th>
                       </tr>
-                      <tr>
+                      <tr id="63661" data-name="Where Most Needed">
                           <td><span class="glyphicon glyphicon-move" aria-hidden="true"></span></td>
-                          <td class="table-editable-content" contenteditable data-th="Name" value="Operations">Basecamp - Operations Expenses</td>
-                          <td class="table-editable-content" contenteditable data-th="Donor Tools ID">Adventure, Sci-fi</td>
+                          <td class="table-editable-content" contenteditable data-th="Name">Where Most Needed</td>
+                          <td class="table-editable-content" contenteditable data-th="Donor Tools ID">63661</td>
                       </tr>
                   </table>
               </section>
@@ -28,7 +28,7 @@
             <div class="row">
                 <label for="testDropdown">Dropdown Preview </label>
                 <select type="text" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
-                    <option>Test</option>
+                    <option>Where Most Needed</option>
                 </select>
             </div>
               <div class="row">
@@ -37,13 +37,12 @@
                       <table class="rwd-table sortableTables" id="DTFundsTable">
                           <caption contenteditable>Existing DonorTools Funds</caption>
                           <tr>
-                              <th><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Delete
-                              </th>
+                              <th></th>
                               <th>Fund Name</th>
                               <th>Donor Tools ID</th>
                           </tr>
                           {{#each dt_funds}}
-                              <tr id="{{id}}" data-name="{{nameValue}}">
+                              <tr id="{{id}}" data-name="{{name}}">
                                   <td><span class="glyphicon glyphicon-move" aria-hidden="true"></span></td>
                                   <td data-th="Name">{{name}}</td>
                                   <td data-th="Donor Tools ID">{{id}}</td>

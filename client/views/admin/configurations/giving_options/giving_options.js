@@ -6,16 +6,17 @@ function updateSelect(e, ui) {
   var myTable = $( e.target );
   var colArray = [];
   var tableColumn = myTable.find('tr:not(:first) td:nth-child(2)');
+  console.log( $( tableColumn[0] ) );
 
-  $('#testDropdown')
+  /*$('#testDropdown')
     .find('option')
-    .remove()
-    .end();
+    .remove();
 
   _.forEach(tableColumn, function(value){
+    console.log($(value));
     colArray.push($(value).text());
     $('#testDropdown').append('<option value="' + $(value).text() + '">' + $(value).text() + '</option>');
-  });
+  });*/
 
   console.log( colArray );
 }
@@ -39,15 +40,8 @@ Template.GivingOptions.helpers({
         order: 1
       }
     } );
-
-    /*menu_items.forEach( function (value) {
-      value.
-    });*/
-
     return menu_items;
   }
-});
-Template.GivingOptions.events({
 });
 
 
@@ -70,9 +64,9 @@ Template.GivingOptions.onRendered(function () {
     forceHelperSize: true,
     forcePlaceholderSize: true,
     connectWith: ".sortableTables",
-    receive: function ( e, ui ) {
+    /*receive: function ( e, ui ) {
       updateSelect (e, ui);
-    },
+    },*/
     update: function ( e, ui ) {
       updateSelect (e, ui);
     }
