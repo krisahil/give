@@ -7,7 +7,7 @@ Template.Progress.helpers({
 Template.Progress.onRendered(function () {
   var progressbar = $('progress'),
     max = progressbar.attr('max'),
-    time = (1000/max)*8,
+    time = (1000/max)*60,
     value = progressbar.val();
 
   var loading = function() {
