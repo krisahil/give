@@ -57,14 +57,13 @@
                 </div>
                 <div class="modal-body">
                     <p>We’re excited to have you join us for "Serve 1000" as we
-                        seek sustainability for 1000 children living in trash
-                        dumps communities worldwide. How did you hear about the
-                        campaign?</p>
-                    <select id="options" data-placeholder="Choose an event
-                    location...">
+                        provide hope for 1000 children living in trash
+                        dumps communities worldwide.</p>
+                    <select id="options" data-placeholder="How did you hear about the
+                        campaign?">
                         <option></option>
                         {{#each churchSources}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option value="{{name}} {{city}}"><strong>{{name}}</strong>  <i>{{city}}</i></option>
                         {{/each}}
                     </select>
                     <p>
