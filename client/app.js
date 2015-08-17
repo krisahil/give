@@ -2,6 +2,14 @@
 /* Client App Namespace  */
 /*****************************************************************************/
 _.extend(App, {
+  getCleanValue: function (id) {
+    var jqueryObjectVal = $(id).val();
+    return App.cleanupString(jqueryObjectVal);
+  },
+  cleanupString:  function (string) {
+    var cleanString = s(string).stripTags().trim().value();
+    return cleanString;
+  },
     get_fee: function (amount) {
         var r = (100 - 2.9) / 100;
         var i = (parseFloat(amount) + .3) / r;
@@ -35,15 +43,15 @@ _.extend(App, {
                 }
                 form = {
                     "paymentInformation": {
-                        "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                        "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
-                        "donateTo": $("#donateTo").val(),
-                        "writeIn": $("#enteredWriteInValue").val(),
-                        "donateWith": $('#donateWith').val(),
-                        "is_recurring": $('#is_recurring').val(),
+                        "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+                        "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
+                        "donateTo": App.getCleanValue("#donateTo"),
+                        "writeIn": App.getCleanValue("#enteredWriteInValue"),
+                        "donateWith": App.getCleanValue('#donateWith'),
+                        "is_recurring": App.getCleanValue('#is_recurring'),
                         "coverTheFees": $('#coverTheFees').is(":checked"),
                         "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                        "start_date": moment(new Date($('#start_date').val())).format('X'),
+                        "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
                         "saved": $('#save_payment').is(":checked"),
                         "send_scheduled_email": "no"
                     },
@@ -79,17 +87,17 @@ _.extend(App, {
 
                 form = {
                     "paymentInformation": {
-                        "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                        "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
-                        "donateTo": $("#donateTo").val(),
-                        "writeIn": $("#enteredWriteInValue").val(),
-                        "donateWith": $('#donateWith').val(),
-                        "is_recurring": $('#is_recurring').val(),
+                        "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+                        "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
+                        "donateTo": App.getCleanValue("#donateTo"),
+                        "writeIn": App.getCleanValue("#enteredWriteInValue"),
+                        "donateWith": App.getCleanValue('#donateWith'),
+                        "is_recurring": App.getCleanValue('#is_recurring'),
                         "coverTheFees": $('#coverTheFees').is(":checked"),
                         "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                        "dt_source": $('#dt_source').val(),
-                        "note": $('#donation_note').val(),
-                        "start_date": moment(new Date($('#start_date').val())).format('X'),
+                        "dt_source": App.getCleanValue('#dt_source'),
+                        "note": App.getCleanValue('#donation_note'),
+                        "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
                         "saved": $('#save_payment').is(":checked")
                     },
                     "customer": {
@@ -112,32 +120,32 @@ _.extend(App, {
         } else{
             form = {
                 "paymentInformation": {
-                    "amount": parseInt((($('#amount').val().replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                    "campaign": $('#dt_source').val(),
+                    "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+                    "campaign": App.getCleanValue('#dt_source'),
                     "coverTheFees": $('#coverTheFees').is(":checked"),
                     "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                    "donateTo": $("#donateTo").val(),
-                    "donateWith": $("#donateWith").val(),
-                    "dt_source": $('#dt_source').val(),
-                    "note": $('#donation_note').val(),
-                    "is_recurring": $('#is_recurring').val(),
+                    "donateTo": App.getCleanValue("#donateTo"),
+                    "donateWith": App.getCleanValue("#donateWith"),
+                    "dt_source": App.getCleanValue('#dt_source'),
+                    "note": App.getCleanValue('#donation_note'),
+                    "is_recurring": App.getCleanValue('#is_recurring'),
                     "saved": $('#save_payment').is(":checked"),
-                    "start_date": moment(new Date($('#start_date').val())).format('X'),
-                    "total_amount": parseInt(($('#total_amount').val() * 100).toFixed(0)),
-                    "writeIn": $("#enteredWriteInValue").val()
+                    "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
+                    "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
+                    "writeIn": App.getCleanValue("#enteredWriteInValue")
                 },
                 "customer": {
-                    "fname": $('#fname').val(),
-                    "lname": $('#lname').val(),
-                    "org": $('#org').val(),
-                    "email_address": $('#email_address').val(),
-                    "phone_number": $('#phone').val(),
-                    "address_line1": $('#address_line1').val(),
-                    "address_line2": $('#address_line2').val(),
-                    "region": $('#region').val(),
-                    "city": $('#city').val(),
-                    "postal_code": $('#postal_code').val(),
-                    "country": $('#country').val(),
+                    "fname": App.getCleanValue('#fname'),
+                    "lname": App.getCleanValue('#lname'),
+                    "org": App.getCleanValue('#org'),
+                    "email_address": App.getCleanValue('#email_address'),
+                    "phone_number": App.getCleanValue('#phone'),
+                    "address_line1": App.getCleanValue('#address_line1'),
+                    "address_line2": App.getCleanValue('#address_line2'),
+                    "region": App.getCleanValue('#region'),
+                    "city": App.getCleanValue('#city'),
+                    "postal_code": App.getCleanValue('#postal_code'),
+                    "country": App.getCleanValue('#country'),
                     "created_at": moment().format('MM/DD/YYYY, hh:mma')
                 },
                 sessionId: Meteor.default_connection._lastSessionId
@@ -145,7 +153,7 @@ _.extend(App, {
         }
 
 
-        form.paymentInformation.later = (!moment(new Date($('#start_date').val())).isSame(Date.now(), 'day'));
+        form.paymentInformation.later = (!moment(new Date(App.getCleanValue('#start_date'))).isSame(Date.now(), 'day'));
         if(!form.paymentInformation.later){
             form.paymentInformation.start_date = 'today';
         }
@@ -161,10 +169,10 @@ _.extend(App, {
             if(quick_form){
                 card_info = {
                     name: user_cursor.profile.fname + ' ' + user_cursor.profile.lname,
-                    number: $('#card_number').val(),
-                    cvc: $('#cvv').val(),
-                    exp_month: $('#expiry_month').val(),
-                    exp_year: $('#expiry_year').val(),
+                    number: App.getCleanValue('#card_number'),
+                    cvc: App.getCleanValue('#cvv'),
+                    exp_month: App.getCleanValue('#expiry_month'),
+                    exp_year: App.getCleanValue('#expiry_year'),
                     address_line1: user_cursor.profile.address.address_line1,
                     address_line2: user_cursor.profile.address.address_line2,
                     address_city: user_cursor.profile.address.city,
@@ -174,17 +182,17 @@ _.extend(App, {
                 };
             } else{
                 card_info = {
-                    name: $('#fname').val() + ' ' + $('#lname').val(),
-                    number: $('#card_number').val(),
-                    cvc: $('#cvv').val(),
-                    exp_month: $('#expiry_month').val(),
-                    exp_year: $('#expiry_year').val(),
-                    address_line1: $('#address_line1').val(),
-                    address_line2: $('#address_line2').val(),
-                    address_city: $('#city').val(),
-                    address_state: $('#region').val(),
-                    address_zip: $('#postal_code').val(),
-                    address_country: $('#country').val()
+                    name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
+                    number: App.getCleanValue('#card_number'),
+                    cvc: App.getCleanValue('#cvv'),
+                    exp_month: App.getCleanValue('#expiry_month'),
+                    exp_year: App.getCleanValue('#expiry_year'),
+                    address_line1: App.getCleanValue('#address_line1'),
+                    address_line2: App.getCleanValue('#address_line2'),
+                    address_city: App.getCleanValue('#city'),
+                    address_state: App.getCleanValue('#region'),
+                    address_zip: App.getCleanValue('#postal_code'),
+                    address_country: App.getCleanValue('#country')
                 };
             }
 
@@ -197,8 +205,8 @@ _.extend(App, {
             if(quick_form){
                 bank_info = {
                     name: user_cursor.profile.fname + ' ' + user_cursor.profile.lname,
-                    account_number: $('#account_number').val(),
-                    routing_number: $('#routing_number').val(),
+                    account_number: App.getCleanValue('#account_number'),
+                    routing_number: App.getCleanValue('#routing_number'),
                     address_line1: user_cursor.profile.address.address_line1,
                     address_line2: user_cursor.profile.address.address_line2,
                     address_city: user_cursor.profile.address.city,
@@ -208,15 +216,15 @@ _.extend(App, {
                 };
             } else{
                 bank_info = {
-                    name: $('#fname').val() + ' ' + $('#lname').val(),
-                    account_number: $('#account_number').val(),
-                    routing_number: $('#routing_number').val(),
-                    address_line1: $('#address_line1').val(),
-                    address_line2: $('#address_line2').val(),
-                    address_city: $('#city').val(),
-                    address_state: $('#region').val(),
-                    address_zip: $('#postal_code').val(),
-                    country: $('#country').val()
+                    name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
+                    account_number: App.getCleanValue('#account_number'),
+                    routing_number: App.getCleanValue('#routing_number'),
+                    address_line1: App.getCleanValue('#address_line1'),
+                    address_line2: App.getCleanValue('#address_line2'),
+                    address_city: App.getCleanValue('#city'),
+                    address_state: App.getCleanValue('#region'),
+                    address_zip: App.getCleanValue('#postal_code'),
+                    country: App.getCleanValue('#country')
                 };
             }
             App.process_bank(bank_info, form);
@@ -426,221 +434,5 @@ _.extend(App, {
             }
             $('#amount').val("1.03");
         }
-    }
-});
-
-App.helpers = {
-};
-
-_.each(App.helpers, function (helper, key) {
-  UI.registerHelper(key, helper);
-});
-
-UI.registerHelper('formatTime', function(context, options) {
-  if(context)
-    return moment(context).format('MM/DD/YYYY, hh:mma');
-});
-
-UI.registerHelper('shortIt', function(stringToShorten, maxCharsAmount){
-  if(stringToShorten.length <= maxCharsAmount){
-    return stringToShorten;
-  }
-  return stringToShorten.substring(0, maxCharsAmount);
-});
-
-UI.registerHelper('twoDecimalPlaces', function(stringToAddDecimal){
-  return parseFloat(Math.round(stringToAddDecimal) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-});
-
-UI.registerHelper('formatDate', function(context, options) {
-    if(context)
-        return moment(context).format('MMM DD, YYYY');
-});
-
-UI.registerHelper('logged_in', function(context) {
-    if(Meteor.user()){
-        switch(context){
-            case "fname":
-                return Meteor.user().profile.fname;
-                break;
-            case "lname":
-                return Meteor.user().profile.lname;
-                break;
-            case "email":
-                return Meteor.user().emails[0].address;
-                break;
-            case "line1":
-                return Meteor.user().profile.address.line1;
-                break;
-            case "line2":
-                return Meteor.user().profile.address.line2;
-                break;
-            case "city":
-                return Meteor.user().profile.address.city;
-                break;
-            case "state":
-                return Meteor.user().profile.address.state;
-                break;
-            case "postal_code":
-                return Meteor.user().profile.address.postal_code;
-                break;
-            case "phone":
-                return Meteor.user().profile.phone;
-                break;
-            case "business_name":
-                if(Meteor.user().profile.business_name){
-                    return  Meteor.user().profile.business_name;
-                }
-                break;
-            default:
-                return;
-        }
-    }
-    else{
-        return;
-    }
-});
-
-/*
- * Epoch to String
- * Convert a UNIX epoch string to human readable time.
- */
-
-UI.registerHelper('epochToString', function(timestamp){
-    if (timestamp){
-        var length = timestamp.toString().length;
-        if ( length === 10 ) {
-            return moment.unix(timestamp).format("MMMM Do, YYYY");
-        } else {
-            return moment.unix(timestamp / 1000).format("MMMM Do, YYYY");
-        }
-    }
-});
-
-/*
- * If Equals
- * Take the two passed values and compare them, returning true if they're equal
- * and false if they're not.
- */
-
-UI.registerHelper('equals', function(c1,c2){
-    // If case1 is equal to case2, return true, else false.
-    return c1 == c2 ? true : false;
-});
-
-/*
- * Cents to Dollars
- * Take the passed value in cents and convert it to USD.
- */
-
-UI.registerHelper('centsToDollars', function(cents){
-    return "$" + cents / 100;
-});
-
-/*
- * Percentage
- * Take the two passed values, divide them, and multiply by 100 to return percentage.
- */
-
-UI.registerHelper('percentage', function(v1,v2){
-    return ( parseInt(v1) / parseInt(v2) ) * 100 + "%";
-});
-
-/*
- * Capitalize
- * Take the passed string and capitalize it. Helpful for when we're pulling
- * data out of the database that's stored in lowercase.
- */
-
-UI.registerHelper('capitalize', function(string){
-    if (string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-});
-
-/*
- * Limit String
- * Return the proper string based on the number of lists.
- */
-
-UI.registerHelper('limitString', function(limit){
-    return limit > 1 ? limit + " lists" : limit + " list";
-});
-
-/*
- * Plan
- * Get the current subscription data for our user. We set this up as a UI helper
- * because we'll need to reference this information more than once.
- */
-
-UI.registerHelper('plan', function(){
-    // Get the current user.
-    var user = Meteor.userId(),
-        plan = Session.get('currentUserPlan_' + user);
-    // If we have a user, call to checkUserPlan on the server to determine
-    // their current plan. We do this so that we don't have to publish the user's
-    // subscription data to the client.
-    if ( user ) {
-        Meteor.call('checkUserPlan', user, function(error, response){
-            if (error) {
-                alert(error.reason);
-            } else {
-                // Get the response from the server and set it equal to the user's
-                // unique session variable (this will be either true or false).
-                Session.set('currentUserPlan_' + user, response);
-            }
-        });
-    }
-    // Return the result of the method being called.
-    return plan;
-});
-
-/*
- * Current Route
- * Return an active class if the currentRoute session variable name
- * (set in the appropriate file in /client/routes/) is equal to the name passed
- * to the helper in the template.
- */
-
-UI.registerHelper('currentRoute', function(route){
-    return Session.equals('currentRoute', route) ? 'active' : '';
-});
-
-UI.registerHelper('MeteorUser', function(){
-    if(Meteor.user()){
-        return true;
-    } else{
-        return false;
-    }
-});
-
-
-UI.registerHelper('campaign', function() {
-    var campaign = Session.get('params.campaign');
-    if(campaign === '') {
-        return false;
-    } else if (campaign === 'Aquaponics Marketplace - Rhiza'){
-        return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
-    } else if (campaign === 'Aquaponics Marketplace - Karpos'){
-        return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
-    }
-});
-
-
-UI.registerHelper('locked_amount', function () {
-    var locked = Session.get("params.locked_amount");
-    if(locked === 'true') {
-        return true;
-    } else {
-        return false;
-    }
-});
-
-UI.registerHelper('locked_frequency', function () {
-    var locked = Session.get("params.locked_frequency");
-    if(locked === 'true') {
-        return true;
-    } else {
-        return false;
     }
 });

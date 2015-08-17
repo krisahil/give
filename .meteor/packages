@@ -30,3 +30,4 @@ wylio:winston-papertrail
 twbs:bootstrap
 eskan:chosen
 msavin:jetsetter
+underscorestring:underscore.string
