@@ -17,7 +17,7 @@ Template.Progress.onRendered(function () {
 
       $('.progress-value').html(value + ' Children Sponsored');
 
-      if (value === 350) {
+      if (value === 327) {
         clearInterval(animate);
       }
     };

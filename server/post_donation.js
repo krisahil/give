@@ -513,8 +513,10 @@ _.extend(Utils, {
             } else {
                 fund_id = dt_fund;
                 memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
-                    toUpperCase() + charge.metadata.frequency.slice(1) + " " +
-                  charge.metadata.note;
+                    toUpperCase() + charge.metadata.frequency.slice(1);
+              if(charge && charge.metadata && charge.metadata.note){
+                memo = memo + " " + charge.metadata.note;
+              }
             }
 
             var newDonationResult;
@@ -687,30 +689,32 @@ _.extend(Utils, {
             //fund_id 65663 is the No-Match-Found fund used to help reconcile
             // write-in gifts and those not matching a fund in DT
             var fund_id, memo;
-            if(!dt_fund) {
-                fund_id = Meteor.settings.donor_tools_default_fund_id;
-                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
-                    toUpperCase() + charge.metadata.frequency.slice(1) + " " + donateTo;
+            if( !dt_fund ) {
+              fund_id = Meteor.settings.donor_tools_default_fund_id;
+              memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
+                toUpperCase() + charge.metadata.frequency.slice(1) + " " + donateTo;
 
             } else {
-                fund_id = dt_fund;
-                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
-                    toUpperCase() + charge.metadata.frequency.slice(1) + " " +
-                  charge.metadata.note;
+              fund_id = dt_fund;
+              memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
+                toUpperCase() + charge.metadata.frequency.slice(1);
+              if( charge && charge.metadata && charge.metadata.note ){
+                memo = memo + " " + charge.metadata.note;
+              }
             }
             var source_id;
 
-            if (customer && customer.metadata && customer.metadata.business_name){
+            if ( customer && customer.metadata && customer.metadata.business_name ){
                 source_id = 42776;
             }
-            if(charge.metadata && charge.metadata.dt_source){
+            if( charge.metadata && charge.metadata.dt_source ){
                 source_id = charge.metadata.dt_source;
             } else {
                 source_id = 42754;
             }
             var persona_id;
 
-            if(customer.metadata && customer.metadata.business_name && persona_info.length > 1) {
+            if( customer.metadata && customer.metadata.business_name && persona_info.length > 1 ) {
                 //We want to use a specific id if we have a business and there are more than one dt account involved
                 persona_id = Utils.get_business_persona(persona_info, true);
             } else if(customer.metadata && persona_info.length > 1) {
