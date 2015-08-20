@@ -2089,7 +2089,7 @@ fieldset[disabled] .input-group-btn .btn-default.active {
   padding-left: 32px;
   margin-bottom: 12px;
   font-size: 14px;
-  line-height: 1.5;
+  /*line-height: 1.5;*/
   -webkit-transition: color .25s linear;
           transition: color .25s linear;
   }

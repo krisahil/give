@@ -2,56 +2,42 @@
   <div class="ResponsiveTable">
     <div class="container-fluid">
       <div class="row">
-          <div class="col col-lg-6" id="appendTablesHere">
-            <p>Construct your giving list drag the <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
-             icon to the correct order. Click the <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
-             icon to delete a group.</p>
+          <div class="col col-lg-3" id="appendTablesHere">
+            <h6>1. Check the items you want and add grouping</h6>
             <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
-              <section>
-                <table id="groupTable1" class="rwd-table sortableTables">
-                  <caption class="" id="groupCaption1"></caption>
-                  <tr>
-                      <th><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Delete
-                      </th>
-                      <th>Fund Name</th>
-                      <th>Donor Tools ID</th>
-                  </tr>
-                  <tr id="63661" data-name="Where Most Needed">
-                      <td><span class="glyphicon glyphicon-move" aria-hidden="true"></span></td>
-                      <td class="table-editable-content" contenteditable data-th="Name">Where Most Needed</td>
-                      <td class="table-editable-content" contenteditable data-th="Donor Tools ID">63661</td>
-                  </tr>
-                </table>
+              <section class="column-bordered">
+                  <div id="givingOptionsDiv">
+                      <form role="form">
+                        <div class="form-group">
+                          {{#each dt_funds}}
+                              <label for="{{id}}" class="checkbox">
+                                  <input id="{{id}}" data-toggle="checkbox" type="checkbox" value="{{id}}" class="sortable" data-name="{{name}}">  {{name}}
+                              </label>
+                          {{/each}}
+                        </div>
+                      </form>
+                  </div>
               </section>
           </div>
-          <div class="col col-lg-6">
+          <div class="col col-lg-1"></div>
+          <div class="col col-lg-3">
             <div class="row">
-                <label for="testDropdown">Dropdown Preview </label>
-                <select type="text" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
-                    <option>Where Most Needed</option>
-                </select>
+                <h6>2. Drag into the right order.</h6>
+              <section class="column-bordered">
+                <div class="sortable" id="selectedGivingOptionsDiv">
+                </div>
+              </section>
             </div>
-              <div class="row">
-                  <section>
-                      <button id="updateDTFunds" class="btn btn-primary"><i class="fa fa-refresh"></i> Update DT Funds</button>
-                      <table class="rwd-table sortableTables" id="DTFundsTable">
-                          <caption contenteditable>Existing DonorTools Funds</caption>
-                          <tr>
-                              <th></th>
-                              <th>Fund Name</th>
-                              <th>Donor Tools ID</th>
-                          </tr>
-                          {{#each dt_funds}}
-                              <tr id="{{id}}" data-name="{{name}}">
-                                  <td><span class="glyphicon glyphicon-move" aria-hidden="true"></span></td>
-                                  <td data-th="Name">{{name}}</td>
-                                  <td data-th="Donor Tools ID">{{id}}</td>
-                              </tr>
-                          {{/each}}
-                      </table>
-                  </section>
-              </div>
           </div>
+          <div class="col col-lg-1"></div>
+          <div class="col col-lg-3">
+            <div class="row">
+              <h6>3. Save your list.</h6>
+              <button id="updateDropdown" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+              <label for="testDropdown">Dropdown Preview</label><br>
+              <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,49 +1,12 @@
-function updateSelect(e, ui) {
-  console.log("Updated");
 
-  $('#appendTablesHere table').each( function ( ) {
-
-    console.log($(this));
-
-    var thisGroupCaptionID = $( this ).attr('id');
-
-    console.log($(thisGroupCaptionID ).caption());
-
-    var thisOptGroup = $('#testDropdown').find('optgroup[data-id="' + thisGroupCaptionID + '"]' );
-
-    if(thisOptGroup){
-      console.log(thisOptGroup);
-
-      $('#testDropdown').find('optGroup[label="'+ thisOptGroup + '"' ).children().remove();
-
-      var colArray = [];
-      var tableColumn = $(this).find('tr:not(:first) td:nth-child(2)');
-      console.log( $( tableColumn[0] ) );
-      var nextGroupID = 'test';
-
-      _.forEach(tableColumn, function(value){
-        colArray.push($(value).text());
-        $('#testDropdown').append('<option value="' + $(value).text() + '">' + $(value).text() + '</option>');
-      });
-      $('#testDropdown').append('<optgroup data-id="' + nextGroupID + '' +
-        '" label="Group name (click me to edit)">');
-    }
-
-  });
-
-}
 
 
 function sortableFunction () {
-  $(".sortableTables").sortable({
-    items: 'tr:not(:first)',
+  $(".sortable").sortable({
     cursor: 'move',
-    handle: '.glyphicon-move',
-    stack : '#set tr',
     dropOnEmpty: true,
     forceHelperSize: true,
     forcePlaceholderSize: true,
-    connectWith: ".sortableTables",
     update: function ( e, ui ) {
       console.log( $(this).attr('id') );
       if( $(this).attr('id') === "DTFundsTable" || $(this).attr('id') == undefined) {
@@ -95,67 +58,97 @@ function sortableFunction () {
 /*****************************************************************************/
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
-    var lastTableID, nextID, lastGroupID, nextGroupID;
 
-    console.log( "Got to addGroupButton Click" );
-    lastTableID = $( '#appendTablesHere table:last' ).attr( 'id' );
-    lastGroupID = $( '#appendTablesHere table:last caption' ).attr( 'id' );
-    nextID = lastTableID .replace(/(\d+)+/g, function(match, number) {
-      return parseInt(number)+1;
+    var content= "";
+    content += "<input class='form-control slim-borders groupName' placeholder='Group name'>";
+    content += "<\/input>";
+
+    $( content ).appendTo('#selectedGivingOptionsDiv');
+  },
+  'click #updateDropdown': function () {
+    console.log("saving");
+
+    var group = $('#selectedGivingOptionsDiv').children();
+    var arrayNames = [];
+
+    // Empty the select list
+    //$( '#testDropdown' ).empty();
+
+    var optgroupName = 0;
+
+    group.each(function (el) {
+      console.log($(this).children('input').val());
+      }
+    );
+
+    group.each(function () {
+      if( $(this).children('input').val() ) {
+        console.log("Val: " + $(this).children('input').val());
+        if( optgroupName !== 0 ){
+          console.log(optgroupName);
+          var insertHere = _.findWhere(arrayNames, {text: optgroupName});
+          console.log(insertHere);
+          insertHere.children.push({
+            id: $(this).children('input').val(),
+            text: $(this).children('input').attr('data-name')
+          });
+        } else {
+          arrayNames.push({
+            id: $(this).children('input').val(),
+            text: $(this).children('input').attr('data-name')
+          });
+        }
+      } else {
+        console.log($(this).val());
+        optgroupName = $(this).val();
+        arrayNames.push({
+          text: $(this).val(),
+          children: []
+        });
+      }
     });
 
-    nextGroupID = lastGroupID .replace(/(\d+)+/g, function(match, number) {
-      return parseInt(number)+1;
+    $('#testDropdown' ).select2( {
+      data:        arrayNames,
+      placeholder: "Select an option"
     });
+    console.log(arrayNames);
+
+    // TODO: rewrite all of this to just update the session object
+    // TODO: have iron router load the session object up with the previously saved value from the giving options collection or config collection
 
 
-    console.log(nextID);
+    // TODO: don't show the source on the left column if it is already loaded into the list
 
-    var content="";
-    content += '<section>';
-    content += '<table id="' + nextID + '" class="rwd-table sortableTables">';
-    content += '<caption contenteditable class="groupName" id="' + nextGroupID +'"';
-    content += "groupCaption1\">Group name (click me to edit)<\/caption>";
-    content += "<tr>";
-    content += "<th><span class=\"glyphicon glyphicon-minus-sign\" aria-hidden=\"true\"><\/span> Delete";
-    content += "<\/th>";
-    content += "<th>Fund Name<\/th>";
-    content += "<th>Donor Tools ID<\/th>";
-    content += "<\/tr>";
-    content += "<tr id=\"63661\" data-name=\"Where Most Needed\">";
-    content += "<td><span class=\"glyphicon glyphicon-move\" aria-hidden=\"true\"><\/span><\/td>";
-    content += "<td class=\"table-editable-content\" contenteditable data-th=\"Name\">Where Most Needed<\/td>";
-    content += "<td class=\"table-editable-content\" contenteditable data-th=\"Donor Tools ID\">63661<\/td>";
-    content += "<\/tr>";
-    content += "<\/table>";
-    content += "<\/section>";
-
-    $( '#appendTablesHere' ).append( content );
-    sortableFunction ();
-
-    $('#testDropdown').append('<optgroup data-id="' + nextGroupID + '' +
-      '" label="Group name (click me to edit)">\n<option>Where Most Needed</option>\n</optgroup>');
+    // TODO: when unchecking, the items should go back to their alphabetic place in the list on the left
   },
-  'blur .groupName': function ( e ) {
-    console.log($( e.target ).text());
-    var thisGroupID = $( e.target ).attr('id');
-    var newLabel = $( e.target ).text();
+  'click .checkbox': function(event) {
+    event.preventDefault();
+    console.log( $(event.target) );
+    console.log( $(event.target).text() );
+    $(event.target).radiocheck('toggle');
 
+    var givingOptionsChecked;
+    if($(event.target).is(":checked")){
 
-    $('#testDropdown').find('optgroup[data-id="' + thisGroupID + '"]' ).attr('label', newLabel);
-    $('#testDropdown').change();
-  },
-  'click .groupName': function ( e ) {
+      givingOptionsChecked = Session.get("givingOptionsChecked");
+      givingOptionsChecked = _.extend([], givingOptionsChecked);
+      givingOptionsChecked.push({
+        "value": $(event.target).val(),
+        "name": s( $(event.target).attr('data-name') ).trim().value()
+      });
+      Session.set("givingOptionsChecked", givingOptionsChecked);
+      $( event.target ).closest('label').appendTo('#selectedGivingOptionsDiv');
+    } else {
+      givingOptionsChecked = Session.get("givingOptionsChecked");
+      givingOptionsChecked = _.extend([], givingOptionsChecked);
 
-    var thisGroupID = $( e.target ).attr('id');
-
-    if($( e.target ).text() === 'Group name (click me to edit)'){
-      $( e.target ).text('');
+      var newCheckedOptions = _.reject(givingOptionsChecked, function (element) {
+        return element.value === $(event.target ).val();
+      } );
+      Session.set("givingOptionsChecked", newCheckedOptions);
+      $( event.target ).closest('label').appendTo('#givingOptionsDiv');
     }
-    else {
-    }
-
-
   }
 });
 
@@ -188,7 +181,93 @@ Template.GivingOptions.onRendered(function () {
   // Start the function to setup the table connections and make them sortable
   sortableFunction ();
 
-  $('#testDropdown').select2({dropdownCssClass: 'dropdown-inverse'});
+  function insertCheckbox(el) {var content = '<label for="' + el.id + '" class="checkbox" >';
+    content += '<input type="checkbox" data-toggle="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable custom-checkbox" data-name="' + el.text + '">  ' + el.text;
+    content += '<\/label>';
+    $( content ).appendTo( $('#selectedGivingOptionsDiv') );
+  }
+
+  var temp1 = [
+    {
+      "id": "60463",
+      "text": "BaseCamp - Brett Durbin"
+    },
+    {
+      "id": "60464",
+      "text": "BaseCamp - Jon DeMeo"
+    },
+    {
+      "text": "Test",
+      "children": [
+        {
+          "id": "60465",
+          "text": "BaseCamp - Shelley Setchell"
+        },
+        {
+          "id": "60480",
+          "text": "BaseCamp - John Kazaklis"
+        }
+      ]
+    },
+    {
+      "text": "Test1",
+      "children": [
+        {
+          "id": "60489",
+          "text": "Int'l Field Projects - Honduras"
+        },
+        {
+          "id": "63656",
+          "text": "BaseCamp"
+        }
+      ]
+    },
+    {
+      "text": "Test2",
+      "children": [
+        {
+          "id": "63656",
+          "text": "BaseCamp"
+        }
+      ]
+    },
+    {
+      "text": "Test3",
+      "children": [
+        {
+          "id": "60489",
+          "text": "Int'l Field Projects - Honduras"
+        }
+      ]
+    }
+  ];
+
+  $('#testDropdown').select2({
+    data: temp1,
+    dropdownCssClass: 'dropdown-inverse'
+  });
+
+  var insertDiv = $('#selectedGivingOptionsDiv');
+  temp1.forEach(function(value) {
+    console.log(value)
+    if(value.children) {
+      console.log("Got Parent");
+      console.log(value.text);
+      var content= "";
+      content += "<input class='form-control slim-borders groupName' value='" + value.text + "'>";
+      $( content ).appendTo( insertDiv );
+      value.children.forEach(function (el) {
+        insertCheckbox(el);
+      })
+    } else {
+      insertCheckbox(value);
+    }
+  });
+
+
+  $(':checkbox').radiocheck();
+
+  Session.set("givingOptionsChecked", temp1);
 
 });
 

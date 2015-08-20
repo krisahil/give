@@ -597,18 +597,21 @@ _.extend(Utils, {
         });
     },
     insert_each_dt_fund: function(fund){
-        logger.info("Inside insert_each_dt_fund with " + fund.id);
+      logger.info("Inside insert_each_dt_fund with " + fund.id);
 
+      fund.id = fund.id.toString();
         //Insert each donation into the DT_funds collection
         fund._id = fund.id;
         DT_funds.upsert({_id: fund._id}, fund);
     },
     insert_each_dt_source: function(source){
-        logger.info("Inside insert_each_dt_source with " + source.id);
+      logger.info("Inside insert_each_dt_source with " + source.id);
 
-        //Insert each donation into the DT_funds collection
-        source._id = source.id;
-        DT_sources.upsert({_id: source._id}, source);
+      source.id = source.id.toString();
+
+      //Insert each donation into the DT_funds collection
+      source._id = source.id;
+      DT_sources.upsert({_id: source._id}, source);
     },
     get_all_dt_donations: function(persona_ids) {
         try {

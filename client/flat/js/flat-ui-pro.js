@@ -31941,7 +31941,7 @@ requires jQuery 1.7+
  * flatui-radiocheck v0.1.0
  * ============================================================ */
 
-+function (global, $) {
+/*+function (global, $) {
   'use strict';
 
   var Radiocheck = function (element, options) {
@@ -32053,4 +32053,4 @@ requires jQuery 1.7+
     return this;
   };
 
-}(this, jQuery);
+}(this, jQuery);*/

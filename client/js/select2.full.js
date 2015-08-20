@@ -1,10 +1,11 @@
-/*!
+/*
+/!*!
  * Select2 4.0.0
  * https://select2.github.io
  *
  * Released under the MIT license
  * https://github.com/select2/select2/blob/master/LICENSE.md
- */
+ *!/
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -29,15 +30,15 @@
             }
             var S2;(function () { if (!S2 || !S2.requirejs) {
                 if (!S2) { S2 = {}; } else { require = S2; }
-                /**
+                /!**
                  * @license almond 0.2.9 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
                  * Available via the MIT or new BSD license.
                  * see: http://github.com/jrburke/almond for details
-                 */
+                 *!/
 //Going sloppy to avoid 'use strict' string cost, but strict practices should
 //be followed.
-                /*jslint sloppy: true */
-                /*global setTimeout: false */
+                /!*jslint sloppy: true *!/
+                /!*global setTimeout: false *!/
 
                 var requirejs, require, define;
                 (function (undef) {
@@ -54,14 +55,14 @@
                         return hasOwn.call(obj, prop);
                     }
 
-                    /**
+                    /!**
                      * Given a relative module name, like ./something, normalize it to
                      * a real name that can be mapped to a path.
                      * @param {String} name the relative name
                      * @param {String} baseName a real name that the name arg is relative
                      * to.
                      * @returns {String} normalized name
-                     */
+                     *!/
                     function normalize(name, baseName) {
                         var nameParts, nameSegment, mapValue, foundMap, lastIndex,
                             foundI, foundStarMap, starI, i, j, part,
@@ -224,11 +225,11 @@
                         return [prefix, name];
                     }
 
-                    /**
+                    /!**
                      * Makes a name map, normalizing the name, and using a plugin
                      * for normalization if necessary. Grabs a ref to plugin
                      * too, as an optimization.
-                     */
+                     *!/
                     makeMap = function (name, relName) {
                         var plugin,
                             parts = splitPrefix(name),
@@ -417,17 +418,17 @@
                         return req;
                     };
 
-                    /**
+                    /!**
                      * Just drops the config on the floor, but returns req in case
                      * the config return value is used.
-                     */
+                     *!/
                     req.config = function (cfg) {
                         return req(cfg);
                     };
 
-                    /**
+                    /!**
                      * Expose module registry for debugging and tooling
-                     */
+                     *!/
                     requirejs._defined = defined;
 
                     define = function (name, deps, callback) {
@@ -456,7 +457,7 @@
             }());
             S2.define("almond", function(){});
 
-            /* global jQuery:false, $:false */
+            /!* global jQuery:false, $:false *!/
             S2.define('jquery',[],function () {
                 var _$ = jQuery || $;
 
@@ -1885,13 +1886,13 @@
                         });
                 };
 
-                /**
+                /!**
                  * This method will transfer the tabindex attribute from the rendered
                  * selection to the search box. This allows for the search box to be used as
                  * the primary focus instead of the selection container.
                  *
                  * @private
-                 */
+                 *!/
                 Search.prototype._transferTabIndex = function (decorated) {
                     this.$search.attr('tabindex', this.$selection.attr('tabindex'));
                     this.$selection.attr('tabindex', '-1');
@@ -5186,10 +5187,10 @@
                     }
                 };
 
-                /**
+                /!**
                  * Override the trigger method to automatically trigger pre-events when
                  * there are events that can be prevented.
-                 */
+                 *!/
                 Select2.prototype.trigger = function (name, args) {
                     var actualTrigger = Select2.__super__.trigger;
                     var preTriggerMap = {
@@ -5937,13 +5938,13 @@
                 return Select2;
             });
 
-            /*!
+            /!*!
              * jQuery Mousewheel 3.1.12
              *
              * Copyright 2014 jQuery Foundation and other contributors
              * Released under the MIT license.
              * http://jquery.org/license
-             */
+             *!/
 
             (function (factory) {
                 if ( typeof S2.define === 'function' && S2.define.amd ) {
@@ -6177,4 +6178,4 @@
 
     // Return the Select2 instance for anyone who is importing it.
     return select2;
-}));
+}));*/
