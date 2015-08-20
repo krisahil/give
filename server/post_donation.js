@@ -168,9 +168,15 @@ _.extend(Utils, {
 
             var personResult;
             if(use_id){
-                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
-                    auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+              if(id[0]){
+                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id[0] + ".json", {
+                  auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
                 });
+              } else {
+                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
+                  auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+                });
+              }
             } else {
                 personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
                     auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
