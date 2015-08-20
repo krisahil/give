@@ -82,12 +82,30 @@ _.extend(Utils, {
     },
     for_each_persona_insert: function(id_or_info, user_id) {
         logger.info("Started for_each_persona_insert.");
+      console.log(id_or_info);
 
         if(id_or_info && id_or_info.length){
             if(id_or_info[0].id){
+              console.log(user_id);
+
+              //Start from scratch
+              var updateThisThing = Meteor.users.update({_id: user_id._id}, {$set: {'persona_info': []}});
+              console.log(updateThisThing);
+
                 // forEach of the persona ids stored in the array run the insert_persona_info_into_user function
-                id_or_info.forEach(function(element){
-                    var results_of_repeat = Utils.insert_persona_info_into_user(user_id, element);
+                id_or_info.forEach( function( element ){
+                  console.log(element.id);
+                  HTTP.call("GET", Meteor.settings.donor_tools_site + "/people/" + element.id + ".json",
+                    { auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password },
+                    function ( error, result ) {
+                      if ( !error ) {
+                        console.log("No error, moving to insert");
+                        console.log("element.id: " + element.id);
+                        Utils.insert_persona_info_into_user( user_id, element );
+                      } else {
+                        Utils.remove_persona_info_from_user( user_id, element );
+                      }
+                    });
                 });
             } else {
                 id_or_info.forEach(function(element){
@@ -167,9 +185,6 @@ _.extend(Utils, {
         logger.info( "ID: " );
         logger.info( id );
 
-        //TODO: if the get request fails with a 404 then there is a chance we moved the donor. Need to search for the donor and update the DT id
-        //TODO: I can't think of a great way to make this work pragmatically since the donation may have already been inserted as pending when the change was made
-        //TODO: or if not the audit may show that the donation was inserted when it wasn't
         var personResult;
         if( use_id ){
           personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
@@ -181,11 +196,17 @@ _.extend(Utils, {
           });
         }
 
-        //TODO: insert the function for getting the persona_info
         var persona_info = Utils.split_dt_persona_info( email, personResult );
         return persona_info;
 
       } catch ( e ) {
+        // Try to search for the person instead, we might have moved them or merged them
+        personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
+          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+        });
+        if(personResult) {
+          return personResult;
+        }
         logger.info( e );
         var error = ( e.response );
         throw new Meteor.Error( error, e._id );
@@ -640,16 +661,28 @@ _.extend(Utils, {
         }
     },
     insert_persona_info_into_user: function(user_id, persona_info) {
-        //Insert the donor tools persona id into the user record
-        logger.info("Started insert_persona_info_into_user");
+      //Insert the donor tools persona id into the user record
+      logger.info("Started insert_persona_info_into_user");
+      console.log(persona_info);
 
-        if(Meteor.users.findOne({_id: user_id._id, 'persona_info.id': persona_info.id})){
-            Meteor.users.update({_id: user_id._id, 'persona_info.id': persona_info.id}, {$set: {'persona_info.$': persona_info}});
-        } else {
-            Meteor.users.update(user_id, {$addToSet: {'persona_info': persona_info}});
-        }
-        return;
+      if(Meteor.users.findOne({_id: user_id._id, 'persona_info.id': persona_info.id})){
+          Meteor.users.update({_id: user_id._id, 'persona_info.id': persona_info.id}, {$set: {'persona_info.$': persona_info}});
+      } else {
+          Meteor.users.update(user_id, {$addToSet: {'persona_info': persona_info}});
+      }
+      return;
     },
+  remove_persona_info_from_user: function(user_id, persona_info) {
+    //Remove an old donor tools persona id from the user record
+    logger.info("Started remove_persona_info_from_user");
+    logger.info("ID: ");
+    logger.info(user_id);
+
+    if(Meteor.users.findOne({_id: user_id._id, 'persona_info.id': persona_info.id})){
+      Meteor.users.update({_id: user_id._id}, {$pull: {persona_info: {id: persona_info.id}}});
+    }
+    return;
+  },
     insert_donation_into_dt: function (customer_id, user_id, persona_info, charge_id){
         try {
             logger.info("Started insert_donation_into_dt");
