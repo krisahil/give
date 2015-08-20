@@ -164,7 +164,7 @@ _.extend(Utils, {
         /*try {*/
             //This function is used to get all of the persona_id s from DT if they exist or return false if none do
             logger.info("Started check_for_dt_user");
-            logger.info(id);
+            logger.info(id[0]);
 
             var personResult;
             if(use_id){
