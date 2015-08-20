@@ -82,12 +82,30 @@ _.extend(Utils, {
     },
     for_each_persona_insert: function(id_or_info, user_id) {
         logger.info("Started for_each_persona_insert.");
+      console.log(id_or_info);
 
         if(id_or_info && id_or_info.length){
             if(id_or_info[0].id){
+              console.log(user_id);
+
+              //Start from scratch
+              var updateThisThing = Meteor.users.update({_id: user_id._id}, {$set: {'persona_info': []}});
+              console.log(updateThisThing);
+
                 // forEach of the persona ids stored in the array run the insert_persona_info_into_user function
-                id_or_info.forEach(function(element){
-                    var results_of_repeat = Utils.insert_persona_info_into_user(user_id, element);
+                id_or_info.forEach( function( element ){
+                  console.log(element.id);
+                  HTTP.call("GET", Meteor.settings.donor_tools_site + "/people/" + element.id + ".json",
+                    { auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password },
+                    function ( error, result ) {
+                      if ( !error ) {
+                        console.log("No error, moving to insert");
+                        console.log("element.id: " + element.id);
+                        Utils.insert_persona_info_into_user( user_id, element );
+                      } else {
+                        Utils.remove_persona_info_from_user( user_id, element );
+                      }
+                    });
                 });
             } else {
                 id_or_info.forEach(function(element){
@@ -160,32 +178,39 @@ _.extend(Utils, {
             throw new Meteor.Error(error, e._id);
         }
     },
-    check_for_dt_user: function (email, id, use_id){
-        /*try {*/
-            //This function is used to get all of the persona_id s from DT if they exist or return false if none do
-            logger.info("Started check_for_dt_user");
+    check_for_dt_user: function ( email, id, use_id ){
+      try {
+        //This function is used to get all of the persona_id s from DT if they exist or return false if none do
+        logger.info( "Started check_for_dt_user" );
+        logger.info( "ID: " );
+        logger.info( id );
 
-            var personResult;
-            if(use_id){
-                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
-                    auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-                });
-            } else {
-                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
-                    auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-                });
-            }
+        var personResult;
+        if( use_id ){
+          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
+            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+          });
+        } else {
+          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
+            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+          });
+        }
 
-            //TODO: insert the function for getting the persona_info
-            var persona_info = Utils.split_dt_persona_info(email, personResult);
-            return persona_info;
+        var persona_info = Utils.split_dt_persona_info( email, personResult );
+        return persona_info;
 
-        /*} catch (e) {
-             logger.info(e);
-             //e._id = AllErrors.insert(e.response);
-             var error = (e.response);
-             throw new Meteor.Error(error, e._id);
-         }*/
+      } catch ( e ) {
+        // Try to search for the person instead, we might have moved them or merged them
+        personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
+          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+        });
+        if(personResult) {
+          return personResult;
+        }
+        logger.info( e );
+        var error = ( e.response );
+        throw new Meteor.Error( error, e._id );
+      }
     },
     get_fund_id: function (donateTo) {
         logger.info("Started get_fund_id");
@@ -513,8 +538,10 @@ _.extend(Utils, {
             } else {
                 fund_id = dt_fund;
                 memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
-                    toUpperCase() + charge.metadata.frequency.slice(1) + " " +
-                  charge.metadata.note;
+                    toUpperCase() + charge.metadata.frequency.slice(1);
+              if(charge && charge.metadata && charge.metadata.note){
+                memo = memo + " " + charge.metadata.note;
+              }
             }
 
             var newDonationResult;
@@ -637,16 +664,28 @@ _.extend(Utils, {
         }
     },
     insert_persona_info_into_user: function(user_id, persona_info) {
-        //Insert the donor tools persona id into the user record
-        logger.info("Started insert_persona_info_into_user");
+      //Insert the donor tools persona id into the user record
+      logger.info("Started insert_persona_info_into_user");
+      console.log(persona_info);
 
-        if(Meteor.users.findOne({_id: user_id._id, 'persona_info.id': persona_info.id})){
-            Meteor.users.update({_id: user_id._id, 'persona_info.id': persona_info.id}, {$set: {'persona_info.$': persona_info}});
-        } else {
-            Meteor.users.update(user_id, {$addToSet: {'persona_info': persona_info}});
-        }
-        return;
+      if(Meteor.users.findOne({_id: user_id._id, 'persona_info.id': persona_info.id})){
+          Meteor.users.update({_id: user_id._id, 'persona_info.id': persona_info.id}, {$set: {'persona_info.$': persona_info}});
+      } else {
+          Meteor.users.update(user_id, {$addToSet: {'persona_info': persona_info}});
+      }
+      return;
     },
+  remove_persona_info_from_user: function(user_id, persona_info) {
+    //Remove an old donor tools persona id from the user record
+    logger.info("Started remove_persona_info_from_user");
+    logger.info("ID: ");
+    logger.info(user_id);
+
+    if(Meteor.users.findOne({_id: user_id._id, 'persona_info.id': persona_info.id})){
+      Meteor.users.update({_id: user_id._id}, {$pull: {persona_info: {id: persona_info.id}}});
+    }
+    return;
+  },
     insert_donation_into_dt: function (customer_id, user_id, persona_info, charge_id){
         try {
             logger.info("Started insert_donation_into_dt");
@@ -690,30 +729,32 @@ _.extend(Utils, {
             //fund_id 65663 is the No-Match-Found fund used to help reconcile
             // write-in gifts and those not matching a fund in DT
             var fund_id, memo;
-            if(!dt_fund) {
-                fund_id = Meteor.settings.donor_tools_default_fund_id;
-                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
-                    toUpperCase() + charge.metadata.frequency.slice(1) + " " + donateTo;
+            if( !dt_fund ) {
+              fund_id = Meteor.settings.donor_tools_default_fund_id;
+              memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
+                toUpperCase() + charge.metadata.frequency.slice(1) + " " + donateTo;
 
             } else {
-                fund_id = dt_fund;
-                memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
-                    toUpperCase() + charge.metadata.frequency.slice(1) + " " +
-                  charge.metadata.note;
+              fund_id = dt_fund;
+              memo = Meteor.settings.dev + charge.metadata.frequency.charAt(0).
+                toUpperCase() + charge.metadata.frequency.slice(1);
+              if( charge && charge.metadata && charge.metadata.note ){
+                memo = memo + " " + charge.metadata.note;
+              }
             }
             var source_id;
 
-            if (customer && customer.metadata && customer.metadata.business_name){
+            if ( customer && customer.metadata && customer.metadata.business_name ){
                 source_id = 42776;
             }
-            if(charge.metadata && charge.metadata.dt_source){
+            if( charge.metadata && charge.metadata.dt_source ){
                 source_id = charge.metadata.dt_source;
             } else {
                 source_id = 42754;
             }
             var persona_id;
 
-            if(customer.metadata && customer.metadata.business_name && persona_info.length > 1) {
+            if( customer.metadata && customer.metadata.business_name && persona_info.length > 1 ) {
                 //We want to use a specific id if we have a business and there are more than one dt account involved
                 persona_id = Utils.get_business_persona(persona_info, true);
             } else if(customer.metadata && persona_info.length > 1) {

@@ -157,7 +157,8 @@ Template.DonationForm.events({
 
 
         Session.set('showserve1000', 'no');
-        var goHere = window.location.href + '&note=' + $('#options').val();
+        var goHere = window.location.href + '&note=' +
+          $('#options').val() + '&dt_source=' + 46583; //46583 is for Serve 1000
         Router.go(goHere);
       }
     },
@@ -236,7 +237,7 @@ Template.DonationForm.helpers({
     },
     campaign: function () {
       if(Session.equals('params.campaign', "Serve 1000")){
-        return "<h3>Thank You for Giving to the Serve 1000 Campaign</h3>";
+        return true;
       } else {
         return false;
       }
@@ -297,7 +298,8 @@ Template.DonationForm.onRendered(function() {
     // Regex for "Serve 1000 - "
     var re = /^Serve\s1000/;
 
-    if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no'))) {
+    if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no')) &&
+      !Session.get("params.note")) {
         $('#modal_for_serve1000').modal({
             show: true,
             backdrop: 'static'

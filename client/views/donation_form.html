@@ -14,7 +14,7 @@
                     {{#unless campaign}}
                         <h2>THANK YOU</h2>
                     {{else}}
-                        {{{campaign}}}
+                        {{> Progress}}
                     {{/unless}}
 
                     <!-- Amount of donation -->
@@ -134,7 +134,7 @@
             </div>
             <input type="hidden" id="enteredWriteInValue" value="{{writeInValue}}" />
             <input type="hidden" id="dt_source" value="{{dt_source}}" />
-            <input type="hidden" id="donation_note" value="Serve 1000 {{donation_note}}" />
+            <input type="hidden" id="donation_note" value="{{donation_note}}" />
     	</form>
     </div>
     </div>
