@@ -1,5 +1,12 @@
 
-
+function insertCheckbox(el, insertDiv, checked) {var content = '<div class="checkbox" >';
+  content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  ' + el.text;
+  content += '<\/div>';
+  $( content ).appendTo( $('#' + insertDiv) );
+  if(checked) {
+    $('#' + el.id).prop('checked', true);
+  }
+}
 
 function sortableFunction () {
   $(".sortable").sortable({
@@ -70,6 +77,7 @@ Template.GivingOptions.events({
 
     var group = $('#selectedGivingOptionsDiv').children();
     var arrayNames = [];
+    var givingOptionsSelectedIDs = [];
 
     // Empty the select list
     //$( '#testDropdown' ).empty();
@@ -85,6 +93,7 @@ Template.GivingOptions.events({
       if( $(this).children('input').val() ) {
         console.log("Val: " + $(this).children('input').val());
         if( optgroupName !== 0 ){
+          givingOptionsSelectedIDs.push($(this).children('input').val());
           console.log(optgroupName);
           var insertHere = _.findWhere(arrayNames, {text: optgroupName});
           console.log(insertHere);
@@ -93,6 +102,7 @@ Template.GivingOptions.events({
             text: $(this).children('input').attr('data-name')
           });
         } else {
+          givingOptionsSelectedIDs.push($(this).children('input').val());
           arrayNames.push({
             id: $(this).children('input').val(),
             text: $(this).children('input').attr('data-name')
@@ -108,6 +118,8 @@ Template.GivingOptions.events({
       }
     });
 
+    MultiConfig.update({_id: 'trashmountain.com'}, {$set: {"GivingOptions": arrayNames, "GivingOptionsSelectedIDs": givingOptionsSelectedIDs}});
+
     $('#testDropdown' ).select2( {
       data:        arrayNames,
       placeholder: "Select an option"
@@ -122,33 +134,38 @@ Template.GivingOptions.events({
 
     // TODO: when unchecking, the items should go back to their alphabetic place in the list on the left
   },
-  'click .checkbox': function(event) {
+  'click :checkbox': function(event) {
     event.preventDefault();
-    console.log( $(event.target) );
-    console.log( $(event.target).text() );
-    $(event.target).radiocheck('toggle');
+    console.log( $(event.target).is(":checked") );
+    console.log( $(event.target).val() );
+var self = $(event.target).closest('div');
+//var selfDiv = $(event.target).closest('div');
 
     var givingOptionsChecked;
-    if($(event.target).is(":checked")){
-
-      givingOptionsChecked = Session.get("givingOptionsChecked");
-      givingOptionsChecked = _.extend([], givingOptionsChecked);
-      givingOptionsChecked.push({
-        "value": $(event.target).val(),
-        "name": s( $(event.target).attr('data-name') ).trim().value()
-      });
-      Session.set("givingOptionsChecked", givingOptionsChecked);
-      $( event.target ).closest('label').appendTo('#selectedGivingOptionsDiv');
-    } else {
+    if(!$(event.target).is(":checked")){
       givingOptionsChecked = Session.get("givingOptionsChecked");
       givingOptionsChecked = _.extend([], givingOptionsChecked);
 
       var newCheckedOptions = _.reject(givingOptionsChecked, function (element) {
         return element.value === $(event.target ).val();
       } );
+      $( event.target ).closest('div').remove();
       Session.set("givingOptionsChecked", newCheckedOptions);
-      $( event.target ).closest('label').appendTo('#givingOptionsDiv');
+      var el = {id: $(event.target).val(), text: $(event.target).attr('data-name')};
+      insertCheckbox( el, 'givingOptionsDiv', false );
+    } else {
+      givingOptionsChecked = Session.get("givingOptionsChecked");
+      givingOptionsChecked = _.extend([], givingOptionsChecked);
+      givingOptionsChecked.push({
+        "value": $(event.target).val(),
+        "name": s( $(event.target).attr('data-name') ).trim().value()
+      });
+      $( event.target ).closest('div').remove();
+      Session.set("givingOptionsChecked", givingOptionsChecked);
+      var el = {id: $(event.target).val(), text: $(event.target).attr('data-name')};
+      insertCheckbox( el, 'selectedGivingOptionsDiv', true);
     }
+
   }
 });
 
@@ -157,7 +174,8 @@ Template.GivingOptions.events({
 /*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    return DT_funds.find();
+    var selectedGivingOptions = MultiConfig.findOne( {_id: 'trashmountain.com' } ).GivingOptionsSelectedIDs;
+    return DT_funds.find({'id': {$nin: selectedGivingOptions}});
   },
   multi_config: function () {
     var menu_items = MultiConfig.find( {}, {
@@ -181,66 +199,8 @@ Template.GivingOptions.onRendered(function () {
   // Start the function to setup the table connections and make them sortable
   sortableFunction ();
 
-  function insertCheckbox(el) {var content = '<label for="' + el.id + '" class="checkbox" >';
-    content += '<input type="checkbox" data-toggle="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable custom-checkbox" data-name="' + el.text + '">  ' + el.text;
-    content += '<\/label>';
-    $( content ).appendTo( $('#selectedGivingOptionsDiv') );
-  }
-
-  var temp1 = [
-    {
-      "id": "60463",
-      "text": "BaseCamp - Brett Durbin"
-    },
-    {
-      "id": "60464",
-      "text": "BaseCamp - Jon DeMeo"
-    },
-    {
-      "text": "Test",
-      "children": [
-        {
-          "id": "60465",
-          "text": "BaseCamp - Shelley Setchell"
-        },
-        {
-          "id": "60480",
-          "text": "BaseCamp - John Kazaklis"
-        }
-      ]
-    },
-    {
-      "text": "Test1",
-      "children": [
-        {
-          "id": "60489",
-          "text": "Int'l Field Projects - Honduras"
-        },
-        {
-          "id": "63656",
-          "text": "BaseCamp"
-        }
-      ]
-    },
-    {
-      "text": "Test2",
-      "children": [
-        {
-          "id": "63656",
-          "text": "BaseCamp"
-        }
-      ]
-    },
-    {
-      "text": "Test3",
-      "children": [
-        {
-          "id": "60489",
-          "text": "Int'l Field Projects - Honduras"
-        }
-      ]
-    }
-  ];
+  var MultiConfigAllOptions = MultiConfig.findOne( {} ).GivingOptions;
+  var temp1 = MultiConfig.findOne( {} ).GivingOptions;
 
   $('#testDropdown').select2({
     data: temp1,
@@ -249,7 +209,7 @@ Template.GivingOptions.onRendered(function () {
 
   var insertDiv = $('#selectedGivingOptionsDiv');
   temp1.forEach(function(value) {
-    console.log(value)
+    console.log(value);
     if(value.children) {
       console.log("Got Parent");
       console.log(value.text);
@@ -257,15 +217,12 @@ Template.GivingOptions.onRendered(function () {
       content += "<input class='form-control slim-borders groupName' value='" + value.text + "'>";
       $( content ).appendTo( insertDiv );
       value.children.forEach(function (el) {
-        insertCheckbox(el);
+        insertCheckbox(el, 'selectedGivingOptionsDiv', true);
       })
     } else {
-      insertCheckbox(value);
+      insertCheckbox(value, 'selectedGivingOptionsDiv', true);
     }
   });
-
-
-  $(':checkbox').radiocheck();
 
   Session.set("givingOptionsChecked", temp1);
 

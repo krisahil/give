@@ -13,7 +13,6 @@ Security.permit(['insert', 'update', 'remove'])
         DT_donations,
         DT_funds,
         DT_sources,
-        GivingOptions,
         Invoices,
         MultiConfig,
         Payments,
