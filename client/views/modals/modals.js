@@ -88,4 +88,4 @@ Template.Modals.onRendered( function() {
     }, time);
   });
 
-};
+});
