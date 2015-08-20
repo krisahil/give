@@ -160,39 +160,36 @@ _.extend(Utils, {
             throw new Meteor.Error(error, e._id);
         }
     },
-    check_for_dt_user: function (email, id, use_id){
-        /*try {*/
-            //This function is used to get all of the persona_id s from DT if they exist or return false if none do
-            logger.info("Started check_for_dt_user");
-            logger.info(id[0]);
+    check_for_dt_user: function ( email, id, use_id ){
+      try {
+        //This function is used to get all of the persona_id s from DT if they exist or return false if none do
+        logger.info( "Started check_for_dt_user" );
+        logger.info( "ID: " );
+        logger.info( id );
 
-            var personResult;
-            if(use_id){
-              if(id[0]){
-                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id[0] + ".json", {
-                  auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-                });
-              } else {
-                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
-                  auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-                });
-              }
-            } else {
-                personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
-                    auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-                });
-            }
+        //TODO: if the get request fails with a 404 then there is a chance we moved the donor. Need to search for the donor and update the DT id
+        //TODO: I can't think of a great way to make this work pragmatically since the donation may have already been inserted as pending when the change was made
+        //TODO: or if not the audit may show that the donation was inserted when it wasn't
+        var personResult;
+        if( use_id ){
+          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
+            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+          });
+        } else {
+          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
+            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+          });
+        }
 
-            //TODO: insert the function for getting the persona_info
-            var persona_info = Utils.split_dt_persona_info(email, personResult);
-            return persona_info;
+        //TODO: insert the function for getting the persona_info
+        var persona_info = Utils.split_dt_persona_info( email, personResult );
+        return persona_info;
 
-        /*} catch (e) {
-             logger.info(e);
-             //e._id = AllErrors.insert(e.response);
-             var error = (e.response);
-             throw new Meteor.Error(error, e._id);
-         }*/
+      } catch ( e ) {
+        logger.info( e );
+        var error = ( e.response );
+        throw new Meteor.Error( error, e._id );
+      }
     },
     get_fund_id: function (donateTo) {
         logger.info("Started get_fund_id");
