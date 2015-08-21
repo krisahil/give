@@ -1,6 +1,8 @@
 
-function insertCheckbox(el, insertDiv, checked) {var content = '<div class="checkbox" >';
+function insertCheckbox(el, insertDiv, checked) {
+  var content = '<div class="checkbox form-control" >';
   content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  ' + el.text;
+  content += '<i class="fa fa-arrows fa-fw fa-pull-right"><\/i>';
   content += '<\/div>';
   $( content ).appendTo( $('#' + insertDiv) );
   if(checked) {
@@ -11,25 +13,27 @@ function insertCheckbox(el, insertDiv, checked) {var content = '<div class="chec
 function sortableFunction () {
   $(".sortable").sortable({
     cursor: 'move',
-    dropOnEmpty: true,
+    dropOnEmpty: true,/*
     forceHelperSize: true,
-    forcePlaceholderSize: true,
-    update: function ( e, ui ) {
-      console.log( $(this).attr('id') );
-      if( $(this).attr('id') === "DTFundsTable" || $(this).attr('id') == undefined) {
-        console.log( $(this).attr('id') );
-        return;
-      } else {
-        console.log( $(this).attr('id') );
-        updateSelect (e, ui);
-      }
-    },
+    forcePlaceholderSize: true,*/
+    handle: '.fa-arrows',
     helper: function (e, li) {
       this.copyHelper = li.clone().insertAfter(li);
 
       $(this).data('copied', false);
 
       return li.clone();
+    },
+    start: function( event, ui ) {
+      clone = $(ui.item[0].outerHTML).clone();
+    },
+    placeholder: {
+      element: function(clone, ui) {
+        return $('<div class="sorting checkbox">'+clone[0].innerHTML+'</li>');
+      },
+      update: function() {
+        return;
+      }
     },
     stop: function () {
 
@@ -41,21 +45,32 @@ function sortableFunction () {
 
       this.copyHelper = null;
     },
-    receive: function (e, ui) {
+    receive: function ( e, ui ) {
       ui.sender.data('copied', true);
       sortableIn = 1;
     },
-    over: function(e, ui) {
+    over: function( e, ui ) {
       sortableIn = 1;
+      $('.sorting' ).removeClass("out-sortable");
     },
-    out: function(e, ui) {
+    out: function( e, ui ) {
       sortableIn = 0;
+      $('.sorting' ).addClass("out-sortable");
     },
-    beforeStop: function(e, ui) {
-      if (sortableIn === 0 && $(this).attr('id') !== "DTFundsTable") {
+    beforeStop: function( e, ui ) {
+      var self = ui.item[0];
+      if ( sortableIn === 0 ) {
+        if( $( self ).hasClass( 'checkbox' ) ){
+          var el = {
+            id: $( self ).find( 'input' ).val(),
+            text: $( self ).find( 'input' ).attr( 'data-name' )
+          };
+          insertCheckbox(el, 'givingOptionsDiv', false);
+        }
         ui.item.remove();
       }
-    }
+    },
+    cancel: ".disable-sort"
 
   });
 }
@@ -66,14 +81,15 @@ function sortableFunction () {
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
 
-    var content= "";
-    content += "<input class='form-control slim-borders groupName' placeholder='Group name'>";
-    content += "<\/input>";
+    var content= "<div class='input-group margin-bottom-sm'>";
+    content += "<input type='text' class='form-control slim-borders groupName' placeholder='Group name'>";
+    content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw fa-pull-right"><\/i><\/span>';
+    content += "<\/div>";
 
     $( content ).appendTo('#selectedGivingOptionsDiv');
   },
   'click #updateDropdown': function () {
-    console.log("saving");
+    console.log("Saving");
 
     var group = $('#selectedGivingOptionsDiv').children();
     var arrayNames = [];
@@ -84,35 +100,28 @@ Template.GivingOptions.events({
 
     var optgroupName = 0;
 
-    group.each(function (el) {
-      console.log($(this).children('input').val());
-      }
-    );
-
     group.each(function () {
-      if( $(this).children('input').val() ) {
-        console.log("Val: " + $(this).children('input').val());
+      if( $(this).children('input[type="checkbox"]').val() ) {
         if( optgroupName !== 0 ){
           givingOptionsSelectedIDs.push($(this).children('input').val());
-          console.log(optgroupName);
           var insertHere = _.findWhere(arrayNames, {text: optgroupName});
-          console.log(insertHere);
+          console.log($(this).children('input')[0].nextSibling.nodeValue);
           insertHere.children.push({
             id: $(this).children('input').val(),
-            text: $(this).children('input').attr('data-name')
+            text: $(this).children('input')[0].nextSibling.nodeValue
           });
+
         } else {
           givingOptionsSelectedIDs.push($(this).children('input').val());
           arrayNames.push({
             id: $(this).children('input').val(),
-            text: $(this).children('input').attr('data-name')
+            text: $(this).children('input')[0].nextSibling.nodeValue
           });
         }
       } else {
-        console.log($(this).val());
-        optgroupName = $(this).val();
+        optgroupName = $(this).children('input').val();
         arrayNames.push({
-          text: $(this).val(),
+          text: $(this).children('input').val(),
           children: []
         });
       }
@@ -124,7 +133,6 @@ Template.GivingOptions.events({
       data:        arrayNames,
       placeholder: "Select an option"
     });
-    console.log(arrayNames);
 
     // TODO: rewrite all of this to just update the session object
     // TODO: have iron router load the session object up with the previously saved value from the giving options collection or config collection
@@ -136,10 +144,7 @@ Template.GivingOptions.events({
   },
   'click :checkbox': function(event) {
     event.preventDefault();
-    console.log( $(event.target).is(":checked") );
-    console.log( $(event.target).val() );
-var self = $(event.target).closest('div');
-//var selfDiv = $(event.target).closest('div');
+    var self = $(event.target).closest('div');
 
     var givingOptionsChecked;
     if(!$(event.target).is(":checked")){
@@ -175,7 +180,11 @@ var self = $(event.target).closest('div');
 Template.GivingOptions.helpers({
   dt_funds: function () {
     var selectedGivingOptions = MultiConfig.findOne( {_id: 'trashmountain.com' } ).GivingOptionsSelectedIDs;
-    return DT_funds.find({'id': {$nin: selectedGivingOptions}});
+    if( selectedGivingOptions ) {
+      return DT_funds.find({'id': {$nin: selectedGivingOptions}}, {sort: { name: 1 } });
+    } else {
+      return DT_funds.find({}, {sort: { name: 1 } });
+    }
   },
   multi_config: function () {
     var menu_items = MultiConfig.find( {}, {
@@ -209,12 +218,11 @@ Template.GivingOptions.onRendered(function () {
 
   var insertDiv = $('#selectedGivingOptionsDiv');
   temp1.forEach(function(value) {
-    console.log(value);
     if(value.children) {
-      console.log("Got Parent");
-      console.log(value.text);
-      var content= "";
-      content += "<input class='form-control slim-borders groupName' value='" + value.text + "'>";
+      var content= "<div class='input-group margin-bottom-sm'>";
+      content += "<input type='text' class='form-control slim-borders groupName' value='" + value.text + "'>";
+      content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw"><\/i><\/span>';
+      content += "<\/dvi>";
       $( content ).appendTo( insertDiv );
       value.children.forEach(function (el) {
         insertCheckbox(el, 'selectedGivingOptionsDiv', true);

@@ -30,3 +30,12 @@
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
 }
+
+.out-sortable {
+    color: red;
+    font-weight: bold;
+}
+
+.out-sortable span{
+    background-color: red;
+}

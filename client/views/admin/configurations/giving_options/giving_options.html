@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
           <div class="col col-lg-3" id="appendTablesHere">
-            <h6>1. Check the items you want and add grouping</h6>
+            <h6>1. Check the items you want and add grouping.</h6>
             <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
               <section class="column-bordered">
                   <div id="givingOptionsDiv">
@@ -23,9 +23,13 @@
           <div class="col col-lg-3">
             <div class="row">
                 <h6>2. Drag into the right order.</h6>
-              <section class="column-bordered">
-                <div class="sortable" id="selectedGivingOptionsDiv">
-                </div>
+                <p>(drag out of the box to remove)</p>
+                <p>(double click to edit the text)</p>
+              <section class="column-bordered" contenteditable="true">
+                  <form>
+                    <div class="sortable" id="selectedGivingOptionsDiv">
+                    </div>
+                  </form>
               </section>
             </div>
           </div>

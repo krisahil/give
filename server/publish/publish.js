@@ -245,7 +245,7 @@ Meteor.publish("userDT", function (page) {
 
 Meteor.publish("userDTFunds", function () {
     if (this.userId) {
-        return DT_funds.find();
+        return DT_funds.find({});
     } else {
         this.ready();
     }
