@@ -1,7 +1,7 @@
 
 function insertCheckbox(el, insertDiv, checked) {
   var content = '<div class="checkbox form-control" >';
-  content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  ' + el.text;
+  content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  <span contenteditable="true">' + el.text + '<\/span>';
   content += '<i class="fa fa-arrows fa-fw fa-pull-right"><\/i>';
   content += '<\/div>';
   $( content ).appendTo( $('#' + insertDiv) );
@@ -105,17 +105,17 @@ Template.GivingOptions.events({
         if( optgroupName !== 0 ){
           givingOptionsSelectedIDs.push($(this).children('input').val());
           var insertHere = _.findWhere(arrayNames, {text: optgroupName});
-          console.log($(this).children('input')[0].nextSibling.nodeValue);
+          console.log($(this).children('input')[0].nextSibling.nextSibling.innerText);
           insertHere.children.push({
             id: $(this).children('input').val(),
-            text: $(this).children('input')[0].nextSibling.nodeValue
+            text: $(this).children('input')[0].nextSibling.nextSibling.innerText
           });
 
         } else {
           givingOptionsSelectedIDs.push($(this).children('input').val());
           arrayNames.push({
             id: $(this).children('input').val(),
-            text: $(this).children('input')[0].nextSibling.nodeValue
+            text: $(this).children('input')[0].nextSibling.nextSibling.innerText
           });
         }
       } else {
@@ -127,7 +127,7 @@ Template.GivingOptions.events({
       }
     });
 
-    MultiConfig.update({_id: 'trashmountain.com'}, {$set: {"GivingOptions": arrayNames, "GivingOptionsSelectedIDs": givingOptionsSelectedIDs}});
+    MultiConfig.update({_id: 'trashmountain'}, {$set: {"GivingOptions": arrayNames, "GivingOptionsSelectedIDs": givingOptionsSelectedIDs}});
 
     $('#testDropdown' ).select2( {
       data:        arrayNames,
@@ -179,7 +179,7 @@ Template.GivingOptions.events({
 /*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    var selectedGivingOptions = MultiConfig.findOne( {_id: 'trashmountain.com' } ).GivingOptionsSelectedIDs;
+    var selectedGivingOptions = MultiConfig.findOne( {_id: 'trashmountain' } ).GivingOptionsSelectedIDs;
     if( selectedGivingOptions ) {
       return DT_funds.find({'id': {$nin: selectedGivingOptions}}, {sort: { name: 1 } });
     } else {

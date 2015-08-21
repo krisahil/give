@@ -264,6 +264,10 @@ Meteor.publish("MultiConfig", function () {
   return MultiConfig.find();
 });
 
+Meteor.publish("Books", function () {
+  return Books.find();
+});
+
 /*
 Meteor.publish("userGivingFocus", function () {
 	//var donation_ids = Meteor.users.findOne({_id: this.userId}).donations;

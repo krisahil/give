@@ -76,7 +76,7 @@ Template.Modals.onRendered( function() {
       value += 1;
       addValue = progressbar.val(value);
 
-      $('.progress-value').html(value + ' Children Sponsored');
+      $('.progress-value').html(value + ' Children Served');
 
       if (value === 461) {
         clearInterval(animate);

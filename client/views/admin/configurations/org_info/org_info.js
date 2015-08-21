@@ -8,6 +8,9 @@ Template.OrgInfo.events({
 /* OrgInfo: Helpers */
 /*****************************************************************************/
 Template.OrgInfo.helpers({
+  updateDoc: function () {
+    return Books.findOne({_id: "nW6dSfSfqALNcqZuS"} );
+  }
 });
 
 /*****************************************************************************/

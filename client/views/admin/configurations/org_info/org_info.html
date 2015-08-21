@@ -1,5 +1,7 @@
 <template name="OrgInfo">
   <div class="org-info">
-    <h1>Find me in app/client/templates/admin/org_info/org_info</h1>
+    {{#with updateDoc}}
+      {{> quickForm collection="Books" doc=this id="updateInfoForm" type="update"}}
+    {{/with}}
   </div>
 </template>

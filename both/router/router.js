@@ -256,3 +256,14 @@ Router.route('/dashboard/giving_options', {
     return [ Meteor.subscribe('MultiConfig'), Meteor.subscribe('userDTFunds')];
   }
 });
+
+Router.route('/dashboard/org_info', {
+  name: 'OrgInfo',
+  where: 'client',
+  waitOn: function () {
+    return [Meteor.subscribe('MultiConfig'), Meteor.subscribe('Books')];
+  },
+  data: function () {
+    return Books.find();
+  }
+});
