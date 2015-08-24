@@ -26,5 +26,3 @@ MultiConfig = new Mongo.Collection('multi_config');
 Payments = new Mongo.Collection('payments');
 
 Subscriptions = new Mongo.Collection('subscriptions');
-
-Books = new Mongo.Collection("books");

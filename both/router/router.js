@@ -42,6 +42,7 @@ Router.route('', {
         Session.set('params.donateTo', params.query.donateTo);
         Session.set('params.donateWith', params.query.donateWith);
         Session.set('params.dt_source', params.query.dt_source);
+        Session.set('params.start_date', params.query.start_date);
         Session.set('params.note', params.query.note);
         Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
         Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
@@ -261,9 +262,9 @@ Router.route('/dashboard/org_info', {
   name: 'OrgInfo',
   where: 'client',
   waitOn: function () {
-    return [Meteor.subscribe('MultiConfig'), Meteor.subscribe('Books')];
+    return Meteor.subscribe('MultiConfig');
   },
   data: function () {
-    return Books.find();
+    return MultiConfig.find();
   }
 });

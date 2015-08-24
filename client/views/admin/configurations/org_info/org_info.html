@@ -1,7 +1,12 @@
 <template name="OrgInfo">
-  <div class="org-info">
-    {{#with updateDoc}}
-      {{> quickForm collection="Books" doc=this id="updateInfoForm" type="update"}}
-    {{/with}}
-  </div>
+    <div class="row center-block">
+        <div class="col col-lg-1"></div>
+        <div class="col col-lg-10">
+            <div class="org-info">
+                {{#with updateDoc}}
+                    {{> quickForm collection="MultiConfig" doc=this id="updateInfoForm" type="update"}}
+                {{/with}}
+            </div>
+        </div>
+    </div>
 </template>

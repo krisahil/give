@@ -1,8 +1,5 @@
 /*****************************************************************************/
-/* OrgInfo: Helpers */
+/* DtReport: Style */
 /*****************************************************************************/
-Template.OrgInfo.helpers({
-  updateDoc: function () {
-    return MultiConfig.findOne({_id: "trashmountain"} );
-  }
-});
+.dt-report {
+}
