@@ -12,6 +12,7 @@ iron:router
 npm-container
 wylio:mandrill
 useraccounts:bootstrap
+useraccounts:iron-routing
 accounts-password
 zimme:iron-router-active
 browser-policy
