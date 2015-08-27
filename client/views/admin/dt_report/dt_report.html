@@ -1,5 +1,42 @@
+<!-- This template is used to retrieve all of the DT data from a date
+ range and store it in the DT_splits collection -->
 <template name="DtReport">
-  <div class="dt-report">
-    <h1>Find me in app/client/templates/dt_report/dt_report</h1>
-  </div>
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-10 dt-report">
+              <label for="numberOfDays">How many days of data do you want?</label>
+              <input id="numberOfDays" class="form-control" />
+              <button id="get-dt-data" class="btn btn-primary" data-loading-text="Processing...">Get Donor Tools Data</button>
+                <button id="show-dt-split" class="btn btn-primary" data-loading-text="Processing...">Show Donor Tools Splits</button>
+
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <table id="splitsTable" class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>Memo</th>
+                        <th>Total $</th>
+                        <th>Group Result</th>
+                        <th>Kids Served</th>
+                    </tr>
+                    <!--{{#each memoType}}
+                    <tr>
+                        <td>{{memo}}</td>
+                        <td>{{totalFunds}}</td>
+                        <td>{{groupResult}}</td>
+                        <td class="kidsServed">{{kidsServed}}</td>
+                    </tr>
+                    {{/each}}-->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th id="totalOfGroups" colspan="3">Total of all groups: </th>
+                        <td>{{totalOfGroups}} Test total content</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </template>

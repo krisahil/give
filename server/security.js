@@ -10,6 +10,7 @@ Security.permit(['insert', 'update', 'remove'])
         Devices,
         Donate,
         Donations,
+        DT_splits,
         DT_donations,
         DT_funds,
         DT_sources,

@@ -6,6 +6,12 @@ Devices._ensureIndex({'id': 1}, {background: true});
 
 Donations._ensureIndex({'customer_id': 1}, {background: true});
 
+DT_splits._ensureIndex({'donation_id': 1}, {background: true});
+
+DT_splits._ensureIndex({'fund_id': 1}, {background: true});
+
+DT_splits._ensureIndex({memo: "text"}, {background: true});
+
 DT_donations._ensureIndex({'persona_id': 1}, {background: true});
 
 DT_donations._ensureIndex({'transaction_id': 1}, {background: true});

@@ -1,5 +1,5 @@
 _.extend(Utils, {
-    update_dt_account: function(form, dt_persona_id){
+  update_dt_account: function(form, dt_persona_id){
         logger.info("Inside update_dt_account.");
 
         // get the persona record from Donor Tools
@@ -50,5 +50,32 @@ _.extend(Utils, {
                     'persona_info.$': update_persona.data.persona
                 }
             });
+    },
+  getFundHistory: function (fundId, dateStart, dateEnd) {
+    logger.info("Got to getFundHistory with fund_id: " + fundId);
+
+    var totalPages = 2;
+    for(i = 1; i <= totalPages; i++){
+      var dataResults;
+      dataResults = HTTP.get(Meteor.settings.donor_tools_site + '/splits.json?basis=cash&fund_id=' + fundId + '&range[from]=' +
+        dateStart + '&range[to]=' + dateEnd + '&page=' + i + '&per_page=1000', {
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      });
+      Utils.store_splits(dataResults.data);
+      console.log("Total Pages: " + dataResults.headers['pagination-total-pages']);
+      console.log("Current Page: " + i );
+      totalPages = dataResults.headers['pagination-total-pages'];
     }
+
+    console.dir(dataResults);
+
+  },
+  store_splits: function (donations) {
+    donations.forEach( function ( split ) {
+      console.log(split.split);
+      DT_splits.upsert({_id: split.split.id}, {$set: split.split});
+    });
+
+  }
+
 });

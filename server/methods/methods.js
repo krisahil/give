@@ -313,5 +313,86 @@ Meteor.methods({
             logger.info("You aren't an admin, you can't do that");
             return;
         }
+    },
+  GetDTData: function (dateStart, dateEnd) {
+    logger.info("Started GetDTData method");
+
+    check(dateStart, String);
+    check(dateEnd, String);
+
+    if (Roles.userIsInRole(this.userId, ['admin'])) {
+      // This is the fund ids for community sponsorship
+      var fundsList = [
+        63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282
+      ];
+      fundsList.forEach( function ( fundId ) {
+        Utils.getFundHistory(fundId, dateStart, dateEnd);
+      });
+      //var fundResults = Utils.getFundHistory(63667, dateStart, dateEnd);
+      console.log("Got all funds history");
+      return "Got all funds history";
     }
+  },
+  ShowDTSplits: function () {
+    logger.info("Started ShowDTSplits method");
+    var results = {};
+
+
+    results.annual = DT_splits.aggregate(
+      [
+        { $match: { $text: { $search: "annual one-time One_time" } } },
+        {
+          $group:
+          {
+            _id: null,
+            totalMonthlyAmount: { $sum: { $divide: [ { $add: [ "$amount_in_cents" ] }, 1500 ] } },
+            count: { $sum: 1 }
+          }
+        }
+      ]
+    );
+
+    results.other = DT_splits.find(
+        { $and:
+          [
+            { "memo": { $nin: ["annual", "Annual", "one-time", "One-time", "One_time", "monthly", "Monthly", "quarterly", "Quarterly"] } },
+            { received_on: { $gt: moment().subtract(365, 'days').format('YYYY-MM-DD') } }
+          ]
+        }
+    ).fetch();
+
+    results.quarterly = DT_splits.aggregate(
+      [
+        { $match: { $and: [ { $text: { $search: "Quarterly" } }, { received_on: { $gt: moment().subtract(90, 'days').format('YYYY-MM-DD') } } ]  } },
+
+        {
+          $group:
+          {
+            _id: null,
+            totalMonthlyAmount: { $sum: { $divide: [ { $add: [ "$amount_in_cents" ] }, 300 ] } },
+            count: { $sum: 1 }
+          }
+        }
+      ]
+    );
+
+    results.monthly = DT_splits.aggregate(
+      [
+        { $match: { $and: [ { $text: { $search: "Monthly" } }, { received_on: { $gt: moment().subtract(30, 'days').format('YYYY-MM-DD') } } ]  } },
+        { $project: { "received_on": 1, "amount_in_cents": 1 } },
+        {
+          $group:
+          {
+            _id: null,
+            totalMonthlyAmount: { $sum: { $divide: [ { $add: [ "$amount_in_cents" ] }, 100 ] } },
+            count: { $sum: 1 }
+          }
+        }
+      ]
+    );
+
+
+    return results;
+  }
+
 });

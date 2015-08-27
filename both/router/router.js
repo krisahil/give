@@ -268,3 +268,14 @@ Router.route('/dashboard/org_info', {
     return MultiConfig.find();
   }
 });
+
+Router.route('/dashboard/getdtdata', {
+  name: 'DtReport',
+  where: 'client',
+  waitOn: function () {
+    return Meteor.subscribe( 'DTSplits' );
+  },
+  data: function () {
+    return DT_splits.find();
+  }
+});

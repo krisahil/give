@@ -261,35 +261,17 @@ Meteor.publish("Serve1000Sources2015", function () {
 
 
 Meteor.publish("MultiConfig", function () {
-  return MultiConfig.find();
+  if (Roles.userIsInRole(this.userId, 'admin')) {
+    return MultiConfig.find();
+  } else {
+    this.ready();
+  }
 });
 
-/*
-Meteor.publish("userGivingFocus", function () {
-	//var donation_ids = Meteor.users.findOne({_id: this.userId}).donations;
-	//var donations = Donations.find({'_id': { $in: donation_ids}});
-	var sub = this;
-	var pipeline = ([{$group : {  _id: '$donateTo', total : {$sum : "$total_amount"}, count: { $sum: 1 }}},
-		{$sort: {total: -1}},
-		{$project : { '_id' : 0, 'donateTo' : '$_id', 'total' : '$total', 'count' : '$count'}},
-		{$limit: 1} ]);
-
-	var result = Donations.aggregate(pipeline);
-	console.dir(result);
-
-	*/
-/*self = this;
-	var aggregated_donations = Donations.aggregate([
-		{$group : {  _id: this.donateTo, total : {$sum : "$total_amount"}, count: { $sum: 1 }}},
-		{$sort: {total: -1}},
-		{$project : { '_id' : 0, 'donateTo' : '$_id', 'total' : '$total', 'count' : '$count'}},
-		{$limit: 1} ]).result[0]
-	console.dir(aggregated_donations);*//*
-
-	if (this.userId) {
-		var giving_id = Client_collection_giving.insert({donateTo: result[0].donateTo, total: result[0].total, count: result[0].count });
-		return Client_collection_giving.find(giving_id);
-	} else {
-		this.ready();
-	}
-});*/
+Meteor.publish("DTSplits", function () {
+  if (Roles.userIsInRole(this.userId, 'admin')) {
+    return DT_splits.find();
+  } else {
+    this.ready();
+  }
+});

@@ -12,6 +12,8 @@ Donate = new Mongo.Collection('donate');
 
 Donations = new Mongo.Collection('donations');
 
+DT_splits = new Mongo.Collection('dt_splits');
+
 DT_donations = new Mongo.Collection('dt_donations');
 
 DT_funds = new Mongo.Collection('dt_funds');
