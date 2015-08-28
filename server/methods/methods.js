@@ -340,7 +340,10 @@ Meteor.methods({
 
     results.annual = DT_splits.aggregate(
       [
-        { $match: { $text: { $search: "annual one-time One_time" } } },
+        { $match: { $and: [
+          { $text: { $search: "annual one-time One_time" } },
+          { received_on: { $gt: moment().subtract(365, 'days').format('YYYY-MM-DD') } },
+        ] } },
         {
           $group:
           {
@@ -353,17 +356,42 @@ Meteor.methods({
     );
 
     results.other = DT_splits.find(
-        { $and:
-          [
-            { "memo": { $nin: ["annual", "Annual", "one-time", "One-time", "One_time", "monthly", "Monthly", "quarterly", "Quarterly"] } },
-            { received_on: { $gt: moment().subtract(365, 'days').format('YYYY-MM-DD') } }
-          ]
-        }
+      { $and:
+        [
+          { "memo": { $nin: ["annual", "Annual", "one-time", "One-time", "One_time", "monthly", "Monthly", "quarterly", "Quarterly"] } },
+          { received_on: { $gt: moment().subtract(365, 'days').format('YYYY-MM-DD') } }
+        ]
+      }
     ).fetch();
+    /*.other = DT_splits.aggregate(
+      [
+        { $match: {
+          $text: {
+            $search: "annual one-time One_time monthly quarterly"
+          }
+        }},
+        { $project: {
+          _id: 0,
+          amount_in_cents: 1,
+          score: { $meta: "textScore" },
+        }},
+        { $match: { score: { $lt: 1.0 } } },
+        { $group: {
+          _id: null,
+          totalAmount: { $sum: { $divide: [ { $add: [ "$amount_in_cents" ] }, 100 ] } },
+          count: { $sum: 1 }
+        }}
+      ]);*/
+
 
     results.quarterly = DT_splits.aggregate(
       [
-        { $match: { $and: [ { $text: { $search: "Quarterly" } }, { received_on: { $gt: moment().subtract(90, 'days').format('YYYY-MM-DD') } } ]  } },
+        { $match: {
+          $and: [
+            { $text: { $search: "Quarterly quarterly" } },
+            { received_on: { $gt: moment().subtract(90, 'days').format('YYYY-MM-DD') } }
+        ]
+        } },
 
         {
           $group:
@@ -378,7 +406,12 @@ Meteor.methods({
 
     results.monthly = DT_splits.aggregate(
       [
-        { $match: { $and: [ { $text: { $search: "Monthly" } }, { received_on: { $gt: moment().subtract(30, 'days').format('YYYY-MM-DD') } } ]  } },
+        { $match: {
+          $and: [
+            { $text: { $search: "Monthly monthly" } },
+            { received_on: { $gt: moment().subtract(30, 'days').format('YYYY-MM-DD') } }
+          ]
+        } },
         { $project: { "received_on": 1, "amount_in_cents": 1 } },
         {
           $group:

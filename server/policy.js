@@ -13,7 +13,8 @@ var trusted = [
     'mixpanel.com',
     'kadira.io',
     'enginex.kadira.io',
-    'use.typekit.net'
+    'use.typekit.net',
+    'p.typekit.net'
 ];
 
 _.each(trusted, function(origin) {

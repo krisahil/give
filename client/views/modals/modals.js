@@ -78,7 +78,7 @@ Template.Modals.onRendered( function() {
 
       $('.progress-value').html(value + ' Children Served');
 
-      if (value === 405) {
+      if (value === 411) {
         clearInterval(animate);
       }
     };
