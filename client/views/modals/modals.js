@@ -67,25 +67,33 @@ Template.Modals.onRendered( function() {
   $('#options').chosen({width: "95%"});
 
   $('#modal_for_serve1000').on('hidden.bs.modal', function () {
-    var progressbar = $('progress'),
-      max = progressbar.attr('max'),
-      time = (500/max)*5,
-      value = progressbar.val();
+    var clock = $('.serve1000-counter').FlipClock(000, {
+      clockFace: 'Counter',
+      autoStart: false
+    });
+    if(Session.get('params.note')) {
+      //var progressbar = $('progress'),
+      var max = 1000,
+        time = (500 / max) * 5,
+        value = 0;
+      clock.setTime( 0 );
 
-    var loading = function() {
-      value += 1;
-      addValue = progressbar.val(value);
+      var loading = function () {
+        value += 1;
+        //addValue = progressbar.val(value);
 
-      $('.progress-value').html(value + ' Children Served');
+        //$('.progress-value').html(value + ' Children Served');
+        clock.increment();
 
-      if (value === 411) {
-        clearInterval(animate);
-      }
-    };
+        if( value === 411 ) {
+          clearInterval( animate );
+        }
+      };
 
-    var animate = setInterval(function() {
-      loading();
-    }, time);
+      var animate = setInterval( function () {
+        loading();
+      }, time );
+    }
   });
 
 });

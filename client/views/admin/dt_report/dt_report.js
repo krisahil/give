@@ -36,20 +36,12 @@ Template.DtReport.events({
   'click #show-dt-split': function ( e ) {
     var showDataButton   = $("#show-dt-split").button('loading');
     // use these to total the groups a-c for sub-results base on 1 month.
-    var no_memo_or_other   = 0;
 
     Meteor.call("ShowDTSplits", function ( error, result ) {
       if(!error) {
         showDataButton.button("reset");
 
         console.dir(result);
-        var total_kids = result.monthly[0].totalMonthlyAmount/29;
-        total_kids += result.annual[0].totalMonthlyAmount/29;
-        result.other.forEach(function(value) {if(value.amount_in_cents > 0){no_memo_or_other += (value.amount_in_cents/1500)}});
-
-        total_kids += (no_memo_or_other-266)/29;
-
-        console.log(total_kids);
 
         Bert.alert("Got the DT split Data successfully.", "success");
       } else {

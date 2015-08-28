@@ -428,8 +428,16 @@ Meteor.methods({
       ]
     );
 
+    var no_memo_or_other   = 0;
 
-    return results;
+    var total_kids = result.monthly[0].totalMonthlyAmount/29;
+    total_kids += result.annual[0].totalMonthlyAmount/29;
+    result.other.forEach(function(value) {if(value.amount_in_cents > 0){no_memo_or_other += (value.amount_in_cents/1500)}});
+
+    total_kids += (no_memo_or_other-266)/29;
+
+
+    return total_kids;
   }
 
 });
