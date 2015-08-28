@@ -124,9 +124,10 @@
 
 
                     <br>
+                    <br>
     				<div class="form-group padBottom">
     			        <div class="col-sm-offset-2 col-sm-8">
-    			          <button name="submitThisForm" type="submit" class="btn btn-block btn-hg btn-primary"
+    			          <button name="submitThisForm" type="submit" class="btn btn-block btn-hg btn-primary submit-button"
                                   data-toggle="modal" data-target=".bs-example-modal-lg" data-loading-text="Processing..."><span class="fa fa-paper-plane-o"></span> Send Donation</button>
                         </div>
                     </div>
@@ -160,7 +161,7 @@
 			<input {{attributes_Input_RoutingNumber}} class="form-control slim-borders" />
 		</div>
 	</div>
-    <!-- Checbox for Covering related fees-->
+    <!-- Checkbox for Covering related fees-->
     <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} />
     Save this payment method for future use <span><i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
              data-placement="bottom" data-trigger="hover focus" title="Save Bank Account" data-container="body"

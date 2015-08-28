@@ -185,7 +185,7 @@ Template.DonationForm.helpers({
         if(Session.equals('paymentMethod', 'Check')){
             return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
                 "data-trigger='hover focus' data-container='body' data-content='There are usually 3 sets of "+
-                "numbers at the bottom of a check. The short check number, the 9 digit routing number and the" +
+                "numbers at the bottom of a check. The short check number, the 9 digit routing number and the " +
                 "account number.'>" +
                 "</i>";
         } else {
