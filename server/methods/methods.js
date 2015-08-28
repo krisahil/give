@@ -201,6 +201,7 @@ Meteor.methods({
     update_persona_info: function () {
         logger.info("Started update_persona_info");
 
+      if(this.userId){
         var persona_ids;
         persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
         logger.info(persona_ids);
@@ -208,6 +209,9 @@ Meteor.methods({
         var persona_info = Utils.check_for_dt_user(email_address, persona_ids, true);
         Meteor.users.update({_id: this.userId}, {$set: {'persona_info': persona_info.persona_info}});
         Meteor.users.update({_id: this.userId}, {$set: {'persona_ids': persona_info.persona_ids}});
+      } else {
+        return "Nope";
+      }
     },
     move_donation_to_other_person: function (donation_id, move_to_id) {
         check(donation_id, String);
