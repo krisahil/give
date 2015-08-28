@@ -22,4 +22,13 @@ Meteor.startup(function() {
         });
     });
     */
+    return SEO.config({
+      title: 'Give - Trash Mountain Project',
+      meta: {
+        'description': 'Webapp for giving to Trash Mountain Project'
+      },
+      og: {
+        'image': 'https://give.trashmountain.com/images/bw_logo_new.png'
+      }
+    });
 });
