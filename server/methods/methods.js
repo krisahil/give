@@ -332,7 +332,7 @@ Meteor.methods({
       fundsList.forEach( function ( fundId ) {
         Utils.getFundHistory(fundId, dateStart, dateEnd);
       });
-      //var fundResults = Utils.getFundHistory(63667, dateStart, dateEnd);
+
       console.log("Got all funds history");
       return "Got all funds history";
     }
@@ -340,7 +340,6 @@ Meteor.methods({
   ShowDTSplits: function () {
     logger.info("Started ShowDTSplits method");
     var results = {};
-
 
     results.annual = DT_splits.aggregate(
       [
@@ -367,26 +366,6 @@ Meteor.methods({
         ]
       }
     ).fetch();
-    /*.other = DT_splits.aggregate(
-      [
-        { $match: {
-          $text: {
-            $search: "annual one-time One_time monthly quarterly"
-          }
-        }},
-        { $project: {
-          _id: 0,
-          amount_in_cents: 1,
-          score: { $meta: "textScore" },
-        }},
-        { $match: { score: { $lt: 1.0 } } },
-        { $group: {
-          _id: null,
-          totalAmount: { $sum: { $divide: [ { $add: [ "$amount_in_cents" ] }, 100 ] } },
-          count: { $sum: 1 }
-        }}
-      ]);*/
-
 
     results.quarterly = DT_splits.aggregate(
       [
@@ -433,9 +412,7 @@ Meteor.methods({
     var total_kids = results.monthly[0].totalMonthlyAmount/29;
     total_kids += results.annual[0].totalMonthlyAmount/29;
     results.other.forEach(function(value) {if(value.amount_in_cents > 0){no_memo_or_other += (value.amount_in_cents/1500)}});
-
     total_kids += (no_memo_or_other-266)/29;
-
 
     return total_kids;
   }
