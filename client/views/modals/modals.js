@@ -67,31 +67,39 @@ Template.Modals.onRendered( function() {
   $('#options').chosen({width: "95%"});
 
   $('#modal_for_serve1000').on('hidden.bs.modal', function () {
+    var currentServed = 414;
+    Meteor.call("ShowDTSplits", function (err, result){
+      if(!err) {
+        currentServed = result.toFixed(0);
+        console.log("Got a result from the server: " + result);
+      } else {
+        console.log("Error in meteor call");
+      }
+    });
     var clock = $('.serve1000-counter').FlipClock(000, {
       clockFace: 'Counter',
       autoStart: false
     });
-      //var progressbar = $('progress'),
-      var max = 1000,
-        time = (500 / max) * 5,
-        value = 0;
-      clock.setTime( 0 );
 
-      var loading = function () {
-        value += 1;
-        //addValue = progressbar.val(value);
+    var max = 1000,
+      time = (2500 / max) * 5,
+      value = 0;
+    clock.setTime( 0 );
 
-        //$('.progress-value').html(value + ' Children Served');
-        clock.increment();
+    var loading = function () {
+      value += 1;
 
-        if( value === 411 ) {
-          clearInterval( animate );
-        }
-      };
+      clock.increment();
 
-      var animate = setInterval( function () {
-        loading();
-      }, time );
+      if( value >= currentServed ) {
+        clearInterval( animate );
+      }
+    };
+
+    var animate = setInterval( function () {
+      loading();
+    }, time );
+
   });
 
 });

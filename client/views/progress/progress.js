@@ -5,25 +5,34 @@ Template.Progress.helpers({
 });
 
 Template.Progress.onRendered(function () {
-  var clock = $('.serve1000-counter').FlipClock(000, {
-    clockFace: 'Counter',
-    autoStart: false
+  var currentServed = 414;
+
+  Meteor.call("ShowDTSplits", function (err, result){
+    if(!err) {
+      currentServed = result.toFixed(0);
+      console.log("Got a result from the server: " + result);
+    } else {
+      console.log("Error in meteor call");
+    }
   });
   if(Session.get('params.note')) {
-    //var progressbar = $('progress'),
+
+    var clock = $('.serve1000-counter').FlipClock(000, {
+      clockFace: 'Counter',
+      autoStart: false
+    });
+
     var max = 1000,
-      time = (500 / max) * 5,
+      time = (2500 / max) * 5,
       value = 0;
     clock.setTime( 0 );
 
     var loading = function () {
       value += 1;
-      //addValue = progressbar.val(value);
 
-      //$('.progress-value').html(value + ' Children Served');
       clock.increment();
 
-      if( value === 411 ) {
+      if( value >= currentServed ) {
         clearInterval( animate );
       }
     };
@@ -31,5 +40,6 @@ Template.Progress.onRendered(function () {
     var animate = setInterval( function () {
       loading();
     }, time );
+
   }
 });
