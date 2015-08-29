@@ -71,7 +71,6 @@ Template.Modals.onRendered( function() {
       clockFace: 'Counter',
       autoStart: false
     });
-    if(Session.get('params.note')) {
       //var progressbar = $('progress'),
       var max = 1000,
         time = (500 / max) * 5,
@@ -93,7 +92,6 @@ Template.Modals.onRendered( function() {
       var animate = setInterval( function () {
         loading();
       }, time );
-    }
   });
 
 });
