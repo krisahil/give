@@ -94,5 +94,21 @@ Utils = {
             username: String,
             password: String
         });
+    },
+    GetDTData: function (dateStart, dateEnd) {
+      logger.info( "Started GetDTData method (not method call)" );
+
+      check( dateStart, String );
+      check( dateEnd, String );
+
+      // This is the fund ids for community sponsorship
+      var fundsList = [
+        63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282
+      ];
+      fundsList.forEach( function ( fundId ) {
+        Utils.getFundHistory( fundId, dateStart, dateEnd );
+      } );
+
+      console.log( "Got all funds history" );
     }
 };
