@@ -256,7 +256,6 @@ _.extend(App, {
                 App.handleErrors(error);
                 //run App.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
                 App.updateTotal();
-                $(':submit').button('reset');
             } else {
                 if ( result.error ) {
                     var send_error = {code: result.error, message: result.message};
@@ -279,7 +278,8 @@ _.extend(App, {
     handleErrors: function(error) {
         spinnerObject.stop();
         $("#spinDiv").hide();
-        console.dir(error);
+      $(':submit').button('reset');
+      console.dir(error);
 
         var gatherInfo = {};
         Session.set("loaded", true);
@@ -313,7 +313,7 @@ _.extend(App, {
         Stripe.card.createToken(card_info,  function(status, response){
             if (response.error) {
                 //error logic here
-                App.handleErrors(response.error);
+              App.handleErrors(response.error);
             } else {
                 // Call your backend
                 if(form){
