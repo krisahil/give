@@ -321,7 +321,7 @@ Template.DonationForm.onRendered(function() {
 
     // Now let's align datepicker with the prepend button
     datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
-
+  
   if (Session.get('params.start_date')) {
     $("#start_date").val(Session.get('params.start_date'));
   }
