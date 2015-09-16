@@ -5,7 +5,7 @@ Template.Progress.helpers({
 });
 
 Template.Progress.onRendered(function () {
-  var currentServed = 425;
+  var currentServed = 462;
 
   Meteor.call("ShowDTSplits", function (err, result){
     if(!err) {
