@@ -5,7 +5,7 @@ _.extend(Utils, {
             return;
         }*/
         logger.info("Started post_donation_operation.");
-        var inserted_now;
+        var inserted_now, matchedId, findAnyMatchedDTaccount;
 
         if(DT_donations.findOne({transaction_id: charge_id})){
             logger.info("There is already a DT donation with that charge_id in the collection or there is a current operation on that DT donation");
@@ -32,8 +32,13 @@ _.extend(Utils, {
                     //check dt for user, persona_ids will be an array of 0 to many persona_ids
                     persona_result = Utils.check_for_dt_user(email_address, user_id.persona_id, true);
                 } else {
-                    //check dt for user, persona_ids will be an array of 0 to many persona_ids
-                    persona_result = Utils.check_for_dt_user(email_address, null, false, customer_id);
+                  //check dt for user, persona_ids will be an array of 0 to many persona_ids
+                  findAnyMatchedDTaccount = Utils.check_for_dt_user(email_address, null, false, customer_id);
+                  persona_result =  findAnyMatchedDTaccount;
+                  matchedId =       findAnyMatchedDTaccount.matched_id;
+                  console.log("*************LOOK HERE");
+                  console.log(matchedId);
+                  console.dir(persona_result);
                 }
 
                 //TODO: fix this area, doesn't work with the change I've made to personIDs, since a user account shouldn't
@@ -41,7 +46,7 @@ _.extend(Utils, {
 
                 var audit_item = Audit_trail.findOne({_id: charge_id});
 
-                if (!persona_result || !persona_result.persona_info || persona_result.persona_info === '') {
+                if (!persona_result || !persona_result.persona_info || persona_result.persona_info === '' || matchedId === null) {
                     //Call DT create function
                     if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
                         return;
@@ -49,8 +54,10 @@ _.extend(Utils, {
                         inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
                         var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
                         persona_result = Utils.check_for_dt_user(email_address, single_persona_id, true);
+                      //return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
 
-                        // Send me an email letting me know a new user was created in DT.
+
+                      // Send me an email letting me know a new user was created in DT.
                         Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
                     }
                 } else {
@@ -59,7 +66,7 @@ _.extend(Utils, {
                     } else {
                         inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
 
-                        Utils.insert_donation_into_dt(customer_id, user_id, persona_result.persona_info, charge_id);
+                        Utils.insert_donation_into_dt(customer_id, user_id, persona_result.persona_info, charge_id, persona_id);
                     }
                 }
 
@@ -178,34 +185,33 @@ _.extend(Utils, {
             throw new Meteor.Error(error, e._id);
         }
     },
-    check_for_dt_user: function ( email, id, use_id, customer_id ){
+    check_for_dt_user: function ( email, checkThisID, use_id, customer_id ){
       try {
         //This function is used to get all of the persona_id s from DT if they exist or return false if none do
         logger.info( "Started check_for_dt_user" );
         logger.info( "ID: " );
-        logger.info( id );
+        logger.info( checkThisID );
 
-        var personResult;
+        var personResult, matched_id, getPersonasAndMatchedId, personaMatchData, personaData;
         if( use_id ){
-          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + ".json", {
+          console.log("Using found ID");
+          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + checkThisID + ".json", {
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
           });
+          personaData = Utils.split_dt_persona_info( email, personResult );
+          return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
         } else {
-          /*personResult = Utils.find_dt_persona_flow(email, customer_id);
-          if(personResult.matched_id === ''){
-            // No match found
-          } else {
-            // Match found
+          console.log("Inside the no id section");
+          getPersonasAndMatchedId = Utils.find_dt_persona_flow(email, customer_id);
+          console.dir(getPersonasAndMatchedId);
+            personaMatchData = getPersonasAndMatchedId.personResult;
+            matched_id = getPersonasAndMatchedId.matched_id;
 
-          }*/
+          personaData = Utils.split_dt_persona_info( email, personaMatchData );
 
-          personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email, {
-            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-          });
+          return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: matched_id};
+
         }
-
-        var persona_info = Utils.split_dt_persona_info( email, personResult );
-        return persona_info;
 
       } catch ( e ) {
         // Try to search for the person instead, we might have moved them or merged them
@@ -222,8 +228,11 @@ _.extend(Utils, {
     },
   find_dt_persona_flow: function (eamil, customer_id) {
     logger.info("Started find_dt_persona_flow");
+    console.log("LOOK******HERE");
 
-    var personResult, matched_id, metadata, org_match, company;
+    //var customer_id = 'cus_70WZWrFrPLKk5y';
+    //var email = 'josh.bechard@gmail.com';
+    var personResult, matched_id, metadata, orgMatch, personMatch;
     //TODO:
     // Step 1: check for email address in DT ✓
     // Step 1a: If no email, create account ✓
@@ -235,53 +244,60 @@ _.extend(Utils, {
     // Step 3b: No -> Create a new account and use that account
 
     // Get all the ids that contain this email address.
-    personResult = HTTP.get(Meteor.settings.donor_tools_site + "/personas.json?search=" + email, {
+    personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email + "&fields=email_address", {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
+    console.log(personResult);
 
     if(personResult && personResult > 0) {
       metadata = Customers.findOne( {_id: customer_id } ).metadata;
       // Step 1b
       if(metadata.org){
-        personResult.data.forEach(function (value) {
-           if(value.persona.is_company){
-             // Does the company name in DT match the company name provided by the user?
-             if(value.persona.company_name === metadata.org) {
-               // Return value.id as the DT ID that has matched what the user inputted
-               matched_id = value.persona.id;
-               return {matched_id: matched_id, personResult: personResult};
-             } else {
-               // Create new company in DT, since this one didn't match what they gave us
-             }
-           } else {
-             // Create new company in DT, since this one didn't match what they gave us
-
-           }
+        orgMatch = _.find(personResult.data, function (value) {
+          return value.persona.company_name
         });
-      } else {
-        personResult.data.forEach(function (value) {
-          if(value.persona.is_company){
-            // Create new company in DT, since this one didn't match what they gave us
-
+        if(orgMatch){
+          // Does the company name in DT match the company name provided by the user?
+          if(orgMatch.persona.company_name === metadata.org) {
+            // Return value.id as the DT ID that has matched what the user inputted
+            matched_id = orgMatch.persona.id;
+            return {matched_id: matched_id, personResult: personResult};
           } else {
-            value.persona.names.forEach(function (name) {
-              // Does the name in DT match the name provided by the user?
-              if(name.first_name === metadata.fname && name.last_name === metadata.lname) {
-                // Return value.id as the DT ID that has matched what the user inputted
-              } else {
-                // Create new company in DT, since this one didn't match what they gave us
-
-              }
-            });
-
+            // Create new company in DT, since this one didn't match what they gave us
+            return {matched_id: null, personResult: personResult};
           }
-        });
+        } else {
+          // Create new company in DT, since this one (or these) didn't match what they gave us
+          return {matched_id: null, personResult: personResult};
         }
+      } else {
+        orgMatch = _.find( personResult.data, function ( value ) {
+          return !value.persona.company_name
+        } );
 
+        if( orgMatch ) {
+          personMatch = _.find( personResult.data, function ( el ) {
+
+            if( el.persona.names.some( function ( value ) {
+                if( value.first_name === metadata.fname && value.last_name === metadata.lname ) {
+                  return true
+                }
+              } ) ) {
+              // Looked through all of the name arrays inside of all of the persona's and there was a match
+              return true;
+            }
+          } );
+          return { matched_id: personMatch.persona.id, personResult: personResult };
+
+        } else {
+          // Create new person in DT, since this one (or these) didn't match what they gave us
+          return { matched_id: null, personResult: personResult };
+        }
+      }
     } else {
       // Step 1a
       // Return the empty array
-      return {matched_id: '', personResult: personResult};
+      return {matched_id: null, personResult: personResult};
     }
   },
     get_fund_id: function (donateTo) {
@@ -547,7 +563,7 @@ _.extend(Utils, {
         }
     },
     insert_donation_and_donor_into_dt: function (customer_id, user_id, charge_id){
-        try {
+        /*try {*/
             logger.info("Started insert_donation_and_donor_into_dt");
 
             var customer =  Customers.findOne(customer_id);
@@ -655,13 +671,13 @@ _.extend(Utils, {
                 throw new Meteor.Error("Couldn't get the persona_id for some reason");
             }
 
-        }
+        /*}
          catch (e) {
              logger.info(e);
              //e._id = AllErrors.insert(e.response);
              var error = (e.response);
              throw new Meteor.Error(error, e._id);
-         }
+         }*/
     },
     separate_donations: function(serverResponse){
         logger.info("Inside separate_donations");
@@ -713,7 +729,7 @@ _.extend(Utils, {
       DT_sources.upsert({_id: source._id}, source);
     },
     get_all_dt_donations: function(persona_ids) {
-        try {
+        /*try {*/
             logger.info("Started get_all_dt_donations");
 
             if(persona_ids === '') {return;}
@@ -728,12 +744,12 @@ _.extend(Utils, {
                 Utils.separate_donations(responseData.data);
             });
 
-        } catch (e) {
+       /* } catch (e) {
             logger.info(e);
             //e._id = AllErrors.insert(e.response);
             var error = (e.response);
             throw new Meteor.Error(error, e._id);
-        }
+        }*/
     },
     insert_persona_info_into_user: function(user_id, persona_info) {
       //Insert the donor tools persona id into the user record
@@ -994,7 +1010,7 @@ _.extend(Utils, {
     split_dt_persona_info: function (email, personResult) {
         logger.info("Started split_dt_persona_info");
 
-        if(!personResult || personResult.data === '' || personResult.data.length < 1){
+        if(!personResult || personResult.data === '' || personResult.data === []){
             logger.info("No existing DT account found");
             return;
         } else {
@@ -1003,6 +1019,7 @@ _.extend(Utils, {
             return_to_called.persona_info = [];
 
             if(!personResult.data.length){
+              console.log("Not an array of data");
                 personResult.data = [personResult.data];
             }
             personResult.data.forEach(function (element) {

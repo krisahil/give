@@ -62,8 +62,8 @@ _.extend(Utils, {
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
       Utils.store_splits(dataResults.data);
-      console.log("Total Pages: " + dataResults.headers['pagination-total-pages']);
-      console.log("Current Page: " + i );
+      //console.log("Total Pages: " + dataResults.headers['pagination-total-pages']);
+      //console.log("Current Page: " + i );
       totalPages = dataResults.headers['pagination-total-pages'];
     }
 
@@ -72,7 +72,7 @@ _.extend(Utils, {
   },
   store_splits: function (donations) {
     donations.forEach( function ( split ) {
-      console.log(split.split);
+      //console.log(split.split);
       DT_splits.upsert({_id: split.split.id}, {$set: split.split});
     });
 

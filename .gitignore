@@ -11,3 +11,4 @@ thanks-page.png
 npm-debug.log
 bundle.tar.gz
 .iron
+start-local-debug.sh
