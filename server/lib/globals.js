@@ -103,14 +103,14 @@ Utils = {
       check( dateEnd, String );
 
       // This is the fund ids for community sponsorship
-     /* var fundsList = [
+     var fundsList = [
        63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282
        ];
        fundsList.forEach( function ( fundId ) {
        Utils.getFundHistory( fundId, dateStart, dateEnd );
        } );
 
-       console.log( "Got all funds history" );*/
+       console.log( "Got all funds history" );
       return;
     }
 };
