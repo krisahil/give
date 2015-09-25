@@ -193,10 +193,12 @@ Router.route('/webhooks/stripe', function () {
     // Receive an event, check that it contains a data.object object and send along to appropriate function
     var request = this.request.body;
     if(request.data && request.data.object){
-        console.dir(request.data.object);
-        var event = Stripe_Events[request.type](request);
-        this.response.statusCode = 200;
-        this.response.end('Oh hai Stripe!\n');
+      // Got it, let the Stripe server go
+      this.response.statusCode = 200;
+      this.response.end('Oh hai Stripe!\n');
+
+      // Process this event, but first check that it actually came from Stripe
+      StripeFunctions.control_flow_of_stripe_event_processing( request );
     } else {
         this.response.statusCode = 400;
         this.response.end('Oh hai Stripe!\n\n');

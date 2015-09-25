@@ -2,6 +2,12 @@ Future = Meteor.npmRequire("fibers/future");
 // Initialize Stripe with the secret key
 Stripe = StripeAPI(Meteor.settings.stripe.secret);
 
+// Define a global object for Stripe Methods
+StripeFunctions = {};
+
+// Define a global object for DonorTools Methods
+DonorTools = {};
+
 Utils = {
     get_stripe_customer: function (stripe_customer_id) {
         logger.info("Started get_stripe_customer");

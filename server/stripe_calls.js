@@ -407,74 +407,6 @@ _.extend(Utils, {
         }
         return return_this;
     },
-    store_stripe_event: function (event_body) {
-        logger.info("Started store_stripe_event");
-        
-        logger.info(event_body.data.object.id);
-        event_body.data.object._id = event_body.data.object.id;
-
-        switch(event_body.data.object.object){
-            case "customer":
-                if(event_body.data.object.metadata['balanced.customer_id']){
-                    event_body.data.object.metadata['balanced_customer_id'] = event_body.data.object.metadata['balanced.customer_id'];
-                    delete event_body.data.object.metadata['balanced.customer_id'];
-                }
-
-                console.log(event_body.data.object);
-                Customers.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "invoice":
-                Invoices.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "charge":
-                Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "payment":
-                Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "card":
-                Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
-                break;
-            case "bank_account":
-                Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
-                break;
-            case "subscription":
-                Subscriptions.upsert({_id: event_body.data.object._id}, event_body.data.object);
-                break;
-            default:
-                logger.error("This event didn't fit any of the configured cases, go into store_stripe_event and add the appropriate case.");
-
-        }
-        
-    },
-    charge_events: function(stripeEvent){
-        logger.info("Started charge_events");
-
-        var sync_request = Utils.store_stripe_event(stripeEvent);
-
-        var frequency_and_subscription;
-        if(stripeEvent.data.object.invoice) {
-            // Now send these changes off to Stripe to update the record there.
-            Utils.update_charge_metadata(stripeEvent);
-
-            // Get the frequency_and_subscription of this charge, since it is part of a subscription.
-            frequency_and_subscription = Utils.get_frequency_and_subscription(stripeEvent.data.object.invoice);
-            if(frequency_and_subscription){
-                Utils.send_donation_email(true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-                    stripeEvent, frequency_and_subscription.frequency, frequency_and_subscription.subscription);
-                return;
-            } else {
-                // null frequency_and_subscription means that either the frequency or the subscription couldn't be found using the invoice id.
-                throw new Meteor.error("This event needs to be sent again, since we couldn't find enough information to send an email.");
-                return;
-            }
-        } else {
-            Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-                stripeEvent, "One Time", null);
-            return;
-        }
-    },
     link_card_to_customer: function(customer_id, token_id, type, customerInfo){
         logger.info("Started link_card_to_customer");
 
@@ -661,15 +593,18 @@ _.extend(Utils, {
 
         return stripeCardUpdate;
     },
-    update_stripe_customer_user: function(customer_id, user, email_address){
+    update_stripe_customer_user: function(customer_id, user_id_for_customer, email_address){
         logger.info("Inside update_stripe_customer_user.");
 
         var user_cursor;
+      if (user_id_for_customer instanceof Mongo.Cursor) {
+        console.log("Yep, it's a Cursor.");
+      }
 
-        if(!user){
+        if(!user_id_for_customer){
             user_cursor = Meteor.users.findOne({'emails.address': email_address});
         } else{
-            user_cursor = Meteor.users.findOne(user);
+            user_cursor = Meteor.users.findOne(user_id_for_customer);
         }
       console.log(user_cursor);
 

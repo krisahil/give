@@ -1,9 +1,6 @@
 _.extend(Utils, {
     post_donation_operation: function (customer_id, charge_id) {
-        // If this is the dev environment I don't want it to affect DT live account.
-        /*if(Meteor.settings.dev){
-            return;
-        }*/
+
         logger.info("Started post_donation_operation.");
         var inserted_now, matchedId, findAnyMatchedDTaccount;
 
@@ -29,11 +26,15 @@ _.extend(Utils, {
 
                 //Check for existing id array
                 if(user_id.persona_id && !user_id.persona_info) {
+                  console.log("Line 32 post_donation.js: This is the persona_id : ", user_id.persona_id);
                     //check dt for user, persona_ids will be an array of 0 to many persona_ids
                     persona_result = Utils.check_for_dt_user(email_address, user_id.persona_id, true);
                 } else {
                   //check dt for user, persona_ids will be an array of 0 to many persona_ids
                   findAnyMatchedDTaccount = Utils.check_for_dt_user(email_address, null, false, customer_id);
+                  if(!findAnyMatchedDTaccount) {
+                    return;
+                  }
                   persona_result =  findAnyMatchedDTaccount;
                   matchedId =       findAnyMatchedDTaccount.matched_id;
                   console.log("*************LOOK HERE");
@@ -41,6 +42,9 @@ _.extend(Utils, {
                   console.dir(persona_result);
                 }
 
+              if(!persona_result) {
+                return;
+              }
                 //TODO: fix this area, doesn't work with the change I've made to personIDs, since a user account shouldn't
                 // be made if the user doesn't match the main email criteria
 
@@ -202,12 +206,21 @@ _.extend(Utils, {
           return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
         } else {
           console.log("Inside the no id section");
-          getPersonasAndMatchedId = Utils.find_dt_persona_flow(email, customer_id);
-          console.dir(getPersonasAndMatchedId);
+          if(Audit_trail.find({_id: customer_id} ) && !Audit_trail.findOne({_id: customer_id} ).flow_checked) {
+            console.log("Checked for and didn't find an audit record for this customer creation flow.");
+
+            Audit_trail.upsert({_id: customer_id}, {$set: {flow_checked: true}});
+            getPersonasAndMatchedId = Utils.find_dt_persona_flow(email, customer_id);
+            console.dir(getPersonasAndMatchedId);
             personaMatchData = getPersonasAndMatchedId.personResult;
             matched_id = getPersonasAndMatchedId.matched_id;
 
-          personaData = Utils.split_dt_persona_info( email, personaMatchData );
+            personaData = Utils.split_dt_persona_info( email, personaMatchData );
+          } else {
+            console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
+            return;
+          }
+
 
           return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: matched_id};
 
@@ -1005,12 +1018,12 @@ _.extend(Utils, {
                 logger.warn("There is no DT_donation found, can't update its status");
                 return;
             }
-        }, 20000);
+        }, 15000);
     },
-    split_dt_persona_info: function (email, personResult) {
+    split_dt_persona_info: function (email, personResultInSplit) {
         logger.info("Started split_dt_persona_info");
 
-        if(!personResult || personResult.data === '' || personResult.data === []){
+        if(!personResultInSplit || personResultInSplit.data === '' || personResultInSplit.data === []){
             logger.info("No existing DT account found");
             return;
         } else {
@@ -1018,11 +1031,11 @@ _.extend(Utils, {
             return_to_called.persona_ids = [];
             return_to_called.persona_info = [];
 
-            if(!personResult.data.length){
+            if(!personResultInSplit.data.length){
               console.log("Not an array of data");
                 personResult.data = [personResult.data];
             }
-            personResult.data.forEach(function (element) {
+          personResultInSplit.data.forEach(function (element) {
                 return_to_called.persona_ids.push(element.persona.id);
                 return_to_called.persona_info.push(element.persona);
 
@@ -1042,14 +1055,5 @@ _.extend(Utils, {
             });
             return return_to_called;
         }
-    },
-    audit_dt_donation: function (charge_id, customer_id, status){
-        logger.info("Started audit_dt_donation");
-        logger.info("Charge_id: " + charge_id);
-
-        Audit_trail.upsert({_id: charge_id}, {$set: {dt_donation_created: true}});
-        Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_status_updated_to: status, time: moment().format("MMM DD, YYYY hh:mma")}}});
-        Utils.update_dt_status(charge_id, status, 1);
-        Utils.post_donation_operation(customer_id, charge_id);
     }
 });

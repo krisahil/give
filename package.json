@@ -2,7 +2,7 @@
   "name": "Give",
   "Version": "0.9",
   "engines": {
-    "node": "0.10.32"
+    "node": "0.10.40"
   },
   "scripts": {
     "start": "node server"
