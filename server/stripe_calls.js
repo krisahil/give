@@ -143,77 +143,78 @@ _.extend(Utils, {
         }
     },
     create_customer: function (paymentDevice, customerInfo) {
-        logger.info("Inside create_customer.");
+      logger.info("Inside create_customer.");
 
-        var stripeCustomer = new Future();
-        var type;
+      var stripeCustomer = new Future();
+      var type;
 
-        if (paymentDevice.slice(0, 2) === 'to') {
-            type = "card";
-            Stripe.customers.create({
-                card: paymentDevice,
-                email: customerInfo.email_address,
-                metadata: {
-                    "city": customerInfo.city,
-                    "state": customerInfo.region,
-                    "address_line1": customerInfo.address_line1,
-                    "address_line2": customerInfo.address_line2,
-                    "country": customerInfo.country,
-                    "postal_code": customerInfo.postal_code,
-                    "phone": customerInfo.phone_number,
-                    "business_name": customerInfo.org,
-                    "email": customerInfo.email_address,
-                    "fname": customerInfo.fname,
-                    "lname": customerInfo.lname
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomer.return(error);
-                } else {
-                    stripeCustomer.return(customer);
-                }
-            });
-        } else if (paymentDevice.slice(0, 2) === 'bt') {
-            /**/
-            logger.info("Bank_account");
-            type = "bank_account";
-            Stripe.customers.create({
-                bank_account: paymentDevice,
-                email: customerInfo.email_address,
-                metadata: {
-                    "city": customerInfo.city,
-                    "state": customerInfo.region,
-                    "address_line1": customerInfo.address_line1,
-                    "address_line2": customerInfo.address_line2,
-                    "postal_code": customerInfo.postal_code,
-                    "country": customerInfo.country,
-                    "phone": customerInfo.phone_number,
-                    "business_name": customerInfo.org,
-                    "email": customerInfo.email_address,
-                    "fname": customerInfo.fname,
-                    "lname": customerInfo.lname
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomer.return(error);
-                } else {
-                    stripeCustomer.return(customer);
-                }
-            });
-        } else {
-            throw new Meteor.Error('Token-match', "Sorry, that token doesn't match any know prefix.");
-        }
-        stripeCustomer = stripeCustomer.wait();
-        if (!stripeCustomer.object) {
-            throw new Meteor.Error(stripeCustomer.rawType, stripeCustomer.message);
-        }
-        stripeCustomer._id = stripeCustomer.id;
+      if (paymentDevice.slice(0, 2) === 'to') {
+        type = "card";
+        Stripe.customers.create({
+            card: paymentDevice,
+            email: customerInfo.email_address,
+            metadata: {
+                "city": customerInfo.city,
+                "state": customerInfo.region,
+                "address_line1": customerInfo.address_line1,
+                "address_line2": customerInfo.address_line2,
+                "country": customerInfo.country,
+                "postal_code": customerInfo.postal_code,
+                "phone": customerInfo.phone_number,
+                "business_name": customerInfo.org,
+                "email": customerInfo.email_address,
+                "fname": customerInfo.fname,
+                "lname": customerInfo.lname
+            }
+        }, function (error, customer) {
+            if (error) {
+                //console.dir(error);
+                stripeCustomer.return(error);
+            } else {
+                stripeCustomer.return(customer);
+            }
+        });
+      } else if (paymentDevice.slice(0, 2) === 'bt') {
+        /**/
+        logger.info("Bank_account");
+        type = "bank_account";
+        Stripe.customers.create({
+            bank_account: paymentDevice,
+            email: customerInfo.email_address,
+            metadata: {
+                "city": customerInfo.city,
+                "state": customerInfo.region,
+                "address_line1": customerInfo.address_line1,
+                "address_line2": customerInfo.address_line2,
+                "postal_code": customerInfo.postal_code,
+                "country": customerInfo.country,
+                "phone": customerInfo.phone_number,
+                "business_name": customerInfo.org,
+                "email": customerInfo.email_address,
+                "fname": customerInfo.fname,
+                "lname": customerInfo.lname
+            }
+        }, function (error, customer) {
+            if (error) {
+                //console.dir(error);
+                stripeCustomer.return(error);
+            } else {
+                stripeCustomer.return(customer);
+            }
+        });
+      } else {
+        throw new Meteor.Error('Token-match', "Sorry, that token doesn't match any know prefix.");
+      }
+      stripeCustomer = stripeCustomer.wait();
+      if (!stripeCustomer.object) {
+        throw new Meteor.Error(stripeCustomer.rawType, stripeCustomer.message);
+      }
+      stripeCustomer._id = stripeCustomer.id;
 
-        Customers.insert(stripeCustomer);
-        logger.info("Customer_id: " + stripeCustomer.id);
-        return stripeCustomer;
+      let wait_for_customer_insert = Customers.insert(stripeCustomer);
+
+      logger.info("Customer_id: " + stripeCustomer.id);
+      return stripeCustomer;
     },
     charge: function (total, donation_id, customer_id, payment_id, metadata) {
         logger.info("Inside charge.");
@@ -449,38 +450,38 @@ _.extend(Utils, {
         return stripeCreateCard;
     },
     update_card: function(customer_id, card_id, saved){
-        logger.info("Started update_card");
-        logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
+      logger.info("Started update_card");
+      logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
 
-        var stripeUpdatedCard = new Future();
+      var stripeUpdatedCard = new Future();
 
-        Stripe.customers.updateCard(
-            customer_id,
-            card_id,{
-                metadata: {
-                    saved: saved
-                }
-            },
-            function (error, card) {
-                if (error) {
-                    //console.dir(error);
-                    stripeUpdatedCard.return(error);
-                } else {
-                    stripeUpdatedCard.return(card);
-                }
-            }
-        );
-
-        stripeUpdatedCard = stripeUpdatedCard.wait();
-
-        if (!stripeUpdatedCard.object) {
-            throw new Meteor.Error(stripeUpdatedCard.rawType, stripeUpdatedCard.message);
+      Stripe.customers.updateCard(
+        customer_id,
+        card_id,{
+          metadata: {
+            saved: saved
+          }
+        },
+        function (error, card) {
+          if (error) {
+            //console.dir(error);
+            stripeUpdatedCard.return(error);
+          } else {
+            stripeUpdatedCard.return(card);
+          }
         }
+      );
 
-        stripeUpdatedCard._id = stripeUpdatedCard.id;
-        console.dir(stripeUpdatedCard);
+      stripeUpdatedCard = stripeUpdatedCard.wait();
 
-        return stripeUpdatedCard;
+      if (!stripeUpdatedCard.object) {
+        throw new Meteor.Error(stripeUpdatedCard.rawType, stripeUpdatedCard.message);
+      }
+
+      stripeUpdatedCard._id = stripeUpdatedCard.id;
+      console.dir(stripeUpdatedCard);
+
+      return stripeUpdatedCard;
     },
     add_meta_from_subscription_to_charge: function(stripeEvent) {
         logger.info("Started add_meta_from_subscription_to_charge");
@@ -592,47 +593,6 @@ _.extend(Utils, {
         console.dir(stripeCardUpdate);
 
         return stripeCardUpdate;
-    },
-    update_stripe_customer_user: function(customer_id, user_id_for_customer, email_address){
-        logger.info("Inside update_stripe_customer_user.");
-
-        var user_cursor;
-      if (user_id_for_customer instanceof Mongo.Cursor) {
-        console.log("Yep, it's a Cursor.");
-      }
-
-        if(!user_id_for_customer){
-            user_cursor = Meteor.users.findOne({'emails.address': email_address});
-        } else{
-            user_cursor = Meteor.users.findOne(user_id_for_customer);
-        }
-      console.log(user_cursor);
-
-        var stripeCustomerUserUpdate = new Future();
-
-        Stripe.customers.update(customer_id, {
-                "metadata": {
-                    "user_id": user_cursor._id
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomerUserUpdate.return(error);
-                } else {
-                    stripeCustomerUserUpdate.return(customer);
-                }
-            }
-        );
-
-        stripeCustomerUserUpdate = stripeCustomerUserUpdate.wait();
-
-        if (!stripeCustomerUserUpdate.object) {
-            throw new Meteor.Error(stripeCustomerUserUpdate.rawType, stripeCustomerUserUpdate.message);
-        }
-
-        console.dir(stripeCustomerUserUpdate);
-
-        return stripeCustomerUserUpdate;
     },
     check_charge_status: function(charge_id){
         logger.info("Inside check_charge_status");

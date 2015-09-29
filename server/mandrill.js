@@ -111,7 +111,7 @@ _.extend(Utils,{
 
     },
     send_donation_email: function (recurring, id, amount, type, body, frequency, subscription) {
-        try {
+        /*try {*/
             logger.info("Started send_donation_email with ID: " + id);
             if (type === "charge.updated") {
                 logger.info("Don't need to send an email when a charge is updated, exiting the send_donation_email method.");
@@ -463,17 +463,17 @@ _.extend(Utils,{
                 data_slug.message.bcc_address = null;
                 Utils.send_mandrill_email(data_slug, 'large-gift');
             }
-        }
+        /*}
         catch (e) {
             logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
             logger.error('Mandril sendEmailOutAPI Method error: ' + e);
             throw new Meteor.error(e);
-        }
+        }*/
     },
 	send_mandrill_email: function(data_slug, type){
         try{
             logger.info("Started send_mandrill_email type: " + type);
-            Meteor.Mandrill.sendTemplate(data_slug);
+            Mandrill.messages.sendTemplate(data_slug);
         }//End try
         catch (e) {
             logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
@@ -515,7 +515,7 @@ _.extend(Utils,{
             var slug = "scheduled-donation-with-amount-and-frequency";
 
             logger.info("Sending with template name: " + slug);
-            Meteor.Mandrill.sendTemplate({
+            Mandrill.messages.sendTemplate({
                 "key": Meteor.settings.mandrillKey,
                 "template_name": slug,
                 "template_content": [

@@ -253,11 +253,4 @@ Template.UserProfile.onRendered(function() {
     $('.tab-pane:first').addClass('active');
 
     Session.set('activeTab', $('.active a').attr('value'));
-
-    //TODO: check for persona_info, retrieve if it doesn't exist in the user's record
-    // if(Meteor.users.findOne().persona_info){
-    // } else {
-    //  Meteor.call('get_persona_info', err, success){
-    //}
-    // }
 });

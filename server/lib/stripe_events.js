@@ -20,53 +20,49 @@ Stripe_Events = {
     return;
   },
   'charge.pending': function (stripeEvent) {
-    // Is the charge stored in the collection?
-    var charge_status = Utils.check_charge_status(stripeEvent.data.id);
-    console.log("Finished check_charge_status");
+    StripeFunctions.audit_charge( stripeEvent.data.object.id, 'pending' );
 
-    if(charge_status) {
-      // Check to see if it violates an out of order rule
-      var violation = StripeMethods.does_this_charge_event_violate_an_out_of_order_rule( stripeEvent.data.object );
-      console.log( "Finished does_this_charge_event_violate_an_out_of_order_rule" );
-
-      if( violation ) {
-        return;
-      } else {
-        Utils.audit_dt_donation( stripeEvent.data.object.id, 'pending' );
-        Utils.charge_events( stripeEvent );
-        console.log( stripeEvent.type + ': event processed' );
-        return;
-      }
+    if(stripeEvent.data.object.invoice) {
+      Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+        stripeEvent, stripeEvent.data.object.lines.data[0].plan.name.frequency, stripeEvent.data.object.lines.data[0].id );
     } else {
-      Utils.audit_dt_donation( stripeEvent.data.object.id, 'pending' );
-      Utils.charge_events( stripeEvent );
+      Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+        stripeEvent, "One Time", null);
     }
+    console.log( stripeEvent.type + ': event processed' );
+    return;
   },
   'charge.succeeded': function (stripeEvent) {
-    Utils.charge_events(stripeEvent);
-    Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'succeeded');
+    StripeFunctions.audit_charge(stripeEvent.data.object.id, 'succeeded');
+
+    if(stripeEvent.data.object.invoice) {
+      Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+        stripeEvent, stripeEvent.data.object.lines.data[0].plan.name.frequency, stripeEvent.data.object.lines.data[0].id );
+    } else {
+      Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+        stripeEvent, "One Time", null);
+    }
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'charge.failed': function (stripeEvent) {
-    Utils.charge_events(stripeEvent);
-    Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'failed');
+    // TODO: Need to handle this
+    StripeFunctions.audit_charge(stripeEvent.data.object.id, 'failed');
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'charge.refunded': function (stripeEvent) {
-    Utils.charge_events(stripeEvent);
-    Utils.audit_dt_donation(stripeEvent.data.object.id, stripeEvent.data.object.customer, 'refunded');
+    // TODO: Need to handle this
+    StripeFunctions.audit_charge(stripeEvent.data.object.id, 'refunded');
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'charge.captured': function (stripeEvent) {
-    Utils.charge_events(stripeEvent);
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'charge.updated': function (stripeEvent) {
-    Utils.charge_events(stripeEvent);
+    // TODO: Need to handle this
     console.log(stripeEvent.type + ': event processed');
     return;
   },
@@ -84,12 +80,10 @@ Stripe_Events = {
     return;
   },
   'customer.created': function (stripeEvent) {
-    var sync_request = StripeFunctions.store_stripe_event(stripeEvent);
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'customer.updated': function (stripeEvent) {
-    var sync_request = StripeFunctions.store_stripe_event(stripeEvent);
     console.log(stripeEvent.type + ': event processed');
     return;
   },
@@ -116,12 +110,10 @@ Stripe_Events = {
     return;
   },
   'customer.card.created': function (stripeEvent) {
-    StripeFunctions.store_stripe_event(stripeEvent);
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'customer.card.updated': function (stripeEvent) {
-    StripeFunctions.store_stripe_event(stripeEvent);
     console.log(stripeEvent.type + ': event processed');
     return;
   },
@@ -184,25 +176,21 @@ Stripe_Events = {
     return;
   },
   'invoice.created': function (stripeEvent) {
-    StripeFunctions.store_stripe_event(stripeEvent);
     Utils.add_meta_from_subscription_to_charge(stripeEvent);
 
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'invoice.updated': function (stripeEvent) {
-    StripeFunctions.store_stripe_event(stripeEvent);
-
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'invoice.payment_succeeded': function (stripeEvent) {
-    var sync_request = StripeFunctions.store_stripe_event(stripeEvent);
     console.log(stripeEvent.type + ': event processed');
     return;
   },
   'invoice.payment_failed': function (stripeEvent) {
-    var sync_request = StripeFunctions.store_stripe_event(stripeEvent);
+    // TODO: Need to handle this
     console.log(stripeEvent.type + ': event processed');
     return;
   },

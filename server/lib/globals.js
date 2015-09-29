@@ -10,28 +10,52 @@ DonorTools = {};
 
 Utils = {
     get_stripe_customer: function (stripe_customer_id) {
-        logger.info("Started get_stripe_customer");
-        console.log("Stripe customer id: " + stripe_customer_id);
-        var stripe_customer = new Future();
+      logger.info("Started get_stripe_customer");
+      console.log("Stripe customer id: " + stripe_customer_id);
+      var stripe_customer = new Future();
 
-        Stripe.customers.retrieve(stripe_customer_id,
-            function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripe_customer.return(error);
-                } else {
-                    stripe_customer.return(customer);
-                }
-            }
-        );
-
-        stripe_customer = stripe_customer.wait();
-
-        if (!stripe_customer.object) {
-            throw new Meteor.Error(stripe_customer.rawType, stripe_customer.message);
+      Stripe.customers.retrieve(stripe_customer_id,
+        function (error, customer) {
+          if (error) {
+            //console.dir(error);
+            stripe_customer.return(error);
+          } else {
+            stripe_customer.return(customer);
+          }
         }
+      );
 
-        return stripe_customer;
+      stripe_customer = stripe_customer.wait();
+
+      if (!stripe_customer.object) {
+        throw new Meteor.Error(stripe_customer.rawType, stripe_customer.message);
+      }
+
+      return stripe_customer;
+    },
+    get_stripe_charge: function (stripe_charge_id) {
+      logger.info("Started get_stripe_charge");
+      console.log("Stripe charge id: " + stripe_charge_id);
+      var stripe_charge = new Future();
+
+      Stripe.charges.retrieve(stripe_charge_id,
+        function (error, charge) {
+          if (error) {
+            //console.dir(error);
+            stripe_charge.return(error);
+          } else {
+            stripe_charge.return(charge);
+          }
+        }
+      );
+
+      stripe_charge = stripe_charge.wait();
+
+      if (!stripe_charge.object) {
+        throw new Meteor.Error(stripe_charge.rawType, stripe_charge.message);
+      }
+
+      return stripe_charge;
     },
     // Check donation form entries
     check_update_customer_form: function(form, customer_id, dt_persona_id) {
