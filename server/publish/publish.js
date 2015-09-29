@@ -225,19 +225,19 @@ Meteor.publish("userSubscriptions", function () {
 
 Meteor.publish("userDT", function (page) {
 	if (this.userId) {
-        if(Meteor.users.findOne({_id: this.userId}).persona_id) {
-            var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
-            console.log(persona_ids);
-            return DT_donations.find({persona_id: {$in: persona_ids}});
-        } else {
-            var persona_ids = [];
-            var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;
-            persona_info.forEach(function (value) {
-                persona_ids.push(value.id);
-            });
-            console.log(persona_ids);
-            return DT_donations.find( { persona_id: { $in: persona_ids } } );
-        }
+    if(Meteor.users.findOne({_id: this.userId}).persona_ids) {
+      var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
+      console.log(persona_ids);
+      return DT_donations.find({persona_id: {$in: persona_ids}});
+    } else {
+      var persona_ids = [];
+      var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;
+      persona_info.forEach(function (value) {
+          persona_ids.push(value.id);
+      });
+      console.log(persona_ids);
+      return DT_donations.find( { persona_id: { $in: persona_ids } } );
+    }
 	} else {
 		this.ready();
 	}

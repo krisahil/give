@@ -225,11 +225,15 @@ Template.UserProfile.events({
 Template.UserProfile.onRendered(function() {
 
     if(Meteor.users.findOne() && !Meteor.users.findOne().persona_info) {
-        Meteor.call('update_persona_info', function(error, result){
+        Meteor.call('update_user_document_by_adding_persona_details_for_each_persona_id', function(error, result){
             if(result){
-                console.log(result);
+              console.log(result);
+              // Hack here to reload the page. I'm not sure why the reactivity isn't
+              // showing the new information, when the persona_info is pulled down
+              // for now we just reload the page and the problem is resolved. 
+              location.reload();
             } else{
-                console.log(error);
+              console.log(error);
             }
         });
     }

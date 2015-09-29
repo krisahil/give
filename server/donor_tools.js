@@ -191,6 +191,7 @@ _.extend(Utils, {
     }
   },
   'work_with_the_stripe_charge_to_update_dt_donations': function (charge_id) {
+    // TODO: remove this function too, not using it
 
     var audit_item = Audit_trail.findOne({_id: charge_id});
 
@@ -230,8 +231,11 @@ _.extend(Utils, {
   },
   check_for_dt_user: function ( email, checkThisDTID, use_id, customer_id ){
     console.log(email);
+
+    // TODO: remove use_id part of this, I'm not using it
     /*try {*/
-    //This function is used to get all of the persona_id s from DT if they exist or return false if none do
+    // This function is used to get all of the persona_id (there might be many)
+    // from DT if they exist or return false if none do
     logger.info( "Started check_for_dt_user" );
     logger.info( "ID: ", checkThisDTID );
 

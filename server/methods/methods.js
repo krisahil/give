@@ -235,19 +235,47 @@ Meteor.methods({
             }
         }*/
     },
-    update_persona_info: function () {
-        logger.info("Started update_persona_info");
+    update_user_document_by_adding_persona_details_for_each_persona_id: function () {
+        logger.info("Started update_user_document_by_adding_persona_details_for_each_persona_id");
 
       if(this.userId){
-        var persona_ids;
-        persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
-        logger.info(persona_ids);
-        var email_address = Meteor.users.findOne({_id: this.userId}).emails[0].address;
-        var persona_info = Utils.check_for_dt_user(email_address, persona_ids, true);
-        Meteor.users.update({_id: this.userId}, {$set: {'persona_info': persona_info.persona_info}});
-        Meteor.users.update({_id: this.userId}, {$set: {'persona_ids': persona_info.persona_ids}});
+        let persona_ids, email_address;
+        persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
+        email_address = Meteor.users.findOne({_id: this.userId}).emails[0].address;
+
+        if(persona_ids && persona_ids.length) {
+          // The persona_ids let is an array
+          logger.info("Multiple persona_ids found: ", persona_ids);
+
+          // Since the donor tools information can change way down in the record
+          // we don't want to simply do an $addToSet, this will lead to many
+          // duplicate records, instead, setup a temp array let and then inside
+          // the forEach push the personas into it
+          // After we'll use the array to set the persona_info inside the user document
+
+          var set_this_array = [];
+
+          // Loop through the persona_ids
+          _.forEach(persona_ids, function(each_persona_id) {
+            let personaResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + each_persona_id + ".json", {
+              auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+            });
+            set_this_array.push(personaResult.data.persona);
+          })
+        } else if( persona_ids ){
+          // TODO: the persona_ids let is not an array, need to check that a value exists
+          logger.info("Single persona_id found: ", persona_ids);
+          let personaResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + persona_ids + ".json", {
+            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+          });
+          set_this_array.push(personaResult.data.persona);
+        }
+
+        Meteor.users.update({_id: this.userId}, {$set: {'persona_info': set_this_array}});
+
+        return "Finished update_user_document_by_adding_persona_details_for_each_persona_id method call";
       } else {
-        return "Nope";
+        return "Not logged in.";
       }
     },
     move_donation_to_other_person: function (donation_id, move_to_id) {
