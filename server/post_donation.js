@@ -909,7 +909,6 @@ _.extend(Utils, {
                     });
 
               Utils.GetDTData(moment().subtract(1, 'days').format('MMM+DD+YYYY'), moment().format('MMM+DD+YYYY'));
-              console.log(getSomeData);
 
               DT_donations.update(dt_donation, {$set: {'payment_status': charge_cursor.status}});
 
