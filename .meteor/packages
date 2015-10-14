@@ -43,12 +43,11 @@ twbs:bootstrap
 eskan:chosen
 aldeed:collection2
 aldeed:autoform
-msavin:jetsetter
 underscorestring:underscore.string
 meteorhacks:aggregate
 manuelschoebel:ms-seo
 meteorhacks:kadira
-joshjoe:doorbell
+# joshjoe:doorbell don't want to use this until I have fixed the loading on each page issue
 logging
 reload
 random
@@ -59,3 +58,4 @@ check
 promise
 meteorhacks:npm
 npm-container
+reywood:publish-composite

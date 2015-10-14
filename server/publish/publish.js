@@ -275,3 +275,16 @@ Meteor.publish("DTSplits", function () {
     this.ready();
   }
 });
+
+Meteor.publish("transfers", function (id) {
+  check(id, Match.Optional(String));
+  if (Roles.userIsInRole(this.userId, 'admin') || Roles.userIsInRole(this.userId, 'reports')) {
+    if(id){
+      return Transfers.find({_id: id});
+    } else {
+      return Transfers.find();
+    }
+  } else {
+    this.ready();
+  }
+});

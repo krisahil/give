@@ -21,10 +21,17 @@ Stripe_Events = {
   },
   'charge.pending': function (stripeEvent) {
     StripeFunctions.audit_charge( stripeEvent.data.object.id, 'pending' );
+    console.log(stripeEvent);
 
-    if(stripeEvent.data.object.invoice) {
+    if( stripeEvent.data.object.invoice ) {
+      let invoice_cursor = Invoices.findOne({_id: stripeEvent.data.object.invoice});
+      let subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
+      console.log(invoice_cursor.metadata);
+      console.log(subscription_cursor.metadata);
+
+
       Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-        stripeEvent, stripeEvent.data.object.lines.data[0].plan.name.frequency, stripeEvent.data.object.lines.data[0].id );
+        stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
     } else {
       Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null);
@@ -34,10 +41,18 @@ Stripe_Events = {
   },
   'charge.succeeded': function (stripeEvent) {
     StripeFunctions.audit_charge(stripeEvent.data.object.id, 'succeeded');
+    console.log(stripeEvent);
+
 
     if(stripeEvent.data.object.invoice) {
+      let wait_for_metadata_update = Utils.update_charge_metadata(stripeEvent);
+
+      let invoice_cursor = Invoices.findOne({_id: stripeEvent.data.object.invoice});
+      let subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
+
+      console.log(invoice_cursor._id);
       Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-        stripeEvent, stripeEvent.data.object.lines.data[0].plan.name.frequency, stripeEvent.data.object.lines.data[0].id );
+        stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
     } else {
       Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null);

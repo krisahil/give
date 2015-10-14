@@ -93,8 +93,34 @@ _.extend(StripeFunctions, {
     // Fulfill Promise
     return stripeEvent.await(
       function (res) {
-        // Check to see if it violates an out of order rule
         console.log(res);
+        return res;
+      }, function(err) {
+        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+    });
+
+  },
+  'get_invoice_metadata': function ( invoice_id ) {
+    console.log("Started get_invoice_metadata");
+    console.log("Invoice ID: ", invoice_id );
+
+    // Get the invoice from Stripe
+    var invoice = new Promise(function (resolve, reject) {
+        Stripe.invoices.retrieve(
+          invoice_id,
+          function (err, res) {
+            if (err) reject("There was a problem", err);
+            else resolve(res);
+          });
+      });
+
+    // Fulfill Promise
+    return invoice.await(
+      function (res) {
+        console.log(res);
+        console.log(res.metadata);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this since the event won't be sent again
@@ -111,7 +137,6 @@ _.extend(StripeFunctions, {
 
     // Find the stored event
     let charge_cursor = Charges.findOne({_id: request_object.data.object.id});
-    console.log(charge_cursor.id);
 
 
     // Since we really only care if the event goes from succeeded to pending we
@@ -133,6 +158,19 @@ _.extend(StripeFunctions, {
     event_body.data.object._id = event_body.data.object.id;
 
     switch(event_body.data.object.object){
+      case 'balance':
+        console.log("Didn't do anything with this balance event.");
+        break;
+      case "bank_account":
+        Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
+        break;
+      case "card":
+        Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
+        var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
+        break;
+      case "charge":
+        Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
+        break;
       case "customer":
         if(event_body.data.object.metadata['balanced.customer_id']){
           event_body.data.object.metadata['balanced_customer_id'] = event_body.data.object.metadata['balanced.customer_id'];
@@ -145,24 +183,21 @@ _.extend(StripeFunctions, {
       case "invoice":
         Invoices.upsert({_id: event_body.data.object.id}, event_body.data.object);
         break;
-      case "charge":
-        Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
-        break;
       case "payment":
         Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
         break;
-      case "card":
-        Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
-        var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
-        break;
-      case "bank_account":
-        Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
+      case 'plan':
+        console.log("Didn't do anything with this plan event.");
         break;
       case "subscription":
         Subscriptions.upsert({_id: event_body.data.object._id}, event_body.data.object);
         break;
-      case 'balance':
-        console.log("Didn't do anything with this balance event.");
+      case 'transfer':
+        console.dir(event_body);
+        Transfers.upsert({_id: event_body.data.object._id}, event_body.data.object);
+        let transactions = StripeFunctions.get_transactions_from_transfer(event_body.data.object.id);
+        console.dir(transactions);
+        StripeFunctions.upsert_stripe_transactions(transactions, event_body.data.object.id);
         break;
       default:
         logger.error("This event didn't fit any of the configured cases, go into store_stripe_event and add the appropriate case.");
@@ -192,6 +227,8 @@ _.extend(StripeFunctions, {
       user_id = user._id;
     } else{
       user_id = Utils.create_user(email_address, customer.id);
+      // Set the new user flag
+      Meteor.users.update({_id: user_id}, {$set: {newUser: true}});
     }
     // Add the user_id to the Stripe customer metadata
     add_user_id_to_customer_metadata = StripeFunctions.add_user_id_to_customer_metadata(user_id, customer.id);
@@ -306,5 +343,41 @@ _.extend(StripeFunctions, {
         throw new Meteor.Error("Error from Stripe customer metadata update Promise", err);
       });
 
+  },
+  get_transactions_from_transfer: function ( id ) {
+    //https://api.stripe.com/v1/balance/history?transfer=tr_16vTUs4NP2bNLNg5460VeIKi
+    logger.info("Started get_transactions_from_transfer");
+    logger.info("Transfer id: ", id);
+
+    let getStripeTransfer;
+
+    // For security purposes, let's verify the event by retrieving it from Stripe.
+    getStripeTransfer = new Promise(function (resolve, reject) {
+      Stripe.balance.listTransactions({ limit: 100, transfer: id
+        },
+        function (err, res) {
+          if (err) reject("There was a problem", err);
+          else resolve(res);
+        });
+    });
+
+    // Fulfill Promise
+    return getStripeTransfer.await(
+      function (res) {
+        // Log and return the value
+        console.log(res);
+        return res;
+      }, function(err) {
+        // TODO: if there is a a problem we need to resolve this
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe getStripeTransfer Promise", err);
+      });
+
+  },
+  upsert_stripe_transactions: function ( transactions, transfer_id ) {
+    transactions.data.forEach(function (each_transaction) {
+      each_transaction.transfer_id = transfer_id;
+      Transactions.upsert({_id: each_transaction.id}, each_transaction);
+    })
   }
 });

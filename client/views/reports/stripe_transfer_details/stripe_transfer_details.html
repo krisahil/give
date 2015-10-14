@@ -1,0 +1,48 @@
+<template name="StripeTransferDetails">
+  <div class="stripe-transfer-details">
+    <div id="" class="col-md-12">
+    {{#with transfer}}
+      <h5>
+        <span class="status {{status}}">
+          <em>IN TRANSIT</em>
+        </span>
+        <strong>${{twoDecimalPlaces amount}}</strong>
+        <span class="id">— {{id}}</span>
+      </h5>
+      <table class="table table-striped">
+        <tbody>
+          <tr class="responsiveFont">
+            <th>Date</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Fee</th>
+            <th>Amount</th>
+          </tr>
+          {{#each transactions}}
+              <!--data-balance-transaction-id="{{balance_transaction}}"-->
+            <tr class="responsiveFont {{redText}} {{clickable_row}}" data-href="{{receipt_link}}" >
+              <td class="change-td-padding">{{formatDate date}}</td>
+              <td class="change-td-padding">{{id}}</td>
+              <td class="change-td-padding">{{#with customer}}{{this.metadata.fname}} {{this.metadata.lname}}{{/with}}</td>
+              <td class="">${{twoDecimalPlaces fee}} </td>
+              <td class="">${{twoDecimalPlaces amount}} </td>
+            </tr>
+          {{/each}}
+        </tbody>
+        <span class="orange-text">
+            pending gifts = orange
+        </span>
+        <span class="red-text">
+            <br>failed gifts = red
+        </span>
+      </table>
+        <nav>
+          <ul class="pager">
+            <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Newer transactions</a></li>
+            <li class="next"><a href="#">Older transactions <span aria-hidden="true">&rarr;</span></a></li>
+          </ul>
+        </nav>
+        {{/with}}
+      </div>
+    </div>
+</template>

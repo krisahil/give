@@ -19,6 +19,14 @@ Router.onBeforeAction(function() {
     }
 }, {only : 'admin.dashboard'});
 
+Router.onBeforeAction(function() {
+    if (!Roles.userIsInRole(Meteor.user(), 'admin') || !Roles.userIsInRole(Meteor.user(), 'transfers') ) {
+        this.render("NotFound");
+    } else {
+        this.next();
+    }
+}, {only : 'transfers'});
+
 Router.route('', {
 
     name: 'donation.form',
@@ -140,6 +148,39 @@ Router.route('/user',{
     name: 'user.profile'
 });
 
+Router.route('/transfers',{
+    layoutTemplate: 'UserLayout',
+
+    subscriptions: function(){
+        return [
+            Meteor.subscribe('transfers')
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+            this.render();
+        } else {
+            this.render('Loading');
+        }
+    },
+    name: 'stripe.transfers'
+});
+
+Router.route('/transfers/:_id', function () {
+  var params = this.params;
+  var id = params._id;
+
+  this.layout('UserLayout');
+
+  this.wait([Meteor.subscribe('transfers', id), Meteor.subscribe('transactions', id) ]);
+  if (this.ready()) {
+    this.render('StripeTransferDetails', {
+      data: function () { return Transfers.findOne({_id: id}) }
+    });
+  } else {
+    this.render('Loading');
+  }
+});
 
 Router.route('/user/give',{
     layoutTemplate: 'UserLayout',

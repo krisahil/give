@@ -111,7 +111,10 @@ Meteor.methods({
 
                 // Send the Give support contact an email letting them know a new
                 // account has been created in DT.
-                Utils.send_new_dt_account_added_email_to_support_email_contact(data.customer.email_address, user_id, dt_account_id);
+                if(Meteor.users.findOne( {_id: user_id } ) && Meteor.users.findOne( {_id: user_id } ).newUser ){
+                  Meteor.users.update( {_id: user_id }, { $unset: { newUser: "" } } );
+                  Utils.send_new_dt_account_added_email_to_support_email_contact(data.customer.email_address, user_id, dt_account_id);
+                }
 
                 // Update the Stripe customer metadata to include this DT persona (account) ID
                 StripeFunctions.add_dt_account_id_to_stripe_customer_metadata(customerData.id, dt_account_id);

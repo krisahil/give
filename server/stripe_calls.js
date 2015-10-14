@@ -686,7 +686,7 @@ _.extend(Utils, {
         var stripeCharges = new Future();
 
         logger.info("Charge id: " + event_body.data.object.id);
-        // Use the metadata from the subscription to udpate the charge with Stripe
+        // Use the metadata from the subscription to update the charge with Stripe
         if(subscription_cursor.metadata){
             Stripe.charges.update(event_body.data.object.id,{
                     "metadata":  subscription_cursor.metadata
