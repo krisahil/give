@@ -3,7 +3,6 @@
 /*****************************************************************************/
 Template.StripeTransfers.events({
   'click .clickable_row': function(){
-    console.log(this.id);
     Router.go('/transfers/' + this.id);
   }
 });

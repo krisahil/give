@@ -172,11 +172,9 @@ Router.route('/transfers/:_id', function () {
 
   this.layout('UserLayout');
 
-  this.wait([Meteor.subscribe('transfers', id), Meteor.subscribe('transactions', id) ]);
+  this.wait([Meteor.subscribe('transfers', id), Meteor.subscribe('transactions', id), Meteor.subscribe('DTSources') ]);
   if (this.ready()) {
-    this.render('StripeTransferDetails', {
-      data: function () { return Transfers.findOne({_id: id}) }
-    });
+    this.render('StripeTransferDetails');
   } else {
     this.render('Loading');
   }

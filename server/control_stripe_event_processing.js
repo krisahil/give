@@ -102,8 +102,8 @@ _.extend(StripeFunctions, {
     });
 
   },
-  'get_invoice_metadata': function ( invoice_id ) {
-    console.log("Started get_invoice_metadata");
+  'get_invoice': function ( invoice_id ) {
+    console.log("Started get_invoice");
     console.log("Invoice ID: ", invoice_id );
 
     // Get the invoice from Stripe
@@ -120,7 +120,6 @@ _.extend(StripeFunctions, {
     return invoice.await(
       function (res) {
         console.log(res);
-        console.log(res.metadata);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this since the event won't be sent again

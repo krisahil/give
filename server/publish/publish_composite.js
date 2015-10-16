@@ -21,7 +21,9 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                 limit:  1,
                 fields: {
                   metadata: 1,
-                  customer: 1
+                  customer: 1,
+                  created: 1,
+                  source: 1
                 }
               } );
           },

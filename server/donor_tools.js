@@ -369,7 +369,7 @@ _.extend(Utils, {
 
     console.log("Charge_id: ", charge_id, " Customer_id: ", customer_id);
     let chargeCursor, customerCursor, dt_fund, donateTo, invoice_cursor,
-      fund_id, memo, source_id, newDonationResult;
+      fund_id, memo, source_id, newDonationResult, metadata;
 
     // TODO: use this after you have fixed the customer creation process, this is
     // where you'll actually send the gift to DT, but you first need to connect this charge id with
@@ -394,18 +394,20 @@ _.extend(Utils, {
       if (chargeCursor.invoice) {
         invoice_cursor = Invoices.findOne({_id: chargeCursor.invoice});
         if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
-          donateTo = invoice_cursor.lines.data[0].metadata.donateTo;
+          metadata = invoice_cursor.lines.data[0].metadata;
         } else{
-          donateTo = chargeCursor && chargeCursor.metadata && chargeCursor.metadata.donateTo;
+          metadata = chargeCursor.metadata;
         }
       } else {
-        donateTo = chargeCursor.metadata.donateTo;
+        metadata = chargeCursor.metadata;
       }
     } else{
       // TODO: this area is to be used in case we start excepting bitcoin or
       // other payment methods that return something other than a ch_  or py_
       // event object id
     }
+
+    donateTo = metadata.donateTo;
 
     if(donateTo){
       dt_fund = Utils.get_fund_id( donateTo );
@@ -419,23 +421,23 @@ _.extend(Utils, {
     // write-in gifts and those not matching a fund in DT
     if( !dt_fund ) {
       fund_id = Meteor.settings.donor_tools_default_fund_id;
-      memo = Meteor.settings.dev + chargeCursor.metadata.frequency.charAt(0).
-          toUpperCase() + chargeCursor.metadata.frequency.slice(1) + " " + donateTo;
+      memo = Meteor.settings.dev + metadata.frequency.charAt(0).
+          toUpperCase() + metadata.frequency.slice(1) + " " + donateTo;
 
     } else {
       fund_id = dt_fund;
-      memo = Meteor.settings.dev + chargeCursor.metadata.frequency.charAt(0).
-          toUpperCase() + chargeCursor.metadata.frequency.slice(1);
-      if( chargeCursor && chargeCursor.metadata && chargeCursor.metadata.note ){
-        memo = memo + " " + chargeCursor.metadata.note;
+      memo = Meteor.settings.dev + metadata.frequency.charAt(0).
+          toUpperCase() + metadata.frequency.slice(1);
+      if( metadata && metadata.note ){
+        memo = memo + " " + metadata.note;
       }
     }
 
     if ( customerCursor && customerCursor.metadata && customerCursor.metadata.business_name ){
       source_id = 42776;
     }
-    if( chargeCursor.metadata && chargeCursor.metadata.dt_source ){
-      source_id = chargeCursor.metadata.dt_source;
+    if( metadata && metadata.dt_source ){
+      source_id = metadata.dt_source;
     } else {
       source_id = 42754;
     }

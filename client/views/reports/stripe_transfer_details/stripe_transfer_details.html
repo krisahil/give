@@ -4,7 +4,7 @@
     {{#with transfer}}
       <h5>
         <span class="status {{status}}">
-          <em>IN TRANSIT</em>
+          <em>{{status}}</em>
         </span>
         <strong>${{twoDecimalPlaces amount}}</strong>
         <span class="id">— {{id}}</span>
@@ -12,23 +12,67 @@
       <table class="table table-striped">
         <tbody>
           <tr class="responsiveFont">
-            <th>Date</th>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Fee</th>
-            <th>Amount</th>
+              <th>Link</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Charge Date</th>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Fees Covered?</th>
+              <th>DT Fund</th>
+              <th>DT Source</th>
+              <th>Frequency</th>
+              <th>Fee</th>
+              <th>Donation Amount</th>
+              <th>Net Amount</th>
           </tr>
           {{#each transactions}}
               <!--data-balance-transaction-id="{{balance_transaction}}"-->
-            <tr class="responsiveFont {{redText}} {{clickable_row}}" data-href="{{receipt_link}}" >
-              <td class="change-td-padding">{{formatDate date}}</td>
-              <td class="change-td-padding">{{id}}</td>
-              <td class="change-td-padding">{{#with customer}}{{this.metadata.fname}} {{this.metadata.lname}}{{/with}}</td>
-              <td class="">${{twoDecimalPlaces fee}} </td>
-              <td class="">${{twoDecimalPlaces amount}} </td>
-            </tr>
+              <tr class="responsiveFont" data-href="" >
+                  {{#with charges}}
+                    <td style="width: 50px;">
+                      <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}">
+                        <div class="elipsis">
+                          <i class="fa fa-link"></i>
+                        </div>
+                      </a>
+                    </td>
+                  {{/with}}
+                {{#with customers}}
+                  <td class="change-td-padding">{{name}}</td>
+                  <td class="change-td-padding">{{email}}</td>
+                {{/with}}
+                {{#with charges}}
+                  <td class="change-td-padding">{{epochToString created}}</td>
+                  <td class="change-td-padding ellipsis">
+                    <a href="https://dashboard.stripe.com/payments/{{_id}}">
+                        <div class="elipsis">
+                              <span title="{{_id}}">{{_id}}</span>
+                        </div>
+                    </a>
+                  </td>
+                  <td class="change-td-padding">{{ach_or_card}}</td>
+                  <td class=""><input type="checkbox" name="coverTheFees" id="feesCovered" data-toggle="checkbox" class="cover-fees" {{fees_covered}} disabled></td>
+                  <td class="change-td-padding">{{metadata.donateTo}}</td>
+                  <td class="change-td-padding">{{dt_source}}</td>
+                  <td class="change-td-padding">{{metadata.frequency}}</td>
+                {{/with}}
+                <td class="">${{twoDecimalPlaces fee}}</td>
+                <td class="">${{twoDecimalPlaces amount}}</td>
+                <td class="">${{subtract amount fee}}</td>
+              </tr>
           {{/each}}
+          <tr>
+              <td class="text-right" colspan="10">Totals</td>
+              <td><strong>${{twoDecimalPlaces total_fees}}</strong></td>
+              <td><strong>${{add amount total_fees}}</strong></td>
+              <td><strong>${{twoDecimalPlaces amount}}</strong></td>
+          </tr>
         </tbody>
+
+          <tfoot align="pull-right">
+          </tfoot>
+
         <span class="orange-text">
             pending gifts = orange
         </span>

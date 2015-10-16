@@ -212,3 +212,23 @@ Template.registerHelper('cleanupString', function(string) {
   var cleanString = s(string).stripTags().trim().value();
   return cleanString;
 });
+
+/*
+ * Subtract
+ * Take the two passed values, subtract them, and divide by 100 to return dollar amount.
+ */
+
+Template.registerHelper('subtract', function(v1,v2){
+  if(v1 <= v2) return; // Don't want to divide by 0 or a negative
+  return ( v1 - v2 ) / 100 ;
+});
+
+/*
+ * Add
+ * Take the two passed values, add them, and divide by 100 to return dollar amount.
+ */
+
+Template.registerHelper('add', function(v1,v2){
+  if((v1 + v2) < 0 ) return; // Don't want to divide by 0 or a negative
+  return ( v1 + v2 ) / 100 ;
+});

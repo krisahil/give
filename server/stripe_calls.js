@@ -395,7 +395,7 @@ _.extend(Utils, {
             Subscriptions.findOne({_id: return_this.subscription}).plan.interval;
 
         if (return_this.frequency == null || return_this.subscription == null) {
-            var get_invoice = Utils.get_invoice(invoice_id);
+            var get_invoice = StripeFunctions.get_invoice(invoice_id);
             if(get_invoice && get_invoice.subscription){
                 return_this.subscription = get_invoice.subscription;
                 return_this.frequency = get_invoice.lines.data[0].plan.interval;
@@ -608,32 +608,6 @@ _.extend(Utils, {
             return false;
         }
     },
-    get_invoice: function(invoice_id){
-        logger.info("Inside get_invoice");
-
-        var stripeInvoice = new Future();
-
-        Stripe.invoices.retrieve(invoice_id,
-            function (error, invoice) {
-                if (error) {
-                    //console.dir(error);
-                    stripeInvoice.return(error);
-                } else {
-                    stripeInvoice.return(invoice);
-                }
-            }
-        );
-
-        stripeInvoice = stripeInvoice.wait();
-
-        if (!stripeInvoice.object) {
-            throw new Meteor.Error(stripeInvoice.rawType, stripeInvoice.message);
-        }
-
-        console.dir(stripeInvoice);
-
-        return stripeInvoice;
-    },
     update_invoice_metadata: function(event_body){
         logger.info("Inside update_invoice_metadata");
 
@@ -675,7 +649,7 @@ _.extend(Utils, {
         var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
         if(!invoice_cursor){
             //TODO: get the invoice from Stripe here, or wait for a set period of time
-            var invoice = Utils.get_invoice(event_body.data.object.invoice);
+            var invoice = StripeFunctions.get_invoice(event_body.data.object.invoice);
             invoice._id = invoice.id;
             Invoices.upsert({_id: invoice._id}, invoice);
             invoice_cursor = Invoices.findOne({_id: invoice.id});
