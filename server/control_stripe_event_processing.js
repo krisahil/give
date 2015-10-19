@@ -378,5 +378,30 @@ _.extend(StripeFunctions, {
       each_transaction.transfer_id = transfer_id;
       Transactions.upsert({_id: each_transaction.id}, each_transaction);
     })
+  },
+  get_next_or_previous_transfer: function (transfer_id, previous_or_next) {
+    let getStripeTransfer;
+
+    // For security purposes, let's verify the event by retrieving it from Stripe.
+    getStripeTransfer = new Promise(function (resolve, reject) {
+      Stripe.transfers.list({ limit: 1, [previous_or_next]: transfer_id
+        },
+        function (err, res) {
+          if (err) reject("There was a problem", err);
+          else resolve(res);
+        });
+    });
+
+    // Fulfill Promise
+    return getStripeTransfer.await(
+      function (res) {
+        // Log and return the value
+        console.log(res);
+        return res;
+      }, function(err) {
+        // TODO: if there is a a problem we need to resolve this
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe getStripeTransfer Promise", err);
+      });
   }
 });

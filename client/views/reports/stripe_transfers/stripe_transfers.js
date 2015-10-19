@@ -13,6 +13,10 @@ Template.StripeTransfers.events({
 Template.StripeTransfers.helpers({
   transfer: function () {
     return Transfers.find();
+  },
+  transfer_date: function () {
+    let timestamp = this.date;
+    return moment.utc(timestamp, 'X').format("MMMM Do, YYYY");
   }
 });
 

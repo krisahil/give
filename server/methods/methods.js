@@ -483,6 +483,37 @@ Meteor.methods({
     total_kids += (no_memo_or_other-266)/29;
 
     return total_kids;
+  },
+  get_dt_name: function (id) {
+    check(id, String);
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+      console.log("Inside privileged area");
+      console.log(id);
+      // Get the persona from DT
+      let persona_result = HTTP.get(Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      });
+      if( persona_result && persona_result.data && persona_result.data.persona ) {
+        return persona_result.data.persona;
+      } else {
+        return null;
+      }
+    } else {
+      return;
+    }
+
+  },
+  get_next_or_previous_transfer: function (current_transfer_id, previous_or_next) {
+    check(current_transfer_id, String);
+    check(previous_or_next, String);
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+      let previous_or_next_transfer = StripeFunctions.get_next_or_previous_transfer(current_transfer_id, previous_or_next);
+      console.log(previous_or_next_transfer.data);
+      return previous_or_next_transfer.data[0].id;
+    } else {
+      return;
+    }
   }
+
 
 });

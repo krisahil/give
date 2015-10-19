@@ -95,8 +95,8 @@ Template.UserProfile.helpers({
         return this.splits;
     },
     fundName: function() {
-        if(DT_funds.findOne({_id: this.fund_id}) && DT_funds.findOne({_id: this.fund_id}).name){
-            return DT_funds.findOne({_id: this.fund_id}).name;
+        if(DT_funds.findOne({_id: this.fund_id.toString()}) && DT_funds.findOne({_id: this.fund_id.toString()}).name){
+            return DT_funds.findOne({_id: this.fund_id.toString()}).name;
         }
         else return '<span style="color: red;">Finding fund...</span>';
     },
@@ -199,6 +199,7 @@ Template.UserProfile.events({
                console.log(result);
                $('#modal_for_address_change').modal('hide');
                loadingButton.button("reset");
+               Bert.alert("We have updated your address, thanks.", "success");
            } else{
                console.log(error);
                loadingButton.button("reset");
@@ -230,20 +231,18 @@ Template.UserProfile.events({
 
 Template.UserProfile.onRendered(function() {
 
-    if(Meteor.users.findOne().persona_info) {
-      if( Meteor.users.findOne().persona_info.length < 1 ) {
-        Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
-          if( result ) {
-            console.log( result );
-            // Hack here to reload the page. I'm not sure why the reactivity isn't
-            // showing the new information, when the persona_info is pulled down
-            // for now we just reload the page and the problem is resolved.
-            location.reload();
-          } else {
-            console.log( error );
-          }
-        } );
-      }
+    if(!Meteor.users.findOne().persona_info || Meteor.users.findOne().persona_info.length < 1) {
+      Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
+        if( result ) {
+          console.log( result );
+          // Hack here to reload the page. I'm not sure why the reactivity isn't
+          // showing the new information, when the persona_info is pulled down
+          // for now we just reload the page and the problem is resolved.
+          location.reload();
+        } else {
+          console.log( error );
+        }
+      } );
     }
 
 

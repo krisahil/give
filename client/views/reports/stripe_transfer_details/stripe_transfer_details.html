@@ -7,7 +7,8 @@
           <em>{{status}}</em>
         </span>
         <strong>${{twoDecimalPlaces amount}}</strong>
-        <span class="id">— {{id}}</span>
+          <a href="https://dashboard.stripe.com/transfers/{{id}}" target="_blank"><span class="id">— {{id}}</span></a>
+        <span class="date">— {{transfer_date}}</span>
       </h5>
       <table class="table table-striped">
         <tbody>
@@ -31,7 +32,7 @@
               <tr class="responsiveFont" data-href="" >
                   {{#with charges}}
                     <td style="width: 50px;">
-                      <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}">
+                      <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}" target="_blank">
                         <div class="elipsis">
                           <i class="fa fa-link"></i>
                         </div>
@@ -39,13 +40,13 @@
                     </td>
                   {{/with}}
                 {{#with customers}}
-                  <td class="change-td-padding">{{name}}</td>
+                  <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
                   <td class="change-td-padding">{{email}}</td>
                 {{/with}}
                 {{#with charges}}
                   <td class="change-td-padding">{{epochToString created}}</td>
                   <td class="change-td-padding ellipsis">
-                    <a href="https://dashboard.stripe.com/payments/{{_id}}">
+                    <a href="https://dashboard.stripe.com/payments/{{_id}}" target="_blank">
                         <div class="elipsis">
                               <span title="{{_id}}">{{_id}}</span>
                         </div>
@@ -72,18 +73,11 @@
 
           <tfoot align="pull-right">
           </tfoot>
-
-        <span class="orange-text">
-            pending gifts = orange
-        </span>
-        <span class="red-text">
-            <br>failed gifts = red
-        </span>
       </table>
         <nav>
           <ul class="pager">
-            <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Newer transactions</a></li>
-            <li class="next"><a href="#">Older transactions <span aria-hidden="true">&rarr;</span></a></li>
+            <li class="previous"><a href="#" target="_blank"><span aria-hidden="true">&larr;</span> Older transfer</a></li>
+            <li class="next"><a href="#" target="_blank">Newer transfer <span aria-hidden="true">&rarr;</span></a></li>
           </ul>
         </nav>
         {{/with}}

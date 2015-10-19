@@ -20,12 +20,12 @@ Router.onBeforeAction(function() {
 }, {only : 'admin.dashboard'});
 
 Router.onBeforeAction(function() {
-    if (!Roles.userIsInRole(Meteor.user(), 'admin') || !Roles.userIsInRole(Meteor.user(), 'transfers') ) {
+    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'reports']) ) {
         this.render("NotFound");
     } else {
         this.next();
     }
-}, {only : 'transfers'});
+}, {only : ['transfers', 'reports', 'reports.dashboard']});
 
 Router.route('', {
 
@@ -127,6 +127,14 @@ Router.route('/dashboard', function () {
     name: 'admin.dashboard'
 });
 
+Router.route('/reprotsDashboard', function () {
+    this.layout('AdminLayout');
+
+    this.render('ReportsDashboard');
+}, {
+    name: 'reports.dashboard'
+});
+
 
 Router.route('/user',{
     layoutTemplate: 'UserLayout',
@@ -205,7 +213,7 @@ Router.route('Subscriptions', function() {
     var params = this.params;
     Session.set('fix_it', params.query.fix_it);
 
-    this.wait(Meteor.subscribe('user_date_and_subscriptions_with_only_4'));
+    this.wait(Meteor.subscribe('user_data_and_subscriptions_with_only_4'));
     if (this.ready()) {
         this.render();
     } else {

@@ -168,16 +168,21 @@ _.extend(Utils, {
 
             if( el.persona.names.some( function ( value ) {
                 if( value.first_name === metadata.fname && value.last_name === metadata.lname ) {
+                  console.log(value);
                   // returning true here tells the function that this is the record inside which the correct name is found
-                  return true
+                  return true;
                 }
               } ) ) {
               // Looked through all of the name arrays inside of all of the persona's and there was a match
               return true;
             }
           } );
-          // return the matched DT persona id
-          return personMatch.persona.id;
+          // return the matched DT persona id if it exists, else return null since there was no name match here.
+          if(personMatch) {
+            return personMatch.persona.id;
+          } else {
+            return null;
+          }
 
         } else {
           // Create new person in DT, since this one (or these) didn't match what they gave us

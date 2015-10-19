@@ -20,6 +20,11 @@
                             <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'admin.dashboard'}}"><span class="fa fa-dashboard"></span> Admin Dashboard</a>
                         </li>
                     {{/if}}
+                    {{#if isInRole 'reports'}}
+                        <li class="">
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'reports.dashboard'}}"><span class="fa fa-dashboard"></span> Reports</a>
+                        </li>
+                    {{/if}}
                     <li class="">
                         <a id="nav-profile" class="nav-bar-links" href="{{pathFor 'user.profile'}}"><span class="fa fa-history"></span> Profile & Giving History</a>
                     </li>

@@ -21,17 +21,26 @@ Stripe_Events = {
   },
   'charge.pending': function (stripeEvent) {
     StripeFunctions.audit_charge( stripeEvent.data.object.id, 'pending' );
+    let subscription_cursor, invoice_cursor, subscription_id, interval, invoice_object;
+
     console.log(stripeEvent);
-
     if( stripeEvent.data.object.invoice ) {
-      let invoice_cursor = Invoices.findOne({_id: stripeEvent.data.object.invoice});
-      let subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
-      console.log(invoice_cursor.metadata);
-      console.log(subscription_cursor.metadata);
-
+      invoice_cursor = Invoices.findOne({_id: stripeEvent.data.object.invoice});
+      // It is possible that the invoice event hasn't been received by our server
+      if(invoice_cursor && invoice_cursor.id) {
+        subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
+        subscription_id = invoice_cursor.subscription;
+      } else {
+        invoice_object = StripeFunctions.get_invoice(stripeEvent.data.object.invoice);
+        subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
+        console.log(invoice_object);
+        subscription_id = invoice_object.subscription;
+      }
+      interval = subscription_cursor.plan.interval;
 
       Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-        stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
+        stripeEvent, interval, subscription_id );
+
     } else {
       Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null);

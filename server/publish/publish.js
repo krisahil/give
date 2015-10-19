@@ -173,9 +173,9 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
 	}
 });
 
-Meteor.publish("user_date_and_subscriptions_with_only_4", function () {
+Meteor.publish("user_data_and_subscriptions_with_only_4", function () {
     if (this.userId) {
-        console.log("Started publish function, user_date_and_subscriptions_with_only_4");
+        console.log("Started publish function, user_data_and_subscriptions_with_only_4");
         var customers = Customers.find({'metadata.user_id': this.userId});
         var customer_ids = [];
         var subscription_ids = [];
@@ -278,7 +278,7 @@ Meteor.publish("DTSplits", function () {
 
 Meteor.publish("transfers", function (id) {
   check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, 'admin') || Roles.userIsInRole(this.userId, 'reports')) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
     if(id){
       return Transfers.find({_id: id});
     } else {

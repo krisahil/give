@@ -2,6 +2,30 @@
 /* StripeTransferDetails: Event Handlers */
 /*****************************************************************************/
 Template.StripeTransferDetails.events({
+  'click .previous': function () {
+    console.log("clicked previous with: " + this.id);
+    Meteor.call("get_next_or_previous_transfer", this.id, 'starting_after', function (err, result) {
+      if(err) {
+        console.error(err);
+        Bert.alert("Nothing older", "danger");
+      } else {
+        console.log(result);
+        Router.go("/transfers/" + result);
+      }
+    });
+  },
+  'click .next': function () {
+    console.log("clicked next with: " + this.id);
+    Meteor.call("get_next_or_previous_transfer", this.id, 'ending_before', function (err, result) {
+      if(err) {
+        console.error(err);
+        Bert.alert("Nothing newer", "danger");
+      } else {
+        console.log(result);
+        Router.go("/transfers/" + result);
+      }
+    });
+  }
 });
 
 /*****************************************************************************/
@@ -59,6 +83,31 @@ Template.StripeTransferDetails.helpers({
     } else {
       return;
     }
+  },
+  retrieve_dt_names: function () {
+    let self = this;
+    if(!Session.get(this.metadata.dt_persona_id)) {
+      Meteor.call( "get_dt_name", self.metadata.dt_persona_id, function ( err, result ) {
+        if( err ) {
+          console.error( err );
+        } else {
+          console.log( result );
+          Session.set( self.metadata.dt_persona_id, result.recognition_name );
+        }
+      } )
+    }
+  },
+  dt_names: function () {
+    let persona_name = Session.get(this.metadata.dt_persona_id);
+    if(persona_name){
+      return persona_name;
+    } else {
+      return;
+    }
+  },
+  transfer_date: function () {
+    let timestamp = this.date;
+    return moment.utc(timestamp, 'X').format("MMMM Do, YYYY");
   }
 });
 

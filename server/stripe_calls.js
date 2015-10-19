@@ -778,8 +778,8 @@ _.extend(Utils, {
         Donations.insert(metadata);
 
         return stripeCreateSubscription;
-    },
-    stripe_get_many_events: function(starting_after, limit) {
+    }
+    /*stripe_get_many_events: function(starting_after, limit) {
         logger.info("Inside stripe_get_many_events.");
         logger.info("Stripe customer id to start after(if any): " + starting_after);
         var stripe_events= new Future();
@@ -809,5 +809,5 @@ _.extend(Utils, {
         }
 
         return stripe_events;
-    }
+    }*/
 });

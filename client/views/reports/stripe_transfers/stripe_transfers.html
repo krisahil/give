@@ -12,7 +12,7 @@
           {{#each transfer}}
               <!--data-balance-transaction-id="{{balance_transaction}}"-->
             <tr class="responsiveFont {{redText}} clickable_row" data-href="/transfers/{{id}}" >
-              <td class="change-td-padding">{{epochToString date}}</td>
+              <td class="change-td-padding">{{transfer_date}}</td>
               <td class="change-td-padding">{{id}}</td>
               <td class="">${{twoDecimalPlaces amount}}</td>
               <td class="">{{capitalize status}}</td>
@@ -26,12 +26,6 @@
             <br>failed gifts = red
         </span>
       </table>
-          <nav>
-              <ul class="pager">
-                  <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Newer transactions</a></li>
-                  <li class="next"><a href="#">Older transactions <span aria-hidden="true">&rarr;</span></a></li>
-              </ul>
-          </nav>
       </div>
     </div>
 </template>
