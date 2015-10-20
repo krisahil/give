@@ -122,9 +122,59 @@ _.extend(StripeFunctions, {
         console.log(res);
         return res;
       }, function(err) {
-        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
         console.log(err);
         throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+    });
+
+  },
+  'get_previous_invoice': function ( customer_id, invoice_id ) {
+    console.log("Started get_previous_invoice");
+    console.log("Customer ID: ", customer_id );
+    console.log("Invoice ID: ", invoice_id );
+
+    // Get the invoice from Stripe
+    let invoice = new Promise(function (resolve, reject) {
+        Stripe.invoices.list(
+          { limit: 1, starting_after: invoice_id },
+          function (err, res) {
+            if (err) reject("There was a problem", err);
+            else resolve(res);
+          });
+      });
+
+    // Fulfill Promise
+    return invoice.await(
+      function (res) {
+        console.log(res);
+        return res;
+      }, function(err) {
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe invoice retrieval Promise", err);
+    });
+
+  },
+  'update_customer_metadata': function ( customer_id, dt_persona_id ) {
+    console.log("Started update_customer_metadata");
+    console.log("Customer ID: ", customer_id );
+    console.log("DT_persona_id ID: ", dt_persona_id );
+
+    // Update the metadata, dt_persona_id of the customer in Stripe
+    let customer = new Promise(function (resolve, reject) {
+        Stripe.customers.update(customer_id, { "metadata": { "dt_persona_id": dt_persona_id } },
+          function (err, res) {
+            if (err) reject("There was a problem", err);
+            else resolve(res);
+          });
+      });
+
+    // Fulfill Promise
+    return customer.await(
+      function (res) {
+        console.log(res);
+        return res;
+      }, function(err) {
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe customer update Promise", err);
     });
 
   },
@@ -274,7 +324,7 @@ _.extend(StripeFunctions, {
     chargeCursor =    Charges.findOne({_id: charge_id});
 
     customerCursor =  Customers.findOne({_id: customer_id});
-    console.log("Metadata: ", chargeCursor.metadata);
+    console.log("Metadata: ", customerCursor.metadata);
 
     if(chargeCursor && customerCursor.metadata && customerCursor.metadata.dt_persona_id) {
       Utils.insert_gift_into_donor_tools( charge_id, customer_id );
@@ -295,7 +345,7 @@ _.extend(StripeFunctions, {
 
         // Increment the interval and send to parent function
         StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += 1);
-      }, 15000)
+      }, 1000)
 
     } else if ( interval < 5 ){
       // Wait 15 seconds since we can't find a charge cursor, or we can't find one
@@ -304,10 +354,27 @@ _.extend(StripeFunctions, {
 
         // Increment the interval and send to parent function
         StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += 1);
-      }, 15000)
+      }, 1000)
     } else {
-      throw new Meteor.Error("There was a problem that prevented the function from getting " +
-        "a result from either Donor Tools, or the MongoDB cursors");
+      if(interval % 1 === 0.5) {
+        throw new Meteor.Error("There was a problem that prevented the function from getting " +
+          "a result from either Donor Tools, or the MongoDB cursors");
+      } else {
+        let invoice = StripeFunctions.get_previous_invoice( customer_id, chargeCursor.invoice );
+        console.log("Invoice Object: ");
+        console.dir(invoice.data);
+        let previous_charge_id = invoice.data[0].charge;
+        console.log("Charge_id: ", previous_charge_id);
+        let dt_donation_cursor = DT_donations.findOne({transaction_id: previous_charge_id});
+        console.log("dt_donatino_cursor.persona_id : ", dt_donation_cursor.persona_id );
+        let dt_persona_id = dt_donation_cursor.persona_id;
+        // TODO: Q: what happens if I change the persona_id that this subscription is associated with?
+        // Always update the customer metadata to contain this dt_persona_id and this won't be a problem...?
+
+        let update_stripe_customer = Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dt_persona_id } });
+        StripeFunctions.update_customer_metadata(customer_id, dt_persona_id);
+        StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += .5);
+      }
     }
 
   },
