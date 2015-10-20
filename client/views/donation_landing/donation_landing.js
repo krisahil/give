@@ -159,12 +159,6 @@ Template.DonationLanding.onRendered(function () {
         description: "Technology Director",
         imageSrc: "/images/team/Josh.jpg"
     }, {
-        text: "Lindsey Keller",
-        value: "LindseyKeller",
-        selected: false,
-        description: "Intern",
-        imageSrc: "/images/team/Lindsey.jpg"
-    }, {
         text: "Shelley Setchell",
         value: "ShelleySetchell",
         selected: false,
