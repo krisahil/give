@@ -12,7 +12,9 @@ Template.StripeTransfers.events({
 /*****************************************************************************/
 Template.StripeTransfers.helpers({
   transfer: function () {
-    return Transfers.find();
+    return Transfers.find({}, {
+      sort: { date: -1 }
+    });
   },
   transfer_date: function () {
     let timestamp = this.date;
