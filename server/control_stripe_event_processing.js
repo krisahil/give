@@ -473,5 +473,7 @@ _.extend(StripeFunctions, {
     let transactions = StripeFunctions.get_transactions_from_transfer(getStripeTransfer.data[0].id);
     console.dir(transactions);
     StripeFunctions.upsert_stripe_transactions(transactions, getStripeTransfer.data[0].id);
+
+    return getStripeTransfer;
   }
 });
