@@ -101,7 +101,8 @@ Template.StripeTransferDetails.helpers({
     }
   },
   dt_names: function () {
-    let persona_name = Session.get(this.metadata.dt_persona_id);
+    let persona_id = DT_donations.findOne({'transaction_id': this._id}).persona_id;
+    let persona_name = Session.get( persona_id );
     if(persona_name){
       return persona_name;
     } else {

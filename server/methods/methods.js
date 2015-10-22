@@ -373,7 +373,6 @@ Meteor.methods({
                 }
 
                 var event = Stripe_Events[stripe_event.type](stripe_event);
-                StripeFunctions.store_stripe_event(stripe_event);
                 return stripe_event;
 
             } catch (e) {
