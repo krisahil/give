@@ -458,6 +458,7 @@ _.extend(StripeFunctions, {
       function (res) {
         // Log and return the value
         console.log(res);
+        StripeFunctions.store_stripe_event(res);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
