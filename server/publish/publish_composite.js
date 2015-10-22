@@ -44,7 +44,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
               }
             },
             {
-              find: function ( dt_donations ) {
+              find: function ( charges ) {
                 // Find user that authored comment.
                 return DT_donations.find(
                   { transaction_id: charges._id },
