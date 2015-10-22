@@ -457,7 +457,7 @@ _.extend(StripeFunctions, {
     });
 
     // Fulfill Promise
-    return getStripeTransfer.await(
+    getStripeTransfer = getStripeTransfer.await(
       function (res) {
         return res;
       }, function(err) {
