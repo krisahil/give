@@ -434,12 +434,16 @@ _.extend(StripeFunctions, {
 
   },
   upsert_stripe_transactions: function ( transactions, transfer_id ) {
+    logger.info("Started upsert_stripe_transactions");
+
     transactions.data.forEach(function (each_transaction) {
       each_transaction.transfer_id = transfer_id;
       Transactions.upsert({_id: each_transaction.id}, each_transaction);
     })
   },
   get_next_or_previous_transfer: function (transfer_id, previous_or_next) {
+    logger.info("Started get_next_or_previous_transfer");
+
     let getStripeTransfer;
 
     // For security purposes, let's verify the event by retrieving it from Stripe.
@@ -456,6 +460,7 @@ _.extend(StripeFunctions, {
     return getStripeTransfer.await(
       function (res) {
         // Log and return the value
+        console.log("Got the result");
         console.log(res);
 
         // TODO: Insert transfer here
