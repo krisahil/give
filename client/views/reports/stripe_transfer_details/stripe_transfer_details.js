@@ -89,7 +89,7 @@ Template.StripeTransferDetails.helpers({
   retrieve_dt_names: function () {
     let self = this;
     if(!Session.get(this.metadata.dt_persona_id)) {
-      let persona_id = DT_donations.findOne({'transaction_id': this._id}).persona_id;
+      var persona_id = DT_donations.findOne({'transaction_id': self._id}).persona_id;
         Meteor.call( "get_dt_name", persona_id, function ( err, result ) {
           if( err ) {
             console.error( err );

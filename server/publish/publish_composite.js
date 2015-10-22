@@ -51,7 +51,8 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                   {
                     limit:  1,
                     fields: {
-                      persona_id:    1
+                      persona_id:       1,
+                      transaction_id:   1
                     }
                   } );
               }
