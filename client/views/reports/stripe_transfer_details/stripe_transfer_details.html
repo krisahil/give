@@ -1,0 +1,86 @@
+<template name="StripeTransferDetails">
+  <div class="stripe-transfer-details">
+    <div id="" class="col-md-12">
+    {{#with transfer}}
+      <h5>
+        <span class="status {{status}}">
+          <em>{{status}}</em>
+        </span>
+        <strong>${{twoDecimalPlaces amount}}</strong>
+          <a href="https://dashboard.stripe.com/transfers/{{id}}" target="_blank"><span class="id">— {{id}}</span></a>
+        <span class="date">— {{transfer_date}}</span>
+      </h5>
+      <table class="table table-striped">
+        <tbody>
+          <tr class="responsiveFont">
+              <th>Link</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Charge Date</th>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Fees Covered?</th>
+              <th>DT Fund</th>
+              <th>DT Source</th>
+              <th>Frequency</th>
+              <th>Fee</th>
+              <th>Donation Amount</th>
+              <th>Net Amount</th>
+          </tr>
+          {{#each transactions}}
+              <!--data-balance-transaction-id="{{balance_transaction}}"-->
+              <tr class="responsiveFont" data-href="" >
+                  {{#with charges}}
+                    <td style="width: 50px;">
+                      <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}" target="_blank">
+                        <div class="elipsis">
+                          <i class="fa fa-link"></i>
+                        </div>
+                      </a>
+                    </td>
+                  {{/with}}
+                {{#with customers}}
+                  <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
+                  <td class="change-td-padding">{{email}}</td>
+                {{/with}}
+                {{#with charges}}
+                  <td class="change-td-padding">{{epochToString created}}</td>
+                  <td class="change-td-padding ellipsis">
+                    <a href="https://dashboard.stripe.com/payments/{{_id}}" target="_blank">
+                        <div class="elipsis">
+                              <span title="{{_id}}">{{_id}}</span>
+                        </div>
+                    </a>
+                  </td>
+                  <td class="change-td-padding">{{ach_or_card}}</td>
+                  <td class=""><input type="checkbox" name="coverTheFees" id="feesCovered" data-toggle="checkbox" class="cover-fees" {{fees_covered}} disabled></td>
+                  <td class="change-td-padding">{{metadata.donateTo}}</td>
+                  <td class="change-td-padding">{{dt_source}}</td>
+                  <td class="change-td-padding">{{metadata.frequency}}</td>
+                {{/with}}
+                <td class="">${{twoDecimalPlaces fee}}</td>
+                <td class="">${{twoDecimalPlaces amount}}</td>
+                <td class="">${{subtract amount fee}}</td>
+              </tr>
+          {{/each}}
+          <tr>
+              <td class="text-right" colspan="10">Totals</td>
+              <td><strong>${{twoDecimalPlaces total_fees}}</strong></td>
+              <td><strong>${{add amount total_fees}}</strong></td>
+              <td><strong>${{twoDecimalPlaces amount}}</strong></td>
+          </tr>
+        </tbody>
+
+          <tfoot align="pull-right">
+          </tfoot>
+      </table>
+        <nav>
+          <ul class="pager">
+            <li class="previous"><a href="#" target="_blank"><span aria-hidden="true">&larr;</span> Older transfer</a></li>
+            <li class="next"><a href="#" target="_blank">Newer transfer <span aria-hidden="true">&rarr;</span></a></li>
+          </ul>
+        </nav>
+        {{/with}}
+      </div>
+    </div>
+</template>

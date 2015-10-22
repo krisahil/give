@@ -64,28 +64,68 @@ Meteor.methods({
     },
     stripeDonation: function(data, paymentDevice){
         logger.info("Started stripeDonation");
-        try {
+        /*try {*/
             //Check the form to make sure nothing malicious is being submitted to the server
             Utils.checkFormFields(data);
             if(data.paymentInformation.coverTheFees === false){
                 data.paymentInformation.fees = '';
             }
             logger.info(data.paymentInformation.start_date);
-            var customerData = {};
-            var customerInfo, metadata;
+            let customerData = {};
+            let donateTo, user_id, dt_account_id, letCustomerData, customerInfo, metadata;
 
             //Convert donation to more readable format
-            var donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
+            donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
 
             if(donateTo === 'Write In') {
                 donateTo = data.paymentInformation.writeIn;
             }
             if(!data.customer.id){
-                customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
-                if(!customerData.object){
+              customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
+              console.log(customerData);
+              letCustomerData = customerData;
+
+              // Skip this area for 2 seconds so the giver sees the next page without waiting
+              // for this area to return
+              Meteor.setTimeout(function () {
+
+                // Find a local user account, create if it doesn't exist
+                user_id =       StripeFunctions.find_user_account_or_make_a_new_one(letCustomerData);
+
+                // Find a DonorTools account, create one if the account either
+                // doesn't exist or if the existing match doesn't look like the
+                // same person or business as what already exists.
+                dt_account_id = Utils.find_dt_account_or_make_a_new_one(letCustomerData, user_id);
+                if(!dt_account_id) {
+                  // the find_dt_account_or_make_a_new_one function returns null
+                  // if the Audit log shows that this process has already been completed
+                  // This can happen when two events come in within a very short time period
+                  // (we are talking milli-seconds). I have never seen this
+                  // happen in production, only dev.
+                  return;
+                }
+
+                // add the dt_account_id to the user array using $addToSet so that only
+                // unique array values exist.
+                Meteor.users.update( {_id: user_id}, { $addToSet: { persona_ids: dt_account_id } } );
+
+                // Send the Give support contact an email letting them know a new
+                // account has been created in DT.
+                if(Meteor.users.findOne( {_id: user_id } ) && Meteor.users.findOne( {_id: user_id } ).newUser ){
+                  Meteor.users.update( {_id: user_id }, { $unset: { newUser: "" } } );
+                  Utils.send_new_dt_account_added_email_to_support_email_contact(data.customer.email_address, user_id, dt_account_id);
+                }
+
+                // Update the Stripe customer metadata to include this DT persona (account) ID
+                StripeFunctions.add_dt_account_id_to_stripe_customer_metadata(customerData.id, dt_account_id);
+              }, 2000 /* wait 2 seconds before executing the functions above */);
+
+              if(!customerData.object){
+                console.error("Error: ", customerData);
                     return {error: customerData.rawType, message: customerData.message};
                 }
-                Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
+              // Update the card metadata so we know if the user wanted this card saved or not
+              Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
             } else{
                 //TODO: change these to match what you'll be using for a Stripe customer that already exists
                 var customer_cursor = Customers.findOne({_id: data.customer.id});
@@ -174,7 +214,7 @@ Meteor.methods({
                 }
                 return {c: customerData.id, don: data._id, charge: return_charge_or_payment_id};
             }
-        } catch (e) {
+        /*} catch (e) {
             logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);
             logger.error("e.category_code = " + e.category_code + " e.descriptoin = " + e.description);
             if(e.category_code) {
@@ -196,21 +236,49 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(500, e.reason, e.details);
             }
-        }
+        }*/
     },
-    update_persona_info: function () {
-        logger.info("Started update_persona_info");
+    update_user_document_by_adding_persona_details_for_each_persona_id: function () {
+        logger.info("Started update_user_document_by_adding_persona_details_for_each_persona_id");
 
       if(this.userId){
-        var persona_ids;
-        persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
-        logger.info(persona_ids);
-        var email_address = Meteor.users.findOne({_id: this.userId}).emails.address;
-        var persona_info = Utils.check_for_dt_user(email_address, persona_ids, true);
-        Meteor.users.update({_id: this.userId}, {$set: {'persona_info': persona_info.persona_info}});
-        Meteor.users.update({_id: this.userId}, {$set: {'persona_ids': persona_info.persona_ids}});
+        let persona_ids, email_address;
+        persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
+        email_address = Meteor.users.findOne({_id: this.userId}).emails[0].address;
+
+        if(persona_ids && persona_ids.length) {
+          // The persona_ids let is an array
+          logger.info("Multiple persona_ids found: ", persona_ids);
+
+          // Since the donor tools information can change way down in the record
+          // we don't want to simply do an $addToSet, this will lead to many
+          // duplicate records, instead, setup a temp array let and then inside
+          // the forEach push the personas into it
+          // After we'll use the array to set the persona_info inside the user document
+
+          var set_this_array = [];
+
+          // Loop through the persona_ids
+          _.forEach(persona_ids, function(each_persona_id) {
+            let personaResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + each_persona_id + ".json", {
+              auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+            });
+            set_this_array.push(personaResult.data.persona);
+          })
+        } else if( persona_ids ){
+          // TODO: the persona_ids let is not an array, need to check that a value exists
+          logger.info("Single persona_id found: ", persona_ids);
+          let personaResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + persona_ids + ".json", {
+            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+          });
+          set_this_array.push(personaResult.data.persona);
+        }
+
+        Meteor.users.update({_id: this.userId}, {$set: {'persona_info': set_this_array}});
+
+        return "Finished update_user_document_by_adding_persona_details_for_each_persona_id method call";
       } else {
-        return "Nope";
+        return "Not logged in.";
       }
     },
     move_donation_to_other_person: function (donation_id, move_to_id) {
@@ -415,6 +483,37 @@ Meteor.methods({
     total_kids += (no_memo_or_other-266)/29;
 
     return total_kids;
+  },
+  get_dt_name: function (id) {
+    check(id, String);
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+      console.log("Inside privileged area");
+      console.log(id);
+      // Get the persona from DT
+      let persona_result = HTTP.get(Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      });
+      if( persona_result && persona_result.data && persona_result.data.persona ) {
+        return persona_result.data.persona;
+      } else {
+        return null;
+      }
+    } else {
+      return;
+    }
+
+  },
+  get_next_or_previous_transfer: function (current_transfer_id, previous_or_next) {
+    check(current_transfer_id, String);
+    check(previous_or_next, String);
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+      let previous_or_next_transfer = StripeFunctions.get_next_or_previous_transfer(current_transfer_id, previous_or_next);
+      console.log(previous_or_next_transfer.data);
+      return previous_or_next_transfer.data[0].id;
+    } else {
+      return;
+    }
   }
+
 
 });

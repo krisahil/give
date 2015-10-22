@@ -28,3 +28,9 @@ MultiConfig = new Mongo.Collection('multi_config');
 Payments = new Mongo.Collection('payments');
 
 Subscriptions = new Mongo.Collection('subscriptions');
+
+// Used to collect Stripe transactions for the transfer reports
+Transactions = new Mongo.Collection('transactions');
+
+// Used to collect Stripe transfers
+Transfers = new Mongo.Collection('transfers');

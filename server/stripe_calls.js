@@ -143,77 +143,78 @@ _.extend(Utils, {
         }
     },
     create_customer: function (paymentDevice, customerInfo) {
-        logger.info("Inside create_customer.");
+      logger.info("Inside create_customer.");
 
-        var stripeCustomer = new Future();
-        var type;
+      var stripeCustomer = new Future();
+      var type;
 
-        if (paymentDevice.slice(0, 2) === 'to') {
-            type = "card";
-            Stripe.customers.create({
-                card: paymentDevice,
-                email: customerInfo.email_address,
-                metadata: {
-                    "city": customerInfo.city,
-                    "state": customerInfo.region,
-                    "address_line1": customerInfo.address_line1,
-                    "address_line2": customerInfo.address_line2,
-                    "country": customerInfo.country,
-                    "postal_code": customerInfo.postal_code,
-                    "phone": customerInfo.phone_number,
-                    "business_name": customerInfo.org,
-                    "email": customerInfo.email_address,
-                    "fname": customerInfo.fname,
-                    "lname": customerInfo.lname
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomer.return(error);
-                } else {
-                    stripeCustomer.return(customer);
-                }
-            });
-        } else if (paymentDevice.slice(0, 2) === 'bt') {
-            /**/
-            logger.info("Bank_account");
-            type = "bank_account";
-            Stripe.customers.create({
-                bank_account: paymentDevice,
-                email: customerInfo.email_address,
-                metadata: {
-                    "city": customerInfo.city,
-                    "state": customerInfo.region,
-                    "address_line1": customerInfo.address_line1,
-                    "address_line2": customerInfo.address_line2,
-                    "postal_code": customerInfo.postal_code,
-                    "country": customerInfo.country,
-                    "phone": customerInfo.phone_number,
-                    "business_name": customerInfo.org,
-                    "email": customerInfo.email_address,
-                    "fname": customerInfo.fname,
-                    "lname": customerInfo.lname
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomer.return(error);
-                } else {
-                    stripeCustomer.return(customer);
-                }
-            });
-        } else {
-            throw new Meteor.Error('Token-match', "Sorry, that token doesn't match any know prefix.");
-        }
-        stripeCustomer = stripeCustomer.wait();
-        if (!stripeCustomer.object) {
-            throw new Meteor.Error(stripeCustomer.rawType, stripeCustomer.message);
-        }
-        stripeCustomer._id = stripeCustomer.id;
+      if (paymentDevice.slice(0, 2) === 'to') {
+        type = "card";
+        Stripe.customers.create({
+            card: paymentDevice,
+            email: customerInfo.email_address,
+            metadata: {
+                "city": customerInfo.city,
+                "state": customerInfo.region,
+                "address_line1": customerInfo.address_line1,
+                "address_line2": customerInfo.address_line2,
+                "country": customerInfo.country,
+                "postal_code": customerInfo.postal_code,
+                "phone": customerInfo.phone_number,
+                "business_name": customerInfo.org,
+                "email": customerInfo.email_address,
+                "fname": customerInfo.fname,
+                "lname": customerInfo.lname
+            }
+        }, function (error, customer) {
+            if (error) {
+                //console.dir(error);
+                stripeCustomer.return(error);
+            } else {
+                stripeCustomer.return(customer);
+            }
+        });
+      } else if (paymentDevice.slice(0, 2) === 'bt') {
+        /**/
+        logger.info("Bank_account");
+        type = "bank_account";
+        Stripe.customers.create({
+            bank_account: paymentDevice,
+            email: customerInfo.email_address,
+            metadata: {
+                "city": customerInfo.city,
+                "state": customerInfo.region,
+                "address_line1": customerInfo.address_line1,
+                "address_line2": customerInfo.address_line2,
+                "postal_code": customerInfo.postal_code,
+                "country": customerInfo.country,
+                "phone": customerInfo.phone_number,
+                "business_name": customerInfo.org,
+                "email": customerInfo.email_address,
+                "fname": customerInfo.fname,
+                "lname": customerInfo.lname
+            }
+        }, function (error, customer) {
+            if (error) {
+                //console.dir(error);
+                stripeCustomer.return(error);
+            } else {
+                stripeCustomer.return(customer);
+            }
+        });
+      } else {
+        throw new Meteor.Error('Token-match', "Sorry, that token doesn't match any know prefix.");
+      }
+      stripeCustomer = stripeCustomer.wait();
+      if (!stripeCustomer.object) {
+        throw new Meteor.Error(stripeCustomer.rawType, stripeCustomer.message);
+      }
+      stripeCustomer._id = stripeCustomer.id;
 
-        Customers.insert(stripeCustomer);
-        logger.info("Customer_id: " + stripeCustomer.id);
-        return stripeCustomer;
+      let wait_for_customer_insert = Customers.insert(stripeCustomer);
+
+      logger.info("Customer_id: " + stripeCustomer.id);
+      return stripeCustomer;
     },
     charge: function (total, donation_id, customer_id, payment_id, metadata) {
         logger.info("Inside charge.");
@@ -394,7 +395,7 @@ _.extend(Utils, {
             Subscriptions.findOne({_id: return_this.subscription}).plan.interval;
 
         if (return_this.frequency == null || return_this.subscription == null) {
-            var get_invoice = Utils.get_invoice(invoice_id);
+            var get_invoice = StripeFunctions.get_invoice(invoice_id);
             if(get_invoice && get_invoice.subscription){
                 return_this.subscription = get_invoice.subscription;
                 return_this.frequency = get_invoice.lines.data[0].plan.interval;
@@ -406,74 +407,6 @@ _.extend(Utils, {
 
         }
         return return_this;
-    },
-    store_stripe_event: function (event_body) {
-        logger.info("Started store_stripe_event");
-        
-        logger.info(event_body.data.object.id);
-        event_body.data.object._id = event_body.data.object.id;
-
-        switch(event_body.data.object.object){
-            case "customer":
-                if(event_body.data.object.metadata['balanced.customer_id']){
-                    event_body.data.object.metadata['balanced_customer_id'] = event_body.data.object.metadata['balanced.customer_id'];
-                    delete event_body.data.object.metadata['balanced.customer_id'];
-                }
-
-                console.log(event_body.data.object);
-                Customers.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "invoice":
-                Invoices.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "charge":
-                Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "payment":
-                Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                break;
-            case "card":
-                Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
-                var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
-                break;
-            case "bank_account":
-                Devices.upsert({_id: event_body.data.object._id}, event_body.data.object);
-                break;
-            case "subscription":
-                Subscriptions.upsert({_id: event_body.data.object._id}, event_body.data.object);
-                break;
-            default:
-                logger.error("This event didn't fit any of the configured cases, go into store_stripe_event and add the appropriate case.");
-
-        }
-        
-    },
-    charge_events: function(stripeEvent){
-        logger.info("Started charge_events");
-
-        var sync_request = Utils.store_stripe_event(stripeEvent);
-
-        var frequency_and_subscription;
-        if(stripeEvent.data.object.invoice) {
-            // Now send these changes off to Stripe to update the record there.
-            Utils.update_charge_metadata(stripeEvent);
-
-            // Get the frequency_and_subscription of this charge, since it is part of a subscription.
-            frequency_and_subscription = Utils.get_frequency_and_subscription(stripeEvent.data.object.invoice);
-            if(frequency_and_subscription){
-                Utils.send_donation_email(true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-                    stripeEvent, frequency_and_subscription.frequency, frequency_and_subscription.subscription);
-                return;
-            } else {
-                // null frequency_and_subscription means that either the frequency or the subscription couldn't be found using the invoice id.
-                throw new Meteor.error("This event needs to be sent again, since we couldn't find enough information to send an email.");
-                return;
-            }
-        } else {
-            Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
-                stripeEvent, "One Time", null);
-            return;
-        }
     },
     link_card_to_customer: function(customer_id, token_id, type, customerInfo){
         logger.info("Started link_card_to_customer");
@@ -517,38 +450,38 @@ _.extend(Utils, {
         return stripeCreateCard;
     },
     update_card: function(customer_id, card_id, saved){
-        logger.info("Started update_card");
-        logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
+      logger.info("Started update_card");
+      logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
 
-        var stripeUpdatedCard = new Future();
+      var stripeUpdatedCard = new Future();
 
-        Stripe.customers.updateCard(
-            customer_id,
-            card_id,{
-                metadata: {
-                    saved: saved
-                }
-            },
-            function (error, card) {
-                if (error) {
-                    //console.dir(error);
-                    stripeUpdatedCard.return(error);
-                } else {
-                    stripeUpdatedCard.return(card);
-                }
-            }
-        );
-
-        stripeUpdatedCard = stripeUpdatedCard.wait();
-
-        if (!stripeUpdatedCard.object) {
-            throw new Meteor.Error(stripeUpdatedCard.rawType, stripeUpdatedCard.message);
+      Stripe.customers.updateCard(
+        customer_id,
+        card_id,{
+          metadata: {
+            saved: saved
+          }
+        },
+        function (error, card) {
+          if (error) {
+            //console.dir(error);
+            stripeUpdatedCard.return(error);
+          } else {
+            stripeUpdatedCard.return(card);
+          }
         }
+      );
 
-        stripeUpdatedCard._id = stripeUpdatedCard.id;
-        console.dir(stripeUpdatedCard);
+      stripeUpdatedCard = stripeUpdatedCard.wait();
 
-        return stripeUpdatedCard;
+      if (!stripeUpdatedCard.object) {
+        throw new Meteor.Error(stripeUpdatedCard.rawType, stripeUpdatedCard.message);
+      }
+
+      stripeUpdatedCard._id = stripeUpdatedCard.id;
+      console.dir(stripeUpdatedCard);
+
+      return stripeUpdatedCard;
     },
     add_meta_from_subscription_to_charge: function(stripeEvent) {
         logger.info("Started add_meta_from_subscription_to_charge");
@@ -661,44 +594,6 @@ _.extend(Utils, {
 
         return stripeCardUpdate;
     },
-    update_stripe_customer_user: function(customer_id, user, email_address){
-        logger.info("Inside update_stripe_customer_user.");
-
-        var user_cursor;
-
-        if(!user){
-            user_cursor = Meteor.users.findOne({'emails.address': email_address});
-        } else{
-            user_cursor = Meteor.users.findOne(user);
-        }
-      console.log(user_cursor);
-
-        var stripeCustomerUserUpdate = new Future();
-
-        Stripe.customers.update(customer_id, {
-                "metadata": {
-                    "user_id": user_cursor._id
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomerUserUpdate.return(error);
-                } else {
-                    stripeCustomerUserUpdate.return(customer);
-                }
-            }
-        );
-
-        stripeCustomerUserUpdate = stripeCustomerUserUpdate.wait();
-
-        if (!stripeCustomerUserUpdate.object) {
-            throw new Meteor.Error(stripeCustomerUserUpdate.rawType, stripeCustomerUserUpdate.message);
-        }
-
-        console.dir(stripeCustomerUserUpdate);
-
-        return stripeCustomerUserUpdate;
-    },
     check_charge_status: function(charge_id){
         logger.info("Inside check_charge_status");
 
@@ -712,32 +607,6 @@ _.extend(Utils, {
         else{
             return false;
         }
-    },
-    get_invoice: function(invoice_id){
-        logger.info("Inside get_invoice");
-
-        var stripeInvoice = new Future();
-
-        Stripe.invoices.retrieve(invoice_id,
-            function (error, invoice) {
-                if (error) {
-                    //console.dir(error);
-                    stripeInvoice.return(error);
-                } else {
-                    stripeInvoice.return(invoice);
-                }
-            }
-        );
-
-        stripeInvoice = stripeInvoice.wait();
-
-        if (!stripeInvoice.object) {
-            throw new Meteor.Error(stripeInvoice.rawType, stripeInvoice.message);
-        }
-
-        console.dir(stripeInvoice);
-
-        return stripeInvoice;
     },
     update_invoice_metadata: function(event_body){
         logger.info("Inside update_invoice_metadata");
@@ -780,7 +649,7 @@ _.extend(Utils, {
         var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
         if(!invoice_cursor){
             //TODO: get the invoice from Stripe here, or wait for a set period of time
-            var invoice = Utils.get_invoice(event_body.data.object.invoice);
+            var invoice = StripeFunctions.get_invoice(event_body.data.object.invoice);
             invoice._id = invoice.id;
             Invoices.upsert({_id: invoice._id}, invoice);
             invoice_cursor = Invoices.findOne({_id: invoice.id});
@@ -791,7 +660,7 @@ _.extend(Utils, {
         var stripeCharges = new Future();
 
         logger.info("Charge id: " + event_body.data.object.id);
-        // Use the metadata from the subscription to udpate the charge with Stripe
+        // Use the metadata from the subscription to update the charge with Stripe
         if(subscription_cursor.metadata){
             Stripe.charges.update(event_body.data.object.id,{
                     "metadata":  subscription_cursor.metadata
@@ -909,8 +778,8 @@ _.extend(Utils, {
         Donations.insert(metadata);
 
         return stripeCreateSubscription;
-    },
-    stripe_get_many_events: function(starting_after, limit) {
+    }
+    /*stripe_get_many_events: function(starting_after, limit) {
         logger.info("Inside stripe_get_many_events.");
         logger.info("Stripe customer id to start after(if any): " + starting_after);
         var stripe_events= new Future();
@@ -940,5 +809,5 @@ _.extend(Utils, {
         }
 
         return stripe_events;
-    }
+    }*/
 });

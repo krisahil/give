@@ -71,15 +71,17 @@ Template.SubscriptionsOverview.helpers({
 });
 
 Template.SubscriptionsOverview.events({
-    'click #cancel_subscription': function (e) {
+    'click .cancel_subscription': function (e) {
         e.preventDefault();
         var subscription_id = this.id;
         var customer_id = Subscriptions.findOne({_id: subscription_id}).customer;
         console.log("Got to cancel subscription call");
         console.log("subscription id: " + subscription_id);
         console.log("Customer id: " + customer_id);
+        $(e.currentTarget).button('Working');
 
-        swal({
+
+      swal({
             title: "Are you sure?",
             text: "Please let us know why you are stopping your gift. (optional)",
             type: "input",
@@ -98,9 +100,10 @@ Template.SubscriptionsOverview.events({
             if (inputValue === false){
                 swal("Ok, we didn't do anything.", "Your recurring gift is still active :)",
                     "success");
+              $(e.currentTarget).button('reset');
             } else if (inputValue) {
                 console.log("Got to before method call with input of " + inputValue);
-                var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
+              var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
                 var target = document.getElementById('spinContainer');
                 spinnerObject = new Spinner(opts).spin(target);
                 $("#spinDiv").show();
@@ -110,6 +113,7 @@ Template.SubscriptionsOverview.events({
                         Bert.alert(error.message, "danger");
                         spinnerObject.stop();
                         $("#spinDiv").hide();
+                      $(e.currentTarget).button('reset');
                     } else {
                         // If we're resubscribed, go ahead and confirm by returning to the
                         // subscriptions page and show the alert

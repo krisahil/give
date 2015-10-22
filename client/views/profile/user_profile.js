@@ -95,8 +95,8 @@ Template.UserProfile.helpers({
         return this.splits;
     },
     fundName: function() {
-        if(DT_funds.findOne({_id: this.fund_id}) && DT_funds.findOne({_id: this.fund_id}).name){
-            return DT_funds.findOne({_id: this.fund_id}).name;
+        if(DT_funds.findOne({_id: this.fund_id.toString()}) && DT_funds.findOne({_id: this.fund_id.toString()}).name){
+            return DT_funds.findOne({_id: this.fund_id.toString()}).name;
         }
         else return '<span style="color: red;">Finding fund...</span>';
     },
@@ -129,7 +129,13 @@ Template.UserProfile.helpers({
         if(Meteor.users.findOne().persona_info){
             return Meteor.users.findOne().persona_info;
         } else {
+          return;
+          /*if(Meteor.users.findOne().persona_ids){
+
+          } else {
+            console.error("No DT ids found");
             return;
+          }*/
         }
     },
     company_or_name: function () {
@@ -193,6 +199,7 @@ Template.UserProfile.events({
                console.log(result);
                $('#modal_for_address_change').modal('hide');
                loadingButton.button("reset");
+               Bert.alert("We have updated your address, thanks.", "success");
            } else{
                console.log(error);
                loadingButton.button("reset");
@@ -224,14 +231,18 @@ Template.UserProfile.events({
 
 Template.UserProfile.onRendered(function() {
 
-    if(Meteor.users.findOne() && !Meteor.users.findOne().persona_info) {
-        Meteor.call('update_persona_info', function(error, result){
-            if(result){
-                console.log(result);
-            } else{
-                console.log(error);
-            }
-        });
+    if(!Meteor.users.findOne().persona_info || Meteor.users.findOne().persona_info.length < 1) {
+      Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
+        if( result ) {
+          console.log( result );
+          // Hack here to reload the page. I'm not sure why the reactivity isn't
+          // showing the new information, when the persona_info is pulled down
+          // for now we just reload the page and the problem is resolved.
+          location.reload();
+        } else {
+          console.log( error );
+        }
+      } );
     }
 
 
@@ -253,11 +264,4 @@ Template.UserProfile.onRendered(function() {
     $('.tab-pane:first').addClass('active');
 
     Session.set('activeTab', $('.active a').attr('value'));
-
-    //TODO: check for persona_info, retrieve if it doesn't exist in the user's record
-    // if(Meteor.users.findOne().persona_info){
-    // } else {
-    //  Meteor.call('get_persona_info', err, success){
-    //}
-    // }
 });

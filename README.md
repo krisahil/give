@@ -41,8 +41,7 @@ Here is an example settings.json file
     "plan": {
       "yearly": "Stripe plan name associated with yearly (annual) gifts",
       "monthly": "Stripe plan name associated with monthly gifts",
-      "weekly": "Stripe plan name associated with weekly gifts",
-      "daily": "Stripe plan name associated with daily gifts
+      "weekly": "Stripe plan name associated with weekly gifts"
     }
   },
   "sikka": { //Remove this text, sikka is a firewall for Meteor (prevents DOS) https://atmospherejs.com/meteorhacks/sikka

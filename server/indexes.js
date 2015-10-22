@@ -24,3 +24,8 @@ MultiConfig._ensureIndex({'id': 1}, {backgrond: true});
 
 Subscriptions._ensureIndex({'id': 1}, {background: true});
 
+Transactions._ensureIndex({'id': 1, 'transfer_id': 1}, {background: true});
+
+Transfers._ensureIndex({'id': 1, 'balance_transaction': 1}, {background: true});
+
+

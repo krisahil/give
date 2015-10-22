@@ -173,9 +173,9 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
 	}
 });
 
-Meteor.publish("user_date_and_subscriptions_with_only_4", function () {
+Meteor.publish("user_data_and_subscriptions_with_only_4", function () {
     if (this.userId) {
-        console.log("Started publish function, user_date_and_subscriptions_with_only_4");
+        console.log("Started publish function, user_data_and_subscriptions_with_only_4");
         var customers = Customers.find({'metadata.user_id': this.userId});
         var customer_ids = [];
         var subscription_ids = [];
@@ -225,19 +225,19 @@ Meteor.publish("userSubscriptions", function () {
 
 Meteor.publish("userDT", function (page) {
 	if (this.userId) {
-        if(Meteor.users.findOne({_id: this.userId}).persona_id) {
-            var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_id;
-            console.log(persona_ids);
-            return DT_donations.find({persona_id: {$in: persona_ids}});
-        } else {
-            var persona_ids = [];
-            var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;
-            persona_info.forEach(function (value) {
-                persona_ids.push(value.id);
-            });
-            console.log(persona_ids);
-            return DT_donations.find( { persona_id: { $in: persona_ids } } );
-        }
+    if(Meteor.users.findOne({_id: this.userId}).persona_ids) {
+      var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
+      console.log(persona_ids);
+      return DT_donations.find({persona_id: {$in: persona_ids}});
+    } else {
+      var persona_ids = [];
+      var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;
+      persona_info.forEach(function (value) {
+          persona_ids.push(value.id);
+      });
+      console.log(persona_ids);
+      return DT_donations.find( { persona_id: { $in: persona_ids } } );
+    }
 	} else {
 		this.ready();
 	}
@@ -271,6 +271,19 @@ Meteor.publish("MultiConfig", function () {
 Meteor.publish("DTSplits", function () {
   if (Roles.userIsInRole(this.userId, 'admin')) {
     return DT_splits.find();
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publish("transfers", function (id) {
+  check(id, Match.Optional(String));
+  if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+    if(id){
+      return Transfers.find({_id: id});
+    } else {
+      return Transfers.find();
+    }
   } else {
     this.ready();
   }

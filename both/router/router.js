@@ -19,6 +19,14 @@ Router.onBeforeAction(function() {
     }
 }, {only : 'admin.dashboard'});
 
+Router.onBeforeAction(function() {
+    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'reports']) ) {
+        this.render("NotFound");
+    } else {
+        this.next();
+    }
+}, {only : ['transfers', 'reports', 'reports.dashboard']});
+
 Router.route('', {
 
     name: 'donation.form',
@@ -119,6 +127,14 @@ Router.route('/dashboard', function () {
     name: 'admin.dashboard'
 });
 
+Router.route('/reprotsDashboard', function () {
+    this.layout('AdminLayout');
+
+    this.render('ReportsDashboard');
+}, {
+    name: 'reports.dashboard'
+});
+
 
 Router.route('/user',{
     layoutTemplate: 'UserLayout',
@@ -140,6 +156,37 @@ Router.route('/user',{
     name: 'user.profile'
 });
 
+Router.route('/transfers',{
+    layoutTemplate: 'UserLayout',
+
+    subscriptions: function(){
+        return [
+            Meteor.subscribe('transfers')
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+            this.render();
+        } else {
+            this.render('Loading');
+        }
+    },
+    name: 'stripe.transfers'
+});
+
+Router.route('/transfers/:_id', function () {
+  var params = this.params;
+  var id = params._id;
+
+  this.layout('UserLayout');
+
+  this.wait([Meteor.subscribe('transfers', id), Meteor.subscribe('transactions', id), Meteor.subscribe('DTSources') ]);
+  if (this.ready()) {
+    this.render('StripeTransferDetails');
+  } else {
+    this.render('Loading');
+  }
+});
 
 Router.route('/user/give',{
     layoutTemplate: 'UserLayout',
@@ -166,7 +213,7 @@ Router.route('Subscriptions', function() {
     var params = this.params;
     Session.set('fix_it', params.query.fix_it);
 
-    this.wait(Meteor.subscribe('user_date_and_subscriptions_with_only_4'));
+    this.wait(Meteor.subscribe('user_data_and_subscriptions_with_only_4'));
     if (this.ready()) {
         this.render();
     } else {
@@ -193,10 +240,12 @@ Router.route('/webhooks/stripe', function () {
     // Receive an event, check that it contains a data.object object and send along to appropriate function
     var request = this.request.body;
     if(request.data && request.data.object){
-        console.dir(request.data.object);
-        var event = Stripe_Events[request.type](request);
-        this.response.statusCode = 200;
-        this.response.end('Oh hai Stripe!\n');
+      // Got it, let the Stripe server go
+      this.response.statusCode = 200;
+      this.response.end('Oh hai Stripe!\n');
+
+      // Process this event, but first check that it actually came from Stripe
+      StripeFunctions.control_flow_of_stripe_event_processing( request );
     } else {
         this.response.statusCode = 400;
         this.response.end('Oh hai Stripe!\n\n');

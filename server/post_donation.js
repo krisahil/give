@@ -1,4 +1,5 @@
 _.extend(Utils, {
+<<<<<<< HEAD
   post_donation_operation: function (customer_id, charge_id) {
     // If this is the dev environment I don't want it to affect DT live account.
     /*if(Meteor.settings.dev){
@@ -40,15 +41,101 @@ _.extend(Utils, {
         // be made if the user doesn't match the main email criteria
 
         var audit_item = Audit_trail.findOne({_id: charge_id});
+=======
+    post_donation_operation: function (customer_id, charge_id) {
+
+        logger.info("Started post_donation_operation.");
+        let inserted_now, matchedId, findAnyMatchedDTaccount;
+>>>>>>> match
 
         if (!persona_result || !persona_result.persona_info || persona_result.persona_info === '') {
           //Call DT create function
           if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
             return;
+<<<<<<< HEAD
           } else {
             inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
             var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
             persona_result = Utils.check_for_dt_user(email_address, single_persona_id, true);
+=======
+        } else {
+            // TODO: Check the connection to DT before starting, if it isn't good then schedule this to happen in an hour Meteor.setTimeout({ function here }, 3600000);
+            // Don't see how to do this yet
+
+            // create an email_address variable to be reused below
+            var email_address = Customers.findOne(customer_id) && Customers.findOne(customer_id).email;
+
+            // check that there was a customer record and that record had an email address
+            if(email_address) {
+                //create user
+                //TODO: when looking to create the user, does it meet the main account criteria? If so, create normally
+                //TODO: if it doesn't, create an account for the main email, or check if one is already created.
+                //TODO: Does this cover the case where a main exists one month and not the next?
+                //TODO: Does this cover the case where an email isn't a main one month, but is the next?
+                var user_id = Utils.create_user(email_address, customer_id);
+                var persona_result = {};
+
+                //Check for existing id array
+                if(user_id.persona_id && !user_id.persona_info) {
+                  console.log("Line 32 post_donation.js: This is the persona_id : ", user_id.persona_id);
+                    //check dt for user, persona_ids will be an array of 0 to many persona_ids
+                    persona_result = Utils.check_for_dt_user(email_address, user_id.persona_id, true);
+                } else {
+                  //check dt for user, persona_ids will be an array of 0 to many persona_ids
+                  findAnyMatchedDTaccount = Utils.check_for_dt_user(email_address, null, false, customer_id);
+                  if(!findAnyMatchedDTaccount) {
+                    return;
+                  }
+                  persona_result =  findAnyMatchedDTaccount;
+                  matchedId =       findAnyMatchedDTaccount.matched_id;
+                  console.log("*************LOOK HERE");
+                  console.log(matchedId);
+                  console.dir(persona_result);
+                }
+
+              if(!persona_result) {
+                return;
+              }
+                //TODO: fix this area, doesn't work with the change I've made to personIDs, since a user account shouldn't
+                // be made if the user doesn't match the main email criteria
+
+                var audit_item = Audit_trail.findOne({_id: charge_id});
+
+                if (!persona_result || !persona_result.persona_info || persona_result.persona_info === '' || matchedId === null) {
+                    //Call DT create function
+                    if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
+                        return;
+                    } else {
+                        inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
+                        var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
+                        persona_result = Utils.check_for_dt_user(email_address, single_persona_id, true);
+                      //return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
+
+
+                      // Send me an email letting me know a new user was created in DT.
+                        Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
+                    }
+                } else {
+                    if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
+                        return;
+                    } else {
+                        inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
+
+                        Utils.insert_donation_into_dt(customer_id, user_id, persona_result.persona_info, charge_id, persona_id);
+                    }
+                }
+
+                Utils.update_stripe_customer_user(customer_id, user_id, email_address);
+
+                // Get all of the donations related to the persona_id that was either just created or that was just used when
+                // the user gave
+                Utils.get_all_dt_donations(persona_result.persona_ids);
+
+                Utils.for_each_persona_insert(persona_result.persona_info, user_id);
+
+                //TODO: Get persona info here, only an id right now.
+                //Meteor.users.update(user_id, {$set: {'persona_info': persona_result}});
+>>>>>>> match
 
             // Send me an email letting me know a new user was created in DT.
             Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
@@ -62,6 +149,7 @@ _.extend(Utils, {
             Utils.insert_donation_into_dt(customer_id, user_id, persona_result.persona_info, charge_id);
           }
         }
+<<<<<<< HEAD
 
         Utils.update_stripe_customer_user(customer_id, user_id, email_address);
 
@@ -139,6 +227,25 @@ _.extend(Utils, {
         var fname = customer_cursor && customer_cursor.metadata.fname;
         var lname = customer_cursor && customer_cursor.metadata.lname;
         var profile = {
+=======
+        return;
+    },
+    create_user: function (email, customer_id) {
+      try {
+        logger.info("Started create_user.");
+
+
+        let user_id, customer_cursor, fname, lname, profile;
+
+        customer_cursor = Customers.findOne(customer_id);
+        if (!customer_cursor.metadata.country) {
+          logger.error("No Country");
+        }
+
+        fname = customer_cursor && customer_cursor.metadata.fname;
+        lname = customer_cursor && customer_cursor.metadata.lname;
+        profile = {
+>>>>>>> match
           fname: fname,
           lname: lname,
           address: {
@@ -167,6 +274,7 @@ _.extend(Utils, {
 
         // Send an enrollment Email to the new user
         Accounts.sendEnrollmentEmail(user_id);
+<<<<<<< HEAD
       } else {
         logger.info("Found a user with the provided email address, didn't create a user.");
       }
@@ -510,6 +618,252 @@ _.extend(Utils, {
           donateTo = invoice_cursor.lines.data[0].metadata.donateTo;
         } else{
           donateTo = charge && charge.metadata && charge.metadata.donateTo;
+=======
+        return user_id;
+      } catch(e) {
+        logger.info(e);
+        //e._id = AllErrors.insert(e.response);
+        var error = (e.response);
+        throw new Meteor.Error(error, e._id);
+      }
+    },
+    get_fund_id: function (donateTo) {
+        logger.info("Started get_fund_id");
+        // Take the text of donateTo and associate that with a fund id
+        // don't delete any cases below, simply add new ones. If the name
+        // changes on new gifts it may still be there on old gifts.
+
+        // If a fund id changes you'll need to go into every case that fits that fund id and update the id
+        switch(donateTo) {
+            case "Aquaponics":
+                return 63660;
+                break;
+            case "Aquaponics Marketplace - Karpos":
+                return 67506;
+                break;
+            case "Aquaponics Marketplace - Rhiza":
+                return 67505;
+                break;
+            case "BaseCamp":
+                return 63656;
+                break;
+            case "Basecamp":
+                return 63656;
+                break;
+            case "Basecamp - Operations Expenses":
+                return 63656;
+                break;
+            case "Urgent Operational Needs":
+                return 63656;
+                break;
+            case "Basecamp - Russell West":
+                return 67649;
+                break;
+            case "BaseCamp - Russell West":
+                return 67649;
+                break;
+            case "BaseCamp - Brett Durbin":
+                return 60463;
+                break;
+            case "Basecamp - Brett Durbin":
+                return 60463;
+                break;
+            case "Brett Durbin":
+                return 60463;
+                break;
+            case "BaseCamp - Shelley Setchell":
+                return 60465;
+                break;
+            case "Basecamp - Shelley Setchell":
+                return 60465;
+                break;
+            case "Shelley Setchell":
+                return 60465;
+                break;
+            case "BaseCamp - John Kazaklis":
+                return 60480;
+                break;
+            case "Basecamp - John Kazaklis":
+                return 60480;
+                break;
+            case "John Kazaklis":
+                return 60480;
+                break;
+            case "BaseCamp - Chris Mammoliti":
+                return 63662;
+                break;
+            case "Basecamp - Chris Mammoliti":
+                return 63662;
+                break;
+            case "Chris Mammoliti":
+                return 63662;
+                break;
+            case "BaseCamp - Timm Collins":
+                return 63665;
+                break;
+            case "Basecamp - Timm Collins":
+                return 63665;
+                break;
+            case "Timm Collins":
+                return 63665;
+                break;
+            case "BaseCamp - Joshua Bechard":
+                return 63683;
+                break;
+            case "Basecamp - Joshua Bechard":
+                return 63683;
+                break;
+            case "Joshua Bechard":
+                return 63683;
+                break;
+            case "BaseCamp - James Hishmeh":
+                return 65262;
+                break;
+            case "Basecamp - James Hishmeh":
+                return 65262;
+                break;
+            case "James Hishmeh":
+                return 65262;
+                break;
+            case "BaseCamp - Willie Brooks":
+                return 65263;
+                break;
+            case "Basecamp - Willie Brooks":
+                return 65263;
+                break;
+            case "Willie Brooks":
+                return 65263;
+                break;
+            case "Basecamp - Lindsey Keller":
+                return 67052;
+                break;
+            case "Lindsey Keller":
+                return 67052;
+                break;
+            case "Int'l Field Projects - Honduras":
+                return 60489;
+                break;
+            case "International Field Projects - Honduras":
+                return 60489;
+                break;
+            case "Honduras Urgent":
+                return 60489;
+                break;
+            case "Urgent Field Needs":
+                return 63659;
+                break;
+            case "Int'l Field Projects - Where Needed Most":
+                return 63659;
+                break;
+            case "International Field Projects - Where Most Needed":
+                return 63659;
+                break;
+            case "Int'l Field Projects - Bolivia":
+                return 67281;
+                break;
+            case "International Field Projects - Bolivia":
+                return 67281;
+                break;
+            case "Int'l Field Projects - DR":
+                return 67322;
+                break;
+            case "DR Urgent":
+                return 67322;
+                break;
+            case "International Field Projects - Dominican Republic":
+                return 67322;
+                break;
+            case "Int'l Field Projects - Kenya":
+                return 67124;
+                break;
+            case "International Field Projects - Kenya":
+                return 67124;
+                break;
+            case "Philippines Urgent":
+                return 63689;
+                break;
+            case "Int'l Field Projects - Philippines":
+                return 63689;
+                break;
+            case "International Field Projects - Philippines":
+                return 63689;
+                break;
+            case "Comm Spon - Where Most Needed":
+                return 67273;
+                break;
+            case "Community Sponsorship - Where Most Needed":
+                return 67273;
+                break;
+            case "Comm Spon - Cochabamba, Bolivia":
+                return 64197;
+                break;
+            case "Community Sponsorship - Bolivia - Cochabamba":
+                return 64197;
+                break;
+            case "Comm Spon - Santiago, DR":
+                return 63667;
+                break;
+            case "Community Sponsorship - Santiago":
+                return 63667;
+                break;
+            case "Community Sponsorship - Dominican Republic - Santiago":
+                return 63667;
+                break;
+            case "Santiago, DR - Community Sponsorship":
+                return 63667;
+                break;
+            case "Honduras Community Sponsorship":
+                return 63695;
+                break;
+            case "Comm Spon - Tegucigalpa, Honduras":
+                return 63695;
+                break;
+            case "Community Sponsorship - Honduras - Tegucigalpa":
+                return 63695;
+                break;
+            case "Comm Spon - Dandora, Kenya":
+                return 67274;
+                break;
+            case "Community Sponsorship - Kenya - Dandora":
+                return 67274;
+                break;
+            case "Comm Spon - Payatas, Philippines":
+                return 67276;
+                break;
+            case "Community Sponsorship - Philippines - Payatas":
+                return 67276;
+                break;
+            case "Comm Spon - San Mateo, Philippines":
+                return 67282;
+                break;
+            case "Community Sponsorship - Philippines - San Mateo":
+                return 67282;
+                break;
+            case "Comm Spon - Sant-Isabela, Philippines":
+                return 67277;
+                break;
+            case "Community Sponsorship - Philippines - Santiago City/Isabella":
+                return 67277;
+                break;
+            case "Comm Spon - Smokey Mtn, Philippines":
+                return 64590;
+                break;
+            case "Community Sponsorship - Philippines - Smokey Mountain":
+                return 64590;
+                break;
+            case "Tanza, Philippines - Community Sponsorship":
+                return 63692;
+                break;
+            case "Comm Spon - Tanza, Philippines":
+                return 63692;
+                break;
+            case "Community Sponsorship - Philippines - Tanza":
+                return 63692;
+                break;
+            case "Where Most Needed":
+                return 63661;
+                break;
+>>>>>>> match
         }
       } else{
         // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
@@ -855,8 +1209,15 @@ _.extend(Utils, {
         } else {
           stripeUpdateCharge.return(charge);
         }
+<<<<<<< HEAD
       }
     );
+=======
+        // Return the persona id for the company persona
+        return result.id;
+    },
+    send_new_dt_account_added_email_to_support_email_contact: function (email, user_id, personaID){
+>>>>>>> match
 
     stripeUpdateCharge = stripeUpdateCharge.wait();
 
@@ -866,10 +1227,39 @@ _.extend(Utils, {
 
     console.dir(stripeUpdateCharge);
 
+<<<<<<< HEAD
     return stripeUpdateCharge;
   },
   update_dt_status: function (charge_id, status, interval) {
     logger.info("Started update_dt_status");
+=======
+        Email.send({
+            from: Meteor.settings.public.support_address,
+            to: Meteor.settings.public.support_address,
+            subject: "DT Account inserted.",
+            html: html
+        });
+    },
+    update_charge_with_dt_donation_id: function(charge_id, dt_donation_id){
+        logger.info("Started update_charge_with_dt_donation_id");
+
+        var stripeUpdateCharge = new Future();
+
+        Stripe.charges.update(
+            charge_id,
+            {
+                metadata: {dt_donation_id: dt_donation_id}
+            },
+            function (error, charge) {
+                if (error) {
+                    //console.dir(error);
+                    stripeUpdateCharge.return(error);
+                } else {
+                    stripeUpdateCharge.return(charge);
+                }
+            }
+        );
+>>>>>>> match
 
     // Check to see if the donor tools donation has been inserted yet. Return if it hasn't
     Meteor.setTimeout(function(){
@@ -882,6 +1272,7 @@ _.extend(Utils, {
         });
         console.dir(get_dt_donation.data.donation);
 
+<<<<<<< HEAD
         get_dt_donation.data.donation.payment_status = charge_cursor.status;
         if(charge_cursor.status === 'failed'){
           get_dt_donation.data.donation.donation_type_id = 3921;
@@ -952,6 +1343,47 @@ _.extend(Utils, {
         });
       });
       return return_to_called;
+=======
+        console.dir(stripeUpdateCharge);
+
+        return stripeUpdateCharge;
+    },
+    split_dt_persona_info: function (email, personResultInSplit) {
+        logger.info("Started split_dt_persona_info");
+
+        if(!personResultInSplit || personResultInSplit.data === '' || personResultInSplit.data === []){
+            logger.info("No existing DT account found");
+            return;
+        } else {
+            var return_to_called = {};
+            return_to_called.persona_ids = [];
+            return_to_called.persona_info = [];
+
+            if(!personResultInSplit.data.length){
+              console.log("Not an array of data");
+                personResult.data = [personResult.data];
+            }
+          personResultInSplit.data.forEach(function (element) {
+                return_to_called.persona_ids.push(element.persona.id);
+                return_to_called.persona_info.push(element.persona);
+
+                element.persona.email_addresses.forEach(function (element) {
+                    if(element.address_type_id === 5){
+                        return_to_called.dt_account_has_main = true;
+                    }
+                    if(element.email_address === email){
+                        if(element.address_type_id === 5){
+                            return_to_called.matching_main_account = true;
+                        }
+                        // So it matches for one of the persona's, but what if it doesn't match for the other?
+                        // Also, this should still work if it ends up that there are no main emails.
+                        logger.info("Yup, this is a main email address for the account you searched for");
+                    }
+                });
+            });
+            return return_to_called;
+        }
+>>>>>>> match
     }
   },
   audit_dt_donation: function (charge_id, customer_id, status){

@@ -3,13 +3,24 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
+meteor-base             # Packages every Meteor app needs to have
+mobile-experience       # Packages for a great mobile UX
+mongo                   # The database Meteor supports right now
+blaze-html-templates    # Compile .html files into Meteor Blaze views
+session                 # Client-side reactive dictionary for your app
+jquery                  # Helpful client-side library
+tracker                 # Meteor's client-side reactive programming library
+
+standard-minifiers      # JS/CSS minifiers run for production mode
+es5-shim                # ECMAScript 5 compatibility for older browsers.
+ecmascript
+
 email
 http
 pfafman:font-awesome-4
 less
 amr:parsley.js
 iron:router
-wylio:mandrill
 useraccounts:bootstrap
 useraccounts:iron-routing
 accounts-password
@@ -26,31 +37,28 @@ themeteorchef:bert
 alanning:roles
 ongoworks:security
 wylio:winston-papertrail
+wylio:mandrill
+
 twbs:bootstrap
 eskan:chosen
 aldeed:collection2
 aldeed:autoform
-msavin:jetsetter
 underscorestring:underscore.string
 meteorhacks:aggregate
 manuelschoebel:ms-seo
 meteorhacks:kadira
-joshjoe:doorbell
-standard-minifiers
-meteor-base
-mobile-experience
-mongo
-blaze-html-templates
-session
-jquery
-tracker
+# joshjoe:doorbell don't want to use this until I have fixed the loading on each page issue
 logging
 reload
 random
 ejson
 spacebars
 check
+
+promise
 meteorhacks:npm
-
-
 npm-container
+reywood:publish-composite
+msavin:jetsetter
+sanjo:jasmine
+velocity:html-reporter

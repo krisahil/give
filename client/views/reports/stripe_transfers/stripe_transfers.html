@@ -1,0 +1,31 @@
+<template name="StripeTransfers">
+  <div class="stripe-transfers">
+    <div id="" class="col-md-6 col-lg-6">
+      <table class="table table-striped">
+        <tbody>
+          <tr class="responsiveFont">
+            <th>Date</th>
+            <th>Id</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+          {{#each transfer}}
+              <!--data-balance-transaction-id="{{balance_transaction}}"-->
+            <tr class="responsiveFont {{redText}} clickable_row" data-href="/transfers/{{id}}" >
+              <td class="change-td-padding">{{transfer_date}}</td>
+              <td class="change-td-padding">{{id}}</td>
+              <td class="">${{twoDecimalPlaces amount}}</td>
+              <td class="">{{capitalize status}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+        <span class="orange-text">
+            pending gifts = orange
+        </span>
+        <span class="red-text">
+            <br>failed gifts = red
+        </span>
+      </table>
+      </div>
+    </div>
+</template>

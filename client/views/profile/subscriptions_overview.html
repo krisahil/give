@@ -57,7 +57,7 @@
                     {{/if}}
                     {{#if equals status "active"}}
                         <li class="list-group-item bm-block clearfix">
-                            <a id="cancel_subscription" href="" class="btn btn-block btn-default cancelButton">Cancel</a>
+                            <a href="" class="btn btn-block btn-default cancelButton cancel_subscription">Cancel</a>
                         </li>
                         {{#if card_subscription}}<li class="list-group-item bm-block clearfix">
                             <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-default">Update Payment</a>
