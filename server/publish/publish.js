@@ -282,7 +282,7 @@ Meteor.publish("transfers", function (id) {
     if(id){
       return Transfers.find({_id: id});
     } else {
-      return Transfers.find();
+      return Transfers.find({}, { sort: { date: -1} } );
     }
   } else {
     this.ready();
