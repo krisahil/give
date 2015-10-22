@@ -68,12 +68,12 @@ meteor-base@1.0.1
 meteorhacks:aggregate@1.3.0
 meteorhacks:async@1.0.0
 meteorhacks:collection-utils@1.2.0
-meteorhacks:kadira@2.23.6
+meteorhacks:kadira@2.24.0
 meteorhacks:meteorx@1.4.1
 meteorhacks:npm@1.5.0
 meteorhacks:picker@1.0.3
 meteorhacks:sikka@1.0.1
-meteortoys:toykit@2.1.1
+meteortoys:toykit@2.1.2
 minifiers@1.1.7
 minimongo@1.0.10
 mobile-experience@1.0.1
@@ -83,7 +83,7 @@ mongo@1.1.2
 mongo-id@1.0.1
 mongo-livedata@1.0.9
 mrgalaxy:stripe@2.1.0
-msavin:jetsetter@1.3.1
+msavin:jetsetter@1.4.0
 npm-bcrypt@0.7.8_2
 npm-container@1.2.0
 npm-mongo@1.4.39_1
@@ -119,7 +119,7 @@ srp@1.0.4
 standard-minifiers@1.0.1
 templating@1.1.4
 templating-tools@1.0.0
-themeteorchef:bert@2.0.0
+themeteorchef:bert@2.1.0
 themeteorchef:jquery-validation@1.14.0
 tracker@1.0.9
 twbs:bootstrap@3.3.5
@@ -131,7 +131,7 @@ useraccounts:bootstrap@1.12.4
 useraccounts:core@1.12.4
 useraccounts:iron-routing@1.12.4
 velocity:chokidar@1.2.0_1
-velocity:core@0.10.5
+velocity:core@0.10.6
 velocity:html-reporter@0.9.1
 velocity:meteor-internals@1.1.0_7
 velocity:meteor-stubs@1.1.1
