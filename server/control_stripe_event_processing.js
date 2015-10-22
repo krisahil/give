@@ -459,7 +459,11 @@ _.extend(StripeFunctions, {
         console.log(res);
 
         // TODO: Insert transfer here
-        StripeFunctions.store_stripe_event(res);
+
+        Transfers.upsert({_id: res.id}, res);
+        let transactions = StripeFunctions.get_transactions_from_transfer(res.id);
+        console.dir(transactions);
+        StripeFunctions.upsert_stripe_transactions(transactions, res.id);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
