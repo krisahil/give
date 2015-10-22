@@ -38,10 +38,10 @@
                         </div>
                       </a>
                     </td>
+                    <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
                   {{/with}}
-                {{#with customers}}
-                  <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
-                  <td class="change-td-padding">{{email}}</td>
+                  {{#with customers}}
+                    <td class="change-td-padding">{{email}}</td>
                 {{/with}}
                 {{#with charges}}
                   <td class="change-td-padding">{{epochToString created}}</td>
@@ -76,8 +76,8 @@
       </table>
         <nav>
           <ul class="pager">
-            <li class="previous"><a href="#" target="_blank"><span aria-hidden="true">&larr;</span> Older transfer</a></li>
-            <li class="next"><a href="#" target="_blank">Newer transfer <span aria-hidden="true">&rarr;</span></a></li>
+            <li class="previous"><a href="#" ><span aria-hidden="true">&larr;</span> Older transfer</a></li>
+            <li class="next"><a href="#" >Newer transfer <span aria-hidden="true">&rarr;</span></a></li>
           </ul>
         </nav>
         {{/with}}

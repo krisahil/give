@@ -89,14 +89,15 @@ Template.StripeTransferDetails.helpers({
   retrieve_dt_names: function () {
     let self = this;
     if(!Session.get(this.metadata.dt_persona_id)) {
-      Meteor.call( "get_dt_name", self.metadata.dt_persona_id, function ( err, result ) {
-        if( err ) {
-          console.error( err );
-        } else {
-          console.log( result );
-          Session.set( self.metadata.dt_persona_id, result.recognition_name );
-        }
-      } )
+      let persona_id = DT_donations.findOne({'transaction_id': this._id}).persona_id;
+        Meteor.call( "get_dt_name", persona_id, function ( err, result ) {
+          if( err ) {
+            console.error( err );
+          } else {
+            console.log( result );
+            Session.set( self.metadata.dt_persona_id, result.recognition_name );
+          }
+        } )
     }
   },
   dt_names: function () {

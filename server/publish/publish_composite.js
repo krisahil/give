@@ -42,6 +42,19 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                     }
                   } );
               }
+            },
+            {
+              find: function ( dt_donations ) {
+                // Find user that authored comment.
+                return DT_donations.find(
+                  { transaction_id: charges._id },
+                  {
+                    limit:  1,
+                    fields: {
+                      persona_id:    1
+                    }
+                  } );
+              }
             }
           ]
         }
