@@ -23,6 +23,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                   metadata: 1,
                   customer: 1,
                   created: 1,
+                  payment_source: 1,
                   source: 1
                 }
               } );

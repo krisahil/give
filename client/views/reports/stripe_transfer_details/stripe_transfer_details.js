@@ -53,7 +53,9 @@ Template.StripeTransferDetails.helpers({
     }
   },
   ach_or_card: function () {
-    if(this.source.object === 'bank_account'){
+    if(this.source && this.source.object === 'bank_account'){
+      return "ACH";
+    } else if(this.payment_source && this.payment_source.object === 'bank_account') {
       return "ACH";
     } else {
       return "Card"
