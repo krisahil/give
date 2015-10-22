@@ -460,8 +460,14 @@ _.extend(StripeFunctions, {
     return getStripeTransfer.await(
       function (res) {
         // Log and return the value
-        console.log("Got the result");
-        console.log(res);
+        logger.info("Got the result");
+        logger.info(res);
+        logger.info("Got the result.data");
+        logger.info(res.data);
+        logger.info("Got the result.data[0]");
+        logger.info(res.data[0]);
+        logger.info("Got the result.data[0].id");
+        logger.info(res.data[0].id);
 
         // TODO: Insert transfer here
 
