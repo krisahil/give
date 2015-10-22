@@ -35,6 +35,10 @@ Template.Modals.helpers({
         "city": "Topeka, KS"
       },
       {
+        "name": "Journey Church",
+        "city": "Topeka, KS"
+      },
+      {
         "name": "Western Hills Church",
         "city": "Topeka, KS"
       },
@@ -67,7 +71,7 @@ Template.Modals.onRendered( function() {
   $('#options').chosen({width: "95%"});
 
   $('#modal_for_serve1000').on('hidden.bs.modal', function () {
-    var currentServed = 462;
+    var currentServed = 516;
     Meteor.call("ShowDTSplits", function (err, result){
       if(!err) {
         // Going with a static number
