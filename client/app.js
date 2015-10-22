@@ -408,11 +408,11 @@ _.extend(App, {
                 $('select#expiry_year').change();
                 $('#cvv').val("123"); //CVV mismatch = 200
             }
-            $('#fname').val("John");
-            $('#lname').val("Doe");
+            $('#fname').val("Test");
+            $('#lname').val("Bechard");
             $('#org').val("");
-            $('#email_address').val("support@trashmountain.com");
-            $('#email_address_verify').val('support@trashmountain.com');
+            $('#email_address').val("josh.bechard@gmail.com");
+            $('#email_address_verify').val('josh.bechard@gmail.com');
             $('#phone').val("(785) 246-6845");
             $('#address_line1').val("Address Line 1");
             $('#address_line2').val("Address Line 2");

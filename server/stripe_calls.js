@@ -671,6 +671,7 @@ _.extend(Utils, {
         } else{
             user_cursor = Meteor.users.findOne(user);
         }
+      console.log(user_cursor);
 
         var stripeCustomerUserUpdate = new Future();
 

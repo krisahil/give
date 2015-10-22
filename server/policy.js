@@ -12,7 +12,8 @@ var trusted = [
     'kadira.io',
     'enginex.kadira.io',
     'use.typekit.net',
-    'p.typekit.net'
+    'p.typekit.net',
+    'embed.doorbell.io'
 ];
 
 _.each(trusted, function(origin) {
