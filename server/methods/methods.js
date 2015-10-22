@@ -487,8 +487,6 @@ Meteor.methods({
   get_dt_name: function (id) {
     check(id, Number);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
-      console.log("Inside privileged area");
-      console.log(id);
       // Get the persona from DT
       let persona_result = HTTP.get(Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password

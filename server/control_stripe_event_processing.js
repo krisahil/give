@@ -424,7 +424,6 @@ _.extend(StripeFunctions, {
     return getStripeTransfer.await(
       function (res) {
         // Log and return the value
-        console.log(res);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
@@ -467,11 +466,8 @@ _.extend(StripeFunctions, {
       });
 
 
-    console.log("Got Strip Transfers")
-    console.dir(getStripeTransfer);
     Transfers.upsert({_id: getStripeTransfer.data[0].id}, getStripeTransfer.data[0]);
     let transactions = StripeFunctions.get_transactions_from_transfer(getStripeTransfer.data[0].id);
-    console.dir(transactions);
     StripeFunctions.upsert_stripe_transactions(transactions, getStripeTransfer.data[0].id);
 
     return getStripeTransfer;
