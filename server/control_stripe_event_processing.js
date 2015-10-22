@@ -465,10 +465,10 @@ _.extend(StripeFunctions, {
 
         // TODO: Insert transfer here
 
-        Transfers.upsert({_id: res.id}, res);
-        let transactions = StripeFunctions.get_transactions_from_transfer(res.id);
+        Transfers.upsert({_id: res.data[0].id}, res.data[0]);
+        let transactions = StripeFunctions.get_transactions_from_transfer(res.data[0].id);
         console.dir(transactions);
-        StripeFunctions.upsert_stripe_transactions(transactions, res.id);
+        StripeFunctions.upsert_stripe_transactions(transactions, res.data[0].id);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
