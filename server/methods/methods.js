@@ -486,7 +486,7 @@ Meteor.methods({
     return total_kids;
   },
   get_dt_name: function (id) {
-    check(id, String);
+    check(id, Number);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
       console.log("Inside privileged area");
       console.log(id);
