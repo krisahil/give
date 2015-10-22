@@ -459,27 +459,19 @@ _.extend(StripeFunctions, {
     // Fulfill Promise
     return getStripeTransfer.await(
       function (res) {
-        // Log and return the value
-        logger.info("Got the result");
-        logger.info(res);
-        logger.info("Got the result.data");
-        logger.info(res.data);
-        logger.info("Got the result.data[0]");
-        logger.info(res.data[0]);
-        logger.info("Got the result.data[0].id");
-        logger.info(res.data[0].id);
-
-        // TODO: Insert transfer here
-
-        Transfers.upsert({_id: res.data[0].id}, res.data[0]);
-        let transactions = StripeFunctions.get_transactions_from_transfer(res.data[0].id);
-        console.dir(transactions);
-        StripeFunctions.upsert_stripe_transactions(transactions, res.data[0].id);
         return res;
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
         console.log(err);
         throw new Meteor.Error("Error from Stripe getStripeTransfer Promise", err);
       });
+
+
+    console.log("Got Strip Transfers")
+    console.dir(getStripeTransfer);
+    Transfers.upsert({_id: getStripeTransfer.data[0].id}, getStripeTransfer.data[0]);
+    let transactions = StripeFunctions.get_transactions_from_transfer(getStripeTransfer.data[0].id);
+    console.dir(transactions);
+    StripeFunctions.upsert_stripe_transactions(transactions, getStripeTransfer.data[0].id);
   }
 });
