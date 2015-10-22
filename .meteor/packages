@@ -60,3 +60,5 @@ meteorhacks:npm
 npm-container
 reywood:publish-composite
 msavin:jetsetter
+sanjo:jasmine
+velocity:html-reporter
