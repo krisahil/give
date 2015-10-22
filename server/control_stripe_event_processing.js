@@ -405,7 +405,6 @@ _.extend(StripeFunctions, {
 
   },
   get_transactions_from_transfer: function ( id ) {
-    //https://api.stripe.com/v1/balance/history?transfer=tr_16vTUs4NP2bNLNg5460VeIKi
     logger.info("Started get_transactions_from_transfer");
     logger.info("Transfer id: ", id);
 
@@ -458,6 +457,8 @@ _.extend(StripeFunctions, {
       function (res) {
         // Log and return the value
         console.log(res);
+
+        // TODO: Insert transfer here
         StripeFunctions.store_stripe_event(res);
         return res;
       }, function(err) {
