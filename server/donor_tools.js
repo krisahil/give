@@ -87,24 +87,26 @@ _.extend(Utils, {
     get_dt_donation = HTTP.get(Meteor.settings.donor_tools_site + '/donations.json?transaction_id=' + transaction_id, {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
-    console.dir(get_dt_donation.data);
+    console.log(get_dt_donation.data[0].donation);
     dt_donation_id = get_dt_donation.data[0].donation.id;
 
-    if(get_dt_donation.data.donation.payment_status === event_object.data.status) {
+    if(get_dt_donation.data[0].donation.payment_status === event_object.data.object.status) {
       return;
     }
-    get_dt_donation.data.donation.payment_status = event_object.data.status;
-    if(charge_cursor.status === 'failed'){
+    get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
+    if(event_object.data.object.status === 'failed'){
       // 3921 is the failed type in Donor Tools
       get_dt_donation.data.donation.donation_type_id = 3921;
     }
 
     update_donation = HTTP.call("PUT", Meteor.settings.donor_tools_site + '/donations/'+ dt_donation_id + '.json',
       {
-        data: {"donation": get_dt_donation.data.donation},
+        data: {"donation": get_dt_donation.data[0].donation},
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-      },
-      // This section is for async retrying of failed connection to DT
+      });
+
+      /*// This section is for async retrying of failed connection to DT
+      ,
       function (error, result) {
         if (!error) {
           return result;
@@ -119,8 +121,9 @@ _.extend(Utils, {
             logger.warn("Retried for 5 minutes, still could not connect.");
           }
         }
-      });
+      });*/
 
+    console.dir(update_donation);
     DT_donations.upsert( {_id: dt_donation_id}, update_donation.data.donation );
   },
   find_dt_persona_flow: function (email, customer_id) {

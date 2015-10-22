@@ -21,17 +21,11 @@ _.extend(StripeFunctions, {
         // If yes
         if(check_for_violation) {
           return;
-
-          // if No
-        } else {
-          // Store and wait
-          wait_for_storage = StripeFunctions.store_stripe_event(stripe_request);
         }
-      // It came as an event other than the type charge.pending
-      } else {
-        // Store and wait
-        wait_for_storage = StripeFunctions.store_stripe_event(stripe_request);
       }
+
+      // Store and wait
+      wait_for_storage = StripeFunctions.store_stripe_event(stripe_request);
 
       // Send the event to the proper event type
       event = Stripe_Events[stripe_request.type]( stripe_request );
@@ -40,7 +34,7 @@ _.extend(StripeFunctions, {
         console.log("Sending to DT");
         // Send the donation change to Donor Tools. This function has a retry built
         // in, so also pass 1 for the interval
-        if(DT_donations.findOne({trasnsaction_id: stripe_request.data.object.id})){
+        if(DT_donations.findOne({transaction_id: stripe_request.data.object.id})){
           wait_for_DT_update = Utils.update_dt_donation_status( stripe_request, 1 );
         } else {
           StripeFunctions.check_for_necessary_objects_before_inserting_into_dt(stripe_request.data.object.id, stripe_request.data.object.customer, 1);
@@ -345,7 +339,7 @@ _.extend(StripeFunctions, {
 
         // Increment the interval and send to parent function
         StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += 1);
-      }, 1000)
+      }, 15000)
 
     } else if ( interval < 5 ){
       // Wait 15 seconds since we can't find a charge cursor, or we can't find one
@@ -354,7 +348,7 @@ _.extend(StripeFunctions, {
 
         // Increment the interval and send to parent function
         StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += 1);
-      }, 1000)
+      }, 15000)
     } else {
       if(interval % 1 === 0.5) {
         throw new Meteor.Error("There was a problem that prevented the function from getting " +

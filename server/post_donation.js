@@ -224,15 +224,6 @@ _.extend(Utils, {
             case "Brett Durbin":
                 return 60463;
                 break;
-            case "BaseCamp - Jon DeMeo":
-                return 60464;
-                break;
-            case "Basecamp - Jon DeMeo":
-                return 60464;
-                break;
-            case "Jon DeMeo":
-                return 60464;
-                break;
             case "BaseCamp - Shelley Setchell":
                 return 60465;
                 break;
@@ -269,15 +260,6 @@ _.extend(Utils, {
             case "Timm Collins":
                 return 63665;
                 break;
-            case "BaseCamp - Isaac Tarwater":
-                return 63682;
-                break;
-            case "Basecamp - Isaac Tarwater":
-                return 63682;
-                break;
-            case "Isaac Tarwater":
-                return 63682;
-                break;
             case "BaseCamp - Joshua Bechard":
                 return 63683;
                 break;
@@ -304,12 +286,6 @@ _.extend(Utils, {
                 break;
             case "Willie Brooks":
                 return 65263;
-                break;
-            case "Basecamp - Ethan Pope":
-                return 67051;
-                break;
-            case "Ethan Pope":
-                return 67051;
                 break;
             case "Basecamp - Lindsey Keller":
                 return 67052;
