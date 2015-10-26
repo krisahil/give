@@ -354,32 +354,40 @@ Meteor.methods({
             return;
         }
     },
-    GetStripeEvent: function (id) {
+    GetStripeEvent: function (id, process) {
         logger.info("Started GetStripeEvent");
         if (Roles.userIsInRole(this.userId, ['admin'])) {
             try {
                 //Check the form to make sure nothing malicious is being submitted to the server
                 check(id, String);
+                check(process, Boolean);
+
+              if(process){
+                let thisRequest = {id: id};
+                StripeFunctions.control_flow_of_stripe_event_processing(thisRequest);
+                return "Sent to control_flow_of_stripe_event_processing for processing";
+              } else {
                 var stripe_event = new Future();
 
-                Stripe.events.retrieve(id,
-                    function (error, events) {
-                        if (error) {
-                            stripe_event.return(error);
-                        } else {
-                            stripe_event.return(events);
-                        }
+                Stripe.events.retrieve( id,
+                  function ( error, events ) {
+                    if( error ) {
+                      stripe_event.return( error );
+                    } else {
+                      stripe_event.return( events );
                     }
+                  }
                 );
 
                 stripe_event = stripe_event.wait();
 
-                if (!stripe_event.object) {
-                    throw new Meteor.Error(stripe_event.rawType, stripe_event.message);
+                if( !stripe_event.object ) {
+                  throw new Meteor.Error( stripe_event.rawType, stripe_event.message );
                 }
 
-                var event = Stripe_Events[stripe_event.type](stripe_event);
+                var event = Stripe_Events[stripe_event.type]( stripe_event );
                 return stripe_event;
+              }
 
             } catch (e) {
                 logger.info(e);

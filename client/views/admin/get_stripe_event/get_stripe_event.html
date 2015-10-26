@@ -4,8 +4,13 @@
 
             <!-- Event ID to get from Stripe -->
             <div class="text-center well well-lg form-group">
-                <label class="control-label" for="event-id">Event ID to get from Stripe</label>
-                <input id='event-id' type="text" class="form-control slim-borders" required />
+                <label class="control-label" for="event-id">Event ID to get from Stripe. Check the box to also process the event.</label>
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <input id='event-process' type="checkbox" aria-label="...">
+                  </span>
+                    <input id='event-id' type="text" class="form-control slim-borders" required>
+                </div><!-- /input-group -->
             </div>
 
             <div class="form-group padBottom">
