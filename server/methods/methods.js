@@ -535,16 +535,22 @@ Meteor.methods({
 
     check(id, String);
     check(email, String);
-    customer = { id: id, email: email };
-    console.log(customer);
+    if (Roles.userIsInRole(this.userId, 'admin')) {
 
-    let user_id, dt_account_id, wait_for_user_update;
+      customer = { id: id, email: email };
+      console.log( customer );
 
-    user_id = StripeFunctions.find_user_account_or_make_a_new_one( customer );
-    dt_account_id = Utils.find_dt_account_or_make_a_new_one(customer, user_id);
-    wait_for_user_update = Meteor.users.update( {_id: user_id}, { $addToSet: { persona_ids: dt_account_id } } );
-    Utils.send_new_dt_account_added_email_to_support_email_contact(customer.email, user_id, dt_account_id);
-    StripeFunctions.add_dt_account_id_to_stripe_customer_metadata(customer.id, dt_account_id);
+      let user_id, dt_account_id, wait_for_user_update;
+
+      user_id = StripeFunctions.find_user_account_or_make_a_new_one( customer );
+      dt_account_id = Utils.find_dt_account_or_make_a_new_one( customer, user_id );
+      wait_for_user_update = Meteor.users.update( { _id: user_id }, { $addToSet: { persona_ids: dt_account_id } } );
+      Utils.send_new_dt_account_added_email_to_support_email_contact( customer.email, user_id, dt_account_id );
+      Meteor.users.update( {_id: user_id }, { $unset: { newUser: "" } } );
+      StripeFunctions.add_dt_account_id_to_stripe_customer_metadata( customer.id, dt_account_id );
+    } else {
+      return;
+    }
   }
 
 
