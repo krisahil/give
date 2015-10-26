@@ -135,8 +135,6 @@ _.extend(Utils, {
     personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email + "&fields=email_address", {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
-    console.log("LOOK HERE ****");
-    console.log(personResult);
 
     if(personResult){
       metadata = Customers.findOne( { _id: customer_id } ).metadata;

@@ -229,6 +229,10 @@ Meteor.publish("userDT", function (page) {
       var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
       console.log(persona_ids);
       return DT_donations.find({persona_id: {$in: persona_ids}});
+    } else if(Meteor.users.findOne({_id: this.userId}).persona_id) {
+      var persona_id = Meteor.users.findOne( { _id: this.userId } ).persona_id;
+      console.log( persona_id );
+      return DT_donations.find( { persona_id: { $in: persona_id } } );
     } else {
       var persona_ids = [];
       var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;

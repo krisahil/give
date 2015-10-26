@@ -244,7 +244,13 @@ Meteor.methods({
       if(this.userId){
         let persona_ids, email_address;
         persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
+        persona_id = Meteor.users.findOne({_id: this.userId}).persona_id;
         email_address = Meteor.users.findOne({_id: this.userId}).emails[0].address;
+
+        if(!persona_ids && persona_id) {
+          logger.info("No persona_ids, but did find persona_id");
+          persona_ids = persona_id;
+        }
 
         if(persona_ids && persona_ids.length) {
           // The persona_ids let is an array

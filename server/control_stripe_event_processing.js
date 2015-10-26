@@ -129,7 +129,7 @@ _.extend(StripeFunctions, {
     // Get the invoice from Stripe
     let invoice = new Promise(function (resolve, reject) {
         Stripe.invoices.list(
-          { limit: 1, starting_after: invoice_id },
+          { customer: customer_id, limit: 1, starting_after: invoice_id },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);
