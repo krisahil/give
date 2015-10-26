@@ -133,7 +133,6 @@ _.extend(Utils, {
     try {
       logger.info("Started create_user.");
 
-
       let user_id, customer_cursor, fname, lname, profile;
 
       customer_cursor = Customers.findOne(customer_id);

@@ -499,6 +499,8 @@ Meteor.methods({
     return total_kids;
   },
   get_dt_name: function (id) {
+    logger.info("Started get_dt_name method");
+
     check(id, Number);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
       // Get the persona from DT
@@ -516,6 +518,8 @@ Meteor.methods({
 
   },
   get_next_or_previous_transfer: function (current_transfer_id, previous_or_next) {
+    logger.info("Started get_next_or_previous_transfer method");
+
     check(current_transfer_id, String);
     check(previous_or_next, String);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
@@ -525,6 +529,22 @@ Meteor.methods({
     } else {
       return;
     }
+  },
+  run_if_no_user_was_created_but_donation_was_processed_with_stripe: function ( id, email  ) {
+    logger.info("Started run_if_no_user_was_created_but_donation_was_processed_with_stripe method");
+
+    check(id, String);
+    check(email, String);
+    customer = { id: id, email: email };
+    console.log(customer);
+
+    let user_id, dt_account_id, wait_for_user_update;
+
+    user_id = StripeFunctions.find_user_account_or_make_a_new_one( customer );
+    dt_account_id = Utils.find_dt_account_or_make_a_new_one(customer, user_id);
+    wait_for_user_update = Meteor.users.update( {_id: user_id}, { $addToSet: { persona_ids: dt_account_id } } );
+    Utils.send_new_dt_account_added_email_to_support_email_contact(customer.email, user_id, dt_account_id);
+    StripeFunctions.add_dt_account_id_to_stripe_customer_metadata(customer.id, dt_account_id);
   }
 
 

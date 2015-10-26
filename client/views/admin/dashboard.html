@@ -107,6 +107,14 @@
                                 <h5>Get Stripe Event</h5>
                             </a>
                         </div>
+                        <div class="col-sm-2">
+                            <a id="show-fix-no-user" class="quick-button" href="">
+								<span class="fa-stack fa-lg">
+									<i class="fa fa-search"></i>
+								</span>
+                                <h5>Fix No Local User</h5>
+                            </a>
+                        </div>
                     </div>
 				</div>
 			</div><!--/col-lg8-->
@@ -116,6 +124,14 @@
             <div class="col col-lg-2"></div>
             <div class="col-lg-8">
                 {{> GetStripeEvent}}
+            </div>
+        </div>
+    {{/if}}
+    {{#if showFixNoUser}}
+        <div class="row">
+            <div class="col col-lg-2"></div>
+            <div class="col-lg-8">
+                {{> CreateUserIfStripeButNotLocalExists}}
             </div>
         </div>
     {{/if}}

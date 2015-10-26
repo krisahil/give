@@ -291,7 +291,7 @@ _.extend(Utils, {
       return;
 
     } else {
-      console.log( "Checked for and didn't find an audit record for this customer." );
+      logger.info( "Checked for and didn't find an audit record for this customer." );
       Audit_trail.upsert( { _id: customer.id }, { $set: { flow_checked: true } } );
 
       // Run the necessary checks to find which DT account this customer should
@@ -300,10 +300,10 @@ _.extend(Utils, {
 
       if( !dt_persona_match_id ) {
         dt_persona_match_id = Utils.create_dt_account(customer, user_id);
-        console.log("LOOKIE HERE - > ", dt_persona_match_id);
+        logger.info("LOOKIE HERE - > ", dt_persona_match_id);
       }
 
-      console.log( "The donor Tools ID for this customer is ", dt_persona_match_id );
+      logger.info( "The donor Tools ID for this customer is ", dt_persona_match_id );
       return dt_persona_match_id;
 
     }
@@ -311,19 +311,26 @@ _.extend(Utils, {
   'create_dt_account': function ( customer, user_id ){
     console.log("Started create_dt_account");
 
-    let newDTPerson, recognition_name, address_line2, is_company;
+    let metadata, newDTPerson, recognition_name, address_line2, is_company;
 
 
-    if(customer.metadata.business_name){
-      recognition_name = customer.metadata.business_name;
+    if(!customer.metadata) {
+      logger.info("No metadata included with this customer object, setting it by " +
+        "finding the document inside the customer's collection");
+      metadata = Customers.findOne( { _id: customer.id } ).metadata;
+    } else {
+      metadata = customer.metadata;
+    }
+    if(metadata.business_name){
+      recognition_name = metadata.business_name;
       is_company = true;
     } else {
-      recognition_name = customer.metadata.fname + " " + customer.metadata.lname;
+      recognition_name = metadata.fname + " " + metadata.lname;
       is_company = false;
-    };
+    }
 
-    if(customer.metadata.address_line2){
-      address_line2 = customer.metadata.address_line2;
+    if(metadata.address_line2){
+      address_line2 = metadata.address_line2;
     } else {
       address_line2 = '';
     }
@@ -333,26 +340,26 @@ _.extend(Utils, {
     newDTPerson = HTTP.post(Meteor.settings.donor_tools_site + '/people.json', {
       "data": {
         "persona": {
-          "company_name":      customer.metadata.business_name,
+          "company_name":      metadata.business_name,
           "is_company":        is_company,
           "names":             [
             {
-              "first_name": customer.metadata.fname,
-              "last_name":  customer.metadata.lname
+              "first_name": metadata.fname,
+              "last_name":  metadata.lname
             }
           ],
           "email_addresses":   [
             {
-              "email_address": customer.metadata.email
+              "email_address": metadata.email
             }
           ],
-          "street_address":    customer.metadata.address_line1 + " \n" + address_line2,
-          "city":              customer.metadata.city,
-          "state":             customer.metadata.state,
-          "postal_code":       customer.metadata.postal_code,
+          "street_address":    metadata.address_line1 + " \n" + address_line2,
+          "city":              metadata.city,
+          "state":             metadata.state,
+          "postal_code":       metadata.postal_code,
           "phone_numbers":     [
             {
-              "phone_number": customer.metadata.phone
+              "phone_number": metadata.phone
             }
           ],
           "web_addresses":     [
@@ -360,7 +367,7 @@ _.extend(Utils, {
               "web_address": Meteor.absoluteUrl( "dashboard/users?userID=" + user_id )
             }
           ],
-          "salutation_formal": customer.metadata.fname + " " + customer.metadata.lname,
+          "salutation_formal": metadata.fname + " " + metadata.lname,
           "recognition_name":  recognition_name
         }
       },
@@ -386,7 +393,7 @@ _.extend(Utils, {
 
     customerCursor =  Customers.findOne({_id: customer_id});
 
-    if(Audit_trail.findOne({_id: chargeCursor._id}) && Audit_trail.findOne({_id: chargeCursor._id}).dt_donation_inserted){
+    if( Audit_trail.findOne( { _id: chargeCursor._id } ) && Audit_trail.findOne( { _id: chargeCursor._id } ).dt_donation_inserted ){
       logger.info("Already inserted the donation into DT.");
 
       // TODO: update the DT donation from here?

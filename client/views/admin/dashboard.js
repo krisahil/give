@@ -1,7 +1,10 @@
 Template.Dashboard.helpers({
-    showGetStripeEvent: function(){
-        return Session.get("showGetStripeEvent");
-    }
+  showGetStripeEvent: function(){
+    return Session.get("showGetStripeEvent");
+  },
+  showFixNoUser: function(){
+      return Session.get("showFixNoUser");
+  }
 });
 
 Template.Dashboard.events({
@@ -37,6 +40,10 @@ Template.Dashboard.events({
     'click #show-get-stripe-event': function(evt){
         evt.preventDefault();
         Session.set("showGetStripeEvent", true);
+    },
+    'click #show-fix-no-user': function(evt){
+        evt.preventDefault();
+        Session.set("showFixNoUser", true);
     },
     'click #get-dt-funds': function(e) {
         //prevent the default reaction to submitting this form

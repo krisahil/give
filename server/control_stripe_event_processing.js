@@ -256,8 +256,7 @@ _.extend(StripeFunctions, {
     console.log("Started find_dt_account_or_make_a_new_one");
     console.log(customer);
 
-    let inserted_now, matchedId, findAnyMatchedDTaccount, email_address, user, user_id, add_user_id_to_customer_metadata, user_cursor;
-    let persona_result = {};
+    let email_address, user, user_id, add_user_id_to_customer_metadata;
 
     // create an email_address variable to be reused below
     email_address = customer.email;
