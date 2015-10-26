@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /* GetStripeEvent: Event Handlers */
 /*****************************************************************************/
-Template.GetStripeEvent.events({
+Template.CreateUserIfStripeButNotLocalExists.events({
   'submit form': function (e) {
     e.preventDefault();
 
@@ -14,7 +14,7 @@ Template.GetStripeEvent.events({
         console.log(err);
       } else {
         console.log(result);
-        $('#get_event_form')[0].reset();
+        $('#fix_no_local')[0].reset();
         Bert.alert("Got it", "success");
       }
     })
