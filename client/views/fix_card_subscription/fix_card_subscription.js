@@ -1,19 +1,20 @@
 Template.FixCardSubscription.onRendered(function(){
 
+  Session.setDefault('isRepair', true);
+  Session.set('update_this_card', Customers.findOne().sources.data[0].id);
 
-    Session.setDefault('isRepair', true);
-    Session.set('update_this_card', Customers.findOne().sources.data[0].id);
+  if(Subscriptions.findOne().status === 'past_due' || Subscriptions.findOne().status === 'canceled'){
+      Session.set('addingNewCreditCard', true);
+  } else{
+      Session.set('addingNewCreditCard', false);
+  }
 
-    if(Subscriptions.findOne().status === 'past_due' || Subscriptions.findOne().status === 'canceled'){
-        Session.set('addingNewCreditCard', true);
-    } else{
-        Session.set('addingNewCreditCard', false);
-    }
+  $('#resubscribe').parsley();
 
-    $('#resubscribe').parsley();
+  Meteor.setTimeout(function() {
     $('select').select2({dropdownCssClass: 'dropdown-inverse'});
+  }, 50);
 
-    $("[name='square-switch']").bootstrapSwitch();
 });
 
 Template.FixCardSubscription.events({
@@ -109,7 +110,7 @@ Template.FixCardSubscription.events({
 
 Template.FixCardSubscription.helpers({
     subscription: function () {
-        return Subscriptions.find();
+      return Subscriptions.find();
     },
     customer: function () {
         return Customers.findOne();

@@ -1,19 +1,17 @@
 Template.FixBankSubscription.onRendered(function(){
+  Session.setDefault('isRepair', true);
 
+  Session.set('update_this_card', Customers.findOne().sources.data[0].id);
 
-    Session.setDefault('isRepair', true);
-    Session.set('update_this_card', Customers.findOne().sources.data[0].id);
+  if(Subscriptions.findOne().status === 'past_due' || Subscriptions.findOne().status === 'canceled'){
+    Session.set('addingNewCreditCard', true);
+  } else{
+    Session.set('addingNewCreditCard', false);
+  }
+  $('#resubscribe').parsley();
 
-    if(Subscriptions.findOne().status === 'past_due' || Subscriptions.findOne().status === 'canceled'){
-        Session.set('addingNewCreditCard', true);
-    } else{
-        Session.set('addingNewCreditCard', false);
-    }
+  $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
-    $('#resubscribe').parsley();
-    $('select').select2({dropdownCssClass: 'dropdown-inverse'});
-
-    $("[name='square-switch']").bootstrapSwitch();
 });
 
 Template.FixBankSubscription.events({

@@ -404,7 +404,7 @@ _.extend(App, {
                 // Fail after connection to customer succeeds = 4000000000000341
                 $('#expiry_month option').prop('selected', false).filter('[value=12]').prop('selected', true);
                 $('select#expiry_month').change();
-                $('#expiry_year option').prop('selected', false).filter('[value=2015]').prop('selected', true);
+                $('#expiry_year option').prop('selected', false).filter('[value=2017]').prop('selected', true);
                 $('select#expiry_year').change();
                 $('#cvv').val("123"); //CVV mismatch = 200
             }
@@ -428,7 +428,7 @@ _.extend(App, {
                 $('#card_number').val("4242424242424242"); //Succeeded = 4242424242424242 Failed = 4242111111111111 AMEX = 378282246310005
                 $('#expiry_month option').prop('selected', false).filter('[value=12]').prop('selected', true);
                 $('select#expiry_month').change();
-                $('#expiry_year option').prop('selected', false).filter('[value=2015]').prop('selected', true);
+                $('#expiry_year option').prop('selected', false).filter('[value=2017]').prop('selected', true);
                 $('select#expiry_year').change();
                 $('#cvv').val("123"); //CVV mismatch = 200
             }

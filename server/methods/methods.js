@@ -409,7 +409,7 @@ Meteor.methods({
     if (Roles.userIsInRole(this.userId, ['admin'])) {
       // This is the fund ids for community sponsorship
       var fundsList = [
-        63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282
+        63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282, 64197
       ];
       fundsList.forEach( function ( fundId ) {
         Utils.getFundHistory(fundId, dateStart, dateEnd);
