@@ -56,6 +56,7 @@ Here is an example settings.json file
     },
     "contact_address": "general contact email address",
     "support_address": "support email address",
+    "other_support_addresses": ["array of addresses only currently used for the new account added emails"],
     "canceled_gift_address": "group email for notifying when a recurring gift is canceled",
     "bcc_address": "this email is bcc'd anytime a gift receipt, schedule or pending email is sent",
     "large_gift_address": "group email for notifiying when gifts larger than $500 are given",

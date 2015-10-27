@@ -770,11 +770,14 @@ _.extend(Utils, {
     var html = "<h1>DT account created</h1><p>" +
       "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='https://trashmountain.donortools.com/people/" + personaID +"'>" + personaID + "</a></p>";
 
+    let toAddresses = [];
+    toAddresses.push(Meteor.settings.public.support_address);
+    toAddresses = toAddresses.concat(Meteor.settings.public.other_support_addresses);
     //Send email
 
     Email.send({
       from: Meteor.settings.public.support_address,
-      to: Meteor.settings.public.support_address,
+      to: toAddresses,
       subject: "DT Account inserted.",
       html: html
     });
