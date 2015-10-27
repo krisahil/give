@@ -1,4 +1,4 @@
-<template name="Expiring">
+<template name="StripeExpiring">
     <div class="container">
         <div class="row">
             <div class="span5">
@@ -12,16 +12,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {{#each list}}
-                            {{#each expiring_cards}}
-
-                                <tr>
-                                    <td>{{fname ..}} {{lname ..}}</td>
-                                    <td>{{expiration_month}}/{{expiration_year}}</td>
-                                    <td>{{email_address ..}}</td>
-                                    <td>{{phone_number ..}}</td>
-                                </tr>
-                            {{/each}}
+                        {{#each customers}}
+                            <tr>
+                                <td>{{metadata.fname}} {{metadata.lname}}</td>
+                                <td>{{sources.data.[0].exp_month}}/{{sources.data.[0].exp_year}}</td>
+                                <td>{{metadata.email}}</td>
+                                <td>{{metadata.phone}}</td>
+                            </tr>
                         {{/each}}
                     </tbody>
                 </table>

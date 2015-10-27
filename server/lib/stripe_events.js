@@ -32,7 +32,7 @@ Stripe_Events = {
         subscription_id = invoice_cursor.subscription;
       } else {
         invoice_object = StripeFunctions.get_invoice(stripeEvent.data.object.invoice);
-        subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
+        subscription_cursor = Subscriptions.findOne( { _id: invoice_cursor.subscription } );
         console.log(invoice_object);
         subscription_id = invoice_object.subscription;
       }

@@ -75,26 +75,22 @@ Meteor.publishComposite('expiring_cards', function () {
       find:     function () {
         // Find posts made by user. Note arguments for callback function
         // being used in query.
-        return Subscriptions.find( {
-          $and: [{ transfer_id: transfer_id }, { type: { $ne: 'transfer' } }]
-        } );
+        return Subscriptions.find( { status: "active" } );
       },
       children: [
         {
-          find: function ( transactions ) {
+          find: function ( subscriptions ) {
             // Find post author. Even though we only want to return
             // one record here, we use "find" instead of "findOne"
             // since this function should return a cursor.
-            return Charges.find(
-              { _id: transactions.source },
+            return Customers.find(
+              { _id: subscriptions.customer },
               {
                 limit:  1,
                 fields: {
                   metadata:       1,
-                  customer:       1,
-                  created:        1,
-                  payment_source: 1,
-                  source:         1
+                  default_source: 1,
+                  sources:        1
                 }
               } );
           }

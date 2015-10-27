@@ -174,6 +174,24 @@ Router.route('/transfers',{
     name: 'stripe.transfers'
 });
 
+Router.route('/expiring',{
+    layoutTemplate: 'UserLayout',
+
+    subscriptions: function(){
+        return [
+            Meteor.subscribe('expiring_cards')
+        ]
+    },
+    action: function () {
+        if (this.ready()) {
+            this.render();
+        } else {
+            this.render('Loading');
+        }
+    },
+    name: 'stripe.expiring'
+});
+
 Router.route('/transfers/:_id', function () {
   var params = this.params;
   var id = params._id;
