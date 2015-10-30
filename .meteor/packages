@@ -47,7 +47,6 @@ underscorestring:underscore.string
 meteorhacks:aggregate
 manuelschoebel:ms-seo
 meteorhacks:kadira
-# joshjoe:doorbell don't want to use this until I have fixed the loading on each page issue
 logging
 reload
 random
@@ -63,3 +62,4 @@ msavin:jetsetter
 sanjo:jasmine
 velocity:html-reporter
 miktam:loggly
+meteorhacks:kadira-profiler
