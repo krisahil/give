@@ -286,22 +286,22 @@ Meteor.publish("transfers", function (id) {
 });
 
 
-Meteor.publish("transfersRange", function (dateEnd) {
-  check(dateEnd, Match.Optional(String));
+Meteor.publish("transfersRange", function (range) {
+  check(range, {
+    start:   Match.Optional( String ),
+    end:   Match.Optional( String )
+  });
 
   if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
 
-    if(dateEnd){
-      var transferStart = moment(new Date(dateEnd));
-      var transferEnd = moment(transferStart).add(1, 'months').format('X');
+    if(range && range.start){
+      let transferStart = Number(moment(new Date(range.start)).format('X'));
+      let transferEnd = Number(moment(new Date(range.end)).format('X'));
 
-      var transferStartX = transferStart.format('X');
-      var transferStartNumber = Number(transferStartX);
-      console.log(transferStartX);
+      console.log(transferStart);
       console.log(transferEnd);
-      console.log(transferStartNumber);
 
-      return Transfers.find({$and: [{ date: { $lte: Number(transferEnd) -1 } }, { date: { $gte: transferStartNumber } }]}, {
+      return Transfers.find({$and: [{ date: { $lte: transferEnd } }, { date: { $gte: transferStart } }]}, {
         sort: { date: -1 }
       });
     } else {

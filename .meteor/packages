@@ -63,3 +63,4 @@ sanjo:jasmine
 velocity:html-reporter
 miktam:loggly
 meteorhacks:kadira-profiler
+dangrossman:bootstrap-daterangepicker

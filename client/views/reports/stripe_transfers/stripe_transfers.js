@@ -4,10 +4,6 @@
 Template.StripeTransfers.events({
   'click .clickable_row': function(){
     Router.go('/transfers/' + this.id);
-  },
-  'change #startDate': function (e) {
-    e.preventDefault();
-    Session.set("transferRange", $("#startDate").val());
   }
 });
 
@@ -23,6 +19,24 @@ Template.StripeTransfers.helpers({
   transfer_date: function () {
     let timestamp = this.date;
     return moment.utc(timestamp, 'X').format("MMMM Do, YYYY");
+  },
+  monthRange: function () {
+    if(Session.get("transferRange")) {
+      let transferRange = Session.get( "transferRange" );
+      let transferStart = transferRange.start;
+      let transferEnd = transferRange.end;
+
+      transferStart = moment( transferStart ).format( "MM/DD/YYYY" );
+      transferEnd = moment( transferEnd ).format( "MM/DD/YYYY" );
+
+      let today = transferStart + " - " + transferEnd;
+      return today;
+    }
+  },
+  redText: function () {
+    if(this.status && this.status === 'in_transit') {
+      return 'orange-text';
+    }
   }
 });
 
@@ -30,55 +44,35 @@ Template.StripeTransfers.helpers({
 /* StripeTransfers: Lifecycle Hooks */
 /*****************************************************************************/
 Template.StripeTransfers.onCreated(function () {
+
+  // Setup the range for this month if no previous session is set for "transferRange"
+  if(!Session.get("transferRange")){
+    Session.setDefault("transferRange", {start: moment().startOf('month').format("YYYY-MM-DD"), end: moment().endOf("month").format("YYYY-MM-DD")});
+  }
+  let self = this;
+
+  // Use self.subscribe with the data context reactively
+  self.autorun(function () {
+    let transferRange = Session.get("transferRange");
+    self.subscribe("transfersRange", transferRange);
+  });
 });
 
 Template.StripeTransfers.onRendered(function () {
-  Session.setDefault("transferRange", '');
 
-  Tracker.autorun(function () {
-    Meteor.subscribe('transfersRange', Session.get("transferRange"));
-  });
-
-  $('.date-picker').datepicker( {
-    changeMonth: true,
-    changeYear: true,
-    showButtonPanel: true,
-    dateFormat: 'MM yy',
-    onClose: function(dateText, inst) {
-      var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-      var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-      $(this).datepicker('setDate', new Date(year, month, 1));
-      $(this).change();
-    },
-    onSelect: function () {
-      $(this).change();
-    },
-    beforeShow: function(input, inst) {
-      $('#ui-datepicker-div').addClass("no-calendar");
+  $('input[name="daterange"]').daterangepicker({
+    ranges: {
+      'All Time': [moment().subtract(10, 'years').startOf('month'), moment().endOf('year')],
+      'Today': [moment(), moment()],
+      'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
     }
   });
 
-  var dynamicStyle = $("<style> .ui-datepicker-calendar { display: none; } </style>")
-    .attr("id", "dynamicDatepickerStyle");
-  $("#monthDate1").datepicker({
-    beforeShow: function ()
-                {
-                  $("body").append(dynamicStyle);
-                },
-
-    onClose: function ()
-             {
-               $("#dynamicDatepickerStyle").remove();
-             }
+  $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+    Session.set( "transferRange", {start: picker.startDate.format('YYYY-MM-DD'), end: picker.endDate.format('YYYY-MM-DD')} );
   });
-
-  $("#ui-datepicker-div").delegate(".ui-datepicker-close", 'click', function(){
-    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-    $("#monthDate1").datepicker('option', 'defaultDate', new Date(year, month, 1));
-    $("#monthDate1").datepicker('setDate', new Date(year, month, 1));
-  });
-});
-
-Template.StripeTransfers.onDestroyed(function () {
 });
