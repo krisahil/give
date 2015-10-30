@@ -38,8 +38,8 @@ alanning:roles
 ongoworks:security
 wylio:winston-papertrail
 wylio:mandrill
-
 twbs:bootstrap
+
 eskan:chosen
 aldeed:collection2
 aldeed:autoform
@@ -62,3 +62,4 @@ reywood:publish-composite
 msavin:jetsetter
 sanjo:jasmine
 velocity:html-reporter
+miktam:loggly

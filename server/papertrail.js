@@ -18,7 +18,7 @@ logger.add(Winston_Papertrail, {
 		},
 
 		host: "logs.papertrailapp.com",
-		port: 17342, //this will be change from the papertrail account to account
+		port: Meteor.settings.papertrail.port, //this will be change from the papertrail account to account
         handleExceptions: true,
         json: true,
         colorize: true,
@@ -27,3 +27,13 @@ logger.add(Winston_Papertrail, {
   }
 });
 logger.info(" =====> Meteor App restarted "+ new Date( Date.now()) +" <=====");
+
+
+Meteor.methods( {
+    // This method is used on the client side to send logs to papertrailapp.com
+    clientLog: function ( message ) {
+      check(message, String);
+      logger.info( "client-side-log ", message );
+    }
+  }
+);

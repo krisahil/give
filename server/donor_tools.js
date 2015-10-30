@@ -142,7 +142,7 @@ _.extend(Utils, {
           return value.persona.company_name
         } );
         if( orgMatch ) {
-          // Does the company name in DT match the company name provided by the user?
+          // Does the company name in DT match the company name provided by the user?'
           if( orgMatch.persona.company_name === metadata.business_name ) {
             // Return value.id as the DT ID that has matched what the user inputted
             matched_id = orgMatch.persona.id;

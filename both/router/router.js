@@ -159,11 +159,6 @@ Router.route('/user',{
 Router.route('/transfers',{
     layoutTemplate: 'UserLayout',
 
-    subscriptions: function(){
-        return [
-            Meteor.subscribe('transfers')
-        ]
-    },
     action: function () {
         if (this.ready()) {
             this.render();

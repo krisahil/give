@@ -284,3 +284,33 @@ Meteor.publish("transfers", function (id) {
     return;
   }
 });
+
+
+Meteor.publish("transfersRange", function (dateEnd) {
+  check(dateEnd, Match.Optional(String));
+
+  if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+
+    if(dateEnd){
+      var transferStart = moment(new Date(dateEnd));
+      var transferEnd = moment(transferStart).add(1, 'months').format('X');
+
+      var transferStartX = transferStart.format('X');
+      var transferStartNumber = Number(transferStartX);
+      console.log(transferStartX);
+      console.log(transferEnd);
+      console.log(transferStartNumber);
+
+      return Transfers.find({$and: [{ date: { $lte: Number(transferEnd) -1 } }, { date: { $gte: transferStartNumber } }]}, {
+        sort: { date: -1 }
+      });
+    } else {
+      return Transfers.find({},
+        { sort: { date: -1 } }
+      );
+    }
+  } else {
+    this.stop();
+    return;
+  }
+});

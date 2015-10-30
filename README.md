@@ -44,6 +44,9 @@ Here is an example settings.json file
       "weekly": "Stripe plan name associated with weekly gifts"
     }
   },
+  "papertrail": {
+    "port": "12344" // Used for sending logs to papertrailapp.com
+  },
   "sikka": { //Remove this text, sikka is a firewall for Meteor (prevents DOS) https://atmospherejs.com/meteorhacks/sikka
     "rateLimits": {
       "perIp": "100"
