@@ -558,6 +558,28 @@ Meteor.methods({
     if (Roles.userIsInRole(this.userId, 'admin')) {
 
 
+      var devices = Devices.find({'metadata.saved': 'true'});
+      devices.forEach( function (el) {
+        var customer = Customers.findOne({$and: [ {_id: el.customer}, { 'metadata.dt_persona_id': { $exists: false } } ] });
+        if(customer){
+          var charge = Charges.findOne({customer: customer._id});
+          if(charge) {
+            //print(charge);
+            var dt_donation = DT_donations.findOne({transaction_id: charge._id});
+            if(dt_donation) {
+              var persona_id = dt_donation.persona_id;
+            }
+
+            if(persona_id){
+              console.log("Customer: " + charge.customer + " - Persona: " +  persona_id);
+              //StripeFunctions.add_dt_account_id_to_stripe_customer_metadata( customer.id, persona_id );
+
+            }
+          }
+        }
+      });
+
+/*
       let devices, customer_id, charge, charges, dt_donation, persona_id;
       devices = Devices.find( { 'metadata.saved': 'true' } );
 
@@ -569,13 +591,13 @@ Meteor.methods({
         // get all charges used with that customer_id
         charge = Charges.findOne( { $and: [ { customer: customer_id }, { 'metadata.dt_donation_id': { $exists: true } } ] } );
 
-/*
+/!*
         charge = _.find( charges, function ( el ) {
           // _.find returns the first el with a true value below, so it won't return
           // the DT_donations' document, rather the charge document that matches
           // the query run below
           return DT_donations.findOne( { transaction_id: el._id } );
-        } );*/
+        } );*!/
 
         console.log(charge._id);
         console.log(charge.metadata.dt_donation_id);
@@ -588,6 +610,7 @@ Meteor.methods({
 
         console.log( persona_id );
         console.log( "Worked" );
+*/
 
         // return person_id;
         // Set the persona_id as the Customer.metadata.dt_persona_id
