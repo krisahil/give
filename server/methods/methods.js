@@ -567,22 +567,25 @@ Meteor.methods({
         console.log( customer_id );
 
         // get all charges used with that customer_id
-        charges = Charges.find( { customer: customer_id } );
+        charge = Charges.findOne( { $and: [ { customer: customer_id }, { 'metadata.dt_donation_id': { $exists: true } } ] } );
 
+/*
         charge = _.find( charges, function ( el ) {
           // _.find returns the first el with a true value below, so it won't return
           // the DT_donations' document, rather the charge document that matches
           // the query run below
           return DT_donations.findOne( { transaction_id: el._id } );
-        } );
+        } );*/
 
         console.log(charge._id);
-        dt_donation = DT_donations.findOne( { transaction_id: charge._id } );
+        persona_id = DT_donations.findOne( { _id: charge.metadata.dt_donation_id } ).persona_id;
 
         // take one of those charges and look for a DT_donation
-        persona_id = dt_donation.persona_id;
+        // persona_id = dt_donation.persona_id;
 
         console.log( persona_id );
+        console.log( "Worked" );
+
         // return person_id;
         // Set the persona_id as the Customer.metadata.dt_persona_id
         //Customers.update(customer, { $set: { 'metadata.dt_persona_id': person_id } } );
