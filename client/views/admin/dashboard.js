@@ -78,5 +78,22 @@ Template.Dashboard.events({
                 console.log(error);
             }
         });
+    },
+    'click #fix-customers': function(e) {
+        //prevent the default reaction to submitting this form
+        e.preventDefault();
+        // Stop propagation prevents the form from being submitted more than once.
+        e.stopPropagation();
+
+        console.log("Got Here");
+
+        Meteor.call("fix_saved_device_customers", function (error, result) {
+            if (result) {
+                console.dir(result);
+                alert("Got 'em.")
+            } else {
+                console.log(error);
+            }
+        });
     }
 });
