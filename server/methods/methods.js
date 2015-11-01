@@ -580,7 +580,7 @@ Meteor.methods({
         // take one of those charges and look for a DT_donation
         persona_id = dt_donation.persona_id;
 
-        console.log( person_id );
+        console.log( persona_id );
         // return person_id;
         // Set the persona_id as the Customer.metadata.dt_persona_id
         //Customers.update(customer, { $set: { 'metadata.dt_persona_id': person_id } } );
