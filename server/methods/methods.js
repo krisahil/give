@@ -578,7 +578,9 @@ Meteor.methods({
         } );*/
 
         console.log(charge._id);
-        persona_id = DT_donations.findOne( { _id: charge.metadata.dt_donation_id } ).persona_id;
+        console.log(charge.metadata.dt_donation_id);
+        dt_donation = DT_donations.findOne( { _id: charge.metadata.dt_donation_id } );
+        persona_id = dt_donation.persona_id;
 
         // take one of those charges and look for a DT_donation
         // persona_id = dt_donation.persona_id;
