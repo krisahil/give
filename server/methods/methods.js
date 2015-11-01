@@ -572,7 +572,7 @@ Meteor.methods({
 
             if(persona_id){
               console.log("Customer: " + charge.customer + " - Persona: " +  persona_id);
-              //StripeFunctions.add_dt_account_id_to_stripe_customer_metadata( customer.id, persona_id );
+              StripeFunctions.add_dt_account_id_to_stripe_customer_metadata( charge.customer, persona_id );
 
             }
           }
