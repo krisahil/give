@@ -557,6 +557,7 @@ Meteor.methods({
 
     if (Roles.userIsInRole(this.userId, 'admin')) {
 
+
       let devices, customer_id, charge, charges, dt_donation, persona_id;
       devices = Devices.find( { 'metadata.saved': 'true' } );
 
@@ -575,6 +576,7 @@ Meteor.methods({
           return DT_donations.findOne( { transaction_id: el._id } );
         } );
 
+        console.log(charge._id);
         dt_donation = DT_donations.findOne( { transaction_id: charge._id } );
 
         // take one of those charges and look for a DT_donation
