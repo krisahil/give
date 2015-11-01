@@ -616,7 +616,6 @@ Meteor.methods({
         // Set the persona_id as the Customer.metadata.dt_persona_id
         //Customers.update(customer, { $set: { 'metadata.dt_persona_id': person_id } } );
 
-      } );
     } else {
       return;
     }
