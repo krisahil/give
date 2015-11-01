@@ -82,7 +82,7 @@ Meteor.methods({
             }
             if(!data.customer.id){
               customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
-              console.log(customerData);
+
               letCustomerData = customerData;
 
               // Skip this area for 2 seconds so the giver sees the next page without waiting
@@ -179,7 +179,7 @@ Meteor.methods({
 
             if (data.paymentInformation.is_recurring === "one_time") {
 
-              console.log(metadata);
+
                 //Charge the card (which also connects this card or bank_account to the customer)
                 var charge = Utils.charge(data.paymentInformation.total_amount, data._id, customerData.id, data.paymentInformation.source_id, metadata);
                 if(!charge.object){
@@ -415,7 +415,6 @@ Meteor.methods({
         Utils.getFundHistory(fundId, dateStart, dateEnd);
       });
 
-      console.log("Got all funds history");
       return "Got all funds history";
     }
   },
@@ -524,7 +523,7 @@ Meteor.methods({
     check(previous_or_next, String);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
       let previous_or_next_transfer = StripeFunctions.get_next_or_previous_transfer(current_transfer_id, previous_or_next);
-      console.log(previous_or_next_transfer.data);
+
       return previous_or_next_transfer.data[0].id;
     } else {
       return;
@@ -538,7 +537,7 @@ Meteor.methods({
     if (Roles.userIsInRole(this.userId, 'admin')) {
 
       customer = { id: id, email: email };
-      console.log( customer );
+
 
       let user_id, dt_account_id, wait_for_user_update;
 
@@ -551,75 +550,6 @@ Meteor.methods({
     } else {
       return;
     }
-  },
-  fix_saved_device_customers: function () {
-    logger.info("Started fix_saved_device_customers method");
-
-    if (Roles.userIsInRole(this.userId, 'admin')) {
-
-
-      var devices = Devices.find({'metadata.saved': 'true'});
-      devices.forEach( function (el) {
-        var customer = Customers.findOne({$and: [ {_id: el.customer}, { 'metadata.dt_persona_id': { $exists: false } } ] });
-        if(customer){
-          var charge = Charges.findOne({customer: customer._id});
-          if(charge) {
-            //print(charge);
-            var dt_donation = DT_donations.findOne({transaction_id: charge._id});
-            if(dt_donation) {
-              var persona_id = dt_donation.persona_id;
-            }
-
-            if(persona_id){
-              console.log("Customer: " + charge.customer + " - Persona: " +  persona_id);
-              StripeFunctions.add_dt_account_id_to_stripe_customer_metadata( charge.customer, persona_id );
-
-            }
-          }
-        }
-      });
-
-/*
-      let devices, customer_id, charge, charges, dt_donation, persona_id;
-      devices = Devices.find( { 'metadata.saved': 'true' } );
-
-      devices.forEach( function ( device ) {
-        // get customer_id
-        customer_id = device.customer;
-        console.log( customer_id );
-
-        // get all charges used with that customer_id
-        charge = Charges.findOne( { $and: [ { customer: customer_id }, { 'metadata.dt_donation_id': { $exists: true } } ] } );
-
-/!*
-        charge = _.find( charges, function ( el ) {
-          // _.find returns the first el with a true value below, so it won't return
-          // the DT_donations' document, rather the charge document that matches
-          // the query run below
-          return DT_donations.findOne( { transaction_id: el._id } );
-        } );*!/
-
-        console.log(charge._id);
-        console.log(charge.metadata.dt_donation_id);
-        dt_donation = DT_donations.findOne( { _id: Number(charge.metadata.dt_donation_id)} );
-        console.log(dt_donation._id);
-        persona_id = dt_donation.persona_id;
-
-        // take one of those charges and look for a DT_donation
-        // persona_id = dt_donation.persona_id;
-
-        console.log( persona_id );
-        console.log( "Worked" );
-*/
-
-        // return person_id;
-        // Set the persona_id as the Customer.metadata.dt_persona_id
-        //Customers.update(customer, { $set: { 'metadata.dt_persona_id': person_id } } );
-
-    } else {
-      return;
-    }
-
   }
 
 

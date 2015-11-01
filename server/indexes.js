@@ -1,6 +1,6 @@
-Charges._ensureIndex({'id': 1, 'customer': 1}, {background: true});
+Charges._ensureIndex({'id': 1, 'customer': 1, 'invoice': 1}, {background: true});
 
-Customers._ensureIndex({'id': 1, 'customer': 1}, {background: true});
+Customers._ensureIndex({'id': 1, 'customer': 1, 'metadata.dt_persona_id': 1}, {background: true});
 
 Devices._ensureIndex({'id': 1, 'customer': 1}, {background: true});
 
