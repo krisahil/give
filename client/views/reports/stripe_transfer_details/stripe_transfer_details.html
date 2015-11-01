@@ -28,7 +28,6 @@
               <th>Net Amount</th>
           </tr>
           {{#each transactions}}
-              <!--data-balance-transaction-id="{{balance_transaction}}"-->
               <tr class="responsiveFont" data-href="" >
                   {{#with charges}}
                     <td style="width: 50px;">
@@ -42,7 +41,7 @@
                   {{/with}}
                   {{#with customers}}
                     <td class="change-td-padding">{{email}}</td>
-                {{/with}}
+                  {{/with}}
                 {{#with charges}}
                   <td class="change-td-padding">{{epochToString created}}</td>
                   <td class="change-td-padding ellipsis">

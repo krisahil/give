@@ -104,6 +104,7 @@ _.extend(Utils, {
       });
 
       /*// This section is for async retrying of failed connection to DT
+      It seems to break this function so it is commented out now
       ,
       function (error, result) {
         if (!error) {
@@ -381,11 +382,6 @@ _.extend(Utils, {
     console.log("Charge_id: ", charge_id, " Customer_id: ", customer_id);
     let chargeCursor, customerCursor, dt_fund, donateTo, invoice_cursor,
       fund_id, memo, source_id, newDonationResult, metadata;
-
-    // TODO: use this after you have fixed the customer creation process, this is
-    // where you'll actually send the gift to DT, but you first need to connect this charge id with
-    // a person in DT, which means you need to go through the whole person creation
-    // process first
 
     chargeCursor =  Charges.findOne({_id: charge_id});
 

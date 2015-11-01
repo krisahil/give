@@ -353,7 +353,12 @@ _.extend(StripeFunctions, {
         throw new Meteor.Error("There was a problem that prevented the function from getting " +
           "a result from either Donor Tools, or the MongoDB cursors");
       } else {
+
+        // TODO: need to check to see if there is an invoice id on the charge cursor.
+        // if there isn't one then this charge likely came from a saved device gift from the user portal
+        // In this case we'll need to look for another way to get the persona_id.
         let invoice = StripeFunctions.get_previous_invoice( customer_id, chargeCursor.invoice );
+
         console.log("Invoice Object: ");
         console.dir(invoice.data);
         let previous_charge_id = invoice.data[0].charge;
