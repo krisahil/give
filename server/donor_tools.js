@@ -144,7 +144,7 @@ _.extend(Utils, {
         } );
         if( orgMatch ) {
           // Does the company name in DT match the company name provided by the user?'
-          if( orgMatch.persona.company_name === metadata.business_name ) {
+          if( orgMatch.persona.company_name.toLowerCase() === metadata.business_name.toLowerCase() ) {
             // Return value.id as the DT ID that has matched what the user inputted
             matched_id = orgMatch.persona.id;
             // return the matched DT persona id
@@ -167,7 +167,7 @@ _.extend(Utils, {
           personMatch = _.find( personResult.data, function ( el ) {
 
             if( el.persona.names.some( function ( value ) {
-                if( value.first_name === metadata.fname && value.last_name === metadata.lname ) {
+                if( value.first_name.toLowerCase() === metadata.fname.toLowerCase() && value.last_name.toLowerCase() === metadata.lname.toLowerCase() ) {
                   console.log(value);
                   // returning true here tells the function that this is the record inside which the correct name is found
                   return true;
