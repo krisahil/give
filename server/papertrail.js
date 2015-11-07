@@ -17,7 +17,7 @@ logger.add(Winston_Papertrail, {
 			auth: 'red'
 		},
 
-		host: "logs.papertrailapp.com",
+		host: Meteor.settings.papertrail.host,
 		port: Meteor.settings.papertrail.port, //this will be change from the papertrail account to account
         handleExceptions: true,
         json: true,

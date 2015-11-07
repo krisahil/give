@@ -81,7 +81,7 @@ Template.Modals.onRendered( function() {
         console.log("Error in meteor call");
       }
     });
-    var clock = $('.serve1000-counter').FlipClock(000, {
+    var clock = $('.serve1000-counter').FlipClock('000', {
       clockFace: 'Counter',
       autoStart: false
     });

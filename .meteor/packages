@@ -61,6 +61,5 @@ reywood:publish-composite
 msavin:jetsetter
 sanjo:jasmine
 velocity:html-reporter
-miktam:loggly
 meteorhacks:kadira-profiler
 dangrossman:bootstrap-daterangepicker

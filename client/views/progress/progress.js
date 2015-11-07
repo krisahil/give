@@ -18,7 +18,7 @@ Template.Progress.onRendered(function () {
   });
   if(Session.get('params.note')) {
 
-    var clock = $('.serve1000-counter').FlipClock(000, {
+    var clock = $('.serve1000-counter').FlipClock('000', {
       clockFace: 'Counter',
       autoStart: false
     });
