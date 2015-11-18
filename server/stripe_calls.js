@@ -29,10 +29,6 @@ _.extend(Utils, {
                 returnToCalled = 'Basecamp - Timm Collins';
                 return returnToCalled;
                 break;
-            case 'JonDeMeo':
-                returnToCalled = 'Basecamp - Jon DeMeo';
-                return returnToCalled;
-                break;
             case 'BrettDurbin':
                 returnToCalled = 'Basecamp - Brett Durbin';
                 return returnToCalled;
@@ -45,24 +41,12 @@ _.extend(Utils, {
                 returnToCalled = 'Basecamp - John Kazaklis';
                 return returnToCalled;
                 break;
-            case 'LindseyKeller':
-                returnToCalled = 'Basecamp - Lindsey Keller';
-                return returnToCalled;
-                break;
-            case 'EthanPope':
-                returnToCalled = 'Basecamp - Ethan Pope';
-                return returnToCalled;
-                break;
             case 'ChrisMammoliti':
                 returnToCalled = 'Basecamp - Chris Mammoliti';
                 return returnToCalled;
                 break;
             case 'ShelleySetchell':
                 returnToCalled = 'Basecamp - Shelley Setchell';
-                return returnToCalled;
-                break;
-            case 'IsaacTarwater':
-                returnToCalled = 'Basecamp - Isaac Tarwater';
                 return returnToCalled;
                 break;
             case 'WillieBrooks':

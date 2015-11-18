@@ -190,12 +190,6 @@ _.extend(Utils, {
       case "Aquaponics":
         return 63660;
         break;
-      case "Aquaponics Marketplace - Karpos":
-        return 67506;
-        break;
-      case "Aquaponics Marketplace - Rhiza":
-        return 67505;
-        break;
       case "BaseCamp":
         return 63656;
         break;
@@ -285,12 +279,6 @@ _.extend(Utils, {
         break;
       case "Willie Brooks":
         return 65263;
-        break;
-      case "Basecamp - Lindsey Keller":
-        return 67052;
-        break;
-      case "Lindsey Keller":
-        return 67052;
         break;
       case "Int'l Field Projects - Honduras":
         return 60489;
