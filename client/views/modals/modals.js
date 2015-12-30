@@ -11,12 +11,8 @@ Template.Modals.helpers({
   churchSources: function () {
     return [
       {
-        "name": "New Community Christian Church",
-        "city": "Salina, KS"
-      },
-      {
-        "name": "The Heights Church",
-        "city": "Spokane, WA"
+        "name": "Fellowship Bible Church",
+        "city": "Topeka, KS"
       },
       {
         "name": "Topeka Bible Church",
@@ -40,10 +36,6 @@ Template.Modals.helpers({
       },
       {
         "name": "Western Hills Church",
-        "city": "Topeka, KS"
-      },
-      {
-        "name": "Fellowship Bible Church",
         "city": "Topeka, KS"
       },
       {
@@ -71,7 +63,7 @@ Template.Modals.onRendered( function() {
   $('#options').chosen({width: "95%"});
 
   $('#modal_for_serve1000').on('hidden.bs.modal', function () {
-    var currentServed = 516;
+    var currentServed = 513;
     Meteor.call("ShowDTSplits", function (err, result){
       if(!err) {
         // Going with a static number
