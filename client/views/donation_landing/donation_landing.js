@@ -141,6 +141,12 @@ Template.DonationLanding.onRendered(function () {
         description: "Aquaponics Director",
         imageSrc: "/images/team/Chris.jpg"
     }, {
+        text: "Dave Henry",
+        value: "DaveHenry",
+        selected: false,
+        description: "Discipleship Director",
+        imageSrc: "/images/team/Dave.jpg"
+    },  {
         text: "James Hishmeh",
         value: "JamesHishmeh",
         selected: false,

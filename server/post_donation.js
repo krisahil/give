@@ -244,6 +244,9 @@ _.extend(Utils, {
       case "Chris Mammoliti":
         return 63662;
         break;
+      case "Basecamp - Dave Henry":
+        return 69626;
+        break;
       case "BaseCamp - Timm Collins":
         return 63665;
         break;
