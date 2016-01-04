@@ -3,6 +3,7 @@ dev_settings.json
 config/
 .idea
 start-dev.sh
+start-ngrok.sh
 start-local.sh
 start-tunnel.sh
 .DS_Store
