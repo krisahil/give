@@ -312,7 +312,7 @@ _.extend(Utils,{
                 var payment_type = subscription_cursor.metadata.donateWith.slice(0,4);
 
                 if (!donation_cursor) {
-                    if (!type === 'charge.failed') {
+                    if (type !== 'charge.failed') {
                         logger.error("No donation found here, exiting.");
                         return;
                     } else {
@@ -332,8 +332,7 @@ _.extend(Utils,{
                             }
                         );
                     }
-                }
-                else if (type === 'charge.failed') {
+                } else if (type === 'charge.failed') {
                     data_slug.template_name = "fall-2014-donation-failed-recurring";
                     data_slug.message.merge_vars[0].vars.push(
                         {
@@ -354,8 +353,7 @@ _.extend(Utils,{
                             "content": donation_cursor._id
                         }
                     );
-                }
-                else if( type === 'charge.succeeded' || type === 'payment.paid'){
+                } else if( type === 'charge.succeeded' || type === 'payment.paid'){
                     data_slug.message.merge_vars[0].vars.push(
                         {
                             "name": "DonateTo",
@@ -372,7 +370,7 @@ _.extend(Utils,{
             } else {
                 donation_cursor = Donations.findOne({charge_id: id});
                 if (!donation_cursor) {
-                    if (!type === 'charge.failed') {
+                    if (type !== 'charge.failed') {
                         logger.error("No donation found here, exiting.");
                         return;
                     } else {
@@ -458,6 +456,7 @@ _.extend(Utils,{
                     return;
                 }
                 Utils.audit_email(id, type);
+                data_slug.message.subject = 'A Partner Just Gave $' + (amount/ 100).toFixed(2);
                 data_slug = Utils.add_recipient_to_email(data_slug, Meteor.settings.public.large_gift_address);
                 data_slug.template_name = "large-gift-notice-multi-collection";
                 data_slug.message.bcc_address = null;

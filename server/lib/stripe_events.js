@@ -51,7 +51,7 @@ Stripe_Events = {
   'charge.succeeded': function (stripeEvent) {
     StripeFunctions.audit_charge(stripeEvent.data.object.id, 'succeeded');
     console.log(stripeEvent);
-
+    let send_successful_email;
 
     if(stripeEvent.data.object.invoice) {
       let wait_for_metadata_update = Utils.update_charge_metadata(stripeEvent);
@@ -62,9 +62,17 @@ Stripe_Events = {
       console.log(invoice_cursor._id);
       Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
+      if(stripeEvent.data.object.amount >= 50000) {
+        send_successful_email = Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, 'large_gift',
+          stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
+      }
     } else {
-      Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+      send_successful_email = Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null);
+      if(stripeEvent.data.object.amount >= 50000) {
+        Utils.send_donation_email( false, stripeEvent.data.object.id, stripeEvent.data.object.amount, 'large_gift',
+          stripeEvent, "One Time", null );
+      }
     }
     console.log(stripeEvent.type + ': event processed');
     return;
