@@ -15,12 +15,12 @@
             <th>Status</th>
           </tr>
           {{#each transfer}}
-              <!--data-balance-transaction-id="{{balance_transaction}}"-->
             <tr class="responsiveFont {{redText}} clickable_row" data-href="/transfers/{{id}}" >
               <td class="change-td-padding">{{transfer_date}}</td>
-              <td class="change-td-padding">{{id}}</td>
-              <td class="">${{twoDecimalPlaces amount}}</td>
-              <td class="">{{capitalize status}}</td>
+                <td><input type="checkbox" id="posted" data-toggle="checkbox" {{posted}}></td>
+                <td class="change-td-padding">{{id}}</td>
+                <td>${{twoDecimalPlaces amount}}</td>
+                <td>{{capitalize status}}</td>
             </tr>
           {{/each}}
         </tbody>

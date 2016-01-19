@@ -37,6 +37,11 @@ Template.StripeTransfers.helpers({
     if(this.status && this.status === 'in_transit') {
       return 'orange-text';
     }
+  },
+  posted: function () {
+    if(this.posted) {
+      return 'checked'
+    }
   }
 });
 
