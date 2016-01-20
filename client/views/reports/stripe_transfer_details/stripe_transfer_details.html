@@ -26,8 +26,8 @@
               <th>DT Fund</th>
               <th>DT Source</th>
               <th>Frequency</th>
-              <th>Fee</th>
               <th>Donation Amount</th>
+              <th>Fee</th>
               <th>Net Amount</th>
           </tr>
           {{#each transactions}}
@@ -64,15 +64,15 @@
                   <td class="change-td-padding">{{dt_source}}</td>
                   <td class="change-td-padding">{{metadata.frequency}}</td>
                 {{/with}}
-                  <td class="">${{twoDecimalPlaces fee}}</td>
                   <td class="">${{twoDecimalPlaces amount}}</td>
-                <td class="">${{subtract amount fee}}</td>
+                  <td class="">${{twoDecimalPlaces fee}}</td>
+                  <td class="">${{subtract amount fee}}</td>
               </tr>
           {{/each}}
           <tr>
               <td class="text-right" colspan="10">Totals</td>
-              <td><strong>${{twoDecimalPlaces total_fees}}</strong></td>
               <td><strong>${{add amount total_fees}}</strong></td>
+              <td><strong>${{twoDecimalPlaces total_fees}}</strong></td>
               <td><strong>${{twoDecimalPlaces amount}}</strong></td>
           </tr>
         </tbody>

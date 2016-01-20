@@ -94,7 +94,6 @@ Template.StripeTransferDetails.helpers({
           if( err ) {
             console.error( err );
           } else {
-            console.log( result );
             Session.set( persona_id, result.recognition_name );
           }
         } )
