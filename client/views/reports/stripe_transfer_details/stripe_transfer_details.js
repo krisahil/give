@@ -112,6 +112,13 @@ Template.StripeTransferDetails.helpers({
   transfer_date: function () {
     let timestamp = this.date;
     return moment.utc(timestamp, 'X').format("MMMM Do, YYYY");
+  },
+  posted: function () {
+    if(this.metadata.posted){
+      return 'posted'
+    } else {
+      return 'not-posted'
+    }
   }
 });
 
