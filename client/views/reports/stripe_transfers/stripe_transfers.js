@@ -4,6 +4,30 @@
 Template.StripeTransfers.events({
   'click .clickable_row': function(){
     Router.go('/transfers/' + this.id);
+  },
+  'click .posted': function(e, tmpl){
+    let checkbox = $(e.currentTarget);
+    let savePosted   = $(e.currentTarget).button('loading');
+    let transfer_id   = this.id;
+    let checkbox_state   = $(e.currentTarget).is(':checked');
+    console.log(checkbox_state);
+    console.log($(e.currentTarget));
+
+
+    Meteor.call("toggle_post_transfer_metadata_state", transfer_id,
+      checkbox_state, function(err, res){
+      if (err){
+        console.dir(err);
+        savePosted.button("reset");
+        Bert.alert(err.message, "danger");
+      } else {
+        Meteor.setTimeout(function() {
+          // If no error reset the loading checkbox
+          savePosted.button("reset");
+        },1000);
+
+      }
+    });
   }
 });
 
@@ -39,8 +63,10 @@ Template.StripeTransfers.helpers({
     }
   },
   posted: function () {
-    if(this.posted) {
+    if(this.metadata.posted) {
       return 'checked'
+    } else {
+      return '';
     }
   }
 });

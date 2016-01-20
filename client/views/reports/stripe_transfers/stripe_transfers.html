@@ -9,18 +9,22 @@
       <table class="table table-striped">
         <tbody>
           <tr class="responsiveFont">
+            <th>Posted</th>
             <th>Date</th>
             <th>Id</th>
             <th>Amount</th>
             <th>Status</th>
           </tr>
           {{#each transfer}}
-            <tr class="responsiveFont {{redText}} clickable_row" data-href="/transfers/{{id}}" >
-              <td class="change-td-padding">{{transfer_date}}</td>
-                <td><input type="checkbox" id="posted" data-toggle="checkbox" {{posted}}></td>
-                <td class="change-td-padding">{{id}}</td>
-                <td>${{twoDecimalPlaces amount}}</td>
-                <td>{{capitalize status}}</td>
+            <tr class="responsiveFont {{redText}}" data-href="/transfers/{{id}}" >
+                <td>
+                    <input class="posted" type="checkbox"
+                           {{posted}}>
+                </td>
+                <td class="change-td-padding clickable_row">{{transfer_date}}</td>
+                <td class="change-td-padding clickable_row">{{id}}</td>
+                <td class="clickable_row">${{twoDecimalPlaces amount}}</td>
+                <td class="clickable_row">{{capitalize status}}</td>
             </tr>
           {{/each}}
         </tbody>

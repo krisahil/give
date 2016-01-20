@@ -550,6 +550,20 @@ Meteor.methods({
     } else {
       return;
     }
+  },
+  toggle_post_transfer_metadata_state: function (transfer_id, checkbox_state){
+    logger.info("Started toggle_post_transfer_metadata_state");
+
+    check(transfer_id, String);
+    check(checkbox_state, Boolean);
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+      return Utils.stripe_set_transfer_posted_metadata(transfer_id, checkbox_state);
+    } else {
+      return;
+    }
+
+
+
   }
 
 

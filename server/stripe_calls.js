@@ -766,36 +766,34 @@ _.extend(Utils, {
         Donations.insert(metadata);
 
         return stripeCreateSubscription;
-    }
-    /*stripe_get_many_events: function(starting_after, limit) {
-        logger.info("Inside stripe_get_many_events.");
-        logger.info("Stripe customer id to start after(if any): " + starting_after);
-        var stripe_events= new Future();
-        var stripe_params = {};
-        if(starting_after) {
-            stripe_params.starting_after = starting_after;
-        }
-        if(limit){
-            stripe_params.limit = limit;
-        }
+    },
+    stripe_set_transfer_posted_metadata: function (transfer_id, set_to){
+      logger.info("Inside stripe_set_transfer_posted_metadata.");
+      logger.info(transfer_id);
 
-        Stripe.events.list(stripe_params,
-            function (error, events) {
-                if (error) {
-                    //console.dir(error);
-                    stripe_events.return(error);
-                } else {
-                    stripe_events.return(events);
-                }
+      let stripeTransfer = new Promise(function (resolve, reject) {
+        Stripe.transfers.update(
+          transfer_id,{
+            metadata: {
+              posted: set_to
             }
-        );
+          },
+          function (err, res) {
+            if (err) reject("There was a problem", err);
+            else resolve(res);
+          });
+      });
 
-        stripe_events = stripe_events.wait();
+      // Fulfill Promise
+      return stripeTransfer.await(
+        function (res) {
+          console.log(res);
+          return res;
+        }, function(err) {
+          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+          console.log(err);
+          throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+        });
+    }
 
-        if (!stripe_events.object) {
-            throw new Meteor.Error(stripe_events.rawType, stripe_events.message);
-        }
-
-        return stripe_events;
-    }*/
 });
