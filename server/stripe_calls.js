@@ -770,6 +770,7 @@ _.extend(Utils, {
     stripe_set_transfer_posted_metadata: function (transfer_id, set_to){
       logger.info("Inside stripe_set_transfer_posted_metadata.");
       logger.info(transfer_id);
+      logger.info(set_to);
 
       let stripeTransfer = new Promise(function (resolve, reject) {
         Stripe.transfers.update(

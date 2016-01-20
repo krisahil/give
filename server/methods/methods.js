@@ -555,16 +555,13 @@ Meteor.methods({
     logger.info("Started toggle_post_transfer_metadata_state");
 
     check(transfer_id, String);
-    check(checkbox_state, Boolean);
+    check(checkbox_state, Match.OneOf("true", "false"));
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
-      return Utils.stripe_set_transfer_posted_metadata(transfer_id, checkbox_state);
+      let stripe_response = Utils.stripe_set_transfer_posted_metadata(transfer_id, checkbox_state);
+      Transfers.update({_id: transfer_id}, {$set: { 'metadata.posted': checkbox_state } });
+      return stripe_response;
     } else {
       return;
     }
-
-
-
   }
-
-
 });

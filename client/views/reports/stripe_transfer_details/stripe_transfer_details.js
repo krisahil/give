@@ -25,6 +25,68 @@ Template.StripeTransferDetails.events({
         Router.go("/transfers/" + result);
       }
     });
+  },
+  'click .posted': function(e, tmpl){
+    let checkbox_state;
+
+    console.log($(e.currentTarget).hasClass('disabled'));
+    if($(e.currentTarget).hasClass('disabled')){
+      return;
+    }
+    $(e.currentTarget).addClass('disabled');
+
+    let transfer_id = this.id;
+    let status = $(e.currentTarget).children('em').html();
+    let savePosted = $(e.currentTarget).button();
+    console.log(status);
+    console.log($(e.currentTarget));
+    if(status === 'posted') {
+      checkbox_state = 'false';
+    } else {
+      checkbox_state = 'true';
+    }
+
+
+    Meteor.call("toggle_post_transfer_metadata_state", transfer_id,
+      checkbox_state, function(err, res){
+        if (err){
+          console.dir(err);
+          $(e.currentTarget).removeClass('disabled');
+          Bert.alert(err.message, "danger");
+        } else {
+          $(e.currentTarget).removeClass('disabled');
+        }
+      });
+  },
+  'click .not-posted': function(e, tmpl){
+    let checkbox_state;
+
+    console.log($(e.currentTarget).hasClass('disabled'));
+    if($(e.currentTarget).hasClass('disabled')){
+      return;
+    }
+    $(e.currentTarget).addClass('disabled');
+    let transfer_id = this.id;
+    let status = $(e.currentTarget).children('em').html();
+    console.log(status);
+    console.log($(e.currentTarget));
+    if(status === 'posted') {
+      checkbox_state = 'false';
+    } else {
+      checkbox_state = 'true';
+    }
+
+
+    Meteor.call("toggle_post_transfer_metadata_state", transfer_id,
+      checkbox_state, function(err, res){
+        if (err){
+          console.dir(err);
+          $(e.currentTarget).removeClass('disabled');
+          Bert.alert(err.message, "danger");
+        } else {
+          $(e.currentTarget).removeClass('disabled');
+        }
+      });
   }
 });
 
@@ -113,7 +175,9 @@ Template.StripeTransferDetails.helpers({
     return moment.utc(timestamp, 'X').format("MMMM Do, YYYY");
   },
   posted: function () {
-    if(this.metadata.posted){
+    console.log(this);
+    console.log(this.metadata);
+    if(this.metadata && this.metadata.posted && this.metadata.posted === "true") {
       return 'posted'
     } else {
       return 'not-posted'

@@ -12,6 +12,11 @@ Template.StripeTransfers.events({
     let checkbox_state   = $(e.currentTarget).is(':checked');
     console.log(checkbox_state);
     console.log($(e.currentTarget));
+    if(checkbox_state === false){
+      checkbox_state = 'false';
+    } else {
+      checkbox_state = 'true';
+    }
 
 
     Meteor.call("toggle_post_transfer_metadata_state", transfer_id,
@@ -21,11 +26,7 @@ Template.StripeTransfers.events({
         savePosted.button("reset");
         Bert.alert(err.message, "danger");
       } else {
-        Meteor.setTimeout(function() {
-          // If no error reset the loading checkbox
-          savePosted.button("reset");
-        },1000);
-
+        savePosted.button("reset");
       }
     });
   }
@@ -63,7 +64,7 @@ Template.StripeTransfers.helpers({
     }
   },
   posted: function () {
-    if(this.metadata.posted) {
+    if(this.metadata && this.metadata.posted && this.metadata.posted === "true") {
       return 'checked'
     } else {
       return '';
