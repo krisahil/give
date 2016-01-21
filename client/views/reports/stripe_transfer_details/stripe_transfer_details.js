@@ -152,13 +152,16 @@ Template.StripeTransferDetails.helpers({
     let self = this;
     if(!Session.get(this.metadata.dt_persona_id)) {
       var persona_id = DT_donations.findOne({'transaction_id': self._id}).persona_id;
-        Meteor.call( "get_dt_name", persona_id, function ( err, result ) {
-          if( err ) {
-            console.error( err );
-          } else {
-            Session.set( persona_id, result.recognition_name );
-          }
-        } )
+      Meteor.call( "get_dt_name", persona_id, function ( err, result ) {
+        if( err ) {
+          console.error( err );
+          // TODO: need to query DT for the latest version of this dt_donation record
+          // it may be that the person was merged and their persona_id in this dt_donation
+          // doesn't match any longer
+        } else {
+          Session.set( persona_id, result.recognition_name );
+        }
+      } );
     }
   },
   dt_names: function () {

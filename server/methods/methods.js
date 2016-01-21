@@ -498,24 +498,34 @@ Meteor.methods({
     return total_kids;
   },
   get_dt_name: function (id) {
+
     logger.info("Started get_dt_name method");
 
     check(id, Number);
     console.log(id);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
-      // Get the persona from DT
-      let persona_result = HTTP.get(Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
-        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-      });
-      if( persona_result && persona_result.data && persona_result.data.persona ) {
-        return persona_result.data.persona;
-      } else {
-        return null;
+      this.unblock();
+      try {
+        // Get the persona from DT
+        let persona_result = HTTP.call("GET", Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
+          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+        });
+        if( persona_result && persona_result.data && persona_result.data.persona ) {
+          return persona_result.data.persona;
+        } else {
+          return null;
+        }
+
+        /*var result = HTTP.call( "GET", "http://api.twitter.com/xyz",
+          { params: { user: userId } } );
+        return true;*/
+      } catch( e ) {
+        // Got a network error, time-out or HTTP error in the 400 or 500 range.
+        return false;
       }
     } else {
       return;
     }
-
   },
   get_next_or_previous_transfer: function (current_transfer_id, previous_or_next) {
     logger.info("Started get_next_or_previous_transfer method");
