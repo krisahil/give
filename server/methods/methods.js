@@ -501,6 +501,7 @@ Meteor.methods({
     logger.info("Started get_dt_name method");
 
     check(id, Number);
+    console.log(id);
     if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
       // Get the persona from DT
       let persona_result = HTTP.get(Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
