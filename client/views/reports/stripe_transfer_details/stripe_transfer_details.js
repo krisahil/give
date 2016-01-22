@@ -19,12 +19,15 @@ Template.StripeTransferDetails.events({
   },
   'click .next': function () {
     console.log("clicked next with: " + this.id);
+    let loadButton = $("#next-button").button("loading");
     Meteor.call("get_next_or_previous_transfer", this.id, 'ending_before', function (err, result) {
       if(err) {
         console.error(err);
         Bert.alert("Nothing newer", "danger");
+        loadButton.button("reset");
       } else {
         console.log(result);
+        loadButton.button("reset");
         Router.go("/transfers/" + result);
       }
     });
