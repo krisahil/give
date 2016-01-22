@@ -4,12 +4,15 @@
 Template.StripeTransferDetails.events({
   'click .previous': function () {
     console.log("clicked previous with: " + this.id);
+    let loadButton = $("#previous-button").button("loading");
     Meteor.call("get_next_or_previous_transfer", this.id, 'starting_after', function (err, result) {
       if(err) {
         console.error(err);
         Bert.alert("Nothing older", "danger");
+        loadButton.button("reset");
       } else {
         console.log(result);
+        loadButton.button("reset");
         Router.go("/transfers/" + result);
       }
     });
