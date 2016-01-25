@@ -208,5 +208,12 @@ Template.StripeTransferDetails.helpers({
     } else {
       return 'not-posted'
     }
+  },
+  refunded: function () {
+    if(this.refunded) {
+      return 'refunded'
+    } else {
+      return;
+    }
   }
 });
