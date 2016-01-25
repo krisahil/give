@@ -108,7 +108,11 @@ Template.StripeTransferDetails.helpers({
   },
   customers: function () {
     let charge = Charges.findOne({_id: this.source});
-    return Customers.findOne({_id: charge.customer});
+    if(charge && charge.customer){
+      return Customers.findOne({_id: charge.customer});
+    } else {
+      return;
+    }
   },
   charges: function () {
     return Charges.findOne({_id: this.source});
