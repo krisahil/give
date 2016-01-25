@@ -526,14 +526,19 @@ _.extend(Utils, {
         }
 
     },
-    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
+    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, saved){
         logger.info("Inside update_stripe_customer_subscription.");
-
+      let saved_payment;
+      if(saved){
+        saved_payment = true;
+      } else {
+        saved_payment = false;
+      }
         var stripeSubscriptionUpdate = new Future();
 
         Stripe.customers.updateSubscription(customer_id, subscription_id, {
                 source: token_id,
-                metadata: {saved: false}
+                metadata: {saved: saved_payment}
             }, function (error, subscription) {
                 if (error) {
                     //console.dir(error);
@@ -555,7 +560,6 @@ _.extend(Utils, {
         return stripeSubscriptionUpdate;
     },
     update_stripe_customer_card: function(data){
-        //TODO: refactor this copied function to actually update the customer's card
         logger.info("Inside update_stripe_customer_card.");
         var stripeCardUpdate = new Future();
 
@@ -581,6 +585,29 @@ _.extend(Utils, {
         console.dir(stripeCardUpdate);
 
         return stripeCardUpdate;
+    },
+    update_stripe_customer_bank: function(customer_id, bank, saved){
+      logger.info("Inside update_stripe_customer_bank.");
+      console.log(customer_id, bank);
+
+      let stripeBankUpdate = new Promise(function (resolve, reject) {
+        Stripe.customers.createSource(customer_id, {source: bank, metadata: {saved: saved}},
+          function (err, res) {
+            if (err) reject("There was a problem", err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeBankUpdate.await(
+        function (res) {
+          console.log(res);
+          return res;
+        }, function(err) {
+          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+          console.log(err);
+          throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+        });
     },
     check_charge_status: function(charge_id){
         logger.info("Inside check_charge_status");

@@ -47,33 +47,33 @@ Template.FixCardSubscription.events({
                 cvc: $('[name="cvc"]').val()
             };
 
-            Stripe.card.createToken(card,  function(status, response){
-                if (response.error) {
-                    //error logic here
-                    App.handleErrors(response.error);
-                } else {
-                    // Call your backend
-                    console.dir(response);
-                    var subscription_id = Subscriptions.findOne()._id;
-                    var subscription_status = Subscriptions.findOne().status;
-                    var customer_id = Customers.findOne()._id;
+            Stripe.card.createToken(card, function(status, response){
+              if (response.error) {
+                //error logic here
+                App.handleErrors(response.error);
+              } else {
+                // Call your backend
+                console.dir(response);
+                var subscription_id = Subscriptions.findOne()._id;
+                var subscription_status = Subscriptions.findOne().status;
+                var customer_id = Customers.findOne()._id;
 
-                    // Call our stripeSwipeCard method to replace our customer's existing
-                    // card with the new card they've specified.
-                    Meteor.call("stripeUpdateSubscription", customer_id, subscription_id, response.id, subscription_status, function(error, response){
-                        if (error){
-                            console.dir(error);
-                            resubscribeButton.button("reset");
-                            Bert.alert(error.message, "danger");
-                        } else {
-                            // If we're resubscribed, go ahead and confirm by returning to the
-                            // billing overview page and showing an alert message.
-                            resubscribeButton.button("reset");
-                            Bert.alert("Successfully fixed your gift. Thank you!", "success");
-                            Router.go('subscriptions');
-                        }
-                    });
-                }
+                // Call our stripeSwipeCard method to replace our customer's existing
+                // card with the new card they've specified.
+                Meteor.call("stripeUpdateSubscription", customer_id, subscription_id, response.id, subscription_status, function(error, response){
+                  if (error){
+                    console.dir(error);
+                    resubscribeButton.button("reset");
+                    Bert.alert(error.message, "danger");
+                  } else {
+                    // If we're resubscribed, go ahead and confirm by returning to the
+                    // billing overview page and showing an alert message.
+                    resubscribeButton.button("reset");
+                    Bert.alert("Successfully fixed your gift. Thank you!", "success");
+                    Router.go('subscriptions');
+                  }
+                });
+              }
             });
 
         } else {

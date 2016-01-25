@@ -59,9 +59,16 @@
                         <li class="list-group-item bm-block clearfix">
                             <a href="" class="btn btn-block btn-default cancelButton cancel_subscription">Cancel</a>
                         </li>
-                        {{#if card_subscription}}<li class="list-group-item bm-block clearfix">
-                            <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-default">Update Payment</a>
-                        </li>{{/if}}
+                        {{#if card_subscription}}
+                            <li class="list-group-item bm-block clearfix">
+                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-default">Update Payment</a>
+                            </li>
+                        {{else}}
+                            {{> AddNewBankAccount}}
+                            <li class="list-group-item bm-block clearfix">
+                                <a id="btn_modal_for_add_new_bank_account" class="btn btn-block btn-default">Update Payment</a>
+                            </li>
+                        {{/if}}
                     {{/if}}
                     {{#if equals status "past_due"}}
                         <li class="list-group-item bm-block clearfix">

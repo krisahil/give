@@ -78,6 +78,51 @@ Meteor.methods({
                 }
             }
     },
+    stripeUpdateBank: function (bank, subscription_id, save_payment) {
+      logger.info("Started method stripeUpdateBank.");
+
+      // Check our arguments against their expected patterns. This is especially
+      // important here because we're dealing with sensitive customer information.
+      check(bank, String);
+      check(subscription_id, String);
+      check(save_payment, Boolean);
+
+      let subscription = Subscriptions.findOne({_id: subscription_id});
+      let subscription_amount =     subscription.quantity;
+      let subscription_status =     subscription.status;
+      let subscription_metadata =   subscription.metadata;
+      let subscription_plan =       subscription.plan.name;
+      let customer_id =             subscription.customer;
+
+      if (subscription_status === 'canceled') {
+          var updated_bank = Utils.update_stripe_customer_bank(customer_id, bank, save_payment);
+          if (!updated_bank.object) {
+              return {error: updated_bank.rawType, message: updated_bank.message};
+          } else {
+            var created_subscription = Utils.stripe_create_subscription(customer_id, bank, subscription_plan, subscription_amount, subscription_metadata);
+            if (!created_subscription.object) {
+              return {error: created_subscription.rawType, message: created_subscription.message};
+            }
+            else {
+              Subscriptions.update({_id: subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
+              return 'new';
+            }
+          }
+      } else {
+        // update_stripe_customer_subscription
+          //var updated_bank = Utils.update_stripe_customer_bank(customer_id, bank, save_payment);
+          var updated_bank = Utils.update_stripe_customer_subscription(customer_id, subscription_id, bank, save_payment);
+          // Store the updated information with both the device and the customer records that use that device.
+          Devices.update({_id: updated_bank.id}, updated_bank);
+          var result_of_update = Customers.update({_id: updated_bank.customer, 'sources.data.id': updated_bank.id}, {$set: {'sources.data.$': updated_bank}});
+
+          if (!updated_bank.object) {
+              return {error: updated_bank.rawType, message: updated_bank.message};
+          } else {
+              return 'success';
+          }
+      }
+    },
     stripeRestartBankSubscription: function (restart_data) {
         logger.info("Started method stripeUpdateCard.");
 

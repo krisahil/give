@@ -138,7 +138,11 @@ Template.SubscriptionsOverview.events({
         evt.preventDefault();
         evt.stopPropagation();
         Session.set('subscription_cursor', Number(Session.get('subscription_cursor')+4));
-    }
+    },
+  'click #btn_modal_for_add_new_bank_account': function () {
+    $("#modal_for_add_new_bank_account").modal('show');
+    Session.set('updateSubscription', this.id);
+  }
 });
 
 Template.SubscriptionsOverview.onRendered(function() {
