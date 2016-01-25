@@ -118,7 +118,7 @@ Template.StripeTransferDetails.helpers({
       return this.metadata.business_name;
     } else if(this.metadata && this.metadata.fname && this.metadata.lname){
       return this.metadata.fname + " " + this.metadata.lname;
-    } else {
+    } else if(this.customer){
       let customer = Customers.findOne({_id: this.customer});
       return customer.metadata.fname + " " + customer.metadata.lname;
     }
