@@ -151,7 +151,7 @@ Template.StripeTransferDetails.helpers({
     return total;
   },
   dt_source: function () {
-    if(this.metadata.dt_source) {
+    if(this.metadata && this.metadata.dt_source) {
       return DT_sources.findOne( { _id: this.metadata.dt_source } ).name;
     } else {
       return;
@@ -159,7 +159,8 @@ Template.StripeTransferDetails.helpers({
   },
   retrieve_dt_names: function () {
     let self = this;
-    if(!Session.get(this.metadata.dt_persona_id)) {
+    let dt_persona_id = this.metadata && this.metadata.dt_persona_id;
+    if(dt_persona_id && !Session.get(dt_persona_id)) {
       let dt_donation = DT_donations.findOne({'transaction_id': self._id});
       if(dt_donation && dt_donation.persona_id){
         Meteor.call( "get_dt_name", dt_donation.persona_id, function ( err, result ) {
