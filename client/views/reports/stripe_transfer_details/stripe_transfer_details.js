@@ -114,10 +114,13 @@ Template.StripeTransferDetails.helpers({
     return Charges.findOne({_id: this.source});
   },
   name: function () {
-    if(this.metadata.business_name){
+    if(this.metadata && this.metadata.business_name){
       return this.metadata.business_name;
-    } else {
+    } else if(this.metadata && this.metadata.fname && this.metadata.lname){
       return this.metadata.fname + " " + this.metadata.lname;
+    } else {
+      let customer = Customers.findOne({_id: this.customer});
+      return customer.metadata.fname + " " + customer.metadata.lname;
     }
   },
   ach_or_card: function () {
@@ -157,51 +160,47 @@ Template.StripeTransferDetails.helpers({
   retrieve_dt_names: function () {
     let self = this;
     if(!Session.get(this.metadata.dt_persona_id)) {
-      var persona_id = DT_donations.findOne({'transaction_id': self._id}).persona_id;
-      Meteor.call( "get_dt_name", persona_id, function ( err, result ) {
-        if( err ) {
-          console.error( err );
-          // TODO: need to query DT for the latest version of this dt_donation record
-          // it may be that the person was merged and their persona_id in this dt_donation
-          // doesn't match any longer
-        } else {
-          Session.set( persona_id, result.recognition_name );
-        }
-      } );
+      let dt_donation = DT_donations.findOne({'transaction_id': self._id});
+      if(dt_donation && dt_donation.persona_id){
+        Meteor.call( "get_dt_name", dt_donation.persona_id, function ( err, result ) {
+          if( err ) {
+            console.error( err );
+            // TODO: need to query DT for the latest version of this dt_donation record
+            // it may be that the person was merged and their persona_id in this dt_donation
+            // doesn't match any longer
+          } else {
+            Session.set( persona_id, result.recognition_name );
+          }
+        } );
+      } else {
+        return 'None';
+      }
     }
   },
   dt_names: function () {
-    let persona_id = DT_donations.findOne({'transaction_id': this._id}).persona_id;
-    let persona_name = Session.get( persona_id );
-    if(persona_name){
-      return persona_name;
+
+    let dt_donation = DT_donations.findOne({'transaction_id': this._id});
+    if(dt_donation && dt_donation.persona_id){
+      let persona_name = Session.get( dt_donation.persona_id );
+      if(persona_name){
+        return persona_name;
+      } else {
+        return;
+      }
     } else {
       return;
     }
+
   },
   transfer_date: function () {
     let timestamp = this.date;
     return moment.utc(timestamp, 'X').format("MMMM Do, YYYY");
   },
   posted: function () {
-    console.log(this);
-    console.log(this.metadata);
     if(this.metadata && this.metadata.posted && this.metadata.posted === "true") {
       return 'posted'
     } else {
       return 'not-posted'
     }
   }
-});
-
-/*****************************************************************************/
-/* StripeReports: Lifecycle Hooks */
-/*****************************************************************************/
-Template.StripeTransferDetails.onCreated(function () {
-});
-
-Template.StripeTransferDetails.onRendered(function () {
-});
-
-Template.StripeTransferDetails.onDestroyed(function () {
 });

@@ -24,7 +24,8 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                   customer: 1,
                   created: 1,
                   payment_source: 1,
-                  source: 1
+                  source: 1,
+                  refunded: 1
                 }
               } );
           },
