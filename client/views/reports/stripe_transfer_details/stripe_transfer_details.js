@@ -121,8 +121,10 @@ Template.StripeTransferDetails.helpers({
     if(this.metadata && this.metadata.business_name){
       return this.metadata.business_name;
     } else if(this.metadata && this.metadata.fname && this.metadata.lname){
+      console.log("Fname in metadata");
       return this.metadata.fname + " " + this.metadata.lname;
     } else if(this.customer){
+      console.log('customer exists');
       let customer = Customers.findOne({_id: this.customer});
       return customer.metadata.fname + " " + customer.metadata.lname;
     }
@@ -163,10 +165,9 @@ Template.StripeTransferDetails.helpers({
   },
   retrieve_dt_names: function () {
     let self = this;
-    let dt_persona_id = this.metadata && this.metadata.dt_persona_id;
-    if(dt_persona_id && !Session.get(dt_persona_id)) {
-      let dt_donation = DT_donations.findOne({'transaction_id': self._id});
-      if(dt_donation && dt_donation.persona_id){
+    let dt_donation = DT_donations.findOne({'transaction_id': self._id});
+    if(dt_donation && dt_donation.persona_id){
+      if(!Session.get(dt_donation.persona_id)) {
         Meteor.call( "get_dt_name", dt_donation.persona_id, function ( err, result ) {
           if( err ) {
             console.error( err );
@@ -174,11 +175,11 @@ Template.StripeTransferDetails.helpers({
             // it may be that the person was merged and their persona_id in this dt_donation
             // doesn't match any longer
           } else {
-            Session.set( persona_id, result.recognition_name );
+            Session.set( dt_donation.persona_id, result.recognition_name );
           }
         } );
       } else {
-        return 'None';
+          return;
       }
     }
   },
