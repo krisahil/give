@@ -94,7 +94,7 @@ _.extend(Utils, {
     get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
     if(event_object.data.object.status === 'failed'){
       // 3921 is the failed type in Donor Tools
-      get_dt_donation.data.donation.donation_type_id = 3921;
+      get_dt_donation.data[0].donation.donation_type_id = 3921;
     }
 
     update_donation = HTTP.call("PUT", Meteor.settings.donor_tools_site + '/donations/'+ dt_donation_id + '.json',
@@ -450,6 +450,22 @@ _.extend(Utils, {
     }
 
     console.log("Persona ID is: ", customerCursor.metadata.dt_persona_id);
+
+    try {
+        logger.info("Started checking for this person in DT");
+        let checkPerson;
+        checkPerson = HTTP.get(Meteor.settings.donor_tools_site + '/people/' +
+          customerCursor.metadata.dt_persona_id + '.json', {
+          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+        });
+        console.log(checkPerson.data);
+    } catch (e) {
+      logger.info("No Person with the DT ID of " +
+        customerCursor.metadata.dt_persona_id + " found in DT");
+      Utils.send_failed_to_add_to_dt_email_to_support(customerCursor.metadata.dt_persona_id, charge_id);
+
+      throw new Meteor.Error(e);
+    }
 
     newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
       data: {

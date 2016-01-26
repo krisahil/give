@@ -3,8 +3,6 @@ Meteor.publishComposite('transactions', function (transfer_id) {
   if (Roles.userIsInRole(this.userId, 'admin') || Roles.userIsInRole(this.userId, 'reports')) {
     return {
       find:     function () {
-        // Find posts made by user. Note arguments for callback function
-        // being used in query.
         return Transactions.find( {
           $and: [{ transfer_id: transfer_id }, { type: { $ne: 'transfer' } }]
         } );
@@ -12,41 +10,82 @@ Meteor.publishComposite('transactions', function (transfer_id) {
       children: [
         {
           find:     function ( transactions ) {
-            // Find post author. Even though we only want to return
-            // one record here, we use "find" instead of "findOne"
-            // since this function should return a cursor.
-            return Charges.find(
-              { _id: transactions.source },
-              {
-                limit:  1,
-                fields: {
-                  metadata: 1,
-                  customer: 1,
-                  created: 1,
-                  payment_source: 1,
-                  source: 1,
-                  refunded: 1
-                }
-              } );
+            if(transactions.source.slice(0,3) === 'pyr'){
+              return Refunds.find(
+                { _id: transactions.source },
+                {
+                  limit:  1,
+                  fields: {
+                    object: 1,
+                    created: 1,
+                    charge: 1,
+                    'charge.id': 1,
+                    'charge.metadata': 1,
+                    'charge.customer': 1,
+                    'charge.created': 1,
+                    'charge.payment_source': 1,
+                    'charge.source': 1,
+                    'charge.refunded': 1,
+                    'charge.refunds': 1,
+                    description: 1
+                  }
+                } );
+            } else {
+              return Charges.find(
+                { _id: transactions.source },
+                {
+                  limit:  1,
+                  fields: {
+                    object: 1,
+                    metadata: 1,
+                    customer: 1,
+                    created: 1,
+                    payment_source: 1,
+                    source: 1,
+                    refunded: 1,
+                    refunds: 1,
+                    status: 1
+                  }
+                } );
+            }
           },
           children: [
             {
               find: function ( charges ) {
-                // Find user that authored comment.
-                return Customers.find(
-                  { _id: charges.customer },
-                  {
-                    limit:  1,
-                    fields: {
-                      email:    1,
-                      metadata: 1
-                    }
-                  } );
+                if(charges.object === 'refund'){
+                  let customer = Customers.find(
+                    { _id: charges.charge.customer },
+                    {
+                      limit:  1,
+                      fields: {
+                        email:    1,
+                        metadata: 1
+                      }
+                    } ).fetch();
+                  return Customers.find(
+                    { _id: charges.charge.customer },
+                    {
+                      limit:  1,
+                      fields: {
+                        email:    1,
+                        metadata: 1
+                      }
+                    } );
+                } else {
+                  return Customers.find(
+                    { _id: charges.customer },
+                    {
+                      limit:  1,
+                      fields: {
+                        email:    1,
+                        metadata: 1
+                      }
+                    } );
+                }
               }
             },
             {
               find: function ( charges ) {
-                // Find user that authored comment.
                 return DT_donations.find(
                   { transaction_id: charges._id },
                   {

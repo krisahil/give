@@ -8,7 +8,7 @@ _.extend(Utils,{
         return push_vars;
     },
     add_recipient_to_email: function (data_slug, email) {
-        logger.info("Started add_receipient_to_email");
+        logger.info("Started add_recipient_to_email");
 
         data_slug.message.to[0].email           = email;
         data_slug.message.merge_vars[0].rcpt    = email;
@@ -16,6 +16,41 @@ _.extend(Utils,{
         return data_slug;
 
     },
+  send_failed_to_add_to_dt_email_to_support: function(persona_id, charge_id){
+    logger.info("Started send_failed_to_add_to_dt_email_to_support");
+    let data_slug = {
+      "template_name": "failed-dt-add-notice",
+      "template_content": [
+        {}
+      ],
+      "message": {
+        "to": [
+          {"email": Meteor.settings.public.support_address}
+        ],
+        "bcc_address": "",
+        "merge_vars": [
+          {
+            "rcpt": Meteor.settings.public.support_address,
+            "vars": [
+              {
+                "name": "DEV",
+                "content": Meteor.settings.dev
+              }, {
+                "name": "PERSONA_ID",
+                "content": persona_id
+              }, {
+                "name": "CHARGE_ID",
+                "content": charge_id
+              }
+            ]
+          }
+        ]
+      }
+    };
+
+    Utils.send_mandrill_email(data_slug, 'failed-dt-add-notice');
+
+  },
     send_cancelled_email_to_admin: function (subscription_id, stripeEvent) {
         var audit_trail_cursor = Audit_trail.findOne({subscription_id: subscription_id});
 
@@ -47,7 +82,7 @@ _.extend(Utils,{
 
         var testorlive = Meteor.settings.dev ? '/test' : '';
 
-        var data_slug = {
+        let data_slug = {
             "template_name": "canceled-recurring-notice",
             "template_content": [
                 {}
@@ -471,7 +506,7 @@ _.extend(Utils,{
     },
 	send_mandrill_email: function(data_slug, type){
         try{
-            logger.info("Started send_mandrill_email type: " + type);
+          logger.info("Started send_mandrill_email type: " + type);
             Mandrill.messages.sendTemplate(data_slug);
         }//End try
         catch (e) {

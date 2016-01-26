@@ -48,7 +48,7 @@ _.extend(StripeFunctions, {
       }
     } else {
       // Return since this event either had an error, or it didn't come from Stripe
-      console.log("Exiting control flow, since the event errored, or didn't come from Stripe");
+      console.log("Exiting control flow, since the event had an error, or didn't come from Stripe");
       return;
     }
 
@@ -231,6 +231,9 @@ _.extend(StripeFunctions, {
         break;
       case 'plan':
         console.log("Didn't do anything with this plan event.");
+        break;
+      case "refunds":
+        Refunds.upsert({_id: event_body.data.object.id}, event_body.data.object);
         break;
       case "subscription":
         Subscriptions.upsert({_id: event_body.data.object._id}, event_body.data.object);

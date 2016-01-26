@@ -11,7 +11,6 @@ Template.StripeTransferDetails.events({
         Bert.alert("Nothing older", "danger");
         loadButton.button("reset");
       } else {
-        console.log(result);
         loadButton.button("reset");
         Router.go("/transfers/" + result);
       }
@@ -26,7 +25,6 @@ Template.StripeTransferDetails.events({
         Bert.alert("Nothing newer", "danger");
         loadButton.button("reset");
       } else {
-        console.log(result);
         loadButton.button("reset");
         Router.go("/transfers/" + result);
       }
@@ -107,24 +105,38 @@ Template.StripeTransferDetails.helpers({
     return Transactions.find();
   },
   customers: function () {
-    let charge = Charges.findOne({_id: this.source});
-    if(charge && charge.customer){
-      return Customers.findOne({_id: charge.customer});
+    let charge;
+
+    if(this.source.slice(0,3) === 'pyr'){
+      charge = Refunds.findOne({_id: this.source});
+      if(charge && charge.charge && charge.charge.customer){
+        return Customers.findOne({_id: charge.charge.customer});
+      } else {
+        return;
+      }
     } else {
-      return;
+      charge = Charges.findOne({_id: this.source});
+      if(charge && charge.customer){
+        return Customers.findOne({_id: charge.customer});
+      } else {
+        return;
+      }
     }
+
+
   },
   charges: function () {
     return Charges.findOne({_id: this.source});
+  },
+  refunds: function () {
+    return Refunds.findOne({_id: this.source});
   },
   name: function () {
     if(this.metadata && this.metadata.business_name){
       return this.metadata.business_name;
     } else if(this.metadata && this.metadata.fname && this.metadata.lname){
-      console.log("Fname in metadata");
       return this.metadata.fname + " " + this.metadata.lname;
     } else if(this.customer){
-      console.log('customer exists');
       let customer = Customers.findOne({_id: this.customer});
       return customer.metadata.fname + " " + customer.metadata.lname;
     }
@@ -139,10 +151,21 @@ Template.StripeTransferDetails.helpers({
     }
   },
   fees_covered: function () {
-    if(this.metadata.coveredTheFees === 'false' || !this.metadata.coveredTheFees) {
-      return '';
+    if(this.object === 'charge'){
+      if(this.metadata & this.metadata.coveredTheFees && this.metadata.coveredTheFees){
+        return 'checked';
+      } else if(this.metadata && !this.metadata.coveredTheFees) {
+        return '';
+      } else {
+        return 'checked';
+      }
     } else {
-      return 'checked';
+      if(this.charge.metadata & this.charge.metadata.coveredTheFees &&
+        this.charge.metadata.coveredTheFees){
+        return 'checked';
+      } else if(this.charge.metadata && !this.charge.metadata.coveredTheFees) {
+        return '';
+      }
     }
   },
   total_fees: function () {
@@ -159,42 +182,80 @@ Template.StripeTransferDetails.helpers({
   dt_source: function () {
     if(this.metadata && this.metadata.dt_source) {
       return DT_sources.findOne( { _id: this.metadata.dt_source } ).name;
+    } else if(this.charge && this.charge.metadata && this.charge.metadata.dt_source) {
+      return DT_sources.findOne( { _id: this.charge.metadata.dt_source } ).name;
     } else {
       return;
     }
   },
   retrieve_dt_names: function () {
     let self = this;
-    let dt_donation = DT_donations.findOne({'transaction_id': self._id});
-    if(dt_donation && dt_donation.persona_id){
-      if(!Session.get(dt_donation.persona_id)) {
-        Meteor.call( "get_dt_name", dt_donation.persona_id, function ( err, result ) {
-          if( err ) {
-            console.error( err );
-            // TODO: need to query DT for the latest version of this dt_donation record
-            // it may be that the person was merged and their persona_id in this dt_donation
-            // doesn't match any longer
-          } else {
-            Session.set( dt_donation.persona_id, result.recognition_name );
-          }
-        } );
-      } else {
+    if(self.object === 'charge'){
+      let dt_donation = DT_donations.findOne({'transaction_id': self._id});
+      if(dt_donation && dt_donation.persona_id){
+        if(!Session.get(dt_donation.persona_id)) {
+          Meteor.call( "get_dt_name", dt_donation.persona_id, function ( err, result ) {
+            if( err ) {
+              console.error( err );
+              // TODO: need to query DT for the latest version of this dt_donation record
+              // it may be that the person was merged and their persona_id in this dt_donation
+              // doesn't match any longer
+            } else {
+              Session.set( dt_donation.persona_id, result.recognition_name );
+            }
+          } );
+        } else {
           return;
+        }
+      }
+    } else {
+      let dt_donation = DT_donations.findOne({'transaction_id': self.charge.id});
+
+      if(dt_donation && dt_donation.persona_id){
+        if(!Session.get(dt_donation.persona_id)) {
+          Meteor.call( "get_dt_name", dt_donation.persona_id, function ( err, result ) {
+            if( err ) {
+              console.error( err );
+              // TODO: need to query DT for the latest version of this dt_donation record
+              // it may be that the person was merged and their persona_id in this dt_donation
+              // doesn't match any longer
+            } else {
+              Session.set( dt_donation.persona_id, result.recognition_name );
+            }
+          } );
+        } else {
+          return;
+        }
       }
     }
+
   },
   dt_names: function () {
 
-    let dt_donation = DT_donations.findOne({'transaction_id': this._id});
-    if(dt_donation && dt_donation.persona_id){
-      let persona_name = Session.get( dt_donation.persona_id );
-      if(persona_name){
-        return persona_name;
+    if(this.object === 'charge') {
+      let dt_donation = DT_donations.findOne( { 'transaction_id': this._id } );
+      if( dt_donation && dt_donation.persona_id ) {
+        let persona_name = Session.get( dt_donation.persona_id );
+        if( persona_name ) {
+          return persona_name;
+        } else {
+          return;
+        }
       } else {
         return;
       }
     } else {
-      return;
+      let dt_donation = DT_donations.findOne( { 'transaction_id': this.charge.id } );
+      if( dt_donation && dt_donation.persona_id ) {
+        let persona_name = Session.get( dt_donation.persona_id );
+        if( persona_name ) {
+          return persona_name;
+        } else {
+          return;
+        }
+      } else {
+        return;
+      }
     }
 
   },
@@ -212,6 +273,15 @@ Template.StripeTransferDetails.helpers({
   refunded: function () {
     if(this.refunded) {
       return 'refunded'
+    } else if (this.description === "REFUND FOR FAILED PAYMENT"){
+      return 'failed';
+    } else {
+      return;
+    }
+  },
+  failed: function () {
+    if(this.status === 'failed') {
+      return 'failed'
     } else {
       return;
     }

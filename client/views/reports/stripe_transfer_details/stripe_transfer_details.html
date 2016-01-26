@@ -31,42 +31,79 @@
               <th>Net Amount</th>
           </tr>
           {{#each transactions}}
-                  <tr class="responsiveFont {{#with charges}}{{refunded}}{{/with}}" data-href="" >
+                  <tr class="responsiveFont {{#if charges}}{{#with charges}}{{refunded}}{{failed}}{{/with}}{{else}}{{#if refunds}}{{refunded}}{{/if}}{{/if}}" data-href="" >
+                  {{#if charges}}
                       {{#with charges}}
+                        <td style="width: 50px;">
+                          <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}" target="_blank">
+                            <div class="elipsis">
+                              <i class="fa fa-link"></i>
+                            </div>
+                          </a>
+                        </td>
+                        <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
+                    {{/with}}
+                  {{else}}
+                      {{#with refunds}}
                           <td style="width: 50px;">
-                      <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}" target="_blank">
-                        <div class="elipsis">
-                          <i class="fa fa-link"></i>
-                        </div>
-                      </a>
-                    </td>
-                    <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
-                  {{/with}}
+                              <a href="https://trashmountain.donortools.com/donations?transaction_id={{charge.id}}" target="_blank">
+                                  <div class="elipsis">
+                                      <i class="fa fa-link"></i>
+                                  </div>
+                              </a>
+                          </td>
+                          <td class="change-td-padding" data-names="{{retrieve_dt_names}}">{{dt_names}}</td>
+                      {{/with}}
+                  {{/if}}
+
                   {{#with customers}}
                     <td class="change-td-padding">{{email}}</td>
                   {{/with}}
-                {{#with charges}}
-                  <td class="change-td-padding">{{epochToString created}}</td>
-                  <td class="change-td-padding ellipsis">
-                    <a href="https://dashboard.stripe.com/payments/{{_id}}" target="_blank">
-                        <div class="elipsis">
-                              <span title="{{_id}}">{{_id}}</span>
-                        </div>
-                    </a>
-                  </td>
-                  <td class="change-td-padding">{{ach_or_card}}</td>
-                    <td class="">
-                        <input type="checkbox" name="coverTheFees"
-                            id="feesCovered" data-toggle="checkbox"
-                            class="cover-fees" {{fees_covered}} disabled>
-                    </td>
-                  <td class="change-td-padding">{{metadata.donateTo}}</td>
-                  <td class="change-td-padding">{{dt_source}}</td>
-                  <td class="change-td-padding">{{metadata.frequency}}</td>
-                {{/with}}
+                  {{#if charges}}
+                      {{#with charges}}
+                          <td class="change-td-padding">{{epochToString created}}</td>
+                          <td class="change-td-padding ellipsis">
+                            <a href="https://dashboard.stripe.com/payments/{{_id}}" target="_blank">
+                                <div class="elipsis">
+                                      <span title="{{_id}}">{{_id}}</span>
+                                </div>
+                            </a>
+                          </td>
+                          <td class="change-td-padding">{{ach_or_card}}</td>
+                            <td class="">
+                                <input type="checkbox" name="coverTheFees"
+                                    id="feesCovered" data-toggle="checkbox"
+                                    class="cover-fees" {{fees_covered}} disabled>
+                            </td>
+                          <td class="change-td-padding">{{metadata.donateTo}}</td>
+                          <td class="change-td-padding">{{dt_source}}</td>
+                          <td class="change-td-padding">{{metadata.frequency}}</td>
+                      {{/with}}
+                  {{else}}
+                      {{#with refunds}}
+                          <td class="change-td-padding">{{epochToString created}}</td>
+                          <td class="change-td-padding ellipsis">
+                              <a href="https://dashboard.stripe.com/payments/{{id}}" target="_blank">
+                                  <div class="elipsis">
+                                      <span title="{{id}}">{{id}}</span>
+                                  </div>
+                              </a>
+                          </td>
+                          <td class="change-td-padding">{{ach_or_card}}</td>
+                          <td class="">
+                              <input type="checkbox" name="coverTheFees"
+                                     id="feesCovered" data-toggle="checkbox"
+                                     class="cover-fees" {{fees_covered}} disabled>
+                          </td>
+                          <td class="change-td-padding">{{charge.metadata.donateTo}}</td>
+                          <td class="change-td-padding">{{dt_source}}</td>
+                          <td class="change-td-padding">{{charge.metadata.frequency}}</td>
+                      {{/with}}
+                  {{/if}}
+
                   <td class="">${{twoDecimalPlaces amount}}</td>
                   <td class="">${{twoDecimalPlaces fee}}</td>
-                  <td class="">${{subtract amount fee}}</td>
+                  <td class="">${{#if $gt amount fee }}{{subtract amount fee}}{{/if}}</td>
               </tr>
           {{/each}}
           <tr>

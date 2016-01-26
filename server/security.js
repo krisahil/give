@@ -17,6 +17,7 @@ Security.permit(['insert', 'update', 'remove'])
         Invoices,
         MultiConfig,
         Payments,
+        Refunds,
         Subscriptions
     ])
     .ifHasRole('admin')
