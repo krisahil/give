@@ -83,9 +83,9 @@
                       {{#with refunds}}
                           <td class="change-td-padding">{{epochToString created}}</td>
                           <td class="change-td-padding ellipsis">
-                              <a href="https://dashboard.stripe.com/payments/{{id}}" target="_blank">
+                              <a href="https://dashboard.stripe.com/payments/{{charge.id}}" target="_blank">
                                   <div class="elipsis">
-                                      <span title="{{id}}">{{id}}</span>
+                                      <span title="{{charge.id}}">{{charge.id}}</span>
                                   </div>
                               </a>
                           </td>
@@ -103,7 +103,8 @@
 
                   <td class="">${{twoDecimalPlaces amount}}</td>
                   <td class="">${{twoDecimalPlaces fee}}</td>
-                  <td class="">${{#if $gt amount fee }}{{subtract amount fee}}{{/if}}</td>
+                  <td class="">${{twoDecimalPlaces net}}
+                  </td>
               </tr>
           {{/each}}
           <tr>

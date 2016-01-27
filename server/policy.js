@@ -6,14 +6,15 @@ BrowserPolicy.content.allowFontDataUrl();
 
 var trusted = [
     'js.stripe.com',
+    'api.stripe.com',
+    'q.stripe.com',
     'checkout.stripe.com',
     'give.trashmountain.com',
     'trashmountain.com',
     'kadira.io',
     'enginex.kadira.io',
     'use.typekit.net',
-    'p.typekit.net',
-    'embed.doorbell.io'
+    'p.typekit.net'
 ];
 
 _.each(trusted, function(origin) {

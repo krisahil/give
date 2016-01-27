@@ -16,6 +16,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                 {
                   limit:  1,
                   fields: {
+                    id: 1,
                     object: 1,
                     created: 1,
                     charge: 1,
@@ -36,6 +37,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                 {
                   limit:  1,
                   fields: {
+                    id: 1,
                     object: 1,
                     metadata: 1,
                     customer: 1,
@@ -58,6 +60,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                     {
                       limit:  1,
                       fields: {
+                        id: 1,
                         email:    1,
                         metadata: 1
                       }
@@ -67,6 +70,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                     {
                       limit:  1,
                       fields: {
+                        id: 1,
                         email:    1,
                         metadata: 1
                       }
@@ -77,6 +81,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
                     {
                       limit:  1,
                       fields: {
+                        id: 1,
                         email:    1,
                         metadata: 1
                       }

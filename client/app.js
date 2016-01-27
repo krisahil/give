@@ -228,7 +228,7 @@ _.extend(App, {
                 };
             }
             App.process_bank(bank_info, form);
-        } else{
+        } else {
             //TODO: process the gift with a saved device
             form.paymentInformation.saved = true;
             var payment = {id: form.paymentInformation.donateWith};

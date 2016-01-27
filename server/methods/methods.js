@@ -126,7 +126,7 @@ Meteor.methods({
                 }
               // Update the card metadata so we know if the user wanted this card saved or not
               Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
-            } else{
+            } else {
                 //TODO: change these to match what you'll be using for a Stripe customer that already exists
                 var customer_cursor = Customers.findOne({_id: data.customer.id});
                 customerData.id = customer_cursor._id;

@@ -1,8 +1,18 @@
 Template.AddNewBankAccount.events({
-  'click #add_account': function (e) {
+  'submit form': function (e) {
+    //prevent the default reaction to submitting this form
+    e.preventDefault();
+    // Stop propagation prevents the form from being submitted more than once.
+    e.stopPropagation();
+
     console.log("Adding");
     let save_payment = $("#save_payment").is(':checked');
     console.log(save_payment, Session.get('updateSubscription'));
+
+
+    let opts = {color: '#FFF', length: 60, width: 10, lines: 8};
+    let target = document.getElementById('spinContainer');
+    spinnerObject = new Spinner(opts).spin(target);
 
     // TODO: Set this as the new primary payment method for this customer's subscription.
 
@@ -32,13 +42,22 @@ Template.AddNewBankAccount.events({
             console.log(error);
             //App.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
             //the error.
-            Bert.alert(error, 'error');
+            Bert.alert({
+              message: error.reason,
+              type: 'danger',
+              icon: 'fa-frown-o'
+            });
           } else {
             if ( result.error ) {
               console.log( result.error );
               var send_error = {code: result.error, message: result.message};
-              Bert.alert(send_error, 'error');
-              //Session.delete("updateSubscription");
+
+              Bert.alert({
+                title: send_error.code,
+                message: send_error.message,
+                type: 'danger',
+                icon: 'fa-frown-o'
+              });
 
             } else {
               Bert.alert('Updated', 'success');
@@ -57,4 +76,8 @@ Template.AddNewBankAccount.events({
     });
 
   }
+});
+
+Template.AddNewBankAccount.onRendered( function (){
+  $('#add-bank-form').parsley();
 });

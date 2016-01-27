@@ -23,9 +23,12 @@ console.__proto__.log = (function(_super) {
 
   })(console.__proto__.log);*/
 
-    Bert.defaults.autoHide = false;
+  Bert.defaults = {
+    hideDelay: 10000,
+    style: 'fixed-top'
+  };
 
-    return SEO.config({
+  return SEO.config({
       title: 'Give - Trash Mountain Project',
       meta: {
         'description': 'Webapp for giving to Trash Mountain Project'

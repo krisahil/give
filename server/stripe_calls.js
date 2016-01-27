@@ -526,19 +526,12 @@ _.extend(Utils, {
         }
 
     },
-    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, saved){
+    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
         logger.info("Inside update_stripe_customer_subscription.");
-      let saved_payment;
-      if(saved){
-        saved_payment = true;
-      } else {
-        saved_payment = false;
-      }
         var stripeSubscriptionUpdate = new Future();
 
         Stripe.customers.updateSubscription(customer_id, subscription_id, {
-                source: token_id,
-                metadata: {saved: saved_payment}
+                source: token_id
             }, function (error, subscription) {
                 if (error) {
                     //console.dir(error);
@@ -586,12 +579,39 @@ _.extend(Utils, {
 
         return stripeCardUpdate;
     },
-    update_stripe_customer_bank: function(customer_id, bank, saved){
+    update_stripe_customer_bank: function(customer_id, bank){
       logger.info("Inside update_stripe_customer_bank.");
       console.log(customer_id, bank);
 
       let stripeBankUpdate = new Promise(function (resolve, reject) {
-        Stripe.customers.createSource(customer_id, {source: bank, metadata: {saved: saved}},
+        Stripe.customers.createSource(customer_id, {source: bank},
+          function (err, res) {
+            if (err) {
+              reject(err.raw);
+            }
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeBankUpdate.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+          logger.info(err);
+          throw new Meteor.Error(err.statusCode, err.type, err.message);
+          //return err;
+        });
+    },
+    update_stripe_bank_metadata: function(customer_id, bank_id, saved){
+      logger.info("Inside update_stripe_bank_metadata.");
+      console.log(customer_id, bank_id, saved);
+
+      let stripeBankUpdate = new Promise(function (resolve, reject) {
+        Stripe.customers.updateCard(customer_id,
+        { source: bank_id, metadata: {saved: saved} },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);
@@ -606,7 +626,7 @@ _.extend(Utils, {
         }, function(err) {
           // TODO: if there is a a problem we need to resolve this since the event won't be sent again
           console.log(err);
-          throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+          throw new Meteor.Error("Error from Stripe Promise", err);
         });
     },
     check_charge_status: function(charge_id){
