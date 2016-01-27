@@ -866,6 +866,29 @@ _.extend(Utils, {
         console.log(err);
         throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
       });
+  },
+  get_all_stripe_refunds: function(){
+    logger.info("Inside get_all_stripe_refunds.");
+
+    let allRefunds = new Promise(function (resolve, reject) {
+      Stripe.refunds.list(
+        { limit: 100 },
+        function (err, res) {
+          if (err) reject("There was a problem", err);
+          else resolve(res);
+      });
+    });
+
+    // Fulfill Promise
+    return allRefunds.await(
+      function (res) {
+        console.log(res);
+        return res;
+      }, function(err) {
+        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe Promise", err);
+      });
   }
 
 });

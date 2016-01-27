@@ -574,5 +574,19 @@ Meteor.methods({
     } else {
       return;
     }
+  },
+  store_all_refunds: function () {
+    if (Roles.userIsInRole(this.userId, ['admin'])) {
+      let refunds = Utils.get_all_stripe_refunds();
+      console.log(refunds);
+      refunds.data.forEach(function (refund) {
+        let expandedRefund = Utils.stripe_get_refund(refund.id);
+        Refunds.upsert({_id: expandedRefund.id}, expandedRefund);
+      });
+      return "Stored all refunds";
+    } else {
+      return;
+    }
+
   }
 });

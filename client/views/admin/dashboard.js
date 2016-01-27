@@ -78,5 +78,22 @@ Template.Dashboard.events({
                 console.log(error);
             }
         });
+    },
+    'click #store-all-refunds': function(e) {
+        //prevent the default reaction to submitting this form
+        e.preventDefault();
+        // Stop propagation prevents the form from being submitted more than once.
+        e.stopPropagation();
+
+        console.log("Started store-all-refunds");
+
+        Meteor.call("store_all_refunds", function (error, result) {
+            if (result) {
+                console.dir(result);
+                Bert.alert("Got 'em.", 'success');
+            } else {
+                console.log(error);
+            }
+        });
     }
 });
