@@ -11,7 +11,12 @@
                             <div class="col-xs-12">
                                 <div class="form-group">
                                     {{#if customer}}
-                                        <p class="alert alert-info">Account used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
+                                        <p class="alert alert-info">
+                                            Account used:
+                                            {{#with customer}}
+                                                <strong> {{customer_device.brand}}</strong>
+                                                ...{{customer_device.last4}}
+                                            {{/with}}
 
                                             {{#with subscription}}
                                                 <br>
@@ -31,8 +36,8 @@
 
                     </div> <!-- end .panel-body -->
                     <div class="panel-footer">
-                        <button type="submit" class="btn btn-success resubscribe" data-loading-text="Resubscribing...">Restart Recurring Gift</button>
-                        <a href="{{pathFor 'subscriptions'}}" class="btn btn-default">Cancel</a>
+                        <button type="submit" class="btn btn-primary resubscribe" data-loading-text="Resubscribing...">Restart Recurring Gift</button>
+                        <a href="{{pathFor 'subscriptions'}}" class="btn btn-danger">Cancel</a>
                     </div>
                 </form> <!-- end #resubscribe -->
             </div>

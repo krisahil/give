@@ -71,11 +71,15 @@ Template.FixBankSubscription.helpers({
     },
     customer_device: function () {
         var return_these = {};
-        if(Customers.findOne().sources.data[0].bank_name){
-            return_these.brand = Customers.findOne().sources.data[0].bank_name;
+        if(this.sources && this.sources.data[0]){
+        let default_index = this.sources.data.map(
+          function(e) {
+            return e.id;
+          }).indexOf(this.default_source);
+          return_these.brand = this.sources.data[default_index].bank_name;
+          return_these.last4 = this.sources.data[default_index].last4;
+          return return_these;
         }
-        return_these.last4 = Customers.findOne().sources.data[0].last4;
-        return return_these;
     },
     isRepair: function () {
         return Session.get('isRepair');
