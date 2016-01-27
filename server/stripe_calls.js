@@ -607,11 +607,11 @@ _.extend(Utils, {
     },
     update_stripe_bank_metadata: function(customer_id, bank_id, saved){
       logger.info("Inside update_stripe_bank_metadata.");
-      console.log(customer_id, bank_id, saved);
+      logger.info(customer_id, bank_id, saved);
 
       let stripeBankUpdate = new Promise(function (resolve, reject) {
-        Stripe.customers.updateCard(customer_id,
-        { source: bank_id, metadata: {saved: saved} },
+        Stripe.customers.updateCard(customer_id, bank_id,
+          { metadata: {saved: saved} },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);
