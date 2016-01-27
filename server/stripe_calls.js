@@ -611,7 +611,7 @@ _.extend(Utils, {
 
       let stripeBankUpdate = new Promise(function (resolve, reject) {
         Stripe.customers.updateCard(customer_id, bank_id,
-          { metadata: {saved: saved} },
+          { default_for_currency: true, metadata: {saved: saved} },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);
