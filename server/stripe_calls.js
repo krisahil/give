@@ -611,7 +611,7 @@ _.extend(Utils, {
 
       let stripeBankUpdate = new Promise(function (resolve, reject) {
         Stripe.customers.updateCard(customer_id, bank_id,
-          { default_for_currency: true, metadata: {saved: saved} },
+          { metadata: {saved: saved} },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);
@@ -620,6 +620,30 @@ _.extend(Utils, {
 
       // Fulfill Promise
       return stripeBankUpdate.await(
+        function (res) {
+          console.log(res);
+          return res;
+        }, function(err) {
+          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+          console.log(err);
+          throw new Meteor.Error("Error from Stripe Promise", err);
+        });
+    },
+  update_stripe_customer_default_source: function(customer_id, bank_id){
+      logger.info("Inside update_stripe_customer_default_source.");
+      logger.info(customer_id, bank_id);
+
+      let sourceUpdate = new Promise(function (resolve, reject) {
+        Stripe.customers.update(customer_id,
+          { default_source: bank_id },
+          function (err, res) {
+            if (err) reject("There was a problem", err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return sourceUpdate.await(
         function (res) {
           console.log(res);
           return res;

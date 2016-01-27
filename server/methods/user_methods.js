@@ -116,13 +116,9 @@ Meteor.methods({
           // update_stripe_customer_subscription
           //var updated_bank = Utils.update_stripe_customer_bank(customer_id, bank, save_payment);
           let updated_bank = Utils.update_stripe_customer_bank(customer_id, bank_token);
-          //Utils.update_stripe_customer_subscription(customer_id, subscription_id, bank, save_payment);
-          console.log("Added bank to customer");
-          console.log(updated_bank);
           Utils.update_stripe_bank_metadata(customer_id, updated_bank.id, save_payment);
+          Utils.update_stripe_customer_default_source(customer_id, updated_bank.id);
 
-          // TODO: metadata: {saved: saved} add this to the newly created bank_account
-          console.log(updated_bank);
 
           if (!updated_bank.object) {
             return {error: updated_bank.rawType, message: updated_bank.message};
