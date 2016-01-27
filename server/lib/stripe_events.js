@@ -160,6 +160,11 @@ Stripe_Events = {
     console.log(stripeEvent.type + ': event processed');
     return;
   },
+  'customer.bank_account.deleted': function (stripeEvent) {
+    Devices.remove({_id: stripeEvent.data.object.id});
+    console.log(stripeEvent.type + ': event processed');
+    return;
+  },
   'customer.card.deleted': function (stripeEvent) {
     Devices.remove({_id: stripeEvent.data.object.id});
     console.log(stripeEvent.type + ': event processed');
