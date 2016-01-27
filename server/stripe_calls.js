@@ -608,6 +608,11 @@ _.extend(Utils, {
     update_stripe_bank_metadata: function(customer_id, bank_id, saved){
       logger.info("Inside update_stripe_bank_metadata.");
       logger.info(customer_id, bank_id, saved);
+      if(saved){
+        saved = 'true';
+      } else {
+        saved = 'false';
+      }
 
       let stripeBankUpdate = new Promise(function (resolve, reject) {
         Stripe.customers.updateCard(customer_id, bank_id,

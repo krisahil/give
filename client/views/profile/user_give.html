@@ -5,33 +5,19 @@
             </div>
             <div class="col-lg-8 col-md-8 col-md-offset-2">
                 <fieldset>
-                    {{#unless marketplace}}
-                    {{else}}
-                        <div class="text-center"> <img src="/images/marketplace.jpeg" style="width: 50%" /></div>
-                    {{/unless}}
 
                     <!-- Amount of donation -->
                     <div class="donation_amount text-center well well-lg form-group">
                         <div id='amount_width' class="{{amountWidth}}">
                             <label class="control-label" for="amount">Donation Amount</label>
 
-                            {{#unless marketplace}}
-                                <div class="input-group">
-                                    <!--[if lt IE 9]>
-                                        <label>Amount</label>
-                                    <![endif]-->
-
-                                    <span class="input-group-addon">$</span>
-                                    <input {{attributes_Input_Amount}} type="digits" value="{{amount}}" class="form-control slim-borders"
-                                       required data-parsley-error-message="Please enter an amount with no commas."
-                                       data-parsley-errors-container="#show-amount-error-here" />
-                                </div>
-                                <div id="show-amount-error-here"></div>
-                            {{else}}
-                                <br>
-                                <span>$</span>{{amount}}
-                                <input {{attributes_Input_Amount}} type="hidden" value="{{amount}}" />
-                            {{/unless}}
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input {{attributes_Input_Amount}} type="digits" value="{{amount}}" class="form-control slim-borders"
+                                   required data-parsley-error-message="Please enter an amount with no commas."
+                                   data-parsley-errors-container="#show-amount-error-here" />
+                            </div>
+                            <div id="show-amount-error-here"></div>
 
                         </div>
                         <div class="text-left col-md-7 col-sm-8 col-xs-12">

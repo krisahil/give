@@ -34,13 +34,14 @@ Template.GiveDropdownGroup.helpers({
     device: function(){
         if(!Devices.find()){
             Session.set("UserPaymentMethod", "Check");
+        } else {
+          return Devices.find();
         }
-        return Devices.find();
     },
     selected: function() {
         var customer = Customers.find({_id: this.customer});
         if(this.id === customer.default_source){
-            return selected;
+            return 'selected';
         } else{
             return;
         }
