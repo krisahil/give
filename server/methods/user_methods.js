@@ -188,7 +188,7 @@ Meteor.methods({
         let persona_ids = Meteor.user() && Meteor.user().persona_ids;
         console.log(persona_ids);
 
-        if(persona_ids.length && persona_ids.length > 1){
+        if(persona_ids.length && persona_ids.length >= 1){
           Utils.get_all_dt_donations(persona_ids);
           return "got em";
         } else {
