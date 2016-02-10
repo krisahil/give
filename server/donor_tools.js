@@ -54,7 +54,7 @@ _.extend(Utils, {
   getFundHistory: function (fundId, dateStart, dateEnd) {
     logger.info("Got to getFundHistory with fund_id: " + fundId);
 
-    var totalPages = 2;
+    var totalPages = 3;
     for(i = 1; i <= totalPages; i++){
       var dataResults;
       dataResults = HTTP.get(Meteor.settings.donor_tools_site + '/splits.json?basis=cash&fund_id=' + fundId + '&range[from]=' +
@@ -64,9 +64,7 @@ _.extend(Utils, {
       Utils.store_splits(dataResults.data);
       totalPages = dataResults.headers['pagination-total-pages'];
     }
-
     console.dir(dataResults);
-
   },
   store_splits: function (donations) {
     donations.forEach( function ( split ) {

@@ -235,6 +235,7 @@ Template.UserProfile.onRendered(function() {
       Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
         if( result ) {
           console.log( result );
+          Session.set("got_all_donations", true);
           // Hack here to reload the page. I'm not sure why the reactivity isn't
           // showing the new information, when the persona_info is pulled down
           // for now we just reload the page and the problem is resolved.
@@ -243,7 +244,18 @@ Template.UserProfile.onRendered(function() {
           console.log( error );
         }
       } );
+    } else if(!Session.equals("got_all_donations", true)) {
+      Meteor.call("get_all_donations_for_this_donor", function (error, result) {
+        if( result ) {
+          console.log( result );
+          Session.set("got_all_donations", true);
+        } else {
+          console.log( error );
+        }
+      });
     }
+
+
 
 
     Session.setDefault('dt_donations_cursor', 0);

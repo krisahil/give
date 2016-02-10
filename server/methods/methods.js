@@ -407,14 +407,19 @@ Meteor.methods({
     check(dateEnd, String);
 
     if (Roles.userIsInRole(this.userId, ['admin'])) {
-      // This is the fund ids for community sponsorship
-      var fundsList = [
-        63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282, 64197
-      ];
-      fundsList.forEach( function ( fundId ) {
-        Utils.getFundHistory(fundId, dateStart, dateEnd);
-      });
-
+      this.unblock();
+      try{
+        // This is the fund ids for community sponsorship
+        var fundsList = [
+          63667, 63692, 63695, 64590, 67273, 67274, 67276, 67277, 67282, 64197
+        ];
+        fundsList.forEach( function ( fundId ) {
+          Utils.getFundHistory(fundId, dateStart, dateEnd);
+        });
+      } catch( e ) {
+        // Got a network error, time-out or HTTP error in the 400 or 500 range.
+        return false;
+      }
       return "Got all funds history";
     }
   },

@@ -179,5 +179,24 @@ Meteor.methods({
             return 'success';
         }
 
+    },
+    get_all_donations_for_this_donor: function() {
+      logger.info("Started method get_all_donations_for_this_donor.");
+      if(this.userId){
+        this.unblock();
+
+        let persona_ids = Meteor.user() && Meteor.user().persona_ids;
+        console.log(persona_ids);
+
+        if(persona_ids.length && persona_ids.length > 1){
+          Utils.get_all_dt_donations(persona_ids);
+          return "got em";
+        } else {
+          return "no persona_ids found";
+        }
+      } else {
+        return;
+      }
     }
+
 });
