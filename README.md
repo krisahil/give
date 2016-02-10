@@ -1,12 +1,27 @@
 [![Codacy Badge](https://www.codacy.com/project/badge/cd0a18c7433547279f5409d4ec3297c1)](https://www.codacy.com/app/c316/give)
 
 
-A donation page for Non-profits using <a href="https://stripe.com">Stripe</a> written in <a href="http://meteor.com">Meteor</a>
+An opinionated donation app for Non-profits using <a href="https://stripe.com">Stripe</a> 
+written in <a href="http://meteor.com">Meteor</a>.
 
 
 ## About
 
-Give is used by Non-Profits to take donations using Stripe. Which includes Credit/Debit Cards, Bitcoin, Apple Pay and ACH. 
+Give is used by Non-Profits to take donations using Stripe. Which includes Credit/Debit Cards, ACH, 
+[ coming soon -> Bitcoin, and Apple Pay ]. 
+
+## Problems addressed
+
+Non-profits want to allow anyone to give with or without an account. However, we also want to give them credit for doing so.
+This is a problem. How do we track givers while letting them give without an account? The answer is; we do all the hard work.
+First, we will end up with a lot of customers in Stripe since each time a person gives without logging in we can't know if they've given before.
+Second, we want to do our best to make sure we don't have duplicates in our CMS, so we search backwards and forwards to see if we can find them there.
+
+If we think this is a new person, we insert them into the CMS as a new person and send off an email to the support admin letting them know we just inserted a 
+new person. Chances are we'll end up with newly inserted people who really shouldn't be new people at all. 
+Users misspell things, they change their address and phone numbers and sometimes give under shortened version of their names. 
+(and these are just a few reasons we'll still get duplicates)
+
 
 
 ## Setup
@@ -88,7 +103,10 @@ Mandrill (MailChimp's transactional email service) - Transactional emails (used 
 
 DonorTools, a CRM for non-profits.
 
-You will need an account with each of these providers in order to use Give. The accounts are free up to a point. Stripe doesn't charge you a monthly fee, only a fee per transaction (2.9% + .30 per transaction). In order to use the ACH service you do need to escrow some money since ACH doesn't have the protections for the processor that credit cards do. ACH fees are $.25 per charge and there is no fee for transfers to your own bank account after charging the customer. 
+You will need an account with each of these providers in order to use Give. 
+The accounts are free up to a point. Stripe doesn't charge you a monthly fee, 
+only a fee per transaction (2.9% + .30 per transaction for credit/debit cards). 
+ACH fees are $.25 per charge and there is no fee for transfers to your own bank account after charging the customer. 
 
 ## License
 

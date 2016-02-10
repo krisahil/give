@@ -462,7 +462,7 @@ _.extend(Utils, {
     } catch (e) {
       logger.info("No Person with the DT ID of " +
         customerCursor.metadata.dt_persona_id + " found in DT");
-      Utils.send_failed_to_add_to_dt_email_to_support(customerCursor.metadata.dt_persona_id, charge_id);
+        Utils.send_failed_to_add_to_dt_email_to_support(customerCursor.metadata.dt_persona_id, charge_id);
 
       throw new Meteor.Error(e);
     }
@@ -493,6 +493,10 @@ _.extend(Utils, {
     if(newDonationResult && newDonationResult.data && newDonationResult.data.donation && newDonationResult.data.donation.persona_id){
       // Send the id of this new DT donation to the function which will update the charge to add that meta text.
       Utils.update_charge_with_dt_donation_id(charge_id, newDonationResult.data.donation.id);
+
+      // Get all of the donations related to the persona_id that was either just created or that was just used when
+      // the user gave
+      Utils.get_all_dt_donations([customerCursor.metadata.dt_persona_id]);
 
       return newDonationResult.data.donation.persona_id;
     } else {

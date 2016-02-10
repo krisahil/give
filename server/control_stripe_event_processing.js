@@ -32,19 +32,19 @@ _.extend(StripeFunctions, {
 
       if(stripe_request.data.object.object === 'charge'){
         console.log("Sending to DT");
-        // Send the donation change to Donor Tools. This function has a retry built
-        // in, so also pass 1 for the interval
         if(DT_donations.findOne({transaction_id: stripe_request.data.object.id})){
+          // Send the donation change to Donor Tools. This function has a retry built
+          // in, so also pass 1 for the interval
           wait_for_DT_update = Utils.update_dt_donation_status( stripe_request, 1 );
         } else {
-          StripeFunctions.check_for_necessary_objects_before_inserting_into_dt(stripe_request.data.object.id, stripe_request.data.object.customer, 1);
+          StripeFunctions.check_for_necessary_objects_before_inserting_into_dt(
+            stripe_request.data.object.id, stripe_request.data.object.customer, 1);
         }
       } else {
         // TODO: not a charge, need to send to a different area, perhaps customer creation?
         // Customer creation doesn't have a corresponding event normally
         // since it is being created with Stripe.js
         return;
-
       }
     } else {
       // Return since this event either had an error, or it didn't come from Stripe

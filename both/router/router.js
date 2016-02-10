@@ -263,8 +263,9 @@ Router.route('/webhooks/stripe', function () {
         this.response.statusCode = 400;
         this.response.end('Oh hai Stripe!\n\n');
     }
-}, {where: 'server',
-    name: 'stripe_webhooks'
+}, {
+  where: 'server',
+  name: 'stripe_webhooks'
 });
 
 Router.route('FixCardSubscription', {
