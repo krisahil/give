@@ -1,36 +1,21 @@
 <template name="Dashboard">
     {{> AdminGive}}
     {{> AdminMoveGift}}
+    {{> AdminMergePersona}}
     <div class="row">
-		<div class="col col-lg-2"></div>
-			<div class="col-lg-8">
+		<!--<div class="col col-lg-2"></div>-->
+			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h2><i class="fa fa-asterisk"></i><span class="break">Reports</span></h2>
 					</div>
 					<div class="panel-body">
 						<div class="col-sm-2">
-							<a id="new-gift" class="quick-button" href="">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-gift"></i>
-								</span>
-								<h5>New Gift</h5>
-							</a>
-						</div>
-						<div class="col-sm-2">
 							<a class="quick-button" href="expiring">
 								<span class="fa-stack fa-lg">
 									<i class="fa fa-cc-visa"></i>
 								</span>
 								<h5>Expiring Cards</h5>
-							</a>
-						</div>
-                        <div class="col-sm-2">
-							<a id="move-gift" class="quick-button" href="">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-arrows"></i>
-								</span>
-								<h5>Move Gift</h5>
 							</a>
 						</div>
                         <div class="col-sm-2">
@@ -43,6 +28,89 @@
 						</div>
 						<div class="clearfix"></div>
 					</div>
+                    <div class="panel-heading">
+                        <h2><i class="fa fa-cloud-download"></i><span
+                                class="break">Tools</span></h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <a id="new-gift" class="quick-button" href="">
+								<span class="fa-stack fa-lg">
+									<i class="fa fa-gift"></i>
+								</span>
+                                    <h5>New Gift</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="move-gift" class="quick-button" href="">
+								<span class="fa-stack fa-lg">
+									<i class="fa fa-arrows"></i>
+								</span>
+                                    <h5>Move Gift</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="get-dt-split" class="quick-button" href="{{pathFor 'DtReport'}}">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-code-fork"></i>
+                                    </span>
+                                    <h5>Get DT Split Data</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="get-dt-funds" class="quick-button" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-money"></i>
+                                    </span>
+                                    <h5>Get DT Funds</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="get-dt-sources" class="quick-button" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-code"></i>
+                                    </span>
+                                    <h5>Get DT Sources</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="show-get-stripe-event" class="quick-button" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                    <h5>Get Stripe Event</h5>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <br>
+                            <div class="col-sm-2">
+                                <a id="show-fix-no-user" class="quick-button" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-wrench"></i>
+                                    </span>
+                                    <h5>Fix No Local User</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="store-all-refunds" class="quick-button" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-hdd-o"></i>
+                                    </span>
+                                    <h5>Store all refunds</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="merge-dt-persona" class="quick-button" href="">
+								<span class="fa-stack fa-lg">
+									<i class="fa fa-compress"></i>
+								</span>
+                                    <h5>Merge DT accounts</h5>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="panel-heading">
                         <h2><i class="fa fa-building"></i><span
                                 class="break">Configuration</span></h2>
@@ -68,61 +136,6 @@
                             </a>
                         </div>
 
-                    </div>
-                    <div class="panel-heading">
-                        <h2><i class="fa fa-cloud-download"></i><span
-                                class="break">Get</span></h2>
-                    </div>
-                    <div class="panel-body">
-
-                        <div class="col-sm-2">
-                            <a id="get-dt-split" class="quick-button" href="{{pathFor 'DtReport'}}">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-code-fork"></i>
-                                </span>
-                                <h5>Get DT Split Data</h5>
-                            </a>
-                        </div>
-                        <div class="col-sm-2">
-                            <a id="get-dt-funds" class="quick-button" href="">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-money"></i>
-                                </span>
-                                <h5>Get DT Funds</h5>
-                            </a>
-                        </div>
-                        <div class="col-sm-2">
-                            <a id="get-dt-sources" class="quick-button" href="">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-code"></i>
-                                </span>
-                                <h5>Get DT Sources</h5>
-                            </a>
-                        </div>
-                        <div class="col-sm-2">
-                            <a id="show-get-stripe-event" class="quick-button" href="">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-search"></i>
-								</span>
-                                <h5>Get Stripe Event</h5>
-                            </a>
-                        </div>
-                        <div class="col-sm-2">
-                            <a id="show-fix-no-user" class="quick-button" href="">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-wrench"></i>
-								</span>
-                                <h5>Fix No Local User</h5>
-                            </a>
-                        </div>
-                        <div class="col-sm-2">
-                            <a id="store-all-refunds" class="quick-button" href="">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-hdd-o"></i>
-								</span>
-                                <h5>Store all refunds</h5>
-                            </a>
-                        </div>
                     </div>
 				</div>
 			</div><!--/col-lg8-->

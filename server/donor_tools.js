@@ -460,10 +460,9 @@ _.extend(Utils, {
         });
         console.log(checkPerson.data);
     } catch (e) {
-      logger.info("No Person with the DT ID of " +
-        customerCursor.metadata.dt_persona_id + " found in DT");
-        Utils.send_failed_to_add_to_dt_email_to_support(customerCursor.metadata.dt_persona_id, charge_id);
-
+      logger.info("------No Person with the DT ID of " +
+      customerCursor.metadata.dt_persona_id + " found in DT--------");
+      Utils.send_failed_to_add_to_dt_email_to_support(customerCursor.metadata.dt_persona_id, charge_id);
       throw new Meteor.Error(e);
     }
 

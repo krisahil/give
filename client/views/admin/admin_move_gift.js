@@ -5,9 +5,6 @@ Template.AdminMoveGift.onRendered(function () {
 
 });
 
-Template.AdminMoveGift.helpers({
-});
-
 Template.AdminMoveGift.events({
     'submit form': function(e) {
         //prevent the default reaction to submitting this form

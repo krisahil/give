@@ -95,5 +95,17 @@ Template.Dashboard.events({
                 console.log(error);
             }
         });
+    },
+    'click #merge-dt-persona': function(e) {
+        //prevent the default reaction to submitting this form
+        e.preventDefault();
+        // Stop propagation prevents the form from being submitted more than once.
+        e.stopPropagation();
+
+        console.log("Started merge-dt-persona");
+        $('#modal_for_admin_merge_persona').modal({
+          show: true,
+          backdrop: 'static'
+        });
     }
 });

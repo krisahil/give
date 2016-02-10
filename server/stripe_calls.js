@@ -918,6 +918,30 @@ _.extend(Utils, {
         console.log(err);
         throw new Meteor.Error("Error from Stripe Promise", err);
       });
-  }
+  },
+  update_stripe_customer_dt_persona_id: function(customer_id, new_persona_id){
+    logger.info("Inside update_stripe_customer_dt_persona_id.");
+    logger.info(new_persona_id);
 
+    let stripeCustomerUpdate = new Promise(function (resolve, reject) {
+      Stripe.customers.update( customer_id, {
+        "metadata": {
+          "dt_persona_id": new_persona_id
+        }
+      }, function ( err, res ) {
+        if( err ) reject( "There was a problem", err );
+        else resolve( res );
+      });
+    });
+    // Fulfill Promise
+    return stripeCustomerUpdate.await(
+      function (res) {
+        console.log(res);
+        return res;
+      }, function(err) {
+        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+        console.log(err);
+        throw new Meteor.Error("Error from Stripe Promise", err);
+      });
+  }
 });

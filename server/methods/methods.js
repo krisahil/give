@@ -587,6 +587,76 @@ Meteor.methods({
     } else {
       return;
     }
+  },
+  merge_dt_persona: function (old_persona_id, new_persona_id) {
+    logger.info("Started merge_dt_persona method");
 
+    check(old_persona_id, Number);
+    check(new_persona_id, Number);
+
+    if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+
+      // find each customer where the old_persona_id is stored
+      let customers = Customers.find({'metadata.dt_persona_id': String(old_persona_id)});
+
+      // Go through all of these customers and update their dt_persona_id through Stripe
+      customers.forEach(function(customer){
+        Utils.update_stripe_customer_dt_persona_id(customer.id, String(new_persona_id));
+      });
+
+      let user_with_old_persona_id =
+        Meteor.users.find({
+          $or: [{
+            'persona_ids': old_persona_id
+          }, {
+            'persona_id': old_persona_id
+          }]
+        });
+      // Delete the persona_info and persona_id for the user that was found,
+      // persona_info will be retrieved automatically if the user logs into their account
+      // and persona_id isn't needed
+        let wait_for_unset = Meteor.users.update({
+          $or: [{
+            'persona_ids': old_persona_id
+          }, {
+            'persona_id': old_persona_id
+          }]
+        }, {
+          $unset: {
+            'persona_id': '',
+            'persona_info': ''
+          }
+        });
+
+      if(Meteor.users.find({ 'persona_ids': old_persona_id })){
+          Meteor.users.update({
+            'persona_ids': old_persona_id
+          }, {
+            $set: {
+              'persona_ids.$': new_persona_id
+            }
+          });
+      } else {
+        Meteor.users.update({
+          _id: user_with_old_persona_id._id
+        }, {
+          addToSet: {
+            persona_ids: new_persona_id
+          }
+        });
+      }
+
+      // Remove all the old donations that were under the old persona id
+      DT_donations.remove({
+        'persona_id': old_persona_id
+      });
+
+      // Get all the donations under the new persona id
+      Utils.get_all_dt_donations([new_persona_id]);
+
+      return "Merge succeeded";
+    } else {
+      return;
+    }
   }
 });
