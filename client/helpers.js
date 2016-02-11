@@ -15,9 +15,12 @@ Template.registerHelper('twoDecimalPlaces', function(stringToAddDecimal){
   return parseFloat(Math.round(stringToAddDecimal) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 });
 
-Template.registerHelper('formatDate', function(context, options) {
-  if(context)
-    return moment(context).format('MMM DD, YYYY');
+Template.registerHelper('formatDate', function(date, unix) {
+  if(date && unix){
+    return moment.unix(date).format('MMM DD, YYYY');
+  } else if(date){
+    return moment(date).format('MMM DD, YYYY');
+  }
 });
 
 Template.registerHelper('logged_in', function(context) {
@@ -231,4 +234,12 @@ Template.registerHelper('subtract', function(v1,v2){
 Template.registerHelper('add', function(v1,v2){
   if((v1 + v2) < 0 ) return; // Don't want to divide by 0 or a negative
   return ( v1 + v2 ) / 100 ;
+});
+
+Template.registerHelper('addingNew', function(type) {
+  if(Session.equals("addingNew", type)) {
+    return true;
+  } else {
+    return false;
+  }
 });

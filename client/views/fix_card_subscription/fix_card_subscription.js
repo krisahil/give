@@ -60,7 +60,8 @@ Template.FixCardSubscription.events({
 
                 // Call our stripeSwipeCard method to replace our customer's existing
                 // card with the new card they've specified.
-                Meteor.call("stripeUpdateSubscription", customer_id, subscription_id, response.id, subscription_status, function(error, response){
+                Meteor.call("stripeUpdateSubscription", customer_id, subscription_id,
+                  response.id, subscription_status, function(error, response){
                   if (error){
                     console.dir(error);
                     resubscribeButton.button("reset");

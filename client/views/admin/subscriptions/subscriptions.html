@@ -1,0 +1,47 @@
+<template name="AdminSubscriptions">
+    {{> AdminSubscriptionModal}}
+    <form class="form">
+        <div class="form-group floating-label">
+            <input type="text" class="form-control search" placeholder="Search By First or Last Name Here">
+            <label>*Only Active or Trialing Subscriptions are Shown</label>
+        </div>
+    </form>
+    <button type="button" class="btn btn-danger btn-block reset-button">
+        Clear
+    </button>
+
+    <table class="table table-striped table-hover ">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Amount</th>
+            <th>Next Gift</th>
+            <th>Designation</th>
+            {{#if isInRole 'admin, records-admin'}}
+                <th class="text-center"></th>
+            {{/if}}
+        </tr>
+        </thead>
+        <tbody>
+        {{#each searchSubscriptions}}
+            <tr>
+                <td>{{metadata.fname}}</td>
+                <td>{{metadata.lname}}</td>
+                <td>{{metadata.email}}</td>
+                <td>${{twoDecimalPlaces quantity}}</td>
+                <td>{{formatDate current_period_end true}}</td>
+                <td>{{metadata.donateTo}}</td>
+                {{#if isInRole 'admin, records-admin'}}
+                    <td class="text-center">
+                        <!-- TODO: insert the button for editing this record -->
+                        <button class="btn btn-sm btn-primary no-top-or-bottom-padding edit-button">Edit</button>
+                        <button class="btn btn-sm btn-danger no-top-or-bottom-padding stop-button">Stop</button>
+                    </td>
+                {{/if}}
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</template>

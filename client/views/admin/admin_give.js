@@ -1,6 +1,4 @@
-
 Template.AdminGive.onRendered(function () {
-
     if($('#donateWith option').length > 2){
         $('#donateWith').val($('#donateWith option').eq(2).val());
         if($('#donateWith').val().slice(0,3) === 'car'){

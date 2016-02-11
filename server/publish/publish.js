@@ -314,3 +314,23 @@ Meteor.publish("transfersRange", function (range) {
     return;
   }
 });
+
+
+
+Meteor.publish("adminSubscriptions", function (_id) {
+  check(_id, Match.Optional(String));
+  console.log("Got to adminSubscriptions sub");
+  let subscriptions;
+
+  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+    if(_id) {
+      subscriptions = Subscriptions.find({_id: _id}, {$or: [{status: 'active'}, {status: 'trialing'}]});
+    } else {
+      subscriptions = Subscriptions.find({$or: [{status: 'active'}, {status: 'trialing'}]});
+    }
+    return subscriptions;
+  } else {
+    this.stop();
+    return;
+  }
+});

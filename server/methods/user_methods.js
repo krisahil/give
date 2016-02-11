@@ -22,7 +22,10 @@ Meteor.methods({
                 Subscriptions.update({_id: subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
                 return 'success';
             }
-        } else{
+        } else {
+          // TODO: this is where I could put the call for updating the amount or date or designation
+          // Utils.upadte_stripe_subscription_amount_or_designation_or_date(fields_object);
+
             var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id);
             if(!updated_subscription.object){
                 return {error: updated_subscription.rawType, message: updated_subscription.message};
@@ -162,12 +165,9 @@ Meteor.methods({
             throw new Meteor.Error(500, "This gift is already not in the canceled state");
         }
     },
-    //TODO: update this method to work with the subscriptions page
     stripeCancelSubscription: function (customer_id, subscription_id, reason) {
         logger.info("Started method stripeCancelSubscription.");
 
-        // Check our arguments against their expected patterns. This is especially
-        // important here because we're dealing with sensitive customer information.
         check(customer_id, String);
         check(subscription_id, String);
         check(reason, String);

@@ -7,8 +7,10 @@ Template.DonationTo.helpers({
 	    }
 	  },
 	donateToParam: function () {
-    	return $("#donateTo").val(this.params.donateTo);
+    if(this & this.params && this.params.donateTo){
+      return $("#donateTo").val(this.params.donateTo);
     }
+  }
 });
 
 Template.DonationTo.onRendered(function () {
@@ -30,3 +32,4 @@ Template.DonationTo.onRendered(function () {
 		$("#is_recurring").val(Session.get('params.recurring'));
 	}
 });
+

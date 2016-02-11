@@ -1032,7 +1032,7 @@
   margin-left: 0;
 }
 .Admin .form-control {
-  border: 1px solid #e1e6ef;
+  /*border: 1px solid #e1e6ef;*/
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;

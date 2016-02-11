@@ -8,7 +8,9 @@ Router.configure({
 });
 
 Router.plugin('ensureSignedIn', {
-    except: ['donation.form', 'donation.landing', 'donation.thanks', 'donation.gift', 'donation.scheduled', 'enrollAccount', 'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
+    except: ['donation.form', 'donation.landing', 'donation.thanks',
+             'donation.gift', 'donation.scheduled', 'enrollAccount',
+             'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn', 'AdminSubscriptions']
 });
 
 Router.onBeforeAction(function() {
@@ -297,19 +299,19 @@ Router.route('FixBankSubscription', {
     path: '/user/subscriptions/bank/resubscribe',
     template: 'FixBankSubscription',
     subscriptions: function(){
-        return [
-            Meteor.subscribe('subscription', this.params.query.s),
-            Meteor.subscribe('customer', this.params.query.c)
-        ]
+      return [
+        Meteor.subscribe('subscription', this.params.query.s),
+        Meteor.subscribe('customer', this.params.query.c)
+      ]
     },
     action: function () {
-        if (this.ready()) {
+      if (this.ready()) {
         var query = this.params.query;
         Session.set('sub', query.s);
         this.render();
-    } else {
-            this.render('Loading');
-        }
+      } else {
+        this.render('Loading');
+      }
     }
 });
 
@@ -340,5 +342,25 @@ Router.route('/dashboard/getdtdata', {
   },
   data: function () {
     return DT_splits.find();
+  }
+});
+
+Router.route('/dashboard/subscriptions/:_id', {
+  layoutTemplate: 'AdminLayout',
+  name: 'AdminSubscription',
+  where: 'client',
+  template: 'AdminSubscriptions',
+  waitOn: function() {
+    return Meteor.subscribe('adminSubscriptions', this.params._id);
+  }
+});
+
+Router.route('/dashboard/subscriptions', {
+  layoutTemplate: 'AdminLayout',
+  name: 'AdminSubscriptions',
+  where: 'client',
+  template: 'AdminSubscriptions',
+  waitOn: function() {
+    return Meteor.subscribe('adminSubscriptions');
   }
 });

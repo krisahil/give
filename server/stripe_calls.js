@@ -943,5 +943,33 @@ _.extend(Utils, {
         console.log(err);
         throw new Meteor.Error("Error from Stripe Promise", err);
       });
+  },
+  upadte_stripe_subscription_amount_or_designation_or_date:
+    function (subscription_id, customer_id, fields){
+    var stripeSubscriptionUpdate = new Future();
+
+    // fields should looks something like this
+    // { quantity: 500, trial_end: unix timestamp of new monthly date, metadata: {donateTo: 'new designation'}}
+
+    Stripe.customers.updateSubscription(customer_id, subscription_id, fields,
+      function (error, subscription) {
+        if (error) {
+          //console.dir(error);
+          stripeSubscriptionUpdate.return(error);
+        } else {
+          stripeSubscriptionUpdate.return(subscription);
+        }
+      }
+    );
+
+    stripeSubscriptionUpdate = stripeSubscriptionUpdate.wait();
+
+    if (!stripeSubscriptionUpdate.object) {
+      throw new Meteor.Error(stripeSubscriptionUpdate.rawType, stripeSubscriptionUpdate.message);
+    }
+
+    console.dir(stripeSubscriptionUpdate);
+
+    return stripeSubscriptionUpdate;
   }
 });
