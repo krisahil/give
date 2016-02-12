@@ -276,8 +276,10 @@ _.extend(App, {
     // amount that is shown to the user and passed as total_amount through the form
     //display error modal if there is an error while initially submitting data from the form.
     handleErrors: function(error) {
+      if(typeof spinnerObject != "undefined") {
         spinnerObject.stop();
-        $("#spinDiv").hide();
+      }
+      $("#spinDiv").hide();
       $(':submit').button('reset');
       console.dir(error);
 
@@ -298,14 +300,14 @@ _.extend(App, {
 
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.error);
-            $('#errorDescription').html(error.reason);
+            $('#errorCategory').html(error.code);
+            $('#errorDescription').html(error.message);
             return;
         } else{
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.error);
-            $('#errorDescription').html(error.reason);
+            $('#errorCategory').html(error.code);
+            $('#errorDescription').html(error.message);
             return;
         }
     },
