@@ -7,7 +7,7 @@ Meteor.methods({
     get_dt_funds: function () {
         try {
             //check to see that the user is the admin user
-            if (Roles.userIsInRole(this.userId, ['admin'])) {
+            if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
                 logger.info("Started get_dt_funds");
                 var fundResults;
                 fundResults = HTTP.get(Meteor.settings.donor_tools_site + '/settings/funds.json?per_page=1000', {
@@ -30,7 +30,7 @@ Meteor.methods({
     get_dt_sources: function () {
         try {
             //check to see that the user is the admin user
-            if (Roles.userIsInRole(this.userId, ['admin'])) {
+            if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
                 logger.info("Started get_dt_sources");
                 var sourceResults;
                 sourceResults = HTTP.get(Meteor.settings.donor_tools_site + '/settings/sources.json?per_page=1000', {
@@ -290,7 +290,7 @@ Meteor.methods({
     move_donation_to_other_person: function (donation_id, move_to_id) {
         check(donation_id, String);
         check(move_to_id, String);
-        if (Roles.userIsInRole(this.userId, ['admin'])) {
+        if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
 
             // Move a donation from one persona_id to another
             logger.info("Inside move_donation_to_other_person.");
@@ -508,7 +508,7 @@ Meteor.methods({
 
     check(id, Number);
     console.log(id);
-    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports', 'dt-admin'])) {
       this.unblock();
       try {
         // Get the persona from DT
@@ -537,7 +537,7 @@ Meteor.methods({
 
     check(current_transfer_id, String);
     check(previous_or_next, String);
-    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'reports', 'dt-admin'])) {
       let previous_or_next_transfer = StripeFunctions.get_next_or_previous_transfer(current_transfer_id, previous_or_next);
 
       return previous_or_next_transfer.data[0].id;
