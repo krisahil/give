@@ -75,7 +75,7 @@ Template.AdminSubscriptions.events({
     Meteor.setTimeout(function() {
       $("select option").filter(function() {
         //may want to use $.trim in here
-        return $(this).text() == self.metadata.donateTo;
+        return $(this).text() === self.metadata.donateTo;
       }).prop('selected', true).change();
     }, 0);
   },

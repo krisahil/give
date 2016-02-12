@@ -20,6 +20,9 @@ Template.AdminSubscriptionModal.helpers({
   },
   changeDate: function () {
     return Session.get("yes_change_date");
+  },
+  changeDesignation: function () {
+    return Session.get("yes_change_designation");
   }
 });
 
@@ -31,8 +34,9 @@ Template.AdminSubscriptionModal.events({
     let customer_id = Session.get("change_customer_id");
     let amount = parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0));
     let trial_end = $("#start_date").val() ? moment(new Date(App.getCleanValue('#start_date'))).format('X'): '';
-    let donateToText = $('#donateTo option:selected').text();
+    let donateToText = $("#designationSection").is(":visible") ? $('#donateTo option:selected').text() : Session.get("change_donateTo");
 
+    // TODO: update these area for change designation show/hide
     if(Session.get("change_donateTo") === donateToText && Session.get("change_amount") === amount &&
       (Session.equals("yes_change_date", false) || !Session.get("yes_change_date"))){
       alert("You haven't made any changes.");
@@ -56,7 +60,9 @@ Template.AdminSubscriptionModal.events({
         $( loadingSubmitButton ).button( 'reset' );
 
         Session.set("yes_change_date", false);
+        Session.set("yes_change_designation", false);
         $('#calendarSection').hide();
+        $('#designationSection').hide();
         $('#modal_for_admin_subscription_change_form').modal('hide');
       }
     } );
@@ -72,9 +78,21 @@ Template.AdminSubscriptionModal.events({
     Session.set("yes_change_date", false);
     $('#calendarSection').hide();
   },
+  'click #showDesignation': function (e) {
+    e.preventDefault();
+    Session.set("yes_change_designation", true);
+    $('#designationSection').show();
+  },
+  'click #hideDesignation': function (e) {
+    e.preventDefault();
+    Session.set("yes_change_designation", false);
+    $('#designationSection').hide();
+  },
   'click .close': function (e) {
     Session.set("yes_change_date", false);
+    Session.set("yes_change_designation", false);
     $('#calendarSection').hide();
+    $('#designationSection').hide();
   }
 });
 
