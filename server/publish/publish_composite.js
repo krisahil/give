@@ -1,6 +1,6 @@
 Meteor.publishComposite('transactions', function (transfer_id) {
   check(transfer_id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, 'admin') || Roles.userIsInRole(this.userId, 'reports')) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
     return {
       find:     function () {
         return Transactions.find( {
@@ -115,7 +115,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
 Meteor.publishComposite('expiring_cards', function () {
 
   // Publish the nearly expired or expired card data to the admin dashboard
-  if (Roles.userIsInRole(this.userId, 'admin') || Roles.userIsInRole(this.userId, 'reports')) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
     return {
       find:     function () {
         // Find posts made by user. Note arguments for callback function

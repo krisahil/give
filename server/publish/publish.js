@@ -273,7 +273,7 @@ Meteor.publish("DTSplits", function () {
 
 Meteor.publish("transfers", function (id) {
   check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
     if(id){
       return Transfers.find({_id: id});
     } else {
@@ -292,7 +292,7 @@ Meteor.publish("transfersRange", function (range) {
     end:   Match.Optional( String )
   });
 
-  if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
 
     if(range && range.start){
       let transferStart = Number(moment(new Date(range.start)).format('X'));
@@ -314,7 +314,6 @@ Meteor.publish("transfersRange", function (range) {
     return;
   }
 });
-
 
 
 Meteor.publish("adminSubscriptions", function (_id) {
