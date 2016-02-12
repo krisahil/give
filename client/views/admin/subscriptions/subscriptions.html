@@ -33,7 +33,7 @@
                 <td>${{twoDecimalPlaces quantity}}</td>
                 <td>{{formatDate current_period_end true}}</td>
                 <td>{{metadata.donateTo}}</td>
-                {{#if isInRole 'admin, records-admin'}}
+                {{#if isInRole 'admin, dt-admin'}}
                     <td class="text-center">
                         <!-- TODO: insert the button for editing this record -->
                         <button class="btn btn-sm btn-primary no-top-or-bottom-padding edit-button">Edit</button>

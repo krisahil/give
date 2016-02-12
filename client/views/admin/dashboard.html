@@ -1,47 +1,30 @@
 <template name="Dashboard">
-    {{> AdminGive}}
-    {{> AdminMoveGift}}
+    {{#if isInRole 'admin'}}
+        {{> AdminGive}}
+        {{> AdminMoveGift}}
+    {{/if}}
+
     {{> AdminMergePersona}}
     <div class="row">
-		<!--<div class="col col-lg-2"></div>-->
 			<div class="col-lg-12">
 				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h2><i class="fa fa-asterisk"></i><span class="break">Reports</span></h2>
-					</div>
-					<div class="panel-body">
-						<div class="col-sm-2">
-							<a class="quick-button" href="expiring">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-cc-visa"></i>
-								</span>
-								<h5>Expiring Cards</h5>
-							</a>
-						</div>
-                        <div class="col-sm-2">
-							<a id="transfers" class="quick-button" href="/transfers">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-exchange"></i>
-								</span>
-								<h5>Stripe Transfers</h5>
-							</a>
-						</div>
-						<div class="clearfix"></div>
-					</div>
+					{{> ReportsDashboard}}
                     <div class="panel-heading">
                         <h2><i class="fa fa-cloud-download"></i><span
                                 class="break">Tools</span></h2>
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-sm-2">
-                                <a id="new-gift" class="quick-button" href="">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-gift"></i>
-								</span>
-                                    <h5>New Gift</h5>
-                                </a>
-                            </div>
+                            {{#if isInRole 'admin'}}
+                                <div class="col-sm-2">
+                                    <a id="new-gift" class="quick-button" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-gift"></i>
+                                    </span>
+                                        <h5>New Gift</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                             <div class="col-sm-2">
                                 <a id="move-gift" class="quick-button" href="">
 								<span class="fa-stack fa-lg">
@@ -50,14 +33,16 @@
                                     <h5>Move Gift</h5>
                                 </a>
                             </div>
-                            <div class="col-sm-2">
-                                <a id="get-dt-split" class="quick-button" href="{{pathFor 'DtReport'}}">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-code-fork"></i>
-                                    </span>
-                                    <h5>Get DT Split Data</h5>
-                                </a>
-                            </div>
+                            {{#if isInRole 'admin'}}
+                                <div class="col-sm-2">
+                                    <a id="get-dt-split" class="quick-button" href="{{pathFor 'DtReport'}}">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-code-fork"></i>
+                                        </span>
+                                        <h5>Get DT Split Data</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                             <div class="col-sm-2">
                                 <a id="get-dt-funds" class="quick-button" href="">
                                     <span class="fa-stack fa-lg">
@@ -74,33 +59,38 @@
                                     <h5>Get DT Sources</h5>
                                 </a>
                             </div>
-                            <div class="col-sm-2">
-                                <a id="show-get-stripe-event" class="quick-button" href="">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                    <h5>Get Stripe Event</h5>
-                                </a>
-                            </div>
+                            {{#if isInRole 'admin'}}
+                                <div class="col-sm-2">
+                                    <a id="show-get-stripe-event" class="quick-button" href="">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                        <h5>Get Stripe Event</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                         </div>
                         <div class="row">
                             <br>
-                            <div class="col-sm-2">
-                                <a id="show-fix-no-user" class="quick-button" href="">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-wrench"></i>
-                                    </span>
-                                    <h5>Fix No Local User</h5>
-                                </a>
-                            </div>
-                            <div class="col-sm-2">
-                                <a id="store-all-refunds" class="quick-button" href="">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-hdd-o"></i>
-                                    </span>
-                                    <h5>Store all refunds</h5>
-                                </a>
-                            </div>
+                            {{#if isInRole 'admin'}}
+
+                                <div class="col-sm-2">
+                                    <a id="show-fix-no-user" class="quick-button" href="">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-wrench"></i>
+                                        </span>
+                                        <h5>Fix No Local User</h5>
+                                    </a>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a id="store-all-refunds" class="quick-button" href="">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-hdd-o"></i>
+                                        </span>
+                                        <h5>Store all refunds</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                             <div class="col-sm-2">
                                 <a id="merge-dt-persona" class="quick-button" href="">
 								<span class="fa-stack fa-lg">
@@ -119,34 +109,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-heading">
-                        <h2><i class="fa fa-building"></i><span
-                                class="break">Configuration</span></h2>
-                    </div>
-                    <div class="panel-body">
-
-                        <div class="col-sm-2">
-                            <a id="org-info" class="quick-button"
-                               href="/dashboard/org_info">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-info"></i>
-                                </span>
-                                <h5>Org Information</h5>
-                            </a>
+                    {{#if isInRole 'admin'}}
+                        <div class="panel-heading">
+                            <h2><i class="fa fa-building"></i><span
+                                    class="break">Configuration</span></h2>
                         </div>
-                        <div class="col-sm-2">
-                            <a id="giving-options" class="quick-button"
-                               href="/dashboard/giving_options">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-repeat"></i>
-                                </span>
-                                <h5>Giving Options</h5>
-                            </a>
+                        <div class="panel-body">
+                            <div class="col-sm-2">
+                                <a id="org-info" class="quick-button"
+                                   href="/dashboard/org_info">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-info"></i>
+                                    </span>
+                                    <h5>Org Information</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="giving-options" class="quick-button"
+                                   href="/dashboard/giving_options">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-repeat"></i>
+                                    </span>
+                                    <h5>Giving Options</h5>
+                                </a>
+                            </div>
                         </div>
-
-                    </div>
-				</div>
-			</div><!--/col-lg8-->
+                    {{/if}}
+                </div>
+			</div><!--/col-lg-12-->
 	</div><!--/row-->
     {{#if showGetStripeEvent}}
         <div class="row">

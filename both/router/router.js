@@ -14,7 +14,7 @@ Router.plugin('ensureSignedIn', {
 });
 
 Router.onBeforeAction(function() {
-    if (!Roles.userIsInRole(Meteor.user(), 'admin')) {
+    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin'])) {
         this.render("NotFound");
     } else {
         this.next();
@@ -22,7 +22,7 @@ Router.onBeforeAction(function() {
 }, {only : 'admin.dashboard'});
 
 Router.onBeforeAction(function() {
-    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'reports']) ) {
+    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin', 'reports']) ) {
         this.render("NotFound");
     } else {
         this.next();
@@ -129,7 +129,7 @@ Router.route('/dashboard', function () {
     name: 'admin.dashboard'
 });
 
-Router.route('/reprotsDashboard', function () {
+Router.route('/reprotsdashboard', function () {
     this.layout('AdminLayout');
 
     this.render('ReportsDashboard');

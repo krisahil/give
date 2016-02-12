@@ -1,25 +1,28 @@
 <template name="ReportsDashboard">
-    <div class="row">
-		<div class="col col-lg-2"></div>
-			<div class="col-lg-8">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h2><i class="fa fa-asterisk"></i><span class="break">Reports</span></h2>
-					</div>
-					<div class="panel-body">
-                        <div class="col-sm-2">
-							<a id="transfers" class="quick-button" href="/transfers">
-								<span class="fa-stack fa-lg">
-									<i class="fa fa-exchange"></i>
-								</span>
-								<h5>Stripe Transfers</h5>
-							</a>
-						</div>
-						<div class="clearfix"></div>
-					</div>
-				</div>
-			</div><!--/col-lg8-->
-	</div><!--/row-->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2><i class="fa fa-asterisk"></i><span class="break">Reports</span></h2>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-2">
+                <a id="transfers" class="quick-button" href="/transfers">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-exchange"></i>
+                    </span>
+                    <h5>Stripe Transfers</h5>
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a class="quick-button" href="expiring">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-cc-visa"></i>
+                    </span>
+                    <h5>Expiring Cards</h5>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
     {{#if showGetStripeEvent}}
         <div class="row">
             <div class="col col-lg-2"></div>
