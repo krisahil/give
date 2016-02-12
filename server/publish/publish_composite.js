@@ -112,7 +112,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
   }
 });
 
-Meteor.publishComposite('expiring_cards', function () {
+Meteor.publishComposite('subscriptions_and_customers', function () {
 
   // Publish the nearly expired or expired card data to the admin dashboard
   if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
@@ -120,7 +120,12 @@ Meteor.publishComposite('expiring_cards', function () {
       find:     function () {
         // Find posts made by user. Note arguments for callback function
         // being used in query.
-        return Subscriptions.find( { status: "active" } );
+        return Subscriptions.find( {
+          $or: [
+            { status: 'active' },
+            { status: 'trialing' }
+          ]
+        } );
       },
       children: [
         {
@@ -135,6 +140,7 @@ Meteor.publishComposite('expiring_cards', function () {
                 fields: {
                   metadata:       1,
                   default_source: 1,
+                  default_source_type: 1,
                   sources:        1
                 }
               } );

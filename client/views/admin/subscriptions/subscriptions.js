@@ -101,12 +101,43 @@ Template.AdminSubscriptions.events({
   },
   'click .reset-button': function () {
     $(".search").val("").change();
+  },
+  'click #btn_modal_for_add_new_bank_account': function () {
+    $("#modal_for_add_new_bank_account").modal('show');
+    Session.set('updateSubscription', this.id);
+  },
+  'click #go_to_resubscribe_link': function () {
+    Router.go('/user/subscriptions/card/resubscribe?s=' + this.id + "&c=" + this.customer);
   }
 });
 
 Template.AdminSubscriptions.helpers({
   subscriptions: function () {
     return Subscriptions.find();
+  },
+  card_or_bank: function () {
+    const customer = this.customer;
+    const customer_cursor = Customers.findOne({_id: customer});
+    const default_source_type =  customer_cursor.default_source_type;
+    if(default_source_type === 'bank_account') {
+      return 'Bank Account';
+    } else if(default_source_type === 'card') {
+      return 'Card'
+    } else {
+      return 'Other';
+    }
+  },
+  card_subscription: function () {
+    const customer = this.customer;
+    const customer_cursor = Customers.findOne({_id: customer});
+    const default_source_type =  customer_cursor.default_source_type;
+    if(default_source_type === 'bank_account') {
+      return false;
+    } else if(default_source_type === 'card') {
+      return true;
+    } else {
+      return false;
+    }
   },
   searchSubscriptions: function () {
     if(Session.equals("searchValue", "")){

@@ -19,7 +19,8 @@
             <th>Amount</th>
             <th>Next Gift</th>
             <th>Designation</th>
-            {{#if isInRole 'admin, records-admin'}}
+            <th>Stripe ID</th>
+            {{#if isInRole 'admin, dt-admin'}}
                 <th class="text-center"></th>
             {{/if}}
         </tr>
@@ -33,11 +34,23 @@
                 <td>${{twoDecimalPlaces quantity}}</td>
                 <td>{{formatDate current_period_end true}}</td>
                 <td>{{metadata.donateTo}}</td>
+                <td>{{_id}}</td>
                 {{#if isInRole 'admin, dt-admin'}}
-                    <td class="text-center">
-                        <!-- TODO: insert the button for editing this record -->
-                        <button class="btn btn-sm btn-primary no-top-or-bottom-padding edit-button">Edit</button>
-                        <button class="btn btn-sm btn-danger no-top-or-bottom-padding stop-button">Stop</button>
+                    <td class="text-right">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            {{#if card_subscription}}
+                                <button id="go_to_resubscribe_link" class="btn btn-sm btn-info">
+                                    Edit {{card_or_bank}}</button>
+                            {{else}}
+                                {{> AddNewBankAccount}}
+                                <button id="btn_modal_for_add_new_bank_account"
+                                    class="btn btn-sm btn-info">
+                                        Edit {{card_or_bank}}
+                                </button>
+                            {{/if}}
+                            <button class="btn btn-sm btn-primary edit-button">Edit Parts</button>
+                            <button class="btn btn-sm btn-danger stop-button">Stop</button>
+                        </div>
                     </td>
                 {{/if}}
             </tr>

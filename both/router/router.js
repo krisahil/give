@@ -176,7 +176,7 @@ Router.route('/expiring',{
 
     subscriptions: function(){
         return [
-            Meteor.subscribe('expiring_cards')
+            Meteor.subscribe('subscriptions_and_customers')
         ]
     },
     action: function () {
@@ -345,22 +345,15 @@ Router.route('/dashboard/getdtdata', {
   }
 });
 
-Router.route('/dashboard/subscriptions/:_id', {
-  layoutTemplate: 'AdminLayout',
-  name: 'AdminSubscription',
-  where: 'client',
-  template: 'AdminSubscriptions',
-  waitOn: function() {
-    return Meteor.subscribe('adminSubscriptions', this.params._id);
-  }
-});
-
 Router.route('/dashboard/subscriptions', {
   layoutTemplate: 'AdminLayout',
   name: 'AdminSubscriptions',
   where: 'client',
   template: 'AdminSubscriptions',
   waitOn: function() {
-    return Meteor.subscribe('adminSubscriptions');
+    return Meteor.subscribe('subscriptions_and_customers');
+  },
+  data: function () {
+    return Subscriptions.find();
   }
 });

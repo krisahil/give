@@ -236,11 +236,11 @@ _.extend(StripeFunctions, {
         Refunds.upsert({_id: event_body.data.object.id}, event_body.data.object);
         break;
       case "subscription":
-        Subscriptions.upsert({_id: event_body.data.object._id}, event_body.data.object);
+        Subscriptions.upsert({_id: event_body.data.object.id}, event_body.data.object);
         break;
       case 'transfer':
         console.dir(event_body);
-        Transfers.upsert({_id: event_body.data.object._id}, event_body.data.object);
+        Transfers.upsert({_id: event_body.data.object.id}, event_body.data.object);
         let transactions = StripeFunctions.get_transactions_from_transfer(event_body.data.object.id);
         console.dir(transactions);
         StripeFunctions.upsert_stripe_transactions(transactions, event_body.data.object.id);
