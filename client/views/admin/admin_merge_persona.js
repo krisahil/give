@@ -22,12 +22,14 @@ Template.AdminMergePersona.events({
       if (result) {
         console.dir(result);
         $("#spinDiv").hide();
+        $('#old-persona-id').val('');
+        $('#new-persona-id').val('');
         $('#modal_for_admin_merge_persona').modal('hide');
-        Bert.alert(result);
+        Bert.alert(result, 'success');
       } else {
         $("#spinDiv").hide();
-        $('#modal_for_admin_merge_persona').modal('hide');
         console.log(error);
+        Bert.alert(error, 'danger');
       }
     });
 

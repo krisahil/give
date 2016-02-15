@@ -1,10 +1,12 @@
-<template name="AdminSubscriptionModal">
+<template name="SubscriptionModal">
     <div class="modal fade" id="modal_for_admin_subscription_change_form">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Here is what their current recurring gift looks like. Make changes and submit.</h4>
+                    <h4 class="modal-title">
+                        Here are the recurring gift details. Edit the fields you want to change.
+                    </h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" id="subscription_change">
@@ -43,16 +45,16 @@
 
                         <div class="modal-footer bg-white">
                             {{#unless changeDesignation}}
-                                <button id="showDesignation" class="btn btn-primary">Change Designation</button>
+                                <button id="showDesignation" class="btn btn-success">Change Designation</button>
                             {{else}}
-                                <button id="hideDesignation" class="btn btn-primary">Don't Change Designation</button>
+                                <button id="hideDesignation" class="btn btn-success">Don't Change Designation</button>
                             {{/unless}}
                             {{#unless changeDate}}
-                                <button id="showCalendar" class="btn btn-primary">Change Date</button>
+                                <button id="showCalendar" class="btn btn-success">Change Date</button>
                             {{else}}
-                                <button id="hideCalendar" class="btn btn-primary">Don't Change Date</button>
+                                <button id="hideCalendar" class="btn btn-success">Don't Change Date</button>
                             {{/unless}}
-                            <button type="submit" class="btn btn-success" data-loading-text="Processing...">Submit</button>
+                            <button type="submit" class="btn btn-primary" data-loading-text="Processing...">Submit</button>
                         </div>
 
                     </form>

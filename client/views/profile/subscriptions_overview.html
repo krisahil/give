@@ -59,6 +59,9 @@
                         <li class="list-group-item bm-block clearfix">
                             <a href="" class="btn btn-block btn-danger cancelButton cancel_subscription">Cancel</a>
                         </li>
+                        <li class="list-group-item bm-block clearfix">
+                            <button class="btn btn-block btn-primary edit-button">Edit Parts</button>
+                        </li>
                         {{#if card_subscription}}
                             <li class="list-group-item bm-block clearfix">
                                 <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary">Update Payment</a>
@@ -110,4 +113,5 @@
     {{/if}}
   </div>
     {{> Modals}}
+    {{> SubscriptionModal}}
 </template>

@@ -107,7 +107,8 @@ Template.AdminSubscriptions.events({
     Session.set('updateSubscription', this.id);
   },
   'click #go_to_resubscribe_link': function () {
-    Router.go('/user/subscriptions/card/resubscribe?s=' + this.id + "&c=" + this.customer);
+    Router.go('/user/subscriptions/card/resubscribe?s=' +
+      this.id + "&c=" + this.customer + "&admin=yes");
   }
 });
 
@@ -120,9 +121,9 @@ Template.AdminSubscriptions.helpers({
     const customer_cursor = Customers.findOne({_id: customer});
     const default_source_type =  customer_cursor.default_source_type;
     if(default_source_type === 'bank_account') {
-      return 'Bank Account';
+      return 'Bank';
     } else if(default_source_type === 'card') {
-      return 'Card'
+      return 'Card';
     } else {
       return 'Other';
     }

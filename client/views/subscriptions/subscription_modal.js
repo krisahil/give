@@ -1,4 +1,4 @@
-Template.AdminSubscriptionModal.helpers({
+Template.SubscriptionModal.helpers({
   attributes_Input_Amount: function() {
     return {
       name: "amount",
@@ -26,7 +26,7 @@ Template.AdminSubscriptionModal.helpers({
   }
 });
 
-Template.AdminSubscriptionModal.events({
+Template.SubscriptionModal.events({
   'submit form': function(e) {
     e.preventDefault();
     console.log("Submitted event started for AdminSubscriptionModal form");
@@ -96,7 +96,7 @@ Template.AdminSubscriptionModal.events({
   }
 });
 
-Template.AdminSubscriptionModal.onRendered(function () {
+Template.SubscriptionModal.onRendered(function () {
 
   Session.set("yes_change_date", false);
 

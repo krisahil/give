@@ -31,7 +31,7 @@
                             {{#if isRepair}}
                                 <div class="col-xs-12 col-md-12">
                                     <div class="form-group">
-                                        <div class="col-xs-6 col-lg-6" id="expiry_monthDiv">
+                                        <div class="col" id="expiry_monthDiv">
                                             <select class="form-control  select select-primary select-block mbl" name="expMo" required>
                                                 <option value="">Month</option>
                                                 <option value="01">Jan (01)</option>
@@ -48,7 +48,7 @@
                                                 <option value="12">Dec (12)</option>
                                             </select>
                                         </div>
-                                        <div class="col-xs-6 col-lg-6" name="expiry_yearDiv">
+                                        <div class="col" name="expiry_yearDiv">
                                             <select class="form-control select select-primary select-block mbl" name="expYr" required>
                                                 <option value="">Year</option>
                                                 <option value="2015">2015</option>
@@ -82,7 +82,7 @@
                     </div> <!-- end .panel-body -->
                     <div class="panel-footer">
                         <button type="submit" class="btn btn-primary resubscribe" data-loading-text="Processing...">Update</button>
-                        <a href="{{pathFor 'subscriptions'}}" class="btn btn-default">Cancel</a>
+                        <a id="cancel-card-form" class="btn btn-warning">Cancel</a>
                     </div>
                 </form> <!-- end #resubscribe -->
             </div>

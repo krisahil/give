@@ -51,35 +51,35 @@ Meteor.methods({
         });
         console.log(updated_data.status);
 
-            var subscription_amount = Subscriptions.findOne({_id: updated_data.subscription_id}).quantity;
-            var subscription_metadata = Subscriptions.findOne({_id: updated_data.subscription_id}).metadata;
-            var subscription_plan = Subscriptions.findOne({_id: updated_data.subscription_id}).plan.name;
-            if (updated_data.status === 'canceled') {
-                var updated_card = Utils.update_stripe_customer_card(updated_data);
-                if (!updated_card.object) {
-                    return {error: updated_card.rawType, message: updated_card.message};
-                } else {
-                    var created_subscription = Utils.stripe_create_subscription(updated_data.customer_id, updated_data.card, subscription_plan, subscription_amount, subscription_metadata);
-                    if (!created_subscription.object) {
-                        return {error: created_subscription.rawType, message: created_subscription.message};
-                    }
-                    else {
-                        Subscriptions.update({_id: updated_data.subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
-                        return 'new';
-                    }
-                }
+        var subscription_amount = Subscriptions.findOne({_id: updated_data.subscription_id}).quantity;
+        var subscription_metadata = Subscriptions.findOne({_id: updated_data.subscription_id}).metadata;
+        var subscription_plan = Subscriptions.findOne({_id: updated_data.subscription_id}).plan.name;
+        if (updated_data.status === 'canceled') {
+            var updated_card = Utils.update_stripe_customer_card(updated_data);
+            if (!updated_card.object) {
+                return {error: updated_card.rawType, message: updated_card.message};
             } else {
-                var updated_card = Utils.update_stripe_customer_card(updated_data);
-                // Store the updated information with both the device and the customer records that use that device.
-                Devices.update({_id: updated_card.id}, updated_card);
-                var result_of_update = Customers.update({_id: updated_card.customer, 'sources.data.id': updated_card.id}, {$set: {'sources.data.$': updated_card}});
-
-                if (!updated_card.object) {
-                    return {error: updated_card.rawType, message: updated_card.message};
-                } else {
-                    return 'success';
+                var created_subscription = Utils.stripe_create_subscription(updated_data.customer_id, updated_data.card, subscription_plan, subscription_amount, subscription_metadata);
+                if (!created_subscription.object) {
+                    return {error: created_subscription.rawType, message: created_subscription.message};
+                }
+                else {
+                    Subscriptions.update({_id: updated_data.subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
+                    return 'new';
                 }
             }
+        } else {
+            var updated_card = Utils.update_stripe_customer_card(updated_data);
+            // Store the updated information with both the device and the customer records that use that device.
+            Devices.update({_id: updated_card.id}, updated_card);
+            var result_of_update = Customers.update({_id: updated_card.customer, 'sources.data.id': updated_card.id}, {$set: {'sources.data.$': updated_card}});
+
+            if (!updated_card.object) {
+                return {error: updated_card.rawType, message: updated_card.message};
+            } else {
+                return 'success';
+            }
+        }
     },
     stripeUpdateBank: function (bank, subscription_id, save_payment) {
       logger.info("Started method stripeUpdateBank.");

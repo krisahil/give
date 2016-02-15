@@ -142,6 +142,29 @@ Template.SubscriptionsOverview.events({
   'click #btn_modal_for_add_new_bank_account': function () {
     $("#modal_for_add_new_bank_account").modal('show');
     Session.set('updateSubscription', this.id);
+  },
+  'click .edit-button': function (e) {
+    e.preventDefault();
+    console.log("Clicked edit");
+    let self = this;
+
+    Session.set("change_subscription_id", this._id);
+    Session.set("change_customer_id", this.customer);
+    Session.set('change_donateTo', this.metadata.donateTo);
+    Session.set('change_amount', this.quantity);
+    Session.set('change_date', this.current_period_end);
+
+    $('#modal_for_admin_subscription_change_form').modal({
+      show: true,
+      backdrop: 'static'
+    });
+
+    Meteor.setTimeout(function() {
+      $("select option").filter(function() {
+        //may want to use $.trim in here
+        return $(this).text() === self.metadata.donateTo;
+      }).prop('selected', true).change();
+    }, 0);
   }
 });
 

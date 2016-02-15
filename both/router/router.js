@@ -346,7 +346,7 @@ Router.route('/dashboard/getdtdata', {
 });
 
 Router.route('/dashboard/subscriptions', {
-  layoutTemplate: 'AdminLayout',
+  layoutTemplate: 'UserLayout',
   name: 'AdminSubscriptions',
   where: 'client',
   template: 'AdminSubscriptions',
