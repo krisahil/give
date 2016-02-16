@@ -130,12 +130,6 @@ Template.UserProfile.helpers({
             return Meteor.users.findOne().persona_info;
         } else {
           return;
-          /*if(Meteor.users.findOne().persona_ids){
-
-          } else {
-            console.error("No DT ids found");
-            return;
-          }*/
         }
     },
     company_or_name: function () {
@@ -231,7 +225,9 @@ Template.UserProfile.events({
 
 Template.UserProfile.onRendered(function() {
 
-    if(!Meteor.users.findOne().persona_info || Meteor.users.findOne().persona_info.length < 1) {
+    if(!Meteor.users.findOne().persona_info ||
+      Meteor.users.findOne().persona_info.length < 1 ||
+      Meteor.users.findOne().persona_info.length < Meteor.users.findOne().persona_ids.length) {
       Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
         if( result ) {
           console.log( result );

@@ -297,7 +297,6 @@ _.extend(Utils, {
 
       if( !dt_persona_match_id ) {
         dt_persona_match_id = Utils.create_dt_account(customer, user_id);
-        logger.info("LOOKIE HERE - > ", dt_persona_match_id);
       }
 
       logger.info( "The donor Tools ID for this customer is ", dt_persona_match_id );
