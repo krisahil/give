@@ -700,20 +700,21 @@ Meteor.methods({
       }
     }
   },
-  post_dt_note: function () {
+  post_dt_note: function (to_persona, note) {
+    check(to_persona, String);
+    check(note, String);
 
     try {
       //check to see that the user is the admin user
       if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
         logger.info("Started post_dt_note");
-        let noteResult = HTTP.post(Meteor.settings.donor_tools_site + '/people/6434123/notes.json', {
+        let noteResult = HTTP.post(Meteor.settings.donor_tools_site + '/people/' +
+          to_persona + '/notes.json', {
           "data": {
-            "note": [{
-              "note": "test note from Call",
-              "noteable_type": "Persona"
-            }]
-          }
-        },{
+            "note": {
+              "note": note
+            }
+          },
           auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
         });
         return noteResult.data;
