@@ -275,13 +275,8 @@ Router.route('FixCardSubscription', {
     path: '/user/subscriptions/card/resubscribe',
     template: 'FixCardSubscription',
 
-    subscriptions: function(){
-        var query = this.params.query;
-        console.log(query.s);
-        return [
-            Meteor.subscribe('subscription', query.s),
-            Meteor.subscribe('customer', query.c)
-        ]
+    /*subscriptions: function(){
+
     },
     action: function () {
         if (this.ready()) {
@@ -291,7 +286,19 @@ Router.route('FixCardSubscription', {
     } else {
             this.render('Loading');
         }
-    }
+    }*/
+
+  waitOn: function() {
+    var query = this.params.query;
+    console.log( query.s );
+    return [
+      Meteor.subscribe( 'subscription', query.s ),
+      Meteor.subscribe( 'customer', query.c )
+    ]
+  },
+  data: function () {
+    return Subscriptions.find();
+  }
 });
 
 Router.route('FixBankSubscription', {

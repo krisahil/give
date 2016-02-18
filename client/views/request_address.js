@@ -17,10 +17,18 @@ Template.RequestAddress.events({
             $('#phoneDiv').show().find('input, textarea').prop('disabled', false);
             $('#phone').show().find('input, textarea').prop('disabled', false);
         }
-    }
+    },
+  'click #show_business_name': function () {
+    console.log("clicked");
+    $("#org").val('');
+    $( "#org_form_group" ).toggle();
+  }
 });
 
 Template.RequestAddress.helpers({
+    business_checkbox: function () {
+
+  },
   attributes_Input_FName: function () {
       return {
         type: "text",

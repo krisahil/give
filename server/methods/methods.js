@@ -680,17 +680,28 @@ Meteor.methods({
     trial_end ? fields.trial_end = trial_end : null;
     donateTo ? fields.metadata ? fields.metadata.donateTo = donateTo: fields.metadata = {donateTo: donateTo} : null;
     console.log(fields);
+    this.unblock();
 
     if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
-      this.unblock();
-      // TODO: tell Stripe to stop this subscription
-      let newSubscription = Utils.upadte_stripe_subscription_amount_or_designation_or_date(subscription_id,
+      let newSubscription =
+        Utils.upadte_stripe_subscription_amount_or_designation_or_date(subscription_id,
         customer_id, fields);
       Subscriptions.upsert({_id: subscription_id}, newSubscription);
       console.log(newSubscription);
       return "Edited that subscription";
-    } else {
-      return;
+    } else if(this.userId){
+      let user_email = Meteor.users.findOne({_id: this.userId}).emails[0].address;
+      let subscription_email = Subscriptions.findOne({_id: subscription_id}).metadata.email;
+      if(user_email === subscription_email){
+        let newSubscription =
+          Utils.upadte_stripe_subscription_amount_or_designation_or_date(subscription_id,
+            customer_id, fields);
+        Subscriptions.upsert({_id: subscription_id}, newSubscription);
+        console.log(newSubscription);
+        return "Edited that subscription";
+      } else {
+        return;
+      }
     }
   }
 });

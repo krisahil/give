@@ -1,3 +1,22 @@
+var init_calendar = function(){
+  let datepickerSelector = $('#start_date');
+
+  datepickerSelector.datepicker({
+  showOtherMonths: true,
+  selectOtherMonths: true,
+  dateFormat: 'd MM, yy',
+  minDate: 0,
+  maxDate: +32
+  }).prev('.input-group-btn').on('click', function (e) {
+    e && e.preventDefault();
+    datepickerSelector.focus();
+  });
+  $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
+
+  // Now let's align datepicker with the prepend button
+  datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
+};
+
 Template.SubscriptionModal.helpers({
   attributes_Input_Amount: function() {
     return {
@@ -72,6 +91,7 @@ Template.SubscriptionModal.events({
     e.preventDefault();
     Session.set("yes_change_date", true);
     $('#calendarSection').show();
+    //init_calendar();
   },
   'click #hideCalendar': function (e) {
     e.preventDefault();
@@ -105,23 +125,6 @@ Template.SubscriptionModal.onRendered(function () {
 
   $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
-  var datepickerSelector = $('#start_date');
-  datepickerSelector.datepicker({
-    showOtherMonths: true,
-    selectOtherMonths: true,
-    dateFormat: 'd MM, yy',
-    minDate: 0,
-    maxDate: +32
-  }).prev('.input-group-btn').on('click', function (e) {
-    e && e.preventDefault();
-    datepickerSelector.focus();
-  });
-  $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
-
-  // Now let's align datepicker with the prepend button
-  datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
+  init_calendar();
 
 });
-
-
-

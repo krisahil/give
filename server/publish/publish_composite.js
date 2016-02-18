@@ -141,7 +141,8 @@ Meteor.publishComposite('subscriptions_and_customers', function () {
                   metadata:       1,
                   default_source: 1,
                   default_source_type: 1,
-                  sources:        1
+                  sources: 1,
+                  subscriptions: 1
                 }
               } );
           }

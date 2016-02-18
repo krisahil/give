@@ -419,7 +419,7 @@ _.extend(Utils,{
                         data_slug.message.merge_vars[0].vars.push(
                             {
                                 "name": "URL",
-                                "content": "https://trashmountain.com/donate"
+                                "content": Meteor.settings.public.org_donate_url
                             }
                         );
                     }

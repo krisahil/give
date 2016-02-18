@@ -25,10 +25,15 @@
 
     <div class="form-group">
         <div class="col-sm-12">
+
+            <input type="checkbox" id="show_business_name" data-toggle="checkbox" />
+             This donation is made on behalf of an organization.
+        </div>
+        <div class="col-sm-12" id="org_form_group" {{business_checkbox}} style="{{#unless locked}}display: none;{{/unless}}">
             <!--[if lt IE 9]>
-                <label>Make a donation on behalf of your organization</label>
+                <label>Business/Organization Name</label>
             <![endif]--> 
-            <input type="text" id="org" class="form-control slim-borders capitalize_this" placeholder="Business Name (If applicable)"
+            <input type="text" id="org" class="form-control slim-borders capitalize_this" placeholder="Business/Organization Name"
                value="{{logged_in 'business_name'}}">
         </div>
     </div><!-- /form-group -->

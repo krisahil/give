@@ -13,7 +13,7 @@
                     </thead>
                     <tbody>
                         {{#each customers}}
-                            <tr>
+                            <tr class="expiring">
                                 <td>{{metadata.fname}} {{metadata.lname}}</td>
                                 <td>{{sources.data.[0].exp_month}}/{{sources.data.[0].exp_year}}</td>
                                 <td>{{metadata.email}}</td>

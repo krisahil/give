@@ -49,11 +49,11 @@ Template.DonationForm.events({
 
         if($('#donateWith').val() === 'Card'){
             if(!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())){
-                var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"}
+                var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"};
                 App.handleErrors(new_error);
                 return;
             } else if(!Stripe.card.validateCardNumber($('#card_number').val())){
-                var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"}
+                var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"};
                 App.handleErrors(new_error);
                 return;
             }

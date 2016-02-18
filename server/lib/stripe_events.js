@@ -32,7 +32,7 @@ Stripe_Events = {
         subscription_id = invoice_cursor.subscription;
       } else {
         invoice_object = StripeFunctions.get_invoice(stripeEvent.data.object.invoice);
-        subscription_cursor = Subscriptions.findOne( { _id: invoice_cursor.subscription } );
+        subscription_cursor = Subscriptions.findOne( { _id: invoice_object.subscription } );
         console.log(invoice_object);
         subscription_id = invoice_object.subscription;
       }
@@ -86,6 +86,20 @@ Stripe_Events = {
       let refund_object = Utils.stripe_get_refund(stripeEvent.data.object.refunds.data[0].id);
       console.log(refund_object);
       Refunds.upsert({_id: refund_object.id}, refund_object);
+    }
+    // TODO: send failed email
+    if(stripeEvent.data.object.invoice) {
+      let wait_for_metadata_update = Utils.update_charge_metadata( stripeEvent );
+
+      let invoice_cursor = Invoices.findOne( { _id: stripeEvent.data.object.invoice } );
+      let subscription_cursor = Subscriptions.findOne( { _id: invoice_cursor.subscription } );
+
+      console.log( invoice_cursor._id );
+      Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+        stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
+    } else {
+      Utils.send_donation_email( false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
+        stripeEvent, "One Time", null );
     }
     console.log(stripeEvent.type + ': event processed');
     return;

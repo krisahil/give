@@ -14,16 +14,24 @@
 
                             <!-- Donation ID -->
                             <div class="text-center well well-lg form-group">
-                                <label class="control-label" for="donation-id">Old Persona ID</label>
+                                <label class="control-label" for="donation-id">
+                                    This is the persona ID of the account you are losing in Donor Tools
+                                </label>
                                 <input id='old-persona-id' type="number" class="form-control slim-borders"
-                                       required data-parsley-error-message="Please enter a number." data-parsley-errors-container="#show-donation-id-error-here" />
+                                       required data-parsley-error-message="Please enter a number."
+                                       data-parsley-errors-container="#show-donation-id-error-here"
+                                        placeholder="Losing Persona ID"/>
                                 <div id="show-donation-id-error-here"></div>
                             </div>
                             <!-- Move to this persona id -->
                             <div class="text-center well well-lg form-group">
-                                <label class="control-label" for="move-to-id">New Persona ID</label>
+                                <label class="control-label" for="move-to-id">
+                                    This is the persona ID of the account you are keeping in DonorTools
+                                </label>
                                 <input id='new-persona-id' type="number" class="form-control slim-borders"
-                                       required data-parsley-error-message="Please enter a number." data-parsley-errors-container="#show-move-to-id-error-here" />
+                                       required data-parsley-error-message="Please enter a number."
+                                       data-parsley-errors-container="#show-move-to-id-error-here"
+                                       placeholder="Gaining Persona ID" />
                                 <div id="show-move-to-id-error-here"></div>
                             </div>
 

@@ -290,8 +290,9 @@ _.extend(App, {
 
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.type);
-            $('#errorDescription').html(error.message);
+            $('#errorCategory').html(error.type ? error.type : 'General');
+            $('#errorDescription').html(error.message ? error.message : '' + " " +
+            error.reason ? error.reason : '');
             return;
         }
         if(error.message === "Your card's security code is invalid."){
@@ -300,14 +301,16 @@ _.extend(App, {
 
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.code);
-            $('#errorDescription').html(error.message);
+            $('#errorCategory').html(error.code ? error.code : error.error ? error.error : 'General');
+            $('#errorDescription').html(error.message ? error.message : '' + " " +
+            error.reason ? error.reason : '');
             return;
         } else{
             $('#modal_for_initial_donation_error').modal({show: true});
             $(".modal-dialog").css("z-index", "1500");
-            $('#errorCategory').html(error.code);
-            $('#errorDescription').html(error.message);
+            $('#errorCategory').html(error.code ? error.code : error.error ? error.error : 'General');
+            $('#errorDescription').html(error.message ? error.message : '' + " " +
+            error.reason ? error.reason : '');
             return;
         }
     },

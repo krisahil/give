@@ -87,7 +87,8 @@ Here is an example settings.json file
     "org_phone": "Your org phone number",
     "org_ein": "Your org tax id/EIN",
     "org_is_501c3": true,
-    "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'"
+    "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'",
+    "org_donate_url": "Your org home page URL, for example 'https://trashmountain.com/donate'"
   }
 }
 ```

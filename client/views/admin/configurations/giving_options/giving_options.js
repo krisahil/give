@@ -179,7 +179,9 @@ Template.GivingOptions.events({
 /*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    var selectedGivingOptions = MultiConfig.findOne( {_id: 'trashmountain' } ).GivingOptionsSelectedIDs;
+    let selectedGivingOptions =
+      MultiConfig.findOne( {_id: 'trashmountain' } ) &&
+      MultiConfig.findOne( {_id: 'trashmountain' } ).GivingOptionsSelectedIDs;
     if( selectedGivingOptions ) {
       return DT_funds.find({'id': {$nin: selectedGivingOptions}}, {sort: { name: 1 } });
     } else {

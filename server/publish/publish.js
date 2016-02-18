@@ -87,7 +87,7 @@ Meteor.publish("subscription", function (subscription_id) {
   check(subscription_id, String);
 
 	if (this.userId) {
-    return Subscriptions.find({'_id': subscription_id});
+    return Subscriptions.find({_id: subscription_id});
 	} else {
     this.stop();
     return;
