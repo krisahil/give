@@ -311,67 +311,79 @@ _.extend(Utils, {
             return 'scheduled';
         }
     },
-    audit_email: function (id, type, failure_message, failure_code) {
+    audit_email: function (id, type, failure_message, failure_code){
         logger.info("Inside audit_email.");
 
-        if (type === 'charge.pending') {
-            Audit_trail.upsert({charge_id: id}, {
-                    $set: {
-                        'charge.pending.sent': true,
-                        'charge.pending.time': new Date()
-                    }
-                }
-            );
-        } else if (type === 'charge.succeeded') {
-            Audit_trail.upsert({charge_id: id}, {
-                    $set: {
-                        'charge.succeeded.sent': true,
-                        'charge.succeeded.time': new Date()
-                    }
-                }
-            );
-        } else if (type === 'payment.created') {
-            Audit_trail.upsert({charge_id: id}, {
-                    $set: {
-                        'payment.created.sent': true,
-                        'payment.created.time': new Date()
-                    }
-                }
-            );
-        } else if (type === 'payment.paid') {
-            Audit_trail.upsert({charge_id: id}, {
-                    $set: {
-                        'payment.paid.sent': true,
-                        'payment.paid.time': new Date()
-                    }
-                }
-            );
-        } else if (type === 'large_gift') {
-            Audit_trail.upsert({charge_id: id}, {
-                    $set: {
-                        'charge.large_gift.sent': true,
-                        'charge.large_gift.time': new Date()
-                    }
-                }
-            );
-        } else if (type === 'charge.failed') {
-            Audit_trail.upsert({charge_id: id}, {
-                $set: {
-                    'charge.failed.sent':       true,
-                    'charge.failed.time':       new Date(),
-                    'charge.failure_message':   failure_message,
-                    'charge.failure_code':      failure_code
-                }
-            });
-        }
-        else if (type === 'subscription.scheduled') {
-            Audit_trail.upsert({subscription_id: id}, {
-                $set: {
-                    'subscription_scheduled.sent': true,
-                    'subscription_scheduled.time': new Date()
-                }
-            });
-        }
+      switch(type){
+        case 'charge.pending':
+          Audit_trail.upsert({charge_id: id}, {
+            $set: {
+              'charge.pending.sent': true,
+              'charge.pending.time': new Date()
+            }
+          });
+          break;
+        case 'charge.succeeded':
+          Audit_trail.upsert({charge_id: id}, {
+            $set: {
+              'charge.succeeded.sent': true,
+              'charge.succeeded.time': new Date()
+            }
+          });
+          break;
+        case 'payment.created':
+          Audit_trail.upsert({charge_id: id}, {
+            $set: {
+              'payment.created.sent': true,
+              'payment.created.time': new Date()
+            }
+          });
+          break;
+        case 'payment.paid':
+          Audit_trail.upsert({charge_id: id}, {
+            $set: {
+              'payment.paid.sent': true,
+              'payment.paid.time': new Date()
+            }
+          });
+          break;
+        case 'large_gift':
+          Audit_trail.upsert({charge_id: id}, {
+              $set: {
+                'charge.large_gift.sent': true,
+                'charge.large_gift.time': new Date()
+              }
+          });
+          break;
+        case 'charge.failed':
+          Audit_trail.upsert({charge_id: id}, {
+            $set: {
+              'charge.failed.sent':       true,
+              'charge.failed.time':       new Date(),
+              'charge.failure_message':   failure_message,
+              'charge.failure_code':      failure_code
+            }
+          });
+          break;
+        case 'subscription.scheduled':
+          Audit_trail.upsert({subscription_id: id}, {
+            $set: {
+              'subscription_scheduled.sent': true,
+              'subscription_scheduled.time': new Date()
+            }
+          });
+          break;
+        case 'dt.account.created':
+          Audit_trail.upsert({persona_id: id}, {
+            $set: {
+              'dt_account_created.sent': true,
+              'dt_account_created.time': new Date()
+            }
+          });
+          break;
+        default:
+          logger.info("No case matched");
+      };
     },
     get_frequency_and_subscription: function (invoice_id) {
         logger.info("Started get_frequency");
@@ -971,5 +983,32 @@ _.extend(Utils, {
     console.dir(stripeSubscriptionUpdate);
 
     return stripeSubscriptionUpdate;
+  },
+  send_new_dt_account_added_email_to_support_email_contact: function (email, user_id, personaID){
+
+    logger.info("Started send_new_dt_account_added_email_to_support_email_contact");
+    if(Audit_trail.findOne({persona_id: personaID}) &&
+      Audit_trail.findOne({persona_id: personaID}).dt_account_created)  {
+      logger.info("Already sent a send_new_dt_account_added_email_to_support_email_contact email");
+      return;
+    }
+    let wait_for_audit = Utils.audit_email(personaID, 'dt.account.created');
+
+    //Create the HTML content for the email.
+    //Create the link to go to the new person that was just created.
+    var html = "<h1>DT account created</h1><p>" +
+      "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='https://trashmountain.donortools.com/people/" + personaID +"'>" + personaID + "</a></p>";
+
+    let toAddresses = [];
+    toAddresses.push(Meteor.settings.public.support_address);
+    toAddresses = toAddresses.concat(Meteor.settings.public.other_support_addresses);
+    //Send email
+
+    Email.send({
+      from: Meteor.settings.public.support_address,
+      to: toAddresses,
+      subject: "DT Account inserted.",
+      html: html
+    });
   }
 });

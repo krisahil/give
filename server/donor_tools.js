@@ -281,7 +281,7 @@ _.extend(Utils, {
   },
   'find_dt_account_or_make_a_new_one': function (customer, user_id) {
 
-    let dt_persona_match_id;
+    var dt_persona_match_id;
     if(Audit_trail.findOne( {_id: customer.id} ) && Audit_trail.findOne( {_id: customer.id} ).flow_checked ) {
 
       console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
@@ -296,7 +296,11 @@ _.extend(Utils, {
       dt_persona_match_id = Utils.find_dt_persona_flow( customer.email, customer.id );
 
       if( !dt_persona_match_id ) {
+        // Create a new Donor Tools account and assign the id to the dt_persona_match_id let
         dt_persona_match_id = Utils.create_dt_account(customer, user_id);
+
+        // Send an email to the support users telling them that a new DT account was added
+        Utils.send_new_dt_account_added_email_to_support_email_contact( customer.email, user_id, dt_persona_match_id );
       }
 
       logger.info( "The donor Tools ID for this customer is ", dt_persona_match_id );
@@ -377,12 +381,12 @@ _.extend(Utils, {
     logger.info("Started insert_gift_into_donor_tools");
 
     console.log("Charge_id: ", charge_id, " Customer_id: ", customer_id);
-    let chargeCursor, customerCursor, dt_fund, donateTo, invoice_cursor,
+    let chargeCursor, dt_fund, donateTo, invoice_cursor,
       fund_id, memo, source_id, newDonationResult, metadata;
 
     chargeCursor =  Charges.findOne({_id: charge_id});
 
-    customerCursor =  Customers.findOne({_id: customer_id});
+    const customerCursor =  Customers.findOne({_id: customer_id});
 
     if( Audit_trail.findOne( { _id: chargeCursor._id } ) && Audit_trail.findOne( { _id: chargeCursor._id } ).dt_donation_inserted ){
       logger.info("Already inserted the donation into DT.");
@@ -397,7 +401,11 @@ _.extend(Utils, {
     if(charge_id.slice(0,2) === 'ch' || charge_id.slice(0,2) === 'py') {
       if (chargeCursor.invoice) {
         invoice_cursor = Invoices.findOne({_id: chargeCursor.invoice});
-        if(invoice_cursor && invoice_cursor.lines && invoice_cursor.lines.data[0] && invoice_cursor.lines.data[0].metadata && invoice_cursor.lines.data[0].metadata.donateTo){
+        if(invoice_cursor &&
+          invoice_cursor.lines &&
+          invoice_cursor.lines.data[0] &&
+          invoice_cursor.lines.data[0].metadata &&
+          invoice_cursor.lines.data[0].metadata.donateTo){
           metadata = invoice_cursor.lines.data[0].metadata;
         } else{
           metadata = chargeCursor.metadata;
@@ -448,20 +456,20 @@ _.extend(Utils, {
 
     console.log("Persona ID is: ", customerCursor.metadata.dt_persona_id);
 
-    try {
-        logger.info("Started checking for this person in DT");
+      try {
+        logger.info( "Started checking for this person in DT" );
         let checkPerson;
-        checkPerson = HTTP.get(Meteor.settings.donor_tools_site + '/people/' +
+        checkPerson = HTTP.get( Meteor.settings.donor_tools_site + '/people/' +
           customerCursor.metadata.dt_persona_id + '.json', {
           auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-        });
-        console.log(checkPerson.data);
-    } catch (e) {
-      logger.info("------No Person with the DT ID of " +
-      customerCursor.metadata.dt_persona_id + " found in DT--------");
-      Utils.send_failed_to_add_to_dt_email_to_support(customerCursor.metadata.dt_persona_id, charge_id);
-      throw new Meteor.Error(e);
-    }
+        } );
+        console.log( checkPerson.data );
+      } catch( e ) {
+        logger.info( "------No Person with the DT ID of " +
+          customerCursor.metadata.dt_persona_id + " found in DT--------" );
+        Utils.send_failed_to_add_to_dt_email_to_support( customerCursor.metadata.dt_persona_id, charge_id );
+        throw new Meteor.Error( e );
+      }
 
     newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
       data: {

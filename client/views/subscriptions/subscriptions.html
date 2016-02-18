@@ -2,7 +2,7 @@
     {{> SubscriptionModal}}
     <form class="form">
         <div class="form-group floating-label">
-            <input type="text" class="form-control search" placeholder="Search By First or Last Name Here">
+            <input type="text" class="form-control search" placeholder="Search By Name or Org. Name Here">
             <label>*Only Active or Trialing Subscriptions are Shown</label>
         </div>
     </form>
@@ -10,15 +10,15 @@
         Clear
     </button>
 
-    <table class="table table-striped table-responsive table-condensed table-hover">
+    <table class="table table-striped table-responsive table-hover">
         <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
             <th>Email</th>
             <th>Amount</th>
             <th>Next Gift</th>
             <th>Designation</th>
+            <th>Note</th>
             <th>Stripe ID</th>
             {{#if isInRole 'admin, dt-admin'}}
                 <th class="text-right"></th>
@@ -28,12 +28,12 @@
         <tbody>
         {{#each searchSubscriptions}}
             <tr>
-                <td>{{metadata.fname}}</td>
-                <td>{{metadata.lname}}</td>
+                <td>{{name}}</td>
                 <td>{{metadata.email}}</td>
                 <td>${{twoDecimalPlaces quantity}}</td>
                 <td>{{formatDate current_period_end true}}</td>
                 <td>{{metadata.donateTo}}</td>
+                <td>{{metadata.note}}</td>
                 <td>{{_id}}</td>
                 {{#if isInRole 'admin, dt-admin'}}
                     <td class="text-right">

@@ -26,42 +26,24 @@
                                     <div id="show-amount-error-here"></div>
                                 </div>
                             </div>
-                            <div class="col col-lg-6"
-                                 style="{{#unless locked}}display: none;{{/unless}}"
-                                 id="designationSection">
-                                {{> DonationTo}}
-                            </div>
-
-                            <div class="col col-lg-6"
-                                 style="{{#unless locked}}display: none;{{/unless}}"
-                                 id="calendarSection">
-                                <div class="form-group">
-                                    <label>Next Donation Date</label>
-                                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                            <button class="btn" type="button">
-                                                <span class="fui-calendar">
-                                                </span>
-                                            </button>
-                                        </span>
-                                        <input type="text" class="form-control"
-                                               value="{{currentDate}}" id="start_date" />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="modal-footer">
                             <div class="row">
                                 <div class="col-lg-6">
                                     {{#unless changeDesignation}}
-                                    <button id="showDesignation"
-                                            class="btn btn-block btn-success">Change Designation</button>
+                                        <button id="showDesignation"
+                                                class="btn btn-block btn-success">Change Designation</button>
                                     {{else}}
                                         <button id="hideDesignation"
                                                 class="btn btn-block btn-success">Don't Change Designation</button>
                                     {{/unless}}
                                 </div>
+                                <div class="col col-lg-6"
+                                     style="{{#unless locked}}display: none;{{/unless}}"
+                                     id="designationSection">
+                                    {{> DonationTo}}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
                                 <div class="col-lg-6">
                                     {{#unless changeDate}}
                                         <button id="showCalendar" class="btn btn-block btn-success">Change Date</button>
@@ -69,10 +51,49 @@
                                         <button id="hideCalendar" class="btn btn-block btn-success">Don't Change Date</button>
                                     {{/unless}}
                                 </div>
+                                <div class="col col-lg-6"
+                                     style="{{#unless locked}}display: none;{{/unless}}"
+                                     id="calendarSection">
+                                    <div class="form-group">
+                                        <label>Next Donation Date</label>
+                                        <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button class="btn" type="button">
+                                                <span class="fui-calendar">
+                                                </span>
+                                            </button>
+                                        </span>
+                                            <input type="text" class="form-control"
+                                                   value="{{currentDate}}" id="start_date" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    {{#unless changeNote}}
+                                        <button id="showNote" class="btn btn-block btn-success">Change Note</button>
+                                    {{else}}
+                                        <button id="hideNote" class="btn btn-block btn-success">Don't Change Note</button>
+                                    {{/unless}}
+                                </div>
+                                <div class="col col-lg-6"
+                                     style="{{#unless locked}}display: none;{{/unless}}"
+                                     id="noteSection">
+                                    <label>Donation Note</label>
+                                    <input id="note" value="{{note}}" class="form-control slim-borders" />
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="modal-footer">
                             <div class="row">
                                 <br>
-                                <button type="submit" class="btn btn-lg btn-primary" data-loading-text="Processing..."><span class="fa fa-paper-plane-o"></span> Send Change(s)</button>
+                                <button type="submit" class="btn btn-lg btn-primary" data-loading-text="Processing...">
+                                    <span class="fa fa-paper-plane-o"></span> Send Change(s)
+                                </button>
                             </div>
                         </div>
 

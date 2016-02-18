@@ -254,13 +254,29 @@ Router.route('/webhooks/stripe', function () {
 
     // Receive an event, check that it contains a data.object object and send along to appropriate function
     var request = this.request.body;
-    if(request.data && request.data.object){
-      // Got it, let the Stripe server go
-      this.response.statusCode = 200;
-      this.response.end('Oh hai Stripe!\n');
+    var dt_status;
 
-      // Process this event, but first check that it actually came from Stripe
-      StripeFunctions.control_flow_of_stripe_event_processing( request );
+    if(request.data && request.data.object){
+      Meteor.call("checkDonorTools", function (err, res) {
+        if(res && res === true){
+          dt_status = true;
+        } else {
+          logger.info("DT connection is down");
+          dt_status = false;
+        }
+      });
+      if(dt_status){
+        // Got it, let the Stripe server go
+        this.response.statusCode = 200;
+        this.response.end('Oh hai Stripe!\n');
+
+        // Process this event, but first check that it actually came from Stripe
+        StripeFunctions.control_flow_of_stripe_event_processing( request );
+      } else {
+        console.log("No connecto to DT available");
+        this.response.statusCode = 500;
+        this.response.end('Sorry, no connection to DonorTools available!');
+      }
     } else {
         this.response.statusCode = 400;
         this.response.end('Oh hai Stripe!\n\n');
@@ -271,23 +287,9 @@ Router.route('/webhooks/stripe', function () {
 });
 
 Router.route('FixCardSubscription', {
-    layoutTemplate: 'UserLayout',
-    path: '/user/subscriptions/card/resubscribe',
-    template: 'FixCardSubscription',
-
-    /*subscriptions: function(){
-
-    },
-    action: function () {
-        if (this.ready()) {
-        var query1 = this.params.query;
-        Session.set('sub', query1.s);
-        this.render();
-    } else {
-            this.render('Loading');
-        }
-    }*/
-
+  layoutTemplate: 'UserLayout',
+  path: '/user/subscriptions/card/resubscribe',
+  template: 'FixCardSubscription',
   waitOn: function() {
     var query = this.params.query;
     console.log( query.s );

@@ -749,27 +749,6 @@ _.extend(Utils, {
     // Return the persona id for the company persona
     return result.id;
   },
-  send_new_dt_account_added_email_to_support_email_contact: function (email, user_id, personaID){
-
-    logger.info("Started send_dt_new_persona_added_to_meteor_user");
-
-    //Create the HTML content for the email.
-    //Create the link to go to the new person that was just created.
-    var html = "<h1>DT account created</h1><p>" +
-      "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='https://trashmountain.donortools.com/people/" + personaID +"'>" + personaID + "</a></p>";
-
-    let toAddresses = [];
-    toAddresses.push(Meteor.settings.public.support_address);
-    toAddresses = toAddresses.concat(Meteor.settings.public.other_support_addresses);
-    //Send email
-
-    Email.send({
-      from: Meteor.settings.public.support_address,
-      to: toAddresses,
-      subject: "DT Account inserted.",
-      html: html
-    });
-  },
   update_charge_with_dt_donation_id: function(charge_id, dt_donation_id){
     logger.info("Started update_charge_with_dt_donation_id");
 

@@ -64,6 +64,7 @@ Template.AdminSubscriptions.events({
     Session.set("change_subscription_id", this._id);
     Session.set("change_customer_id", this.customer);
     Session.set('change_donateTo', this.metadata.donateTo);
+    Session.set('change_note', this.metadata.note);
     Session.set('change_amount', this.quantity);
     Session.set('change_date', this.current_period_end);
 
@@ -149,10 +150,20 @@ Template.AdminSubscriptions.helpers({
       return Subscriptions.find( {
         $or: [
           { 'metadata.fname': {$regex: Session.get("searchValue"), $options: 'i' } },
-          { 'metadata.lname': {$regex: Session.get("searchValue"), $options: 'i' } }
+          { 'metadata.lname': {$regex: Session.get("searchValue"), $options: 'i' } },
+          { 'metadata.business_name': {$regex: Session.get("searchValue"), $options: 'i' } }
         ]
       } );
     }
+  },
+  name: function () {
+    let name = this.metadata && this.metadata.fname + " " +
+      this.metadata.lname;
+      if(this.metadata.business_name) {
+        return this.metadata.business_name + " - " + name;
+      } else {
+        return name;
+      }
   }
 });
 

@@ -1,8 +1,3 @@
-/*
- * Data: Read Users
- * Methods for reading user data in the database.
- */
-
 Meteor.methods({
     get_dt_funds: function () {
         try {
@@ -90,7 +85,7 @@ Meteor.methods({
               Meteor.setTimeout(function () {
 
                 // Find a local user account, create if it doesn't exist
-                user_id =       StripeFunctions.find_user_account_or_make_a_new_one(letCustomerData);
+                user_id = StripeFunctions.find_user_account_or_make_a_new_one(letCustomerData);
 
                 // Find a DonorTools account, create one if the account either
                 // doesn't exist or if the existing match doesn't look like the
@@ -560,7 +555,8 @@ Meteor.methods({
       user_id = StripeFunctions.find_user_account_or_make_a_new_one( customer );
       dt_account_id = Utils.find_dt_account_or_make_a_new_one( customer, user_id );
       wait_for_user_update = Meteor.users.update( { _id: user_id }, { $addToSet: { persona_ids: dt_account_id } } );
-      Utils.send_new_dt_account_added_email_to_support_email_contact( customer.email, user_id, dt_account_id );
+      // commented, because I believe this is in the wrong place
+      // Utils.send_new_dt_account_added_email_to_support_email_contact( customer.email, user_id, dt_account_id );
       Meteor.users.update( {_id: user_id }, { $unset: { newUser: "" } } );
       StripeFunctions.add_dt_account_id_to_stripe_customer_metadata( customer.id, dt_account_id );
     } else {
@@ -702,6 +698,35 @@ Meteor.methods({
       } else {
         return;
       }
+    }
+  },
+  post_dt_note: function () {
+
+    try {
+      //check to see that the user is the admin user
+      if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+        logger.info("Started post_dt_note");
+        let noteResult = HTTP.post(Meteor.settings.donor_tools_site + '/people/6434123/notes.json', {
+          "data": {
+            "note": [{
+              "note": "test note from Call",
+              "noteable_type": "Persona"
+            }]
+          }
+        },{
+          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+        });
+        return noteResult.data;
+      } else{
+        logger.info("You aren't an admin, you can't do that");
+        return '';
+      }
+
+    } catch (e) {
+      logger.info(e);
+      //e._id = AllErrors.insert(e.response);
+      var error = (e.response);
+      throw new Meteor.Error(error, e._id);
     }
   }
 });

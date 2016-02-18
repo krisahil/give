@@ -40,8 +40,14 @@ Template.SubscriptionModal.helpers({
   changeDate: function () {
     return Session.get("yes_change_date");
   },
+  changeNote: function () {
+    return Session.get("yes_change_note");
+  },
   changeDesignation: function () {
     return Session.get("yes_change_designation");
+  },
+  note: function () {
+    return Session.get('change_not');
   }
 });
 
@@ -52,6 +58,7 @@ Template.SubscriptionModal.events({
     let subscription_id = Session.get("change_subscription_id");
     let customer_id = Session.get("change_customer_id");
     let amount = parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0));
+    let note = $("#note").val();
     let trial_end = $("#start_date").val() ? moment(new Date(App.getCleanValue('#start_date'))).format('X'): '';
     let donateToText = $("#designationSection").is(":visible") ? $('#donateTo option:selected').text() : Session.get("change_donateTo");
 
@@ -97,6 +104,16 @@ Template.SubscriptionModal.events({
     e.preventDefault();
     Session.set("yes_change_date", false);
     $('#calendarSection').hide();
+  },
+  'click #showNote': function (e) {
+    e.preventDefault();
+    Session.set("yes_change_note", true);
+    $('#noteSection').show();
+  },
+  'click #hideNote': function (e) {
+    e.preventDefault();
+    Session.set("yes_change_note", false);
+    $('#noteSection').hide();
   },
   'click #showDesignation': function (e) {
     e.preventDefault();
