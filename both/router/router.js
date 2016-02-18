@@ -290,7 +290,7 @@ Router.route('FixCardSubscription', {
   layoutTemplate: 'UserLayout',
   path: '/user/subscriptions/card/resubscribe',
   template: 'FixCardSubscription',
-  waitOn: function() {
+  /*waitOn: function() {
     var query = this.params.query;
     console.log( query.s );
     return [
@@ -300,6 +300,24 @@ Router.route('FixCardSubscription', {
   },
   data: function () {
     return Subscriptions.find();
+  }*/
+  subscriptions: function(){
+    var query = this.params.query;
+
+    return [
+      Meteor.subscribe( 'subscription', query.s ),
+      Meteor.subscribe( 'customer', query.c )
+    ]
+   },
+  action: function () {
+    var query = this.params.query;
+
+    if (this.ready()) {
+      Session.set('sub', query.s);
+      this.render();
+    } else {
+      this.render('Loading');
+    }
   }
 });
 

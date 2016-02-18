@@ -362,7 +362,7 @@ _.extend(Utils,{
                         data_slug.message.merge_vars[0].vars.push(
                             {
                                 "name": "URL",
-                                "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type + "/resubscribe?s=" +
+                                "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type.toLowerCase() + "/resubscribe?s=" +
                                     subscription + "&c=" + subscription_cursor.customer)
                             }
                         );
@@ -372,7 +372,7 @@ _.extend(Utils,{
                     data_slug.message.merge_vars[0].vars.push(
                         {
                             "name": "URL",
-                            "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type +  "/resubscribe?s=" +
+                            "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type.toLowerCase() +  "/resubscribe?s=" +
                                 subscription + "&c=" + subscription_cursor.customer)
                         }
                     );
