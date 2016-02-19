@@ -1,0 +1,27 @@
+<template name="AddUser">
+    <div class="profile">
+      {{# autoForm schema=schema id="new-user-form" type="method" meteormethod="createUserMethod" omitFields="" }}
+          <div class="content has-header overflow-scroll">
+              <button type="button" class="btn btn-danger btn-raised cancel-button">Cancel</button>
+
+              <div class="padding">
+                <fieldset>
+
+                    <label for="roles" class="control-label">Roles</label>
+                    <div class="form-group">
+                        <select name="roles" data-schema-key="roles" class="selectpicker" multiple title='Choose at leaset of the following...'>
+                          {{#each roles}}
+                              <option value="{{name}}">{{name}}</option>
+                          {{/each}}
+                        </select>
+                    </div>
+                  {{> afQuickFields omitFields="roles" }}
+
+                </fieldset>
+              </div>
+              <button type="submit" class="btn btn-success btn-raised">Submit</button>
+
+          </div>
+      {{/autoForm}}
+    </div>
+</template>

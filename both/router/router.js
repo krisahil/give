@@ -14,6 +14,14 @@ Router.plugin('ensureSignedIn', {
 });
 
 Router.onBeforeAction(function() {
+    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'user-admin'])) {
+        this.render("NotFound");
+    } else {
+        this.next();
+    }
+}, {only : 'Users'});
+
+Router.onBeforeAction(function() {
     if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin'])) {
         this.render("NotFound");
     } else {
@@ -382,5 +390,32 @@ Router.route('/dashboard/subscriptions', {
   },
   data: function () {
     return Subscriptions.find();
+  }
+});
+
+
+Router.route('/dashboard/users', {
+  layoutTemplate: 'AdminLayout',
+  name: 'Users',
+  where: 'client',
+  waitOn: function () {
+    return Meteor.subscribe( 'all_users' );
+  },
+  data: function () {
+    return Meteor.users.find();
+  }
+});
+
+// TODO: update the below route by fixing the _id param. Then use is properly to edit
+// single user accounts in line with the users folder you just copied from the TMP internal app
+Router.route('/dashboard/edit_user:_id', {
+  layoutTemplate: 'AdminLayout',
+  name: 'Users',
+  where: 'client',
+  waitOn: function () {
+    return Meteor.subscribe( 'all_users' );
+  },
+  data: function () {
+    return Meteor.users.find();
   }
 });

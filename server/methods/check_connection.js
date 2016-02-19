@@ -1,4 +1,9 @@
 Meteor.methods({
+  /**
+   * check that the connection to DonorTools is up
+   *
+   * @method checkDonorTools
+   */
   checkDonorTools: function () {
     this.unblock();
     try {
@@ -7,8 +12,7 @@ Meteor.methods({
       });
       return true;
     } catch (e) {
-      // Got a network error, time-out or HTTP error in the 400 or 500 range.
-      return false;
+      throw new Meteor.Error(500, "No connection to DT found.");
     }
   }
 });

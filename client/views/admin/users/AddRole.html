@@ -1,0 +1,18 @@
+<template name="AddRole">
+    <div class="content has-header overflow-scroll">
+        <form id="add-role">
+            <button type="button" class="btn btn-danger btn-raised cancel-button">Cancel</button>
+            <div class="padding">
+              {{#each roles}}{{{roleName}}} {{/each}}
+                <fieldset>
+                    <label for="roles" class="control-label">Roles</label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="roleName">
+                    </div>
+                </fieldset>
+            </div>
+            <button type="submit" class="btn btn-success btn-raised">Submit</button>
+        </form>
+
+    </div>
+</template>

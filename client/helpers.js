@@ -243,3 +243,19 @@ Template.registerHelper('addingNew', function(type) {
     return false;
   }
 });
+
+
+/*
+ * Is this a logged in user?
+ */
+
+Template.registerHelper( 'isCurrentUser', ( currentUser ) => {
+  return currentUser === Meteor.userId() ? true : false;
+});
+
+
+Template.registerHelper( 'disableIfAdmin', ( userId ) => {
+  if ( Meteor.userId() === userId ) {
+    return Roles.userIsInRole( userId, 'admin' ) ? "disabled" : "";
+  }
+});

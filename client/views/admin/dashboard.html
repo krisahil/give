@@ -15,9 +15,19 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
+                            {{#if isInRole 'admin,user-admin'}}
+                                <div class="col-sm-2">
+                                    <a id="users-and-roles" class="quick-button backgroundColor indianred" href="/dashboard/users">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-user"></i>
+                                    </span>
+                                        <h5>Users & Roles</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                             {{#if isInRole 'admin'}}
                                 <div class="col-sm-2">
-                                    <a id="new-gift" class="quick-button backgroundColor primary" href="">
+                                    <a id="new-gift" class="quick-button backgroundColor indianred" href="">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-gift"></i>
                                     </span>
@@ -26,7 +36,7 @@
                                 </div>
                             {{/if}}
                             <div class="col-sm-2">
-                                <a id="move-gift" class="quick-button backgroundColor primary" href="">
+                                <a id="move-gift" class="quick-button backgroundColor indianred" href="">
 								<span class="fa-stack fa-lg">
 									<i class="fa fa-arrows"></i>
 								</span>
@@ -35,7 +45,7 @@
                             </div>
                             {{#if isInRole 'admin'}}
                                 <div class="col-sm-2">
-                                    <a id="get-dt-split" class="quick-button backgroundColor primary" href="{{pathFor 'DtReport'}}">
+                                    <a id="get-dt-split" class="quick-button backgroundColor indianred" href="{{pathFor 'DtReport'}}">
                                         <span class="fa-stack fa-lg">
                                             <i class="fa fa-code-fork"></i>
                                         </span>
@@ -44,7 +54,7 @@
                                 </div>
                             {{/if}}
                             <div class="col-sm-2">
-                                <a id="get-dt-funds" class="quick-button backgroundColor primary" href="">
+                                <a id="get-dt-funds" class="quick-button backgroundColor indianred" href="">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-money"></i>
                                     </span>
@@ -52,16 +62,20 @@
                                 </a>
                             </div>
                             <div class="col-sm-2">
-                                <a id="get-dt-sources" class="quick-button backgroundColor primary" href="">
+                                <a id="get-dt-sources" class="quick-button backgroundColor indianred" href="">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-code"></i>
                                     </span>
                                     <h5>Get DT Sources</h5>
                                 </a>
                             </div>
+                        </div>
+                        <div class="row">
+                            <br>
+
                             {{#if isInRole 'admin'}}
                                 <div class="col-sm-2">
-                                    <a id="show-get-stripe-event" class="quick-button backgroundColor primary" href="">
+                                    <a id="show-get-stripe-event" class="quick-button backgroundColor indianred" href="">
                                         <span class="fa-stack fa-lg">
                                             <i class="fa fa-search"></i>
                                         </span>
@@ -69,13 +83,10 @@
                                     </a>
                                 </div>
                             {{/if}}
-                        </div>
-                        <div class="row">
-                            <br>
                             {{#if isInRole 'admin'}}
 
                                 <div class="col-sm-2">
-                                    <a id="show-fix-no-user" class="quick-button backgroundColor primary" href="">
+                                    <a id="show-fix-no-user" class="quick-button backgroundColor indianred" href="">
                                         <span class="fa-stack fa-lg">
                                             <i class="fa fa-wrench"></i>
                                         </span>
@@ -83,7 +94,7 @@
                                     </a>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a id="store-all-refunds" class="quick-button backgroundColor primary" href="">
+                                    <a id="store-all-refunds" class="quick-button backgroundColor indianred" href="">
                                         <span class="fa-stack fa-lg">
                                             <i class="fa fa-hdd-o"></i>
                                         </span>
@@ -92,7 +103,7 @@
                                 </div>
                             {{/if}}
                             <div class="col-sm-2">
-                                <a id="merge-dt-persona" class="quick-button backgroundColor primary" href="">
+                                <a id="merge-dt-persona" class="quick-button backgroundColor indianred" href="">
 								<span class="fa-stack fa-lg">
 									<i class="fa fa-compress"></i>
 								</span>
@@ -100,7 +111,7 @@
                                 </a>
                             </div>
                             <div class="col-sm-2">
-                                <a id="get-dt-split" class="quick-button backgroundColor primary"
+                                <a id="get-dt-split" class="quick-button backgroundColor indianred"
                                    href="{{pathFor 'AdminSubscriptions'}}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-columns"></i>
@@ -117,7 +128,7 @@
                         </div>
                         <div class="panel-body">
                             <div class="col-sm-2">
-                                <a id="org-info" class="quick-button backgroundColor primary"
+                                <a id="org-info" class="quick-button backgroundColor indianred"
                                    href="/dashboard/org_info">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-info"></i>
@@ -126,7 +137,7 @@
                                 </a>
                             </div>
                             <div class="col-sm-2">
-                                <a id="giving-options" class="quick-button backgroundColor primary"
+                                <a id="giving-options" class="quick-button backgroundColor indianred"
                                    href="/dashboard/giving_options">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-repeat"></i>

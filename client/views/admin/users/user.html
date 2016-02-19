@@ -1,0 +1,75 @@
+<template name="User">
+    <div class="row">
+        <!-- BEGIN PERSON -->
+        <div class="col-md-12">
+            <div class="card">
+              {{#if Template.subscriptionsReady}}
+
+                  <div class="card-head style-primary">
+                      <header>
+                        {{#with edit_user}}
+                          {{profile.fname}} {{profile.lname}} -- {{profile.location.city}}
+                        {{/with}}
+                      </header>
+                      <!-- BEGIN FORM FOOTER -->
+                      <div class="card-actionbar pull-right">
+                          <a class="btn btn-raised" href="/users/" title="Go back to users">
+                              <i class="fa fa-arrow-left"></i> GO BACK TO ALL USERS
+                          </a>
+                          <span>&nbsp;&nbsp;</span>
+                      </div><!--end .card-actionbar -->
+                      <!-- END FORM FOOTER -->
+                  </div>
+                  <form class="form" role="form">
+                      <!-- BEGIN FORM TABS -->
+                      <div class="card-head">
+                          <ul class="nav nav-tabs" data-toggle="tabs">
+                              <li class="active"><a href="#roles">ROLES</a></li>
+                              <li><a href="#general">GENERAL</a></li>
+                          </ul>
+                      </div><!--end .card-head -->
+                      <!-- END FORM TABS -->
+
+                      <!-- BEGIN FORM TAB PANES -->
+                      <div class="card-body tab-content">
+                          <div class="tab-pane active" id="roles">
+                            {{#each roles}}{{{roleName}}}{{/each}}
+                            {{#unless addingNew 'role'}}
+                                <div class="form-group">
+                                    <a class="btn btn-raised btn-default-bright adding-new" data-add="role">ADD NEW ROLE</a>
+                                </div><!--end .form-group -->
+                            {{/unless}}
+                            {{#if addingNew 'role'}}
+                              {{> AddRole}}
+                            {{/if}}
+                          </div><!--end .tab-pane -->
+                          <div class="tab-pane" id="general">
+                            {{> AddGeneralNote}}
+                              <br>
+                            {{#with user}}
+                                <ul class="timeline timeline-hairline collapse-xs">
+                                  {{#each notes.general}}
+                                      <li class="{{timelineSide @index}}">
+                                          <div class="timeline-circ circ-xl style-primary"><span class="fa fa-sticky-note-o"></span></div>
+                                          <div class="timeline-entry">
+                                              <div class="card style-primary">
+                                                  <div class="card-body small-padding">
+                                                      <span class="text-medium">{{author_id}} - {{formatDate date}}</span><br>
+                                                      <span class="opacity-50">{{note}}</span>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </li>
+                                  {{/each}}
+                                </ul>
+                            {{/with}}
+                          </div><!--end .tab-pane -->
+                      </div><!--end .card-body.tab-content -->
+                      <!-- END FORM TAB PANES -->
+                  </form>
+              {{/if}}
+            </div><!--end .card -->
+        </div><!--end .col -->
+        <!-- END PERSON -->
+    </div>
+</template>

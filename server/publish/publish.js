@@ -333,3 +333,21 @@ Meteor.publish("adminSubscriptions", function (_id) {
     return;
   }
 });
+
+Meteor.publish("all_users", function (_id) {
+  check(_id, Match.Optional(String));
+  console.log("Got to all_users sub");
+  let all_users;
+
+  if (Roles.userIsInRole(this.userId, ['admin'])) {
+    if(_id) {
+      all_users = Meteor.users.find({_id: _id});
+    } else {
+      all_users = Meteor.users.find();
+    }
+    return all_users;
+  } else {
+    this.stop();
+    return;
+  }
+});
