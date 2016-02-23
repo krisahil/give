@@ -43,6 +43,9 @@ twbs:bootstrap
 eskan:chosen
 aldeed:collection2
 aldeed:autoform
+aldeed:autoform-bs-datepicker
+rajit:bootstrap3-datepicker
+
 underscorestring:underscore.string
 meteorhacks:aggregate
 meteorhacks:kadira

@@ -1,6 +1,6 @@
 
 AutoForm.hooks({
-  'new-user-form': {
+  'edit-user-form': {
     onSuccess: function (operation, result, template) {
       Session.set("addingNew", false);
       Bert.alert( result, 'success', 'growl-top-right' );
@@ -12,21 +12,21 @@ AutoForm.hooks({
       console.log(operation);
 
       Bert.alert( error.message, 'danger', 'growl-top-right' );
+    },
+
+    onSubmit: function (insertDoc, updateDoc, currentDoc) {
+      return this.event.preventDefault();
     }
   }
 });
 
 
-Template.AddUser.helpers({
+Template.EditUser.helpers({
   schema: function () {
-    return Schema.CreateUserFormSchema;
+    return Schema.UpdateUserFormSchema;
   },
   roles: function () {
     return Meteor.roles.find({});
-  },
-  user: function () {
-    let editUserID = Router.current().params._id;
-    return Meteor.users.findOne({_id: editUserID});
   },
   selected: function () {
     let editUserID = Router.current().params._id;
@@ -40,7 +40,7 @@ Template.AddUser.helpers({
     }
   }
 });
-Template.AddUser.events({
+Template.EditUser.events({
   'click .cancel-button': function () {
     console.log("Clicked cancel");
     Session.set("addingNew", false);

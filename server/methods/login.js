@@ -8,13 +8,10 @@ Meteor.methods( {
    */
   set_user_state: function ( userId, state ) {
     logger.info("Started set_user_state method");
+    console.log(state);
 
     check(userId, String);
-    check(state, Match.OneOf([
-      'disabled',
-      'enabled',
-      'invited'
-    ]));
+    check(state, Match.OneOf('disabled','enabled','invited'));
 
     try {
       //check to see that the user is the admin user
@@ -30,6 +27,7 @@ Meteor.methods( {
 
         // Logout user
         Meteor.users.update( { _id: userId }, { $set: { "services.resume.loginTokens": [] } } );
+        return "Updated User";
 
       } else {
         return;

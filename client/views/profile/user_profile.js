@@ -153,7 +153,12 @@ Template.UserProfile.helpers({
         } else {
             return;
         }
+    },
+  not_dt_user: function () {
+    if(Session.equals("NotDTUser", true)){
+      return true;
     }
+  }
 });
 
 Template.UserProfile.events({
@@ -224,12 +229,19 @@ Template.UserProfile.events({
 });
 
 Template.UserProfile.onRendered(function() {
+  if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
+    Router.go("admin.dashboard");
+  }
 
     if(!Meteor.users.findOne().persona_info ||
       Meteor.users.findOne().persona_info.length < 1 ||
       Meteor.users.findOne().persona_info.length < Meteor.users.findOne().persona_ids.length) {
       Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
         if( result ) {
+          if(result === 'Not a DT user'){
+            Session.set("NotDTUser", true);
+            return;
+          }
           console.log( result );
           Session.set("got_all_donations", true);
           // Hack here to reload the page. I'm not sure why the reactivity isn't
@@ -250,9 +262,6 @@ Template.UserProfile.onRendered(function() {
         }
       });
     }
-
-
-
 
     Session.setDefault('dt_donations_cursor', 0);
     Session.set("showHistory", true);

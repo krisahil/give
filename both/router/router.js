@@ -14,27 +14,30 @@ Router.plugin('ensureSignedIn', {
 });
 
 Router.onBeforeAction(function() {
-    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'user-admin'])) {
-        this.render("NotFound");
-    } else {
-        this.next();
-    }
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'user-admin'])) {
+    this.render("NotFound");
+  } else {
+    this.next();
+
+  }
 }, {only : 'Users'});
 
 Router.onBeforeAction(function() {
-    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin'])) {
-        this.render("NotFound");
-    } else {
-        this.next();
-    }
+
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin'])) {
+    this.render("NotFound");
+  } else {
+    this.next();
+  }
 }, {only : 'admin.dashboard'});
 
 Router.onBeforeAction(function() {
-    if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin', 'reports']) ) {
-        this.render("NotFound");
-    } else {
-        this.next();
-    }
+
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin', 'reports']) ) {
+    this.render("NotFound");
+  } else {
+    this.next();
+  }
 }, {only : ['transfers', 'reports', 'reports.dashboard']});
 
 Router.route('', {
@@ -146,24 +149,20 @@ Router.route('/reprotsdashboard', function () {
 });
 
 
-Router.route('/user',{
-    layoutTemplate: 'UserLayout',
+Router.route('/user', function (){
 
-    subscriptions: function(){
-        return [
-            Meteor.subscribe('userStripeData'),
-            Meteor.subscribe('userDT'),
-            Meteor.subscribe('userDTFunds')
-        ]
-    },
-    action: function () {
-        if (this.ready()) {
-            this.render();
-        } else {
-            this.render('Loading');
-        }
-    },
-    name: 'user.profile'
+  this.layout('UserLayout');
+
+  this.wait([Meteor.subscribe('userStripeData'),
+             Meteor.subscribe('userDT'),
+             Meteor.subscribe('userDTFunds')]);
+  if (this.ready()) {
+    this.render('UserProfile');
+  } else {
+    this.render('Loading');
+  }
+}, {
+  name: 'user.profile'
 });
 
 Router.route('/transfers',{
@@ -398,6 +397,7 @@ Router.route('/dashboard/users', {
   layoutTemplate: 'AdminLayout',
   name: 'Users',
   where: 'client',
+  template: 'Users',
   waitOn: function () {
     return Meteor.subscribe( 'all_users' );
   },
@@ -406,16 +406,19 @@ Router.route('/dashboard/users', {
   }
 });
 
-// TODO: update the below route by fixing the _id param. Then use is properly to edit
-// single user accounts in line with the users folder you just copied from the TMP internal app
-Router.route('/dashboard/edit_user:_id', {
+Router.route('/dashboard/edit_user/:_id', {
   layoutTemplate: 'AdminLayout',
-  name: 'Users',
+  name: 'EditUser',
   where: 'client',
+  template: 'EditUser',
   waitOn: function () {
-    return Meteor.subscribe( 'all_users' );
+    var params = this.params;
+    var _id = params._id;
+    return [Meteor.subscribe( 'all_users', _id ), Meteor.subscribe('roles')];
   },
   data: function () {
-    return Meteor.users.find();
+    var params = this.params;
+    var id = params._id;
+    return Meteor.users.findOne({_id: id});
   }
 });

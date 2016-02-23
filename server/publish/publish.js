@@ -77,8 +77,7 @@ Meteor.publish("userDonations", function () {
     var donations = Meteor.users.findOne({_id: this.userId}).donations;
     return Donations.find({'_id': { $in: donations}});
 	} else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
@@ -89,8 +88,7 @@ Meteor.publish("subscription", function (subscription_id) {
 	if (this.userId) {
     return Subscriptions.find({_id: subscription_id});
 	} else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
@@ -105,8 +103,7 @@ Meteor.publish("devices", function () {
 	if (this.userId) {
     return Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
 	} else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
@@ -117,26 +114,27 @@ Meteor.publish("customer", function (customer) {
 	if (this.userId && Customers.find({_id: customer}, {'metadata.user_id': this.userId})) {
     return Customers.find({_id: customer});
 	} else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
 Meteor.publish("userStripeData", function() {
   if (this.userId) {
-      var customers = Customers.find({'metadata.user_id': this.userId});
-      var customers_ids = [];
+    var customers = Customers.find({'metadata.user_id': this.userId});
+    if(!Customers.findOne({'metadata.user_id': this.userId})){
+      this.ready();
+    }
+    var customers_ids = [];
 
-      customers.forEach(function(element) {
-          customers_ids.push(element.id);
-      });
-      var charges = Charges.find({'customer': {$in: customers_ids}});
-      var donations = Donations.find({'customer_id': {$in: customers_ids}});
-      var user = Meteor.users.find({_id: this.userId});
-      return[customers, charges, user, donations];
+    customers.forEach(function(element) {
+        customers_ids.push(element.id);
+    });
+    var charges = Charges.find({'customer': {$in: customers_ids}});
+    var donations = Donations.find({'customer_id': {$in: customers_ids}});
+    var user = Meteor.users.find({_id: this.userId});
+    return[customers, charges, user, donations];
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -155,8 +153,7 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
       var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
       return[customers, charges, subscriptions, user, devices];
   } else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
@@ -176,8 +173,7 @@ Meteor.publish("user_data_and_subscriptions_with_only_4", function () {
     var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
     return[customers, charges, subscriptions, user, devices];
   } else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
@@ -190,8 +186,7 @@ Meteor.publish("publish_for_admin_give_form", function () {
 
   } else {
     // user not authorized. do not publish
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -205,12 +200,11 @@ Meteor.publish("userSubscriptions", function () {
     });
     return subscriptions;
   } else {
-    this.stop();
-    return;
+    this.ready();
 	}
 });
 
-Meteor.publish("userDT", function (page) {
+Meteor.publish("userDT", function () {
 	if (this.userId) {
     if(Meteor.users.findOne({_id: this.userId}).persona_ids) {
       var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
@@ -220,7 +214,7 @@ Meteor.publish("userDT", function (page) {
       var persona_id = Meteor.users.findOne( { _id: this.userId } ).persona_id;
       console.log( persona_id );
       return DT_donations.find( { persona_id: { $in: persona_id } } );
-    } else {
+    } else if(Meteor.users.findOne({_id: this.userId}).persona_info){
       var persona_ids = [];
       var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;
       persona_info.forEach(function (value) {
@@ -228,19 +222,19 @@ Meteor.publish("userDT", function (page) {
       });
       console.log(persona_ids);
       return DT_donations.find( { persona_id: { $in: persona_ids } } );
+    } else {
+      this.ready();
     }
 	} else {
-    this.stop();
-    return;
-	}
+    this.ready();
+  }
 });
 
 Meteor.publish("userDTFunds", function () {
   if (this.userId) {
     return DT_funds.find({});
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -257,8 +251,7 @@ Meteor.publish("MultiConfig", function () {
   if (Roles.userIsInRole(this.userId, 'admin')) {
     return MultiConfig.find();
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -266,8 +259,7 @@ Meteor.publish("DTSplits", function () {
   if (Roles.userIsInRole(this.userId, 'admin')) {
     return DT_splits.find();
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -280,8 +272,7 @@ Meteor.publish("transfers", function (id) {
       return Transfers.find({}, { sort: { date: -1} } );
     }
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -310,8 +301,7 @@ Meteor.publish("transfersRange", function (range) {
       );
     }
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -329,8 +319,7 @@ Meteor.publish("adminSubscriptions", function (_id) {
     }
     return subscriptions;
   } else {
-    this.stop();
-    return;
+    this.ready();
   }
 });
 
@@ -347,7 +336,17 @@ Meteor.publish("all_users", function (_id) {
     }
     return all_users;
   } else {
-    this.stop();
-    return;
+    this.ready();
+  }
+});
+
+
+Meteor.publish("roles", function () {
+  let isAdmin = Roles.userIsInRole( this.userId, 'admin' );
+
+  if ( isAdmin ) {
+    return Meteor.roles.find({});
+  } else {
+    this.ready();
   }
 });

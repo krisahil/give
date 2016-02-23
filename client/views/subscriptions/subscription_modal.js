@@ -1,5 +1,5 @@
 var init_calendar = function(){
-  let datepickerSelector = $('#start_date');
+  /*let datepickerSelector = $('#start_date');
 
   datepickerSelector.datepicker({
   showOtherMonths: true,
@@ -14,7 +14,15 @@ var init_calendar = function(){
   $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
 
   // Now let's align datepicker with the prepend button
-  datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
+  datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });*/
+
+  let datepickerSelector = $('#start_date');
+  datepickerSelector.datepicker( {
+    format: 'd MM, yyyy',
+    startDate: '+1d',
+    endDate: '+40d',
+    autoclose: true
+  });
 };
 
 Template.SubscriptionModal.helpers({

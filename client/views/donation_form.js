@@ -249,7 +249,7 @@ Template.DonationForm.helpers({
       return Session.get('params.note');
     },
     today: function () {
-        return moment().format('D MMM, YYYY');
+        return moment().add(1, 'day').format('D MMM, YYYY');
     },
     amountWidth: function() {
         if(Session.equals("paymentMethod", "Card")){
@@ -306,7 +306,15 @@ Template.DonationForm.onRendered(function() {
         });
     }
 
-    var datepickerSelector = $('#start_date');
+  var datepickerSelector = $('#start_date');
+  datepickerSelector.datepicker( {
+    format: 'd MM, yyyy',
+    startDate: '+1d',
+    endDate: '+40d',
+    autoclose: true
+  });
+
+    /*var datepickerSelector = $('#start_date');
     datepickerSelector.datepicker({
         showOtherMonths: true,
         selectOtherMonths: true,
@@ -320,7 +328,7 @@ Template.DonationForm.onRendered(function() {
     $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
 
     // Now let's align datepicker with the prepend button
-    datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });
+    datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });*/
 
   if (Session.get('params.start_date')) {
     $("#start_date").val(Session.get('params.start_date'));

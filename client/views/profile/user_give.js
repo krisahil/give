@@ -99,6 +99,9 @@ Template.UserGive.events({
 
 
 Template.UserGive.onRendered(function () {
+  if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
+    Router.go("admin.dashboard");
+  }
 
     if($('#donateWith option').length > 2){
         $('#donateWith').val($('#donateWith option').eq(2).val());

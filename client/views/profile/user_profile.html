@@ -5,7 +5,8 @@
         </div>
         <div class="row">
             <!-- Tabs -->
-            <h3>Your accounts</h3>
+            {{#unless not_dt_user}}
+                <h3>Your accounts</h3>
             <ul id="myTabs" class="nav nav-tabs nav-append-content">
                 {{#each personas}}
                     <li class="">
@@ -111,6 +112,9 @@
                 </div>
                 {{/each}}
             </div>
+            {{else}}
+                <h3>No Donor Tools Accounts</h3>
+            {{/unless}}
         </div>
     </div>
         <div id="modal_for_address_change" class="modal fade">

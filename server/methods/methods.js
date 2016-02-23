@@ -273,6 +273,8 @@ Meteor.methods({
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
           });
           set_this_array.push(personaResult.data.persona);
+        } else if(!Meteor.users.findOne({_id: this.userId}).persona_info){
+          return 'Not a DT user';
         }
 
         Meteor.users.update({_id: this.userId}, {$set: {'persona_info': set_this_array}});
@@ -728,6 +730,113 @@ Meteor.methods({
       //e._id = AllErrors.insert(e.response);
       var error = (e.response);
       throw new Meteor.Error(error, e._id);
+    }
+  },
+  addRole: function (role, add_to) {
+    logger.info("Started addRole.");
+
+    check(role, String);
+    check(add_to, Match.Optional(String));
+
+    if (Roles.userIsInRole(this.userId, ['admin'])) {
+
+      console.log( "[addRole]", role );
+
+      if(add_to){
+        Meteor.users.update({_id: add_to}, {$addToSet: {roles: role}});
+      } else {
+        let searchRole = Meteor.roles.findOne({'name': role});
+        if(searchRole && searchRole._id){
+          return role + " already exists";
+        }
+        Roles.createRole( role );
+      }
+      return 'Added "' + role + '" role.' ;
+    } else {
+      return;
+    }
+  },
+  createUserMethod: function (form) {
+    console.log(form);
+    check( form, Schema.CreateUserFormSchema );
+
+    try {
+      logger.info("Started createUserMethod.");
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+
+        let user_id;
+
+        // Create a new user
+        user_id = Accounts.createUser( {
+          email:   form.email,
+          profile: form.profile
+        } );
+        console.log( user_id );
+
+        // Add some details to the new user account
+        Meteor.users.update( user_id, {
+          $set: {
+            'roles':  form.roles,
+            'status': form.status
+          }
+        } );
+
+        return user._id;
+      } else {
+        return;
+      }
+    } catch(e) {
+      throw new Meteor.Error(e);
+    }
+  },
+  updateUser: function (form, _id) {
+    console.log(form, _id);
+    check( form, Schema.UpdateUserFormSchema );
+    check( _id, String );
+
+    try {
+      logger.info("Started updateUserMethod.");
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+        console.log(form.$set.emails[0].address);
+
+        let user;
+
+        // Create a new user
+        user = Meteor.users.findOne( { _id: _id } );
+
+        if(user.state && user.state.status && form.$set &&
+          form.$set['state.status'] &&
+          form.$set['state.status'] !== user.state.status) {
+          Meteor.users.update({_id: _id}, { $set: {
+              'state.updatedOn': new Date()
+            }
+          });
+        }
+
+        if(form.$set['state.status'] === 'disabled'){
+          Utils.set_user_state(_id, 'disabled');
+          return "Didn't change any account properties, only disabled the account";
+        }
+
+
+
+        if( user && user.emails[0].address === form.$set.emails[0].address ) {
+          console.log( "Same email" );
+          Meteor.users.update( { _id: _id }, form );
+          return "Updated";
+        } else {
+          console.log( "Different email" );
+          form.$set.emails[0].verified = false;
+          let user_update = Meteor.users.update( { _id: user._id }, form );
+          Accounts.sendVerificationEmail( user._id );
+          return "Updated and sent enrollment email for new email address";
+        }
+      } else {
+        return;
+      }
+    } catch(e) {
+      console.log(e);
+      throw new Meteor.Error(e);
     }
   }
 });

@@ -5,6 +5,23 @@ Template.Users.helpers({
   roleName: function () {
     let role = this;
     return '<label class="label label-success">' + role + '</label>';
+  },
+  editUser: function () {
+    return false;
+  },
+  disabledUserFA: function () {
+    if(this.state && this.state.status && this.state.status === 'disabled'){
+      return '<i class="fa fa-check"></i>';
+    } else {
+      return '<i class="fa fa-ban"></i>';
+    }
+  },
+  toggleUserText: function () {
+    if(this.state && this.state.status && this.state.status === 'disabled'){
+      return "Enable User";
+    } else {
+      return "Disable User";
+    }
   }
 });
 Template.Users.events({
@@ -26,23 +43,21 @@ Template.Users.events({
       });
     };
   },
-  'click .disable-user': function (e) {
+  'click .disable-enable-user': function (e) {
     e.preventDefault();
     console.log("got remove");
-    let btn = $(e.currentTarget);
 
-    btn.button('loading');
+    let toggleState;
 
-    let _id = btn.data('_id');
-
-    console.log(_id);
-
-    Meteor.call( 'removeUser', _id, function( error, response ) {
+    if(this.state && this.state.status && this.state.status === 'disabled'){
+      toggleState = 'enabled';
+    } else {
+      toggleState = 'disabled';
+    }
+    Meteor.call( 'set_user_state', this._id, toggleState, function( error, response ) {
       if ( error ) {
-        btn.button('reset');
         Bert.alert( error.reason, 'warning' );
       } else {
-        btn.button('reset');
         Bert.alert( response, 'success' );
       }
     });
@@ -62,7 +77,7 @@ Template.Users.events({
     Session.set("addingNew", addingNew);
   },
   'click .edit-user': function () {
-    FlowRouter.go('user', {_id: this._id});
+    Router.go('/dashboard/edit_user/' + this._id);
   }
 });
 

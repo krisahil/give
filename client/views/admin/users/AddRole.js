@@ -16,12 +16,12 @@ Template.AddRole.events( {
     if(Router.current().route.getName() === 'User') {
       var add_to =  FlowRouter.getParam("_id");
     }
-    Meteor.call("addRole", roleName, add_to ? add_to : '', function (err, res) {
+    Meteor.call("addRole", roleName.toLowerCase(), add_to ? add_to : '', function (err, res) {
       if(err) {
         console.log(err);
-        toastr.error(err);
+        Bert.alert(err, "danger");
       } else {
-        toastr.success(res);
+        Bert.alert(res, "success");
         $("#roleName").val("");
       }
     });
