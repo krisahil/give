@@ -50,17 +50,17 @@ Template.UserProfile.helpers({
         return Customers.findOne();
     },
     address_line2: function () {
-        if(Meteor.user().profile.address.address_line2) {
+        if(Meteor.user() && Meteor.user().profile.address.address_line2) {
             return '<span class="">' + Meteor.user().profile.address.address_line2 + '</span> <br>';
         } else return;
     },
     email: function () {
-        if(Meteor.user().emails[0].address) {
+        if(Meteor.user() && Meteor.user().emails[0].address) {
             return Meteor.user().emails[0].address;
         } else return;
     },
     business_name: function () {
-        if(Meteor.user().profile.business_name) {
+        if(Meteor.user() && Meteor.user().profile.business_name) {
             return '<h5>' + Meteor.user().profile.business_name + '</h5>';
         }
         else return;
@@ -126,7 +126,7 @@ Template.UserProfile.helpers({
         }
     },
     personas : function () {
-        if(Meteor.users.findOne().persona_info){
+        if(Meteor.users.findOne() && Meteor.users.findOne().persona_info){
             return Meteor.users.findOne().persona_info;
         } else {
           return;
@@ -148,7 +148,7 @@ Template.UserProfile.helpers({
     },
     this_persona: function () {
         if(Session.get('activeTab')) {
-            var persona_info = Meteor.users.findOne().persona_info;
+            var persona_info = Meteor.users.findOne() && Meteor.users.findOne().persona_info;
             return _.where(persona_info, {id: Number(Session.get('activeTab'))});
         } else {
             return;
@@ -186,12 +186,12 @@ Template.UserProfile.events({
         var loadingButton = $(':submit').button('loading');
 
         var updateThis = {};
-        updateThis.profile = Meteor.users.findOne().profile;
+        updateThis.profile = Meteor.users.findOne() && Meteor.users.findOne().profile;
         updateThis.profile[Session.get('activeTab')] = fields;
 
         // Update the Meteor.user profile
         Meteor.users.update({_id: Meteor.users.findOne()._id}, {$set:  updateThis});
-        var customer_id = Meteor.users.findOne().primary_customer_id;
+        var customer_id = Meteor.users.findOne() & Meteor.users.findOne().primary_customer_id;
 
         Meteor.call('update_customer', fields,  customer_id, Number(Session.get('activeTab')), function(error, result){
            if(result){

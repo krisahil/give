@@ -272,8 +272,6 @@ _.extend(StripeFunctions, {
       user_id = user._id;
     } else{
       user_id = Utils.create_user(email_address, customer.id);
-      // Set the new user flag
-      Meteor.users.update({_id: user_id}, {$set: {newUser: true}});
     }
     // Add the user_id to the Stripe customer metadata
     add_user_id_to_customer_metadata = StripeFunctions.add_user_id_to_customer_metadata(user_id, customer.id);

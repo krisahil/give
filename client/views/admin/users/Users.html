@@ -28,11 +28,16 @@
                                   <td class="text-left">{{profile.fname}} {{profile.lname}}</td>
                                   <td class="text-left">{{#each roles}}{{{roleName}}} {{/each}}</td>
                                   <td class="text-center">
+                                      <button type="button" {{disabledIfDisabled}} class="btn forgot-password"
+                                        title="Send Password Reset Link"
+                                        data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                          <i class="fa fa-paper-plane"></i>
+                                      </button>
                                       <button type="button" class="btn edit-user"><i class="fa fa-pencil"></i></button>
                                       <button type="button" {{disableIfAdmin _id}}
                                               title={{toggleUserText}}
                                               class="btn ink-reaction btn-floating-action btn-loading-state disable-enable-user"
-                                                data-original-title="Delete" data-toggle="dropdown"
+                                                data-original-title="Delete"
                                               data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
                                               data-_id="{{_id}}"
                                               aria-expanded="true">

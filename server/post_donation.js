@@ -164,10 +164,14 @@ _.extend(Utils, {
       Meteor.users.update(user_id, {
         $set: {
           'profile': profile,
-          'primary_customer_id': customer_id
+          'primary_customer_id': customer_id,
+          roles: [],
+          state: {
+            status: 'invited',
+            updatedOn: new Date()
+          }
         }
       });
-
 
       // Send an enrollment Email to the new user
       Accounts.sendEnrollmentEmail(user_id);
@@ -582,7 +586,6 @@ _.extend(Utils, {
       responseData = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + '/donations.json?per_page=1000', {
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
-
       //Call the function to separate the donation array received from DT into individual donation
       Utils.separate_donations(responseData.data);
     });

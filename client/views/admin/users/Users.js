@@ -11,9 +11,9 @@ Template.Users.helpers({
   },
   disabledUserFA: function () {
     if(this.state && this.state.status && this.state.status === 'disabled'){
-      return '<i class="fa fa-check"></i>';
+      return '<i class="fa fa-unlock"></i>';
     } else {
-      return '<i class="fa fa-ban"></i>';
+      return '<i class="fa fa-lock"></i>';
     }
   },
   toggleUserText: function () {
@@ -21,6 +21,13 @@ Template.Users.helpers({
       return "Enable User";
     } else {
       return "Disable User";
+    }
+  },
+  disabledIfDisabled: function () {
+    if(this.state && this.state.status && this.state.status === 'disabled'){
+      return "disabled"
+    } else {
+      return "";
     }
   }
 });
@@ -78,6 +85,17 @@ Template.Users.events({
   },
   'click .edit-user': function () {
     Router.go('/dashboard/edit_user/' + this._id);
+  },
+  'click .forgot-password': function (e) {
+    let resetButton = $(e.currentTarget).button('loading');
+    Accounts.forgotPassword(
+      {
+        email: this.emails[0].address
+      }, function (err, res){
+        console.log(err, res);
+        Bert.alert( 'Password Reset Email Sent', 'success', 'growl-top-right' );
+        resetButton.button('reset');
+      });
   }
 });
 

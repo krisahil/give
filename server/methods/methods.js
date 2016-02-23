@@ -234,20 +234,22 @@ Meteor.methods({
         }*/
     },
     update_user_document_by_adding_persona_details_for_each_persona_id: function () {
-        logger.info("Started update_user_document_by_adding_persona_details_for_each_persona_id");
+      logger.info("Started update_user_document_by_adding_persona_details_for_each_persona_id");
 
       if(this.userId){
         let persona_ids, email_address;
         persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
         persona_id = Meteor.users.findOne({_id: this.userId}).persona_id;
         email_address = Meteor.users.findOne({_id: this.userId}).emails[0].address;
+        var set_this_array = [];
+
 
         if(!persona_ids && persona_id) {
           logger.info("No persona_ids, but did find persona_id");
           persona_ids = persona_id;
         }
 
-        if(persona_ids && persona_ids.length) {
+        if( persona_ids && persona_ids.length ) {
           // The persona_ids let is an array
           logger.info("Multiple persona_ids found: ", persona_ids);
 
@@ -257,7 +259,6 @@ Meteor.methods({
           // the forEach push the personas into it
           // After we'll use the array to set the persona_info inside the user document
 
-          var set_this_array = [];
 
           // Loop through the persona_ids
           _.forEach(persona_ids, function(each_persona_id) {
@@ -817,8 +818,6 @@ Meteor.methods({
           Utils.set_user_state(_id, 'disabled');
           return "Didn't change any account properties, only disabled the account";
         }
-
-
 
         if( user && user.emails[0].address === form.$set.emails[0].address ) {
           console.log( "Same email" );
