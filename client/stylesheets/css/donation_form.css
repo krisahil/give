@@ -399,19 +399,6 @@ legend {
     background-color: transparent;
 }
 
-
-/*
-#s2id_donateTo {
-    margin-left: -40px;
-    width: 220px;
-}
-
-#s2id_is_recurring {
-    margin-left: 26px;
-    width: 220px;
-}
-*/
-
 .select2-drop .select2-result-with-children > .select2-result-label{
     color: #000;
     font-weight: bold;
@@ -464,4 +451,15 @@ legend {
 
 .submit-button {
     margin-top: 20px;
+}
+
+#totalOfGroups {
+    text-align: right;
+}
+.users .width-1 {
+    width: 40px;
+}
+
+.table-responsive .no-margin {
+    margin: 0;
 }

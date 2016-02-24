@@ -1,3 +1,4 @@
+/*
 #ui_notifIt{
     position: fixed;
     top: 10px;
@@ -24,8 +25,8 @@
     margin: 0;
 }
 
-/* Color setup */
-/* You are free to change all of this */
+!* Color setup *!
+!* You are free to change all of this *!
 .success{
     background-color: yellowgreen;
     color: white;
@@ -46,3 +47,4 @@
     background-color: #EEE;
     color: #444;
 }
+*/
