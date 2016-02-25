@@ -1,8 +1,8 @@
 <template name="Users">
   <div class="row">
     <div class="col col-lg-12">
-        {{#if isInRole 'admin'}}
-            {{#unless editUser}}
+        {{#if isInRole 'admin, user-admin'}}
+            {{#unless showSingleUser}}
                 {{#if addingNew 'user'}}
                     {{> AddUser}}
                     {{else}}
@@ -26,23 +26,26 @@
                               <tr data-id="{{_id}}">
                                   <td class="text-left">{{#if isCurrentUser _id}}<label class="label label-success">You!</label>{{/if}} {{emails.[0].address}}</td>
                                   <td class="text-left">{{profile.fname}} {{profile.lname}}</td>
-                                  <td class="text-left">{{#each roles}}{{{roleName}}} {{/each}}</td>
+                                  <td class="text-left">{{#each user_roles}} <label class="label label-success"> {{this}} </label>&nbsp;{{/each}}</td>
                                   <td class="text-center">
-                                      <button type="button" {{disabledIfDisabled}} class="btn forgot-password"
-                                        title="Send Password Reset Link"
-                                        data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                      <button type="button" {{disabledIfDisabled}} class="btn btn-primary forgot-password"
+                                            title="Send Password Reset Link"
+                                            data-toggle="confirmation"
+                                            data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
                                           <i class="fa fa-paper-plane"></i>
                                       </button>
-                                      <button type="button" class="btn edit-user"><i class="fa fa-pencil"></i></button>
+                                      <button type="button"
+                                              class="btn btn-primary edit-user">
+                                          <i class="fa fa-pencil"></i>
+                                      </button>
                                       <button type="button" {{disableIfAdmin _id}}
-                                              title={{toggleUserText}}
-                                              class="btn ink-reaction btn-floating-action btn-loading-state disable-enable-user"
-                                                data-original-title="Delete"
+                                              title="{{toggleUserText}}"
+                                              class="btn btn-primary disable-enable-user"
                                               data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                              data-toggle="confirmation"
                                               data-_id="{{_id}}"
                                               aria-expanded="true">
                                       {{{disabledUserFA}}}
-                                          <div class="ink" style="top: 9px; left: 27.5px;"></div>
                                       </button>
                                   </td>
                               </tr>
@@ -52,6 +55,76 @@
                     {{/if}}
                 {{/if}}
             {{else}}
+                <br>
+                {{#if not_dt_user}}
+                    {{#autoForm collection=Meteor.users schema=schema id="edit-user-form" type="method-update" meteormethod="updateUser" doc=this}}
+                        <div class="content has-header overflow-scroll">
+                            <button type="button" class="btn btn-danger btn-raised cancel-button">Cancel</button>
+                            <button type="submit" class="btn btn-success btn-raised">Submit</button>
+                            <button type="button" {{disabledIfDisabled}} class="btn btn-primary forgot-password pull-right"
+                                    title="Send Password Reset Link"
+                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                            <button type="button" {{disableIfAdmin _id}}
+                                    title="{{toggleUserText}}"
+                                    class="btn btn-primary disable-enable-user pull-right"
+                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                    data-_id="{{_id}}"
+                                    aria-expanded="true">
+                                {{{disabledUserFA}}}
+                            </button>
+                            <div class="padding">
+                                <br>
+                                <fieldset>
+                                    <!-- TODO: what if this is the current user?
+                                Need to also log this user out if they update
+                                their email address &ndash;&gt;
+                                    &lt;!&ndash; TODO: Also need to warn the user that they
+                                    are updating their own address and they won't
+                                    be able to get back in until they have verified it &ndash;&gt;
+
+                                    &lt;!&ndash; TODO: consider sending an email to all
+                                    admins when this sort of change is made &ndash;&gt;
+                                    -->
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{> afQuickFields omitFields="roles, email, state, persona_ids, persona_id, persona_info" style="color: black;" }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{> afQuickField name="emails.0.address" label="Email Address"}}
+                                            {{> afQuickField name="emails.0.verified" value=true type="hidden" }}
+                                            {{#unless isCurrentUser}}
+                                            {{else}}
+                                                {{> afQuickField name="state.status" }}
+                                            {{/unless}}
+                                            <div class="col-md-6">
+                                                <label for="roles" class="control-label">Roles</label>
+                                                <div class="form-group">
+                                                    <select name="roles" data-schema-key="roles" class="lowercase" multiple title='Choose at least one of the following...'>
+                                                        {{#each roles}}
+                                                            <option {{selected}} value="{{name}}">{{name}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                                <span class="help-block">Hold down the Ctrl (windows) / Command (Mac) button to select multiple roles.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-raised">Submit</button>
+
+                        </div>
+                    {{/autoForm}}
+                {{/if}}
+                {{#if persona_info}}
+                    {{> OtherUserProfile}}
+                {{else}}
+                    {{> OtherUserProfile}}
+                {{/if}}
+
             {{/unless}}
         {{/if}}
     </div>

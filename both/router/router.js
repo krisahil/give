@@ -399,26 +399,38 @@ Router.route('/dashboard/users', {
   where: 'client',
   template: 'Users',
   waitOn: function () {
-    return Meteor.subscribe( 'all_users' );
+    var query = this.params.query;
+    var id = query.userID;
+    if(id){
+      Session.set('params.userID', id);
+      Session.set("showSingleUserDashboard", true);
+      return [Meteor.subscribe( 'all_users', id ),
+              Meteor.subscribe('roles'),
+              Meteor.subscribe('userStripeData', Session.get('params.userID')),
+              Meteor.subscribe('userDT', Session.get('params.userID')),
+              Meteor.subscribe('userDTFunds')];
+    } else if(Session.get('params.userID')) {
+      Session.set("showSingleUserDashboard", true);
+      return [Meteor.subscribe( 'all_users', Session.get('params.userID') ),
+              Meteor.subscribe('roles'),
+              Meteor.subscribe('userStripeData', Session.get('params.userID')),
+              Meteor.subscribe('userDT', Session.get('params.userID')),
+              Meteor.subscribe('userDTFunds')];
+    } else {
+      Session.set('params.userID', '');
+      Session.set("showSingleUserDashboard", false);
+      return [Meteor.subscribe( 'all_users' ), Meteor.subscribe('roles')];
+    }
   },
   data: function () {
-    return Meteor.users.find();
-  }
-});
-
-Router.route('/dashboard/edit_user/:_id', {
-  layoutTemplate: 'AdminLayout',
-  name: 'EditUser',
-  where: 'client',
-  template: 'EditUser',
-  waitOn: function () {
-    var params = this.params;
-    var _id = params._id;
-    return [Meteor.subscribe( 'all_users', _id ), Meteor.subscribe('roles')];
-  },
-  data: function () {
-    var params = this.params;
-    var id = params._id;
-    return Meteor.users.findOne({_id: id});
+    var query = this.params.query;
+    var id = query.userID;
+    if(id){
+      return Meteor.users.findOne({_id: id});
+    }  else if(Session.get('params.userID')) {
+      return Meteor.users.findOne({_id: Session.get('params.userID')});
+    } else {
+      return Meteor.users.find();
+    }
   }
 });

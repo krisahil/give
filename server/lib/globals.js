@@ -58,10 +58,9 @@ Utils = {
       return stripe_charge;
     },
     // Check donation form entries
-    check_update_customer_form: function(form, customer_id, dt_persona_id) {
-        check(dt_persona_id, Number);
-        check(customer_id, String);
-        check(form,
+    check_update_customer_form: function(form, dt_persona_id) {
+      console.log(form, dt_persona_id);
+      check(form,
             {
                 'address':{
                     'address_line1': String,
@@ -73,6 +72,7 @@ Utils = {
                 'phone': String
             }
         );
+      check(dt_persona_id, Number);
     },
     // Check donation form entries
     checkFormFields: function(form) {

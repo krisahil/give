@@ -55,15 +55,3 @@ Template.User.onRendered( function() {
     //console.log($("[name='date.taken']").val());
   }
 });
-
-
-
-Template.User.onCreated( function () {
-  var self = this;
-  const _id = FlowRouter.getParam("_id");
-  self.autorun(function() {
-    self.subscribe('user', _id);
-  });
-
-  Session.set("searchValue", "");
-});

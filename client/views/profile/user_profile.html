@@ -108,8 +108,8 @@
                                     </nav>
                                 </div>
                             {{/if}}
+                        </div>
                     </div>
-                </div>
                 {{/each}}
             </div>
             {{else}}
@@ -117,58 +117,6 @@
             {{/unless}}
         </div>
     </div>
-        <div id="modal_for_address_change" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title">Edit Your Profile</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form-horizontal" role="form" id="userAddressForm">
-                        {{#with this_persona}}
-                            <div class="form-group">
-                                <label class="control-label col-sm-3" for="line1">Address Line 1:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line1" placeholder="Address" value="{{personaStreetAddress.[0]}}" required data-parsley-error-message="Please enter an address">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-3" for="line2">Address Line 2:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="line2" placeholder="Address Line 2" value="{{personaStreetAddress.[1]}}" >
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-1" for="city">City</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" id="city" placeholder="City" value="{{[0].addresses.[0].city}}" required data-parsley-error-message="Please enter a city">
-                                </div>
-                                <label class="control-label col-sm-1" for="state">State</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" id="state" placeholder="State" value="{{[0].addresses.[0].state}}" required data-parsley-error-message="Please enter a state">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-1" for="zip">Zip</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" id="zip" placeholder="Postal Code" value="{{[0].addresses.[0].postal_code}}" required data-parsley-error-message="Please enter a postal code">
-                                </div>
-                                <label class="control-label col-sm-1" for="phone">Phone</label>
-                                <div class="col-sm-5">
-                                    <input type="tel" class="form-control" id="phone" placeholder="Phone" value="{{[0].phone_numbers.[0].phone_number}}" required data-parsley-error-message="Please enter a phone number" >
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-8 col-sm-4 text-right">
-                                    <button type="submit" class="btn btn-primary text-right" data-loading-text="Processing...">Submit</button>
-                                </div>
-                            </div>
-                        {{/with}}
-                        </form>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+        {{> ProfileModal}}
     </div><!--UserCSS-->
 </template>

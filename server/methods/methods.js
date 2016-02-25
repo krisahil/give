@@ -45,13 +45,13 @@ Meteor.methods({
             throw new Meteor.Error(error, e._id);
         }
     },
-    update_customer: function (form, customer_id, dt_persona_id) {
+    update_customer: function (form, dt_persona_id) {
 
         //Check the client side form fields with the Meteor 'check' method
-        Utils.check_update_customer_form(form, customer_id, dt_persona_id);
+        Utils.check_update_customer_form(form, dt_persona_id);
 
-        // Send the user's contact updates to balanced
-        Utils.update_stripe_customer(form, customer_id);
+        // Send the user's contact updates to stripe
+        Utils.update_stripe_customer(form, dt_persona_id);
 
         // Send the user's contact updates to Donor Tools
         Utils.update_dt_account(form, dt_persona_id);
@@ -233,14 +233,30 @@ Meteor.methods({
             }
         }*/
     },
-    update_user_document_by_adding_persona_details_for_each_persona_id: function () {
+    update_user_document_by_adding_persona_details_for_each_persona_id: function (id) {
       logger.info("Started update_user_document_by_adding_persona_details_for_each_persona_id");
+      check(id, Match.Optional(String));
 
-      if(this.userId){
+      var userID;
+      if(this.userId) {
+        this.unblock();
+       if(id){
+         if (Roles.userIsInRole(this.userId, ['admin', 'user-admin'])) {
+           userID = id;
+         } else {
+           logger.warn("ID detected when not logged in as an admin");
+           return;
+         }
+       } else {
+         userID = this.userId;
+       }
+      } else {
+          return "Not logged in.";
+      }
         let persona_ids, email_address;
-        persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
-        persona_id = Meteor.users.findOne({_id: this.userId}).persona_id;
-        email_address = Meteor.users.findOne({_id: this.userId}).emails[0].address;
+        persona_ids = Meteor.users.findOne({_id: userID}).persona_ids;
+        persona_id = Meteor.users.findOne({_id: userID}).persona_id;
+        email_address = Meteor.users.findOne({_id: userID}).emails[0].address;
         var set_this_array = [];
 
 
@@ -274,16 +290,14 @@ Meteor.methods({
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
           });
           set_this_array.push(personaResult.data.persona);
-        } else if(!Meteor.users.findOne({_id: this.userId}).persona_info){
+        } else if(!Meteor.users.findOne({_id: userID}).persona_info){
           return 'Not a DT user';
         }
 
-        Meteor.users.update({_id: this.userId}, {$set: {'persona_info': set_this_array}});
+        Meteor.users.update({_id: userID}, {$set: {'persona_info': set_this_array}});
 
         return "Finished update_user_document_by_adding_persona_details_for_each_persona_id method call";
-      } else {
-        return "Not logged in.";
-      }
+
     },
     move_donation_to_other_person: function (donation_id, move_to_id) {
         check(donation_id, String);

@@ -8,28 +8,8 @@ Template.UserProfile.helpers({
     donation: function () {
         return Donations.find({}, {sort: {created_at: 1}});
     },
-    donationItem: function(id){
-        var donation_cursor;
-        if( donation_cursor === Donations.findOne(id)){
-            if(donation_cursor.donateTo){
-                return donation_cursor.donateTo;
-            }
-            else return;
-        }
-        else return;
-    },
     total_amount: function () {
         return this.total_amount / 100;
-    },
-    given: function () {
-        var debits = Debits.find();
-        var total = 0;
-        var count = 0;
-        debits.forEach(function (cursor) {
-            total = total + cursor.amount;
-            count += 1;
-        });
-        return {total: total/100, count: count};
     },
     dt_gifts: function () {
         var donations = DT_donations.find({persona_id: this.id});
@@ -37,12 +17,18 @@ Template.UserProfile.helpers({
         var number_of_gifts = 0;
         var total_given = 0;
         donations.forEach(function (element){
+          if(element.payment_status === "succeeded" ||
+            element.payment_status === "pending" ||
+            element.payment_status === "" ||
+            element.payment_status == null ){
             number_of_gifts++;
             element.splits.forEach(function (value){
-                total_given += value.amount_in_cents;
+                  total_given += value.amount_in_cents;
                 if(!_.contains(fullSplitList, value.fund_id)){
                     fullSplitList.push(value.fund_id)}
             });
+          }
+
         });
         return {categories: fullSplitList.length, number_of_gifts: number_of_gifts, total_given: total_given};
     },
@@ -126,33 +112,20 @@ Template.UserProfile.helpers({
         }
     },
     personas : function () {
-        if(Meteor.users.findOne() && Meteor.users.findOne().persona_info){
-            return Meteor.users.findOne().persona_info;
+        if(Meteor.user() && Meteor.user().persona_info){
+            return Meteor.user().persona_info;
         } else {
           return;
         }
     },
     company_or_name: function () {
-        var user = Meteor.users.findOne();
+        var user = Meteor.user();
         return this.company_name ? this.company_name : this.names ? this.names[0].first_name + ' ' + this.names[0].last_name : user.profile.fname + ' ' + user.profile.lname;
     },
     street_address: function () {
         var street_address = this.addresses[0].street_address;
         street_address = street_address.split("\n");
         return street_address;
-    },
-    personaStreetAddress: function () {
-        var street_address = this[0].addresses[0].street_address;
-        street_address = street_address.split("\n");
-        return street_address;
-    },
-    this_persona: function () {
-        if(Session.get('activeTab')) {
-            var persona_info = Meteor.users.findOne() && Meteor.users.findOne().persona_info;
-            return _.where(persona_info, {id: Number(Session.get('activeTab'))});
-        } else {
-            return;
-        }
     },
   not_dt_user: function () {
     if(Session.equals("NotDTUser", true)){
@@ -186,14 +159,14 @@ Template.UserProfile.events({
         var loadingButton = $(':submit').button('loading');
 
         var updateThis = {};
-        updateThis.profile = Meteor.users.findOne() && Meteor.users.findOne().profile;
+        updateThis.profile = Meteor.user() && Meteor.user().profile;
         updateThis.profile[Session.get('activeTab')] = fields;
 
         // Update the Meteor.user profile
-        Meteor.users.update({_id: Meteor.users.findOne()._id}, {$set:  updateThis});
-        var customer_id = Meteor.users.findOne() & Meteor.users.findOne().primary_customer_id;
+        Meteor.users.update({_id: Meteor.user()._id}, {$set:  updateThis});
+        //var customer_id = Meteor.user() & Meteor.user().primary_customer_id;
 
-        Meteor.call('update_customer', fields,  customer_id, Number(Session.get('activeTab')), function(error, result){
+        Meteor.call('update_customer', fields, Number(Session.get('activeTab')), function(error, result){
            if(result){
                console.log(result);
                $('#modal_for_address_change').modal('hide');
@@ -233,9 +206,9 @@ Template.UserProfile.onRendered(function() {
     Router.go("admin.dashboard");
   }
 
-    if(!Meteor.users.findOne().persona_info ||
-      Meteor.users.findOne().persona_info.length < 1 ||
-      Meteor.users.findOne().persona_info.length < Meteor.users.findOne().persona_ids.length) {
+    if(!Meteor.user().persona_info ||
+      Meteor.user().persona_info.length < 1 ||
+      Meteor.user().persona_info.length < Meteor.user().persona_ids.length) {
       Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
         if( result ) {
           if(result === 'Not a DT user'){

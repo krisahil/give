@@ -259,3 +259,7 @@ Template.registerHelper( 'disableIfAdmin', ( userId ) => {
     return Roles.userIsInRole( userId, 'admin' ) ? "disabled" : "";
   }
 });
+
+Template.registerHelper( 'not_dt_user', ( ) => {
+  return Session.equals("NotDTUser", true);
+});

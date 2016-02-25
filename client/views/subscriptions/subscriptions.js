@@ -24,7 +24,7 @@ Template.AdminSubscriptions.events({
     }, function(inputValue){
 
       if (inputValue === "") {
-        inputValue = "Not specified - Admin cancelled";
+        inputValue = "Not specified, but cancelled by an admin";
       }
 
       if (inputValue === false){

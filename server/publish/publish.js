@@ -118,24 +118,35 @@ Meteor.publish("customer", function (customer) {
 	}
 });
 
-Meteor.publish("userStripeData", function() {
-  if (this.userId) {
-    var customers = Customers.find({'metadata.user_id': this.userId});
-    if(!Customers.findOne({'metadata.user_id': this.userId})){
-      this.ready();
-    }
-    var customers_ids = [];
+Meteor.publish("userStripeData", function(id) {
+  logger.info("Started userStripeData");
+  check(id, Match.Optional(String));
 
-    customers.forEach(function(element) {
-        customers_ids.push(element.id);
-    });
-    var charges = Charges.find({'customer': {$in: customers_ids}});
-    var donations = Donations.find({'customer_id': {$in: customers_ids}});
-    var user = Meteor.users.find({_id: this.userId});
-    return[customers, charges, user, donations];
+  var userID;
+
+  if (this.userId) {
+    if(id){
+      userID = id;
+    } else {
+      userID = this.userId;
+    }
   } else {
     this.ready();
   }
+
+  var customers = Customers.find({'metadata.user_id': userID});
+  if(!Customers.findOne({'metadata.user_id': userID})){
+    this.ready();
+  }
+  var customers_ids = [];
+
+  customers.forEach(function(element) {
+      customers_ids.push(element.id);
+  });
+  var charges = Charges.find({'customer': {$in: customers_ids}});
+  var donations = Donations.find({'customer_id': {$in: customers_ids}});
+  var user = Meteor.users.find({_id: userID}, {fields: {services: 0}});
+  return[customers, charges, user, donations];
 });
 
 Meteor.publish("userStripeDataWithSubscriptions", function () {
@@ -204,28 +215,39 @@ Meteor.publish("userSubscriptions", function () {
 	}
 });
 
-Meteor.publish("userDT", function () {
-	if (this.userId) {
-    if(Meteor.users.findOne({_id: this.userId}).persona_ids) {
-      var persona_ids = Meteor.users.findOne({_id: this.userId}).persona_ids;
-      console.log(persona_ids);
-      return DT_donations.find({persona_id: {$in: persona_ids}});
-    } else if(Meteor.users.findOne({_id: this.userId}).persona_id) {
-      var persona_id = Meteor.users.findOne( { _id: this.userId } ).persona_id;
-      console.log( persona_id );
-      return DT_donations.find( { persona_id: { $in: persona_id } } );
-    } else if(Meteor.users.findOne({_id: this.userId}).persona_info){
-      var persona_ids = [];
-      var persona_info = Meteor.users.findOne({_id: this.userId}).persona_info;
-      persona_info.forEach(function (value) {
-          persona_ids.push(value.id);
-      });
-      console.log(persona_ids);
-      return DT_donations.find( { persona_id: { $in: persona_ids } } );
+Meteor.publish("userDT", function (id) {
+  logger.info("Started userDT subscription");
+  check(id, Match.Optional(String));
+
+  var userID;
+
+  if (this.userId) {
+    if(id){
+      userID = id;
     } else {
-      this.ready();
+      userID = this.userId;
     }
 	} else {
+    this.ready();
+  }
+
+  if(Meteor.users.findOne({_id: userID}).persona_ids) {
+    var persona_ids = Meteor.users.findOne({_id: userID}).persona_ids;
+    console.log(persona_ids);
+    return DT_donations.find({persona_id: {$in: persona_ids}});
+  } else if(Meteor.users.findOne({_id: userID}).persona_id) {
+    var persona_id = Meteor.users.findOne( { _id: userID } ).persona_id;
+    console.log( persona_id );
+    return DT_donations.find( { persona_id: { $in: persona_id } } );
+  } else if(Meteor.users.findOne({_id: userID}).persona_info){
+    var persona_ids = [];
+    var persona_info = Meteor.users.findOne({_id: userID}).persona_info;
+    persona_info.forEach(function (value) {
+      persona_ids.push(value.id);
+    });
+    console.log(persona_ids);
+    return DT_donations.find( { persona_id: { $in: persona_ids } } );
+  } else {
     this.ready();
   }
 });
@@ -330,16 +352,21 @@ Meteor.publish("all_users", function (_id) {
 
   if (Roles.userIsInRole(this.userId, ['admin'])) {
     if(_id) {
-      all_users = Meteor.users.find({_id: _id});
+      all_users = Meteor.users.find({_id: _id}, {
+          fields: {
+            services: 0
+          }});
     } else {
-      all_users = Meteor.users.find();
+      all_users = Meteor.users.find({}, {
+        fields: {
+          services: 0
+        }});
     }
     return all_users;
   } else {
     this.ready();
   }
 });
-
 
 Meteor.publish("roles", function () {
   let isAdmin = Roles.userIsInRole( this.userId, 'admin' );

@@ -506,38 +506,50 @@ _.extend(Utils, {
         logger.info("Started stripe_get_subscription");
 
     },
-    update_stripe_customer: function(form, customer_id){
-        logger.info("Inside update_stripe_customer.");
-        logger.info(form.address.city);
+  update_stripe_customer: function(form, dt_persona_id){
+    logger.info("Inside update_stripe_customer.");
 
-        var stripeCustomerUpdate = new Future();
+    let customers = Customers.find({
+      'metadata.dt_persona_id': dt_persona_id.toString()
+    }).map(function(customer){
+      return customer.id;
+    });
+    if(customers.length > -1){
+      console.log("Got at least one customer");
+    } else{
+      throw new Meteor.Error(500, "Not customers with that DT ID were found");
+    }
 
-        Stripe.customers.update(customer_id, {
-                "metadata": {
-                    "city":            form.address.city,
-                    "state":           form.address.state,
-                    "address_line1":   form.address.address_line1,
-                    "address_line2":   form.address.address_line2,
-                    "postal_code":     form.address.postal_code,
-                    "phone":           form.phone
-                }
-            }, function (error, customer) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCustomerUpdate.return(error);
-                } else {
-                    stripeCustomerUpdate.return(customer);
-                }
-            }
-        );
+    customers.forEach(function(customer_id){
+      console.log(customer_id);
+      let stripeCustomerUpdate = new Future();
 
-        stripeCustomerUpdate = stripeCustomerUpdate.wait();
-
-        if (!stripeCustomerUpdate.object) {
-            throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
+      Stripe.customers.update( customer_id, {
+          "metadata": {
+            "city":          form.address.city,
+            "state":         form.address.state,
+            "address_line1": form.address.address_line1,
+            "address_line2": form.address.address_line2,
+            "postal_code":   form.address.postal_code,
+            "phone":         form.phone
+          }
+        }, function ( error, customer ) {
+          if( error ) {
+            //console.dir(error);
+            stripeCustomerUpdate.return( error );
+          } else {
+            stripeCustomerUpdate.return( customer );
+          }
         }
+      );
 
-    },
+      stripeCustomerUpdate = stripeCustomerUpdate.wait();
+
+      if (!stripeCustomerUpdate.object) {
+        throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
+      }
+    });
+  },
     update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
         logger.info("Inside update_stripe_customer_subscription.");
         var stripeSubscriptionUpdate = new Future();

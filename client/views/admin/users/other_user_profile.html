@@ -1,0 +1,135 @@
+<template name="OtherUserProfile">
+    <div class="UserCSS">
+        <div class="container">
+            <div class="row">
+                <!-- Tabs -->
+                {{#unless not_dt_user}}
+                    <button type="button" class="btn btn-primary btn-raised cancel-button">Show all users</button>
+
+                    {{#each personas}}
+
+                        <h2><strong>User Accounts</strong></h2>
+                    <ul id="myTabs" class="nav nav-tabs nav-append-content">
+                        <li class="">
+                            <a href="#{{persona_info.id}}" value="{{persona_info.id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content">
+                            <div class="tab-pane" role="tabpanel" id="{{id}}">
+                                <div class="panel-body billing-module">
+                                    <div id="giving_section" class="col col-lg-6 col-md-6">
+                                        <div class="col-sm-12">
+                                            <br>
+                                            <div class="col-xs-12 col-sm-8">
+                                                {{{company_name}}}
+                                                <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
+                                                <p>
+                                                    <strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                                    {{street_address.[0]}}<br>
+                                                    {{#if street_address.[1]}}
+                                                        {{street_address.[1]}}<br>
+                                                    {{/if}}
+                                                    {{addresses.[0].city}}, {{addresses.[0].state}} {{addresses.[0].postal_code}}<br>
+                                                    {{addresses.[0].country}}
+                                                </p>
+                                                <p>
+                                                    <strong>Phone:  </strong> <i class="fa fa-pencil edit_address green-icons"></i><br>
+                                                    {{phone_numbers.[0].phone_number}} <br>
+                                                </p>
+                                                <p>
+                                                    <strong>Email:  </strong> <br>
+                                                    {{email}} <br>
+                                                </p>
+                                                <p>
+                                                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_for_address_change">
+                                                        Edit Profile
+                                                    </button>
+                                                </p>
+                                                <p>
+                                                    <a href="/" class="btn btn-primary btn-block" role="button"><span class="fa fa-plus-circle"></span> Give </a>
+                                                </p>
+                                                <div class="col-xs-12 divider text-center">
+                                                    <p>
+                                                    <ul class="nav nav-list">
+                                                        <li class="nav-header text-left"><br>Lifetime Giving Stats</li>
+                                                        <li class="active text-left">
+                                                            <h7>Total Giving</h7>
+                                                            <span class="pull-right"><h7>${{twoDecimalPlaces dt_gifts.total_given}}</h7></span>
+                                                        </li>
+                                                        <li class="text-left">
+                                                            <h7>Number of Gifts</h7>
+                                                            <span class="pull-right"><h7>{{dt_gifts.number_of_gifts}}</h7></span>
+                                                        </li>
+                                                    </ul>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {{#with user}}
+                                                <div class="col-xs-12 col-sm-4 text-center">
+                                                    <button type="button" {{disabledIfDisabled}} class="btn btn-primary forgot-password"
+                                                            title="Send Password Reset Link"
+                                                            data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                                        <i class="fa fa-paper-plane"></i>
+                                                    </button>&nbsp;
+                                                    <button type="button" {{disableIfAdmin _id}}
+                                                            title="{{toggleUserText}}"
+                                                            class="btn btn-primary disable-enable-user"
+                                                            data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                                            data-_id="{{_id}}"
+                                                            aria-expanded="true">
+                                                        {{{disabledUserFA}}}
+                                                    </button>
+                                                </div>
+                                            {{/with}}
+                                            <br>&nbsp;
+                                            <br>&nbsp;
+                                        </div>
+                                    </div>
+                                    {{#if showHistory}}
+                                        <div id="" class="col-md-6 col-lg-6">
+                                            <h5 id="">Giving History {{#if dt_donations}}{{else}}<span class="redText">Retrieving...</span>{{/if}}</h5>
+                                            <table class="table table-striped">
+                                                <tbody>
+                                                <tr class="responsiveFont">
+                                                    <th>Date</th>
+                                                    <th>To</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                {{#each dt_donations}}
+                                                    <tr class="responsiveFont {{redText}} {{clickable_row}}" data-href="{{receipt_link}}" data-dt-transaction-id="{{transaction_id}}">
+                                                        <td class="change-td-padding">{{formatDate received_on null}}</td>
+                                                        <td class="change-td-padding">{{#each split}} {{{fundName}}} <br>{{/each}}</td>
+                                                        <td class="text-right">${{#each split}}{{twoDecimalPlaces this.amount_in_cents}} <br>{{/each}}</td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                        <span class="orange-text">
+                                            pending gifts = orange
+                                        </span>
+                                        <span class="red-text">
+                                            <br>failed gifts = red
+                                        </span>
+                                            </table>
+                                            <nav>
+                                                <ul class="pager">
+                                                    <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Newer gifts</a></li>
+                                                    <li class="next"><a href="#">Older gifts <span aria-hidden="true">&rarr;</span></a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    {{/if}}
+                                </div>
+                            </div>
+                    </div>
+                    {{/each}}
+
+                {{else}}
+                    <h3>No Donor Tools Accounts</h3>
+                {{/unless}}
+            </div>
+        </div>
+        {{> ProfileModal}}
+    </div><!--UserCSS-->
+</template>
