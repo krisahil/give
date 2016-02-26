@@ -266,15 +266,77 @@ Template.registerHelper( 'not_dt_user', ( ) => {
 
 /*
 *  Meteor.settings.public helpers
-*  loop over these and set one helper for each of the key/value pairs,
-*  exclude objects
 *  */
-for (var key in Meteor.settings.public) {
-  if (Meteor.settings.public.hasOwnProperty(key)) {
-    if(!_.isObject(Meteor.settings.public[key])){
-      Template.registerHelper( key, ( ) => {
-        return Meteor.settings.public[key];
-      });
-    }
-  }
-}
+
+Template.registerHelper( 'URL', ( ) => {
+  return Meteor.settings.public.URL;
+});
+Template.registerHelper( 'bcc_address', ( ) => {
+  return Meteor.settings.public.bcc_address;
+});
+Template.registerHelper( 'canceled_gift_address', ( ) => {
+  return Meteor.settings.public.canceled_gift_address;
+});
+Template.registerHelper( 'contact_address', ( ) => {
+  return Meteor.settings.public.contact_address;
+});
+Template.registerHelper( 'donor_tools_site', ( ) => {
+  return Meteor.settings.public.donor_tools_site;
+});
+Template.registerHelper( 'full_org_name', ( ) => {
+  return Meteor.settings.public.full_org_name;
+});
+Template.registerHelper( 'heap_id', ( ) => {
+  return Meteor.settings.public.heap_id;
+});
+Template.registerHelper( 'large_gift_address', ( ) => {
+  return Meteor.settings.public.large_gift_address;
+});
+Template.registerHelper( 'org_city', ( ) => {
+  return Meteor.settings.public.org_city;
+});
+Template.registerHelper( 'org_domain', ( ) => {
+  return Meteor.settings.public.org_domain;
+});
+Template.registerHelper( 'org_donate_url', ( ) => {
+  return Meteor.settings.public.org_donate_url;
+});
+Template.registerHelper( 'org_ein', ( ) => {
+  return Meteor.settings.public.org_ein;
+});
+Template.registerHelper( 'org_homepage_url', ( ) => {
+  return Meteor.settings.public.org_homepage_url;
+});
+Template.registerHelper( 'org_is_501c3', ( ) => {
+  return Meteor.settings.public.org_is_501c3;
+});
+Template.registerHelper( 'org_name', ( ) => {
+  return Meteor.settings.public.org_name;
+});
+Template.registerHelper( 'org_phone', ( ) => {
+  return Meteor.settings.public.org_phone;
+});
+Template.registerHelper( 'org_state', ( ) => {
+  return Meteor.settings.public.org_state;
+});
+Template.registerHelper( 'org_state_short', ( ) => {
+  return Meteor.settings.public.org_state_short;
+});
+Template.registerHelper( 'org_street_address', ( ) => {
+  return Meteor.settings.public.org_street_address;
+});
+Template.registerHelper( 'org_subdomain', ( ) => {
+  return Meteor.settings.public.org_subdomain;
+});
+Template.registerHelper( 'org_zip', ( ) => {
+  return Meteor.settings.public.org_zip;
+});
+Template.registerHelper( 'other_support_addresses', ( ) => {
+  return Meteor.settings.public.other_support_addresses;
+});
+Template.registerHelper( 'stripe_publishable', ( ) => {
+  return Meteor.settings.public.stripe_publishable;
+});
+Template.registerHelper( 'support_address', ( ) => {
+  return Meteor.settings.public.support_address;
+});

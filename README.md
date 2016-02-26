@@ -89,7 +89,8 @@ Here is an example settings.json file
     "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'",
     "org_domain": "Your org domain, for example 'trashmountain.com'",
     "org_subdomain": "For example 'give' is the subdomain in this address -> https://give.trashmountain.com",
-    "org_donate_url": "Your org donate page URL, for example 'https://trashmountain.com/donate'"
+    "org_donate_url": "Your org donate page URL, for example 'https://trashmountain.com/donate'",
+    "heap_id": "If you want to use Heap to track your app analytics"
   }
 }
 ```

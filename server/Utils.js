@@ -2,14 +2,6 @@ _.extend(Utils, {
     getDonateTo: function (donateTo) {
         var returnToCalled;
         switch(donateTo) {
-            case "Aquaponics Marketplace - Karpos":
-                returnToCalled = 'Aquaponics Marketplace - Karpos';
-                return returnToCalled;
-                break;
-            case "Aquaponics Marketplace - Rhiza":
-                returnToCalled = 'Aquaponics Marketplace - Rhiza';
-                return returnToCalled;
-                break;
             case 'WhereMostNeeded':
                 returnToCalled = 'Where Most Needed';
                 return returnToCalled;
