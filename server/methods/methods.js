@@ -5,7 +5,7 @@ Meteor.methods({
             if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
                 logger.info("Started get_dt_funds");
                 var fundResults;
-                fundResults = HTTP.get(Meteor.settings.donor_tools_site + '/settings/funds.json?per_page=1000', {
+                fundResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/settings/funds.json?per_page=1000', {
                     auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
                 });
                 Utils.separate_funds(fundResults.data);
@@ -28,7 +28,7 @@ Meteor.methods({
             if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
                 logger.info("Started get_dt_sources");
                 var sourceResults;
-                sourceResults = HTTP.get(Meteor.settings.donor_tools_site + '/settings/sources.json?per_page=1000', {
+                sourceResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/settings/sources.json?per_page=1000', {
                     auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
                 });
                 Utils.separate_sources(sourceResults.data);
@@ -278,7 +278,7 @@ Meteor.methods({
 
           // Loop through the persona_ids
           _.forEach(persona_ids, function(each_persona_id) {
-            let personaResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + each_persona_id + ".json", {
+            let personaResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + each_persona_id + ".json", {
               auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
             });
             set_this_array.push(personaResult.data.persona);
@@ -286,7 +286,7 @@ Meteor.methods({
         } else if( persona_ids ){
           // TODO: the persona_ids let is not an array, need to check that a value exists
           logger.info("Single persona_id found: ", persona_ids);
-          let personaResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + persona_ids + ".json", {
+          let personaResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + persona_ids + ".json", {
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
           });
           set_this_array.push(personaResult.data.persona);
@@ -311,7 +311,7 @@ Meteor.methods({
             logger.info("Moving donation to: " + move_to_id);
 
             // Get the donation from DT
-            var get_donation = HTTP.get(Meteor.settings.donor_tools_site + '/donations/' + donation_id + '.json', {
+            var get_donation = HTTP.get(Meteor.settings.public.donor_tools_site + '/donations/' + donation_id + '.json', {
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
             });
 
@@ -326,7 +326,7 @@ Meteor.methods({
 
             // Insert the donation into the move_to_id persona
             var movedDonation;
-            movedDonation = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
+            movedDonation = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
                 data: {
                     donation: get_donation.data.donation
                 },
@@ -340,7 +340,7 @@ Meteor.methods({
 
                 // Delete the old DT donation, I've setup an async callback because I'm getting a 406 response from DT, but the delete is still going through
                 var deleteDonation;
-                deleteDonation = HTTP.del(Meteor.settings.donor_tools_site + '/donations/' + donation_id + '.json', {auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password}, function(err, result){
+                deleteDonation = HTTP.del(Meteor.settings.public.donor_tools_site + '/donations/' + donation_id + '.json', {auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password}, function(err, result){
                     if(err){
                         console.dir(err);
                         return err;
@@ -524,7 +524,7 @@ Meteor.methods({
       this.unblock();
       try {
         // Get the persona from DT
-        let persona_result = HTTP.call("GET", Meteor.settings.donor_tools_site + '/people/' + id + '.json', {
+        let persona_result = HTTP.call("GET", Meteor.settings.public.donor_tools_site + '/people/' + id + '.json', {
           auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
         });
         if( persona_result && persona_result.data && persona_result.data.persona ) {
@@ -725,7 +725,7 @@ Meteor.methods({
       //check to see that the user is the admin user
       if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
         logger.info("Started post_dt_note");
-        let noteResult = HTTP.post(Meteor.settings.donor_tools_site + '/people/' +
+        let noteResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/people/' +
           to_persona + '/notes.json', {
           "data": {
             "note": {

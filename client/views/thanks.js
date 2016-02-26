@@ -36,9 +36,9 @@ Template.Thanks.helpers({
         if(!referrer || !errorMessage) {
             return "<h3 class='text-center badText'>Something went wrong.</h3>\
           <p class='text-center alert alert-error'>\
-            We weren't able to process your gift. <a href='https://trashmountain.com/donate'>go back</a> and try again.\
+            We weren't able to process your gift. Please <a href='" + Meteor.settings.public.org_donate_url + "'>go back</a> and try again.\
             <br>\
-            <a id='failed_icon' href='https://trashmountain.com/donate'><i class='fa fa-arrow-left large-arrow'></i></a>\
+            <a id='failed_icon' href='" + Meteor.settings.public.org_donate_url + "'><i class='fa fa-arrow-left large-arrow'></i></a>\
           </p>";
         }
         return "<h3 class='text-center badText'>Something went wrong.</h3>\

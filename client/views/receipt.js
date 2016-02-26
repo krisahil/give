@@ -1,13 +1,3 @@
-/*****************************************************************************/
-/* Receipt: Event Handlers and Helpers */
-/*****************************************************************************/
-Template.Receipt.events({
-  'click #matchLink': function (e){
-    e.preventDefault();
-    window.location.href = "https://trashmountain.com/match";
-  }
-});
-
 Template.Receipt.helpers({
     customer_data: function () {
         return Customers.findOne().metadata;

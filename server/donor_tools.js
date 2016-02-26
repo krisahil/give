@@ -3,7 +3,7 @@ _.extend(Utils, {
         logger.info("Inside update_dt_account.");
 
         // get the persona record from Donor Tools
-        var get_dt_persona = HTTP.get(Meteor.settings.donor_tools_site + '/people/' + dt_persona_id + '.json', {
+        var get_dt_persona = HTTP.get(Meteor.settings.public.donor_tools_site + '/people/' + dt_persona_id + '.json', {
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
         });
 
@@ -37,7 +37,7 @@ _.extend(Utils, {
         };
 
 
-        var update_persona = HTTP.call("PUT", Meteor.settings.donor_tools_site + '/people/'+ dt_persona_id + '.json',
+        var update_persona = HTTP.call("PUT", Meteor.settings.public.donor_tools_site + '/people/'+ dt_persona_id + '.json',
             {
                 data: {"persona": persona},
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
@@ -57,7 +57,7 @@ _.extend(Utils, {
     var totalPages = 3;
     for(i = 1; i <= totalPages; i++){
       var dataResults;
-      dataResults = HTTP.get(Meteor.settings.donor_tools_site + '/splits.json?basis=cash&fund_id=' + fundId + '&range[from]=' +
+      dataResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/splits.json?basis=cash&fund_id=' + fundId + '&range[from]=' +
         dateStart + '&range[to]=' + dateEnd + '&page=' + i + '&per_page=1000', {
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
@@ -80,7 +80,7 @@ _.extend(Utils, {
 
     transaction_id = event_object.data.object.id;
 
-    get_dt_donation = HTTP.get(Meteor.settings.donor_tools_site + '/donations.json?transaction_id=' + transaction_id, {
+    get_dt_donation = HTTP.get(Meteor.settings.public.donor_tools_site + '/donations.json?transaction_id=' + transaction_id, {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
     console.log(get_dt_donation.data[0].donation);
@@ -95,7 +95,7 @@ _.extend(Utils, {
       get_dt_donation.data[0].donation.donation_type_id = 3921;
     }
 
-    update_donation = HTTP.call("PUT", Meteor.settings.donor_tools_site + '/donations/'+ dt_donation_id + '.json',
+    update_donation = HTTP.call("PUT", Meteor.settings.public.donor_tools_site + '/donations/'+ dt_donation_id + '.json',
       {
         data: {"donation": get_dt_donation.data[0].donation},
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
@@ -129,7 +129,7 @@ _.extend(Utils, {
     let personResult, matched_id, metadata, orgMatch, personMatch;
 
     // Get all the ids that contain this email address.
-    personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people.json?search=" + email + "&fields=email_address", {
+    personResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people.json?search=" + email + "&fields=email_address", {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
 
@@ -245,7 +245,7 @@ _.extend(Utils, {
     let personResult, matched_id, getPersonasAndMatchedId, personaMatchData, personaData;
     if( use_id ){
       console.log("Using found ID");
-      personResult = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + checkThisDTID + ".json", {
+      personResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + checkThisDTID + ".json", {
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
       personaData = Utils.split_dt_persona_info( email, personResult );
@@ -337,7 +337,7 @@ _.extend(Utils, {
 
 
 
-    newDTPerson = HTTP.post(Meteor.settings.donor_tools_site + '/people.json', {
+    newDTPerson = HTTP.post(Meteor.settings.public.donor_tools_site + '/people.json', {
       "data": {
         "persona": {
           "company_name":      metadata.business_name,
@@ -459,7 +459,7 @@ _.extend(Utils, {
       try {
         logger.info( "Started checking for this person in DT" );
         let checkPerson;
-        checkPerson = HTTP.get( Meteor.settings.donor_tools_site + '/people/' +
+        checkPerson = HTTP.get( Meteor.settings.public.donor_tools_site + '/people/' +
           customerCursor.metadata.dt_persona_id + '.json', {
           auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
         } );
@@ -471,7 +471,7 @@ _.extend(Utils, {
         throw new Meteor.Error( e );
       }
 
-    newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
+    newDonationResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
       data: {
         "donation": {
           "persona_id": customerCursor.metadata.dt_persona_id,

@@ -7,7 +7,7 @@ Meteor.methods({
   checkDonorTools: function () {
     this.unblock();
     try {
-      const result = HTTP.get(Meteor.settings.donor_tools_site + "/settings/name_types.json", {
+      const result = HTTP.get(Meteor.settings.public.donor_tools_site + "/settings/name_types.json", {
           auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
       return true;

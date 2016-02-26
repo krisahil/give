@@ -106,7 +106,7 @@ _.extend(Utils, {
         // forEach of the persona ids stored in the array run the insert_persona_info_into_user function
         id_or_info.forEach( function( element ){
           console.log(element.id);
-          HTTP.call("GET", Meteor.settings.donor_tools_site + "/people/" + element.id + ".json",
+          HTTP.call("GET", Meteor.settings.public.donor_tools_site + "/people/" + element.id + ".json",
             { auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password },
             function ( error, result ) {
               if ( !error ) {
@@ -483,7 +483,7 @@ _.extend(Utils, {
     }
 
     var newDonationResult;
-    newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
+    newDonationResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
       data: {
         "donation": {
           "splits": [{
@@ -583,7 +583,7 @@ _.extend(Utils, {
     persona_ids.forEach(function(id){
       var responseData;
       //TODO: what if there are more than 1000 gifts?
-      responseData = HTTP.get(Meteor.settings.donor_tools_site + "/people/" + id + '/donations.json?per_page=1000', {
+      responseData = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + id + '/donations.json?per_page=1000', {
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
       //Call the function to separate the donation array received from DT into individual donation
@@ -697,7 +697,7 @@ _.extend(Utils, {
        }*/
 
       var newDonationResult;
-      newDonationResult = HTTP.post(Meteor.settings.donor_tools_site + '/donations.json', {
+      newDonationResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
         data: {
           "donation": {
             "persona_id": persona_id,

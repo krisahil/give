@@ -35,7 +35,7 @@
                   {{#if charges}}
                       {{#with charges}}
                         <td style="width: 50px;">
-                          <a href="https://trashmountain.donortools.com/donations?transaction_id={{_id}}" target="_blank">
+                          <a href="{{donor_tools_site}}?transaction_id={{_id}}" target="_blank">
                             <div class="elipsis">
                               <i class="fa fa-link"></i>
                             </div>
@@ -46,7 +46,7 @@
                   {{else}}
                       {{#with refunds}}
                           <td style="width: 50px;">
-                              <a href="https://trashmountain.donortools.com/donations?transaction_id={{charge.id}}" target="_blank">
+                              <a href="{{donor_tools_site}}/donations?transaction_id={{charge.id}}" target="_blank">
                                   <div class="elipsis">
                                       <i class="fa fa-link"></i>
                                   </div>

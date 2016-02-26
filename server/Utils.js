@@ -1009,7 +1009,7 @@ _.extend(Utils, {
     //Create the HTML content for the email.
     //Create the link to go to the new person that was just created.
     var html = "<h1>DT account created</h1><p>" +
-      "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='https://trashmountain.donortools.com/people/" + personaID +"'>" + personaID + "</a></p>";
+      "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='" + Meteor.settings.public.donor_tools_site + "/people/" + personaID +"'>" + personaID + "</a></p>";
 
     let toAddresses = [];
     toAddresses.push(Meteor.settings.public.support_address);

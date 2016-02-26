@@ -127,7 +127,12 @@ Template.GivingOptions.events({
       }
     });
 
-    MultiConfig.update({_id: 'trashmountain'}, {$set: {"GivingOptions": arrayNames, "GivingOptionsSelectedIDs": givingOptionsSelectedIDs}});
+    MultiConfig.update({ org_name: Meteor.settings.public.org_name }, {
+      $set: {
+        "GivingOptions": arrayNames,
+        "GivingOptionsSelectedIDs": givingOptionsSelectedIDs
+      }
+    });
 
     $('#testDropdown' ).select2( {
       data:        arrayNames,
@@ -180,8 +185,8 @@ Template.GivingOptions.events({
 Template.GivingOptions.helpers({
   dt_funds: function () {
     let selectedGivingOptions =
-      MultiConfig.findOne( {_id: 'trashmountain' } ) &&
-      MultiConfig.findOne( {_id: 'trashmountain' } ).GivingOptionsSelectedIDs;
+      MultiConfig.findOne( {org_name: Meteor.settings.public.org_name } ) &&
+      MultiConfig.findOne( {org_name: Meteor.settings.public.org_name } ).GivingOptionsSelectedIDs;
     if( selectedGivingOptions ) {
       return DT_funds.find({'id': {$nin: selectedGivingOptions}}, {sort: { name: 1 } });
     } else {

@@ -46,7 +46,6 @@ Here is an example settings.json file
   "kadiraAppId": "Get a free account here https://kadira.io/",
   "kadiraAppSecret": "https://kadira.io/",
   "admin_user": "user _id of any user that can use the dashboard as an admin",
-  "donor_tools_site": "Get a DonorTools site, there is a two week free trial. http://www.donortools.com. Then use the site name that is assigned to you. It should look like this https://your_name.donortools.com",
   "donor_tools_user": "",
   "donor_tools_password": "",
   "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",
@@ -69,15 +68,15 @@ Here is an example settings.json file
   },
   "public": {
     "URL": "giving page URL, you should use https://"
-    "stripe": {
-      "publishable": "publishable Stripe Key"
-    },
+    "stripe_publishable: "publishable Stripe Key",
     "contact_address": "general contact email address",
     "support_address": "support email address",
     "other_support_addresses": ["array of addresses only currently used for the new account added emails"],
     "canceled_gift_address": "group email for notifying when a recurring gift is canceled",
     "bcc_address": "this email is bcc'd anytime a gift receipt, schedule or pending email is sent",
-    "large_gift_address": "group email for notifiying when gifts larger than $500 are given",
+    "large_gift_address": "group email for notifying when gifts larger than $500 are given",
+    "donor_tools_site": "Get a DonorTools site, there is a two week free trial. http://www.donortools.com. Then use the site name that is assigned to you. It should look like this https://your_name.donortools.com",
+    "full_org_name": "For example, 'Trash Mountain Project, Inc.'",
     "org_name": "Your org name",
     "org_street_address": "Your org street address, for example '1555 NW Gage BLVD",
     "org_city": "Your org city",
@@ -88,6 +87,7 @@ Here is an example settings.json file
     "org_ein": "Your org tax id/EIN",
     "org_is_501c3": true,
     "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'",
+    "org_domain": "Your org domain, for example 'trashmountain.com'",
     "org_donate_url": "Your org home page URL, for example 'https://trashmountain.com/donate'"
   }
 }

@@ -263,3 +263,18 @@ Template.registerHelper( 'disableIfAdmin', ( userId ) => {
 Template.registerHelper( 'not_dt_user', ( ) => {
   return Session.equals("NotDTUser", true);
 });
+
+/*
+*  Meteor.settings.public helpers
+*  loop over these and set one helper for each of the key/value pairs,
+*  exclude objects
+*  */
+for (var key in Meteor.settings.public) {
+  if (Meteor.settings.public.hasOwnProperty(key)) {
+    if(!_.isObject(Meteor.settings.public[key])){
+      Template.registerHelper( key, ( ) => {
+        return Meteor.settings.public[key];
+      });
+    }
+  }
+}
