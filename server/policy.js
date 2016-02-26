@@ -9,7 +9,8 @@ var trusted = [
     'api.stripe.com',
     'q.stripe.com',
     'checkout.stripe.com',
-    Meteor.settings.public.URL,
+    Meteor.settings.public.org_subdomain + "." +
+      Meteor.settings.public.org_domain,
     Meteor.settings.public.org_domain,
     'kadira.io',
     'enginex.kadira.io',

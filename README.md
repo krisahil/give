@@ -88,7 +88,8 @@ Here is an example settings.json file
     "org_is_501c3": true,
     "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'",
     "org_domain": "Your org domain, for example 'trashmountain.com'",
-    "org_donate_url": "Your org home page URL, for example 'https://trashmountain.com/donate'"
+    "org_subdomain": "For example 'give' is the subdomain in this address -> https://give.trashmountain.com",
+    "org_donate_url": "Your org donate page URL, for example 'https://trashmountain.com/donate'"
   }
 }
 ```
