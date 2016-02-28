@@ -33,7 +33,6 @@ Template.StripeTransferDetails.events({
   'click .posted': function(e, tmpl){
     let checkbox_state;
 
-    console.log($(e.currentTarget).hasClass('disabled'));
     if($(e.currentTarget).hasClass('disabled')){
       return;
     }
@@ -41,9 +40,6 @@ Template.StripeTransferDetails.events({
 
     let transfer_id = this.id;
     let status = $(e.currentTarget).children('em').html();
-    let savePosted = $(e.currentTarget).button();
-    console.log(status);
-    console.log($(e.currentTarget));
     if(status === 'posted') {
       checkbox_state = 'false';
     } else {
@@ -65,15 +61,13 @@ Template.StripeTransferDetails.events({
   'click .not-posted': function(e, tmpl){
     let checkbox_state;
 
-    console.log($(e.currentTarget).hasClass('disabled'));
     if($(e.currentTarget).hasClass('disabled')){
       return;
     }
     $(e.currentTarget).addClass('disabled');
+
     let transfer_id = this.id;
     let status = $(e.currentTarget).children('em').html();
-    console.log(status);
-    console.log($(e.currentTarget));
     if(status === 'posted') {
       checkbox_state = 'false';
     } else {
@@ -142,7 +136,19 @@ Template.StripeTransferDetails.helpers({
     }
   },
   ach_or_card: function () {
-    if(this.source && this.source.object === 'bank_account'){
+    if(this.object && this.object === 'refund'){
+      if(this.charge &&
+        this.charge.source &&
+        this.charge.source.object === 'bank_account'){
+        return "ACH";
+      } else if(this.charge &&
+        this.charge.payment_source &&
+        this.charge.payment_source.object === 'bank_account') {
+        return "ACH";
+      } else {
+        return "Card"
+      }
+    } else if(this.source && this.source.object === 'bank_account'){
       return "ACH";
     } else if(this.payment_source && this.payment_source.object === 'bank_account') {
       return "ACH";
@@ -151,20 +157,22 @@ Template.StripeTransferDetails.helpers({
     }
   },
   fees_covered: function () {
-    if(this.object === 'charge'){
-      if(this.metadata & this.metadata.coveredTheFees && this.metadata.coveredTheFees){
+    if(this.object && this.object === 'refund'){
+      if(this.charge &&
+        this.charge.metadata &&
+        this.charge.metadata.coveredTheFees &&
+        this.charge.metadata.coveredTheFees === 'true') {
         return 'checked';
-      } else if(this.metadata && !this.metadata.coveredTheFees) {
-        return '';
       } else {
-        return 'checked';
+        return;
       }
-    } else {
-      if(this.charge.metadata & this.charge.metadata.coveredTheFees &&
-        this.charge.metadata.coveredTheFees){
+    } else if(this.object && this.object === 'charge'){
+      if(this.metadata &&
+        this.metadata.coveredTheFees &&
+        this.metadata.coveredTheFees === 'true'){
         return 'checked';
-      } else if(this.charge.metadata && !this.charge.metadata.coveredTheFees) {
-        return '';
+      } else {
+        return;
       }
     }
   },
@@ -275,8 +283,19 @@ Template.StripeTransferDetails.helpers({
       return 'refunded'
     } else if (this.description === "REFUND FOR FAILED PAYMENT"){
       return 'failed';
+    } else if(this.status === 'failed'){
+      return 'failed';
     } else {
       return;
+    }
+  },
+  refund_type: function () {
+    if(this.type === "payment_failure_refund") {
+      return 'refunded'
+    } else if(this.description && this.description === "Payment failure refund"){
+      return 'failed';
+    } else {
+      return '';
     }
   },
   failed: function () {

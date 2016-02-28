@@ -1,37 +1,40 @@
 <template name="StripeTransfers">
-  <div class="stripe-transfers">
-    <div id="" class="col-md-6 col-lg-6">
-        <h3>Range</h3>
-        <input type="text" name="daterange" value="{{monthRange}}" class="form-control" />
-    </div>
-    <div id="" class="col-md-6 col-lg-6">
-        <h3>Transfers</h3>
-      <table class="table table-striped">
-        <tbody>
-          <tr class="responsiveFont">
-            <th>Posted</th>
-            <th>Date</th>
-            <th>Id</th>
-            <th>Amount</th>
-            <th>Status</th>
-          </tr>
-          {{#each transfer}}
-            <tr class="responsiveFont {{redText}}" data-href="/transfers/{{id}}" >
-                <td>
-                    <input class="posted" type="checkbox"
-                           {{posted}}>
-                </td>
-                <td class="change-td-padding clickable_row">{{transfer_date}}</td>
-                <td class="change-td-padding clickable_row">{{id}}</td>
-                <td class="clickable_row">${{twoDecimalPlaces amount}}</td>
-                <td class="clickable_row">{{capitalize status}}</td>
-            </tr>
-          {{/each}}
-        </tbody>
-        <span class="orange-text">
-            "In Transit" transfers = orange
-        </span>
-      </table>
-      </div>
+    <div class="stripe-transfers">
+        <div class="row">
+            <div id="" class="col-md-2 col-lg-2">
+              <h5>Range</h5>
+                <input type="text" name="daterange" value="{{monthRange}}" class="form-control" />
+                <label>^ Click to select a date range ^</label>
+            </div>
+            <div id="" class="col-md-10 col-lg-10">
+                  <h5>
+                      Transfers
+                      <span class="small pull-right">Click a row to view details</span>
+                  </h5>
+                  <table class="table table-striped">
+                      <tbody>
+                      <tr class="responsiveFont">
+                          <th title="For your internal accounting">Posted</th>
+                          <th>Date</th>
+                          <th>Stipre id</th>
+                          <th>Amount</th>
+                          <th>Status</th>
+                      </tr>
+                      {{#each transfer}}
+                          <tr title="Click to view details" class="responsiveFont {{orangeText}}" data-href="/transfers/{{id}}" >
+                              <td>
+                                  <input class="posted" type="checkbox"
+                                      {{posted}}>
+                              </td>
+                              <td class="change-td-padding clickable_row">{{transfer_date}}</td>
+                              <td class="change-td-padding clickable_row">{{id}}</td>
+                              <td class="clickable_row">${{twoDecimalPlaces amount}}</td>
+                              <td class="clickable_row">{{capitalize status}}</td>
+                          </tr>
+                      {{/each}}
+                      </tbody>
+                  </table>
+              </div>
+        </div>
     </div>
 </template>

@@ -80,7 +80,6 @@ Stripe_Events = {
   'charge.failed': function (stripeEvent) {
     StripeFunctions.audit_charge(stripeEvent.data.object.id, 'failed');
 
-    // TODO: get the refund item for this failure
     if(stripeEvent.data.object.refunds && stripeEvent.data.object.refunds.data &&
       stripeEvent.data.object.refunds.data[0] && stripeEvent.data.object.refunds.data[0].id){
       let refund_object = Utils.stripe_get_refund(stripeEvent.data.object.refunds.data[0].id);
@@ -106,6 +105,9 @@ Stripe_Events = {
   },
   'charge.refunded': function (stripeEvent) {
     StripeFunctions.audit_charge(stripeEvent.data.object.id, 'refunded');
+    let refund_object = Utils.stripe_get_refund(stripeEvent.data.object.refunds.data[0].id);
+    console.log(refund_object);
+    Refunds.upsert({_id: refund_object.id}, refund_object);
     console.log(stripeEvent.type + ': event processed');
     return;
   },

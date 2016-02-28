@@ -133,6 +133,10 @@ _.extend(Utils, {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
 
+    // TODO: What if the user's name and all their detail is correct, but they give a new
+    // email address that doesn't exist in DT?
+    // In this case we'll return null; Do we want to?
+
     if(personResult){
       metadata = Customers.findOne( { _id: customer_id } ).metadata;
       // Step 1b
@@ -433,16 +437,26 @@ _.extend(Utils, {
     // write-in gifts and those not matching a fund in DT
     if( !dt_fund ) {
       fund_id = Meteor.settings.donor_tools_default_fund_id;
-      memo = Meteor.settings.dev + metadata.frequency.charAt(0).
-          toUpperCase() + metadata.frequency.slice(1) + " " + donateTo;
+      memo = Meteor.settings.dev +
+        metadata &&
+        metadata.frequency &&
+        metadata.frequency.charAt(0).toUpperCase() +
+        metadata.frequency.slice(1) + " " + donateTo;
 
     } else {
       fund_id = dt_fund;
-      memo = Meteor.settings.dev + metadata.frequency.charAt(0).
-          toUpperCase() + metadata.frequency.slice(1);
+      memo = Meteor.settings.dev + metadata &&
+      metadata.frequency &&
+      metadata.frequency.charAt(0).toUpperCase() +
+      metadata.frequency.slice(1);
       if( metadata && metadata.note ){
         memo = memo + " " + metadata.note;
       }
+    }
+    if(!memo){
+      logger.error(charge_id, customer_id);
+      logger.error(metadata);
+      logger.error("Something went wrong above, it looks like there is no metadata on this object.");
     }
 
     if ( customerCursor && customerCursor.metadata && customerCursor.metadata.business_name ){

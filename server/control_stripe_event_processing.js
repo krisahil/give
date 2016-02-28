@@ -18,7 +18,8 @@ _.extend(StripeFunctions, {
         // Does it violate an out of order rule?
         check_for_violation = StripeFunctions.does_this_charge_event_violate_an_out_of_order_rule(stripe_request);
 
-        // If yes
+        // If yes, then we probably received this event in the wrong order,
+        // we don't want it to affect our database, so just skip out of processing this event
         if(check_for_violation) {
           return;
         }
@@ -27,7 +28,7 @@ _.extend(StripeFunctions, {
       // Store and wait
       wait_for_storage = StripeFunctions.store_stripe_event(stripe_request);
 
-      // Send the event to the proper event type
+      // Send the event to the proper event function
       event = Stripe_Events[stripe_request.type]( stripe_request );
 
       if(stripe_request.data.object.object === 'charge'){
@@ -219,7 +220,6 @@ _.extend(StripeFunctions, {
           event_body.data.object.metadata['balanced_customer_id'] = event_body.data.object.metadata['balanced.customer_id'];
           delete event_body.data.object.metadata['balanced.customer_id'];
         }
-
         console.log(event_body.data.object);
         Customers.upsert({_id: event_body.data.object.id}, event_body.data.object);
         break;
@@ -247,15 +247,9 @@ _.extend(StripeFunctions, {
         break;
       default:
         logger.error("This event didn't fit any of the configured cases, go into store_stripe_event and add the appropriate case.");
-
     }
-
   },
   'find_user_account_or_make_a_new_one': function (customer){
-    // TODO: looks like there is no API event on new gifts because the customer
-    // is being created with Stripe.js. This is actually a good thing because it
-    // means you won't have out of order event processing, the customer created
-    // functions should always run first
     console.log("Started find_dt_account_or_make_a_new_one");
     console.log(customer);
 
@@ -272,6 +266,8 @@ _.extend(StripeFunctions, {
       user_id = user._id;
     } else{
       user_id = Utils.create_user(email_address, customer.id);
+      // Set the new user flag
+      Meteor.users.update({_id: user_id}, {$set: {newUser: true}});
     }
     // Add the user_id to the Stripe customer metadata
     add_user_id_to_customer_metadata = StripeFunctions.add_user_id_to_customer_metadata(user_id, customer.id);

@@ -129,60 +129,6 @@ _.extend(Utils, {
     }
     return;
   },
-  create_user: function (email, customer_id) {
-    try {
-      logger.info("Started create_user.");
-
-      let user_id, customer_cursor, fname, lname, profile;
-
-      customer_cursor = Customers.findOne(customer_id);
-      if (!customer_cursor.metadata.country) {
-        logger.error("No Country");
-      }
-
-      fname = customer_cursor && customer_cursor.metadata.fname;
-      lname = customer_cursor && customer_cursor.metadata.lname;
-      profile = {
-        fname: fname,
-        lname: lname,
-        address: {
-          address_line1: customer_cursor.metadata.address_line1,
-          address_line2: customer_cursor.metadata && customer_cursor.metadata.address_line2,
-          city: customer_cursor.metadata.city,
-          state: customer_cursor.metadata.state,
-          postal_code: customer_cursor.metadata.postal_code,
-          country: customer_cursor.metadata.country
-        },
-        phone: customer_cursor.metadata.phone,
-        business_name: customer_cursor.metadata.business_name
-      };
-
-      // Create a new user
-      user_id = Accounts.createUser({email: email});
-
-      // Add some details to the new user account
-      Meteor.users.update(user_id, {
-        $set: {
-          'profile': profile,
-          'primary_customer_id': customer_id,
-          roles: [],
-          state: {
-            status: 'invited',
-            updatedOn: new Date()
-          }
-        }
-      });
-
-      // Send an enrollment Email to the new user
-      Accounts.sendEnrollmentEmail(user_id);
-      return user_id;
-    } catch(e) {
-      logger.info(e);
-      //e._id = AllErrors.insert(e.response);
-      var error = (e.response);
-      throw new Meteor.Error(error, e._id);
-    }
-  },
   get_fund_id: function (donateTo) {
     logger.info("Started get_fund_id");
     // Take the text of donateTo and associate that with a fund id
@@ -538,7 +484,7 @@ _.extend(Utils, {
     });
   },
   insert_each_dt_donation: function(donation){
-    logger.info("Inside insert_each_dt_donation with " + donation.id);
+    console.log("Inside insert_each_dt_donation with " + donation.id);
 
     DT_donations.upsert({_id: donation.id}, donation);
   },

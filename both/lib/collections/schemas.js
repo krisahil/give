@@ -172,6 +172,18 @@ Schema.User = new SimpleSchema({
       }
     }
   },
+  newUser: {
+    type: Boolean,
+    optional: true,
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
   profile: {
     type: Schema.UserProfile,
     optional: true

@@ -232,7 +232,7 @@ Template.registerHelper('subtract', function(v1,v2){
  */
 
 Template.registerHelper('add', function(v1,v2){
-  if((v1 + v2) < 0 ) return; // Don't want to divide by 0 or a negative
+  if((v1 + v2) === 0 ) return 0; // Don't want to divide by 0
   return ( v1 + v2 ) / 100 ;
 });
 

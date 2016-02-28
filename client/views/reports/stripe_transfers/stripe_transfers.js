@@ -58,7 +58,7 @@ Template.StripeTransfers.helpers({
       return today;
     }
   },
-  redText: function () {
+  orangeText: function () {
     if(this.status && this.status === 'in_transit') {
       return 'orange-text';
     }
