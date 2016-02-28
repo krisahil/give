@@ -278,11 +278,17 @@ Meteor.methods({
 
           // Loop through the persona_ids
           _.forEach(persona_ids, function(each_persona_id) {
-            let personaResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + each_persona_id + ".json", {
-              auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-            });
-            set_this_array.push(personaResult.data.persona);
-          })
+            this.unblock();
+            try {
+              let personaResult = HTTP.get( Meteor.settings.public.donor_tools_site + "/people/" + each_persona_id + ".json", {
+                auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+              } );
+              set_this_array.push( personaResult.data.persona );
+            } catch(e){
+                logger.error("error in querying DT for persona_info")
+                logger.error(e);
+            }
+          });
         } else if( persona_ids ){
           // TODO: the persona_ids let is not an array, need to check that a value exists
           logger.info("Single persona_id found: ", persona_ids);
