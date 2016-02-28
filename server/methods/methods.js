@@ -278,7 +278,6 @@ Meteor.methods({
 
           // Loop through the persona_ids
           _.forEach(persona_ids, function(each_persona_id) {
-            this.unblock();
             try {
               let personaResult = HTTP.get( Meteor.settings.public.donor_tools_site + "/people/" + each_persona_id + ".json", {
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
