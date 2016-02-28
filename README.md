@@ -81,6 +81,7 @@ Here is an example settings.json file
     "org_ein": "Your org tax id/EIN",
     "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'",
     "org_is_501c3": true,
+    "org_mission_statement": "Developing Christ-centered environments for children and families living in trash dump communities wordldwide.",
     "org_name": "Your org name",
     "org_phone": "Your org phone number",
     "org_state": "Your org state",

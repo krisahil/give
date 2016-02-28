@@ -15,7 +15,7 @@
         <header id="header">
             <div class="invoice-intro">
                 <h1 class="noTopPadding">{{org_name}}</h1>
-                <p>Developing Christ-centered environments for children and families living in trash dump communities wordldwide.</p>
+                <p>{{org_mission_statement}}</p>
             </div>
 
             <dl class="invoice-meta">
@@ -39,7 +39,7 @@
         <section id="parties">
             <div class="invoice-to">
                 <h2>Donation To:</h2>
-                <div id="hcard-Trash-Mountain-Project" class="vcard">
+                <div id="hcard" class="vcard">
                     <a class="url fn" href={{org_homepage_url}}>{{org_name}}</a>
                     <a class="email" href="mailto:{{contact_address}}">{{contact_address}}</a>
 
@@ -122,7 +122,9 @@
             <p>
                 As a 501(c)3 non-profit organization, all contributions to {{org_name}} are tax deductible under 170(c)2 of the Internal Revenue Code. {{org_name}}  EIN {{org_ein}}
             </p>
-                <p><a id="printLink" class="hidden-print" href="" onclick="javascript:window.print();">Click to Print</a></p>
+            <p class="hidden-print">
+                <a id="printLink" href="">Click to Print</a>
+            </p>
 
         </footer>
     </div><!-- e: invoice -->

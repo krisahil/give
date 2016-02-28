@@ -1,3 +1,8 @@
+Template.Receipt.events({
+  'click #printLink': function() {
+    window.print();
+  }
+});
 Template.Receipt.helpers({
     customer_data: function () {
         return Customers.findOne().metadata;

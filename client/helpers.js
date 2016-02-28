@@ -76,9 +76,9 @@ Template.registerHelper('epochToString', function(timestamp){
   if (timestamp){
     var length = timestamp.toString().length;
     if ( length === 10 ) {
-      return moment.unix(timestamp).format("MMMM Do, YYYY");
+      return moment.unix(timestamp).format("MM/DD/YY");
     } else {
-      return moment.unix(timestamp / 1000).format("MMMM Do, YYYY");
+      return moment.unix(timestamp / 1000).format("MM/DD/YY");
     }
   }
 });
@@ -309,6 +309,9 @@ Template.registerHelper( 'org_homepage_url', ( ) => {
 });
 Template.registerHelper( 'org_is_501c3', ( ) => {
   return Meteor.settings.public.org_is_501c3;
+});
+Template.registerHelper( 'org_mission_statement', ( ) => {
+  return Meteor.settings.public.org_mission_statement;
 });
 Template.registerHelper( 'org_name', ( ) => {
   return Meteor.settings.public.org_name;
