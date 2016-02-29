@@ -314,22 +314,6 @@ Template.DonationForm.onRendered(function() {
     autoclose: true
   });
 
-    /*var datepickerSelector = $('#start_date');
-    datepickerSelector.datepicker({
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        dateFormat: 'd MM, yy',
-        minDate: 0,
-        maxDate: +32
-    }).prev('.input-group-btn').on('click', function (e) {
-        e && e.preventDefault();
-        datepickerSelector.focus();
-    });
-    $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
-
-    // Now let's align datepicker with the prepend button
-    datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });*/
-
   if (Session.get('params.start_date')) {
     $("#start_date").val(Session.get('params.start_date'));
   }

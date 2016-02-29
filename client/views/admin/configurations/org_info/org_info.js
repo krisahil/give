@@ -1,8 +1,7 @@
-/*****************************************************************************/
-/* OrgInfo: Helpers */
-/*****************************************************************************/
+
+
 Template.OrgInfo.helpers({
-  updateDoc: function () {
-    return MultiConfig.findOne( { org_name: Meteor.settings.public.org_name } );
+  multiConfigDoc: function () {
+    return MultiConfig.findOne( { org_domain: Meteor.settings.public.org_domain } );
   }
 });
