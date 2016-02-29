@@ -1,20 +1,20 @@
 
 AutoForm.hooks({
   'edit-user-form': {
-    onSuccess: function (operation, result, template) {
+    onSuccess: function (operation, result) {
       Session.set("addingNew", false);
       Bert.alert( result, 'success', 'growl-top-right' );
       Router.go("/dashboard/users");
     },
 
-    onError: function(operation, error, template) {
+    onError: function(operation, error) {
       console.log(error);
       console.log(operation);
 
       Bert.alert( error.message, 'danger', 'growl-top-right' );
     },
 
-    onSubmit: function (insertDoc, updateDoc, currentDoc) {
+    onSubmit: function () {
       return this.event.preventDefault();
     }
   }
@@ -77,25 +77,7 @@ Template.Users.helpers({
   }
 });
 Template.Users.events({
-  'submit form': function (e) {
-    e.preventDefault();
-
-    let _handleSignup = ( template ) => {
-      let user = {
-        email: template.find( '[name="emailAddress"]' ).value,
-        password: template.find( '[name="password"]' ).value
-      };
-
-      Accounts.createUser( user, ( error ) => {
-        if ( error ) {
-          Bert.alert( error.reason, 'danger' );
-        } else {
-          Bert.alert( 'Welcome!', 'success' );
-        }
-      });
-    };
-  },
-  'click .disable-enable-user': function (e) {
+  'click .disable-enable-user': function () {
     console.log("got remove");
 
     let self = this;
@@ -140,10 +122,6 @@ Template.Users.events({
         });
       }
     });
-
-  },
-  'click .addRole': function (e) {
-    console.log("got addRole")
   },
   'click .addingNewUser': function ( e ){
     e.preventDefault();

@@ -30,7 +30,7 @@ Template.StripeTransferDetails.events({
       }
     });
   },
-  'click .posted': function(e, tmpl){
+  'click .posted': function(e){
     let checkbox_state;
 
     if($(e.currentTarget).hasClass('disabled')){
@@ -48,7 +48,7 @@ Template.StripeTransferDetails.events({
 
 
     Meteor.call("toggle_post_transfer_metadata_state", transfer_id,
-      checkbox_state, function(err, res){
+      checkbox_state, function(err){
         if (err){
           console.dir(err);
           $(e.currentTarget).removeClass('disabled');
@@ -58,7 +58,7 @@ Template.StripeTransferDetails.events({
         }
       });
   },
-  'click .not-posted': function(e, tmpl){
+  'click .not-posted': function(e){
     let checkbox_state;
 
     if($(e.currentTarget).hasClass('disabled')){
@@ -76,7 +76,7 @@ Template.StripeTransferDetails.events({
 
 
     Meteor.call("toggle_post_transfer_metadata_state", transfer_id,
-      checkbox_state, function(err, res){
+      checkbox_state, function(err){
         if (err){
           console.dir(err);
           $(e.currentTarget).removeClass('disabled');

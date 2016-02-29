@@ -73,7 +73,7 @@ _.extend(Utils, {
     });
 
   },
-  update_dt_donation_status: function ( event_object, interval ) {
+  update_dt_donation_status: function ( event_object ) {
     logger.info("Started update_dt_donation_status");
 
     let transaction_id, get_dt_donation, update_donation, dt_donation_id;
@@ -100,25 +100,6 @@ _.extend(Utils, {
         data: {"donation": get_dt_donation.data[0].donation},
         auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
       });
-
-      /*// This section is for async retrying of failed connection to DT
-      It seems to break this function so it is commented out now
-      ,
-      function (error, result) {
-        if (!error) {
-          return result;
-        } else {
-          if(!interval || interval < 20){
-            logger.info(error + '\nFailed, interval = ' + interval + ' ...retrying');
-            Meteor.setTimeout(function(){
-              logger.info(interval);
-              Utils.update_dt_donation_status(event_object, interval+=1);
-            },15000);
-          } else{
-            logger.warn("Retried for 5 minutes, still could not connect.");
-          }
-        }
-      });*/
 
     console.dir(update_donation);
     DT_donations.upsert( {_id: dt_donation_id}, update_donation.data.donation );
@@ -240,48 +221,48 @@ _.extend(Utils, {
     console.log(email);
 
     // TODO: remove use_id part of this, I'm not using it
-    /*try {*/
-    // This function is used to get all of the persona_id (there might be many)
-    // from DT if they exist or return false if none do
-    logger.info( "Started check_for_dt_user" );
-    logger.info( "ID: ", checkThisDTID );
+    try {
+      // This function is used to get all of the persona_id (there might be many)
+      // from DT if they exist or return false if none do
+      logger.info( "Started check_for_dt_user" );
+      logger.info( "ID: ", checkThisDTID );
 
-    let personResult, matched_id, getPersonasAndMatchedId, personaMatchData, personaData;
-    if( use_id ){
-      console.log("Using found ID");
-      personResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + checkThisDTID + ".json", {
-        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-      });
-      personaData = Utils.split_dt_persona_info( email, personResult );
-      return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
-    } else {
-      console.log("Inside the no id section");
-      if(Audit_trail.findOne( {_id: customer_id} ) && Audit_trail.findOne( {_id: customer_id} ).flow_checked ) {
-
-        console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
-        return;
-
+      let personResult, matched_id, getPersonasAndMatchedId, personaMatchData, personaData;
+      if( use_id ){
+        console.log("Using found ID");
+        personResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + checkThisDTID + ".json", {
+          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+        });
+        personaData = Utils.split_dt_persona_info( email, personResult );
+        return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
       } else {
-        console.log("Checked for and didn't find an audit record for this customer creation flow.");
+        console.log("Inside the no id section");
+        if(Audit_trail.findOne( {_id: customer_id} ) && Audit_trail.findOne( {_id: customer_id} ).flow_checked ) {
 
-        Audit_trail.upsert({_id: customer_id}, {$set: {flow_checked: true}});
-        getPersonasAndMatchedId = Utils.find_dt_persona_flow(email, customer_id);
-        console.dir(getPersonasAndMatchedId);
-        personaMatchData = getPersonasAndMatchedId.personResult;
-        matched_id = getPersonasAndMatchedId.matched_id;
+          console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
+          return;
 
-        personaData = Utils.split_dt_persona_info( email, personaMatchData );
+        } else {
+          console.log("Checked for and didn't find an audit record for this customer creation flow.");
+
+          Audit_trail.upsert({_id: customer_id}, {$set: {flow_checked: true}});
+          getPersonasAndMatchedId = Utils.find_dt_persona_flow(email, customer_id);
+          console.dir(getPersonasAndMatchedId);
+          personaMatchData = getPersonasAndMatchedId.personResult;
+          matched_id = getPersonasAndMatchedId.matched_id;
+
+          personaData = Utils.split_dt_persona_info( email, personaMatchData );
+        }
+
+        return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: matched_id};
+
       }
 
-      return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: matched_id};
-
+    } catch ( e ) {
+      logger.error( e );
+      var error = ( e.response );
+      throw new Meteor.Error( error, e._id );
     }
-
-    /*} catch ( e ) {
-     logger.info( e );
-     var error = ( e.response );
-     throw new Meteor.Error( error, e._id );
-     }*/
   },
   'find_dt_account_or_make_a_new_one': function (customer, user_id) {
 
@@ -522,6 +503,4 @@ _.extend(Utils, {
       throw new Meteor.Error("Couldn't get the persona_id for some reason");
     }
   }
-
-
 });

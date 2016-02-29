@@ -78,7 +78,7 @@ Template.UserProfile.helpers({
         }
     },
     receipt_link: function() {
-        var charge_id, donation_id, customer_id;
+        var charge_id, customer_id;
         if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
             charge_id = this.transaction_id;
             customer_id = Charges.findOne({_id: charge_id}).customer;

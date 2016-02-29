@@ -127,7 +127,7 @@ Template.DonationForm.events({
             App.fillForm('main');
         }
     },
-    'focus, blur #cvv': function(e) {
+    'focus, blur #cvv': function() {
         $('#cvv').on('mousewheel.disableScroll', function(e) {
             e.preventDefault();
         });
@@ -162,7 +162,7 @@ Template.DonationForm.events({
         Router.go(goHere);
       }
     },
-    'blur #donation_form input': function (e){
+    'blur #donation_form input': function (){
         // TODO: remove this area and use iron-router instead.
         // http://stackoverflow.com/questions/24367914/aborting-navigation-with-meteor-iron-router
         if(document.URL !== "http://127.0.0.1:3000/give/user"){

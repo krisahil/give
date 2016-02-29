@@ -126,10 +126,8 @@ _.extend(Utils, {
       logger.info("Inside create_customer.");
 
       var stripeCustomer = new Future();
-      var type;
 
       if (paymentDevice.slice(0, 2) === 'to') {
-        type = "card";
         Stripe.customers.create({
             card: paymentDevice,
             email: customerInfo.email_address,
@@ -155,9 +153,7 @@ _.extend(Utils, {
             }
         });
       } else if (paymentDevice.slice(0, 2) === 'bt') {
-        /**/
         logger.info("Bank_account");
-        type = "bank_account";
         Stripe.customers.create({
             bank_account: paymentDevice,
             email: customerInfo.email_address,

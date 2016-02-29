@@ -81,7 +81,7 @@ Template.OtherUserProfile.helpers({
     }
   },
   receipt_link: function() {
-    var charge_id, donation_id, customer_id;
+    var charge_id, customer_id;
     if(this.transaction_id && Charges.findOne({_id: this.transaction_id})){
       charge_id = this.transaction_id;
       customer_id = Charges.findOne({_id: charge_id}).customer;
@@ -104,7 +104,7 @@ Template.OtherUserProfile.helpers({
   },
   company_or_name: function () {
     // TODO: need to fix this to look at the persona info, not the profile info
-    var user = Meteor.users.findOne({_id: Session.get("params.userID")});
+    //var user = Meteor.users.findOne({_id: Session.get("params.userID")});
     return this.company_name ? this.company_name :
       this.names ? this.names[0].first_name + ' ' + this.names[0].last_name :
       '';

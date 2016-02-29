@@ -108,7 +108,7 @@ _.extend(Utils, {
           console.log(element.id);
           HTTP.call("GET", Meteor.settings.public.donor_tools_site + "/people/" + element.id + ".json",
             { auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password },
-            function ( error, result ) {
+            function ( error ) {
               if ( !error ) {
                 console.log("No error, moving to insert");
                 console.log("element.id: " + element.id);

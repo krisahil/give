@@ -28,7 +28,7 @@ function sortableFunction () {
       clone = $(ui.item[0].outerHTML).clone();
     },
     placeholder: {
-      element: function(clone, ui) {
+      element: function(clone) {
         return $('<div class="sorting checkbox">'+clone[0].innerHTML+'</li>');
       },
       update: function() {

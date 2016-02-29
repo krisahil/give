@@ -7,7 +7,7 @@ AutoForm.hooks({
       Router.go("/dashboard/users");
     },
 
-    onError: function(operation, error, template) {
+    onError: function(operation, error) {
       console.log(error);
       console.log(operation);
 

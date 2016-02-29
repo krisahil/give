@@ -3,7 +3,6 @@
 /*****************************************************************************/
 Template.RequestAddress.events({
     'change #country': function(e, tmpl) {
-        var countryValue;
         if($('#country').val() !== "US") {
             console.log("Value of country " + $('#country').val());
             $('#phone').hide().find('input, textarea').prop('disabled', true);
