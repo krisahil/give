@@ -59,7 +59,7 @@ Meteor.methods({
     },
     stripeDonation: function(data, paymentDevice){
         logger.info("Started stripeDonation");
-        /*try {*/
+        try {
             //Check the form to make sure nothing malicious is being submitted to the server
             Utils.checkFormFields(data);
             if(data.paymentInformation.coverTheFees === false){
@@ -209,7 +209,7 @@ Meteor.methods({
                 }
                 return {c: customerData.id, don: data._id, charge: return_charge_or_payment_id};
             }
-        /*} catch (e) {
+        } catch (e) {
             logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);
             logger.error("e.category_code = " + e.category_code + " e.descriptoin = " + e.description);
             if(e.category_code) {
@@ -231,7 +231,7 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(500, e.reason, e.details);
             }
-        }*/
+        }
     },
     update_user_document_by_adding_persona_details_for_each_persona_id: function (id) {
       logger.info("Started update_user_document_by_adding_persona_details_for_each_persona_id");
@@ -284,7 +284,7 @@ Meteor.methods({
               } );
               set_this_array.push( personaResult.data.persona );
             } catch(e){
-                logger.error("error in querying DT for persona_info")
+                logger.error("error in querying DT for persona_info");
                 logger.error(e);
             }
           });

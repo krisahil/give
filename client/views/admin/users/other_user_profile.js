@@ -196,8 +196,14 @@ Template.OtherUserProfile.events({
 Template.OtherUserProfile.onRendered(function() {
 
   if(!Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info ||
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info.length < 1 ||
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info.length < Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids.length) {
+    (Meteor.users.findOne({_id: Session.get("params.userID")}) &&
+    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info &&
+    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info.length < 1 ) ||
+    (Meteor.users.findOne({_id: Session.get("params.userID")}) &&
+    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids &&
+    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids.length <
+    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids.length)) {
+
     Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', Session.get("params.userID"), function ( error, result ) {
       if( result ) {
         if(result === 'Not a DT user'){
@@ -206,15 +212,6 @@ Template.OtherUserProfile.onRendered(function() {
         }
         console.log( result );
         Session.set("got_all_donations", true);
-        // Hack here to reload the page. I'm not sure why the reactivity isn't
-        // showing the new information, when the persona_info is pulled down
-        // for now we just reload the page and the problem is resolved.
-        /*Meteor.setTimeout(function() {
-          Session.set( "showSingleUserDashboard", "_true" );
-        }, 0);
-        Session.set("showSingleUserDashboard", "_false");*/
-
-
       } else {
         console.log( error );
       }
@@ -234,7 +231,7 @@ Template.OtherUserProfile.onRendered(function() {
   Session.set("showHistory", true);
 
   // Make sure the user can't enter anything, except what would go in a phone number field
-  $("#phone").mask("(999)999-9999");
+  $("[name='profile.phone']").mask("(999)999-9999");
 
   // Setup parsley form validation
   $('#userAddressForm').parsley();

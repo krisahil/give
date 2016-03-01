@@ -1,10 +1,13 @@
 settings.json
+doulos-settings.json
 dev_settings.json
 config/
 .idea
 start-dev.sh
 start-ngrok.sh
+start-doulos-ngrok.sh
 start-local.sh
+start-doulos.sh
 start-tunnel.sh
 .DS_Store
 webdriver_error.png
