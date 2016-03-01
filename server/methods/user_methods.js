@@ -207,12 +207,18 @@ Meteor.methods({
         Meteor.users.findOne({_id: userID}).persona_ids;
       console.log(persona_ids);
 
-      if(persona_ids.length && persona_ids.length >= 1){
+      let persona_id = Meteor.users.findOne({_id: userID}) &&
+        Meteor.users.findOne({_id: userID}).persona_id;
+      console.log(persona_id);
+
+      if(persona_ids && persona_ids.length && persona_ids.length >= 1){
+        Utils.get_all_dt_donations(persona_ids);
+        return "got em";
+      } else if(persona_id && persona_id.length && persona_id.length >= 1) {
         Utils.get_all_dt_donations(persona_ids);
         return "got em";
       } else {
         return "no persona_ids found";
       }
     }
-
 });
