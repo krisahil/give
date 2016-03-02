@@ -231,15 +231,15 @@ Meteor.publish("userDT", function (id) {
     this.ready();
   }
 
-  if(Meteor.users.findOne({_id: userID}).persona_ids) {
+  if(Meteor.users.findOne({_id: userID}) && Meteor.users.findOne({_id: userID}).persona_ids) {
     var persona_ids = Meteor.users.findOne({_id: userID}).persona_ids;
     console.log(persona_ids);
     return DT_donations.find({persona_id: {$in: persona_ids}});
-  } else if(Meteor.users.findOne({_id: userID}).persona_id) {
+  } else if(Meteor.users.findOne({_id: userID}) && Meteor.users.findOne({_id: userID}).persona_id) {
     var persona_id = Meteor.users.findOne( { _id: userID } ).persona_id;
     console.log( persona_id );
     return DT_donations.find( { persona_id: { $in: persona_id } } );
-  } else if(Meteor.users.findOne({_id: userID}).persona_info){
+  } else if(Meteor.users.findOne({_id: userID}) && Meteor.users.findOne({_id: userID}).persona_info){
     var persona_ids = [];
     var persona_info = Meteor.users.findOne({_id: userID}).persona_info;
     persona_info.forEach(function (value) {

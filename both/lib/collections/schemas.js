@@ -405,6 +405,25 @@ Schema.User = new SimpleSchema({
       }
     }
   },
+  persona_id: {
+    type: Array,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "persona_id.$": {
+    type: Number,
+    optional: true,
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
   persona_info: {
     type: Array,
     optional: true,

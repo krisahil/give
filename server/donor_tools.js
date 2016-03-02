@@ -11,11 +11,8 @@ _.extend(Utils, {
         var persona = get_dt_persona.data.persona;
 
         // Get the IDs needed to update the object
-        var name_id = get_dt_persona.data.persona.names[0].id;
         var address_id = get_dt_persona.data.persona.addresses[0].id;
         var phone_id = get_dt_persona.data.persona.phone_numbers[0].id;
-        var email_id = get_dt_persona.data.persona.email_addresses[0].id;
-        var web_id = get_dt_persona.data.persona.web_addresses[0].id;
 
         // Reinitialize a blank persona record
         persona = {};

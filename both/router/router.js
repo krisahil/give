@@ -297,17 +297,6 @@ Router.route('FixCardSubscription', {
   layoutTemplate: 'UserLayout',
   path: '/user/subscriptions/card/resubscribe',
   template: 'FixCardSubscription',
-  /*waitOn: function() {
-    var query = this.params.query;
-    console.log( query.s );
-    return [
-      Meteor.subscribe( 'subscription', query.s ),
-      Meteor.subscribe( 'customer', query.c )
-    ]
-  },
-  data: function () {
-    return Subscriptions.find();
-  }*/
   subscriptions: function(){
     var query = this.params.query;
 

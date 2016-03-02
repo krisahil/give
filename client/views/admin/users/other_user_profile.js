@@ -150,14 +150,6 @@ Template.OtherUserProfile.events({
 
     var loadingButton = $(':submit').button('loading');
 
-    var updateThis = {};
-    updateThis.profile = Meteor.users.findOne({_id: Session.get("params.userID")}) && Meteor.users.findOne({_id: Session.get("params.userID")}).profile;
-    updateThis.profile[Session.get('activeTab')] = fields;
-
-    // Update the Meteor.user profile
-    Meteor.users.update({_id: Meteor.users.findOne({_id: Session.get("params.userID")})._id}, {$set:  updateThis});
-    //var customer_id = Meteor.users.findOne({_id: Session.get("params.userID")}) & Meteor.users.findOne({_id: Session.get("params.userID")}).primary_customer_id;
-
     Meteor.call('update_customer', fields, Number(Session.get('activeTab')), function(error, result){
       if(result){
         console.log(result);
@@ -195,14 +187,14 @@ Template.OtherUserProfile.events({
 
 Template.OtherUserProfile.onRendered(function() {
 
-  if(!Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info ||
-    (Meteor.users.findOne({_id: Session.get("params.userID")}) &&
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info &&
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_info.length < 1 ) ||
-    (Meteor.users.findOne({_id: Session.get("params.userID")}) &&
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids &&
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids.length <
-    Meteor.users.findOne({_id: Session.get("params.userID")}).persona_ids.length)) {
+  let selected_user = Meteor.users.findOne({_id: Session.get("params.userID")});
+
+  if(!selected_user.persona_info ||
+    ( selected_user && selected_user.persona_info && selected_user.persona_info.length < 1 ) ||
+    ( selected_user && selected_user.persona_info && selected_user.persona_info.length <
+    ( selected_user && selected_user.persona_ids && selected_user.persona_ids.length ) ) ||
+    ( selected_user && selected_user.persona_info && selected_user.persona_info.length <
+    ( selected_user && selected_user.persona_id && selected_user.persona_id.length ) ) ) {
 
     Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', Session.get("params.userID"), function ( error, result ) {
       if( result ) {

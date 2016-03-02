@@ -215,7 +215,7 @@ Meteor.methods({
         Utils.get_all_dt_donations(persona_ids);
         return "got em";
       } else if(persona_id && persona_id.length && persona_id.length >= 1) {
-        Utils.get_all_dt_donations(persona_ids);
+        Utils.get_all_dt_donations(persona_id);
         return "got em";
       } else {
         return "no persona_ids found";

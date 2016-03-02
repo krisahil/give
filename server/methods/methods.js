@@ -46,16 +46,28 @@ Meteor.methods({
         }
     },
     update_customer: function (form, dt_persona_id) {
-
+      if(Meteor.userId){
         //Check the client side form fields with the Meteor 'check' method
         Utils.check_update_customer_form(form, dt_persona_id);
 
-        // Send the user's contact updates to stripe
-        Utils.update_stripe_customer(form, dt_persona_id);
+        // if admin proceed without checking dt_persona association
+        if (Roles.userIsInRole(this.userId, ['admin'])) {
+          // Send the user's contact updates to stripe
+          Utils.update_stripe_customer( form, dt_persona_id );
+          // Send the user's contact updates to Donor Tools
+          Utils.update_dt_account( form, dt_persona_id );
+        } else {
+          // Check that this user should be able to modify this dt_persona
+          let this_user = Meteor.users.findOne({_id: Meteor.userId});
+          // TODO: look in this_user for the dt_persona_id, if it isn't there, don't allow the update
+          // alos if it isn't there, return an error
+          // if it is there, proceed normally. and return an 'ok' result
+        }
+      } else {
+        return;
+      }
 
-        // Send the user's contact updates to Donor Tools
-        Utils.update_dt_account(form, dt_persona_id);
-        return '1';
+
     },
     stripeDonation: function(data, paymentDevice){
         logger.info("Started stripeDonation");
@@ -253,13 +265,12 @@ Meteor.methods({
       } else {
           return "Not logged in.";
       }
-        let persona_ids, email_address;
-        persona_ids = Meteor.users.findOne({_id: userID}).persona_ids;
-        persona_id = Meteor.users.findOne({_id: userID}).persona_id;
-        email_address = Meteor.users.findOne({_id: userID}).emails[0].address;
+        let this_user_document, persona_ids;
+        this_user_document = Meteor.users.findOne({_id: userID});
+        persona_ids = this_user_document && this_user_document.persona_ids;
+        persona_id = this_user_document && this_user_document.persona_id;
         var set_this_array = [];
-
-
+      try {
         if(!persona_ids && persona_id) {
           logger.info("No persona_ids, but did find persona_id");
           persona_ids = persona_id;
@@ -267,7 +278,8 @@ Meteor.methods({
 
         if( persona_ids && persona_ids.length ) {
           // The persona_ids let is an array
-          logger.info("Multiple persona_ids found: ", persona_ids);
+          logger.info( "Multiple persona_ids found: ", persona_ids );
+
 
           // Since the donor tools information can change way down in the record
           // we don't want to simply do an $addToSet, this will lead to many
@@ -278,30 +290,32 @@ Meteor.methods({
 
           // Loop through the persona_ids
           _.forEach(persona_ids, function(each_persona_id) {
-            try {
               let personaResult = HTTP.get( Meteor.settings.public.donor_tools_site + "/people/" + each_persona_id + ".json", {
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
               } );
               set_this_array.push( personaResult.data.persona );
-            } catch(e){
-                logger.error("error in querying DT for persona_info");
-                logger.error(e);
-            }
+            console.log(personaResult.data.persona);
+
           });
         } else if( persona_ids ){
-          // TODO: the persona_ids let is not an array, need to check that a value exists
           logger.info("Single persona_id found: ", persona_ids);
           let personaResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + persona_ids + ".json", {
             auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
           });
+          console.log(personaResult.data.persona);
           set_this_array.push(personaResult.data.persona);
         } else if(!Meteor.users.findOne({_id: userID}).persona_info){
           return 'Not a DT user';
         }
+      console.log(set_this_array);
 
         Meteor.users.update({_id: userID}, {$set: {'persona_info': set_this_array}});
 
         return "Finished update_user_document_by_adding_persona_details_for_each_persona_id method call";
+      } catch(e){
+        logger.error("error in querying DT for persona_info");
+        logger.error(e);
+      }
 
     },
     move_donation_to_other_person: function (donation_id, move_to_id) {

@@ -9,21 +9,23 @@
                             <button type="button" class="btn btn-primary btn-raised cancel-button">Show all users</button>
                         </span>
                     </legend>
-                    {{#each personas}}
-                        <h2><strong>User Accounts</strong></h2>
+                    <h2><strong>User Accounts</strong></h2>
                     <ul id="myTabs" class="nav nav-tabs nav-append-content">
-                        <li class="">
-                            <a href="#{{persona_info.id}}" value="{{persona_info.id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a>
-                        </li>
+                        {{#each personas}}
+                            <li class="">
+                                <a href="#{{id}}" value="{{id}}" role="tab" data-toggle="tab" aria-expanded="false">{{company_or_name}}</a>
+                            </li>
+                        {{/each}}
                     </ul>
 
                     <!-- Tab content -->
                     <div class="tab-content">
+                        {{#each personas}}
                             <div class="tab-pane" role="tabpanel" id="{{id}}">
                                 <div class="panel-body billing-module">
                                     <div id="giving_section" class="col col-lg-5 col-md-5">
                                         <div class="col-xs-12 col-sm-8">
-                                            {{{company_name}}}
+                                            {{{company_or_name}}}
                                             <h5 id="profile_section">{{names.[0].first_name}} {{names.[0].last_name}}</h5>
                                             <p>
                                                 <strong>Address: </strong>  <i class="fa fa-pencil edit_address green-icons"></i><br>
@@ -122,8 +124,8 @@
                                     {{/if}}
                                 </div>
                             </div>
+                        {{/each}}
                     </div>
-                    {{/each}}
 
                 {{else}}
                     <h3>No Donor Tools Accounts</h3>

@@ -484,8 +484,6 @@ _.extend(Utils, {
     });
   },
   insert_each_dt_donation: function(donation){
-    console.log("Inside insert_each_dt_donation with " + donation.id);
-
     DT_donations.upsert({_id: donation.id}, donation);
   },
   separate_funds: function(fundResults){
@@ -522,8 +520,8 @@ _.extend(Utils, {
     DT_sources.upsert({_id: source._id}, source);
   },
   get_all_dt_donations: function(persona_ids) {
-    try {
     logger.info("Started get_all_dt_donations");
+    logger.info(persona_ids);
 
     if(persona_ids === '') {return;}
     persona_ids.forEach(function(id){
@@ -535,13 +533,6 @@ _.extend(Utils, {
       //Call the function to separate the donation array received from DT into individual donation
       Utils.separate_donations(responseData.data);
     });
-
-    } catch (e) {
-     logger.info(e);
-     //e._id = AllErrors.insert(e.response);
-     var error = (e.response);
-     throw new Meteor.Error(error, e._id);
-     }
   },
   insert_persona_info_into_user: function(user_id, persona_info) {
     //Insert the donor tools persona id into the user record

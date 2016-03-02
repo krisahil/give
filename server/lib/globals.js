@@ -59,7 +59,6 @@ Utils = {
     },
     // Check donation form entries
     check_update_customer_form: function(form, dt_persona_id) {
-      console.log(form, dt_persona_id);
       check(form,
             {
                 'address':{

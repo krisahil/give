@@ -189,53 +189,57 @@ Template.UserProfile.onRendered(function() {
   if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
     Router.go("admin.dashboard");
   }
+  let selected_user = Meteor.user();
 
-    if(!Meteor.user().persona_info ||
-      Meteor.user().persona_info.length < 1 ||
-      Meteor.user().persona_info.length < Meteor.user().persona_ids.length) {
-      Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
-        if( result ) {
-          if(result === 'Not a DT user'){
-            Session.set("NotDTUser", true);
-            return;
-          }
-          console.log( result );
-          Session.set("got_all_donations", true);
-          // Hack here to reload the page. I'm not sure why the reactivity isn't
-          // showing the new information, when the persona_info is pulled down
-          // for now we just reload the page and the problem is resolved.
-          location.reload();
-        } else {
-          console.log( error );
+  if(!selected_user.persona_info ||
+    ( selected_user && selected_user.persona_info && selected_user.persona_info.length < 1 ) ||
+    ( selected_user && selected_user.persona_info && selected_user.persona_info.length <
+    ( selected_user && selected_user.persona_ids && selected_user.persona_ids.length ) ) ||
+    ( selected_user && selected_user.persona_info && selected_user.persona_info.length <
+    ( selected_user && selected_user.persona_id && selected_user.persona_id.length ) ) ) {
+    Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
+      if( result ) {
+        if(result === 'Not a DT user'){
+          Session.set("NotDTUser", true);
+          return;
         }
-      } );
-    } else if(!Session.equals("got_all_donations", true)) {
-      Meteor.call("get_all_donations_for_this_donor", function (error, result) {
-        if( result ) {
-          console.log( result );
-          Session.set("got_all_donations", true);
-        } else {
-          console.log( error );
-        }
-      });
-    }
+        console.log( result );
+        Session.set("got_all_donations", true);
+        // Hack here to reload the page. I'm not sure why the reactivity isn't
+        // showing the new information, when the persona_info is pulled down
+        // for now we just reload the page and the problem is resolved.
+        location.reload();
+      } else {
+        console.log( error );
+      }
+    } );
+  } else if(!Session.equals("got_all_donations", true)) {
+    Meteor.call("get_all_donations_for_this_donor", function (error, result) {
+      if( result ) {
+        console.log( result );
+        Session.set("got_all_donations", true);
+      } else {
+        console.log( error );
+      }
+    });
+  }
 
-    Session.setDefault('dt_donations_cursor', 0);
-    Session.set("showHistory", true);
+  Session.setDefault('dt_donations_cursor', 0);
+  Session.set("showHistory", true);
 
-    // Make sure the user can't enter anything, except what would go in a phone number field
-    $("#phone").mask("(999)999-9999");
+  // Make sure the user can't enter anything, except what would go in a phone number field
+  $("#phone").mask("(999)999-9999");
 
-    // Setup parsley form validation
-    $('#userAddressForm').parsley();
+  // Setup parsley form validation
+  $('#userAddressForm').parsley();
 
-    $('[data-toggle="popover"]').popover({html: true});
+  $('[data-toggle="popover"]').popover({html: true});
 
-    $('#myTabs li:first').addClass('active');
+  $('#myTabs li:first').addClass('active');
 
-    //$("a[href='" + Session.get('activeTab') + "' ]").addClass('active');
+  //$("a[href='" + Session.get('activeTab') + "' ]").addClass('active');
 
-    $('.tab-pane:first').addClass('active');
+  $('.tab-pane:first').addClass('active');
 
-    Session.set('activeTab', $('.active a').attr('value'));
+  Session.set('activeTab', $('.active a').attr('value'));
 });
