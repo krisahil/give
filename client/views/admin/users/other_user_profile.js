@@ -155,7 +155,7 @@ Template.OtherUserProfile.events({
         console.log(result);
         $('#modal_for_address_change').modal('hide');
         loadingButton.button("reset");
-        Bert.alert("We have updated your address, thanks.", "success");
+        Bert.alert("This user is being updated now.", "success");
       } else{
         console.log(error);
         loadingButton.button("reset");

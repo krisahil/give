@@ -46,27 +46,39 @@ Meteor.methods({
         }
     },
     update_customer: function (form, dt_persona_id) {
-      if(Meteor.userId){
+      if(Meteor.userId()){
         //Check the client side form fields with the Meteor 'check' method
         Utils.check_update_customer_form(form, dt_persona_id);
 
-        // if admin proceed without checking dt_persona association
-        if (Roles.userIsInRole(this.userId, ['admin'])) {
+        // Setup a function for updating the accounts
+        const update_accounts = function(form, dt_persona_id){
           // Send the user's contact updates to stripe
           Utils.update_stripe_customer( form, dt_persona_id );
           // Send the user's contact updates to Donor Tools
           Utils.update_dt_account( form, dt_persona_id );
+        };
+
+        // if admin proceed without checking dt_persona association
+        if (Roles.userIsInRole(Meteor.userId(), ['admin'])) {
+          update_accounts(form, dt_persona_id);
+          return 'Updating now';
         } else {
           // Check that this user should be able to modify this dt_persona
-          let this_user = Meteor.users.findOne({_id: Meteor.userId});
-          // TODO: look in this_user for the dt_persona_id, if it isn't there, don't allow the update
-          // alos if it isn't there, return an error
-          // if it is there, proceed normally. and return an 'ok' result
+          let this_user = Meteor.users.findOne({_id: Meteor.userId()});
+          console.log(this_user.persona_info);
+          if(_.findWhere(this_user.persona_info, {id: dt_persona_id})){
+            console.log( 'yes' );
+            update_accounts(form, dt_persona_id);
+          } else {
+            logger.error("This user doesn't have the dt_persona_id that was passed inside their persona_info array");
+            return;
+          }
         }
       } else {
         return;
       }
 
+      return "Updating";
 
     },
     stripeDonation: function(data, paymentDevice){

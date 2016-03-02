@@ -263,6 +263,18 @@ Schema.UserProfile = new SimpleSchema({
     type: String,
     optional: true,
     label: 'Phone Number'
+  },
+  newStuffVersion: {
+    type: String,
+    optional: true,
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
   }
 });
 

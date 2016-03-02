@@ -39,7 +39,6 @@ _.extend(App, {
                     address_line2 = customer_cursor.metadata.address_line2;
                 } else {
                     address_line2 = '';
-
                 }
                 form = {
                     "paymentInformation": {

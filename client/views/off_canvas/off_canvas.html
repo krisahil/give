@@ -1,0 +1,35 @@
+<template name="OffCanvas">
+    <div class="base">
+        <div class="offcanvas">
+            <!-- BEGIN OFFCANVAS WHAT IS NEW -->
+            <div id="offcanvas-what-is-new" class="offcanvas-pane width-10">
+                <div class="offcanvas-head">
+                    <h3>New Stuff!</h3>
+                    <div class="offcanvas-tools">
+                        <button type="button" class="close" data-dismiss="offcanvas"><span aria-hidden="true">&times; &nbsp;</span><span class="sr-only">Close</span></button>
+                    </div>
+                </div>
+                <div class="offcanvas-body">
+                    <ul>
+                        <li>
+                            <strong>Recurring gifts</strong><br>
+                            <a href="/user/subscriptions">Update your recurring gifts.</a>
+                        </li>
+                        <li>
+                            <strong>Profile</strong><br>
+                            <a href="/user">Edit your profile.</a>
+                        </li>
+                    </ul>
+                    <p>&nbsp;</p>
+                    <h4>Got it</h4>
+                    <p>
+                        <a class="btn btn-danger dismiss-what-is-new" data-dismiss="offcanvas">
+                            Don't show again until next update
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <!-- END OFFCANVAS -->
+        </div>
+    </div>
+</template>

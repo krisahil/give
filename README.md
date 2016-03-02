@@ -75,6 +75,7 @@ Here is an example settings.json file
     "full_org_name": "For example, 'Trash Mountain Project, Inc.'",
     "heap_id": "If you want to use Heap to track your app analytics",
     "large_gift_address": "group email for notifying when gifts larger than $500 are given",
+    "newStuffVersion": "e.g. '0.9' This is used to show the user new updates and then increment those updates.",
     "org_city": "Your org city",
     "org_domain": "Your org domain, for example 'trashmountain.com'",
     "org_donate_url": "Your org donate page URL, for example 'https://trashmountain.com/donate'",

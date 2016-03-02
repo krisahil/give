@@ -1,0 +1,76 @@
+// Colors
+// -------------------------
+@black:							#0c0c0c;
+@gray-darkest:					hsl(hue(@brand-primary), 3%, 10%);
+@gray-darker:					hsl(hue(@brand-primary), 3%, 13.5%);
+@gray-dark:						hsl(hue(@brand-primary), 3%, 20%);
+@gray:							hsl(hue(@brand-primary), 3%, 33.5%);
+@gray-light:					hsl(hue(@brand-primary), 3%, 60%);
+@gray-light2:					hsl(hue(@brand-primary), 3%, 75%);
+@gray-lighter:					hsl(hue(@brand-primary), 3%, 90%);
+@gray-lightest:					hsl(hue(@brand-primary), 3%, 95%);
+@white:							#fff;
+
+
+// Brand colors
+// -------------------------
+@brand-default:				    @gray-lighter;
+@brand-inverse:					#20252b;
+@brand-primary:				    #0aa89e;
+@brand-accent:				    #9C27B0;
+@brand-success:					#4CAF50;
+@brand-warning:					#FF9800;
+@brand-danger:					#F44336;
+@brand-info:					#2196F3;
+
+// Formulas are being used to calculate the dark and light color.
+// If you want you can change these to hex color values
+@brand-default-dark:			@brand-inverse;
+@brand-default-light:			@gray-lightest;
+@brand-default-bright:			@white;
+
+// Z-index
+// -------------------------
+@zindex-offcanvas-backdrop:		9998;
+@zindex-offcanvas:				9999;
+
+// Dimensions
+// -------------------------
+@dimensions-steps:				40px;
+
+
+// Shadow heights
+// -------------------------
+
+@z-height-0: none;
+@z-height-1: 0 1px 3px 0 rgba(0,0,0,.33);
+@z-height-2: 0 3px 8px 0 rgba(0,0,0,.38);
+@z-height-3: 0 8px 14px 0 rgba(0,0,0,.38);
+@z-height-4: 0 14px 19px 0 rgba(0,0,0,.38);
+@z-height-5: 0 20px 24px 0 rgba(0,0,0,.38);
+
+@z-height-1-inverse: 0 -1px 3px 0 rgba(0,0,0,.33);
+@z-height-2-inverse: 0 -3px 8px 0 rgba(0,0,0,.38);
+@z-height-3-inverse: 0 -8px 14px 0 rgba(0,0,0,.38);
+@z-height-4-inverse: 0 -14px 19px 0 rgba(0,0,0,.38);
+@z-height-5-inverse: 0 -20px 24px 0 rgba(0,0,0,.38);
+
+
+// Offcanvas
+// -------------------------
+@offcanvas-bg:					@brand-default-bright;
+@offcanvas-ease-in:				cubic-bezier(.22,.99,.68,.98);
+@offcanvas-speed-in:			.5s;
+@offcanvas-ease-out:			ease-in;
+@offcanvas-speed-out:			.33s;
+
+
+// Typography
+// -------------------------
+@title-size:					20px;
+@font-size-h3:					@title-size;
+
+
+@import "vendor-prefixes.import.less";
+@import "offcanvas.import.less";
+@import "utilities.import.less";
