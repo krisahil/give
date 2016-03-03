@@ -1,10 +1,49 @@
+var emitter = new EventEmitter();
+
+var subscriptionsTutorialSteps = [
+  {
+    template: Template.tutorial_subscriptions_step1,
+    onLoad: function() {
+      console.log("The tutorial has started!");
+    },
+    spot: ".billing-module-title, .billing-module"
+  },
+  {
+    template: Template.tutorial_subscriptions_step2,
+    spot: ".billing-module"
+  },
+  {
+    template: Template.tutorial_subscriptions_step3,
+    spot: ".list-group"
+  },
+  {
+    template: Template.tutorial_subscriptions_step4,
+    spot: ".cancel-subscription," +
+          " .edit-subscription," +
+          " .update-subscription," +
+          " .btn_modal_for_add_new_bank_account, " +
+          " .past-due-subscription," +
+          " .activate-subscription"
+  },
+  {
+    template: Template.tutorial_subscriptions_step5,
+    spot: "#nav-give"
+  }
+];
+
 Template.SubscriptionsOverview.helpers({
     subscriptions: function(){
         var subscription_page = Session.get('subscription_cursor');
         var subscriptions = Subscriptions.find();
         Session.set("number_of_subscriptions", subscriptions.count());
         if(Session.get("number_of_subscriptions", subscriptions.count())){
-            return Subscriptions.find({}, {sort: {status: 1, start: -1}, limit: 4, skip: subscription_page});
+            return Subscriptions.find({}, {
+              sort: {
+                status: 1, start: -1
+              },
+              limit: 4,
+              skip: subscription_page
+            });
         } else {
             return;
         }
@@ -67,11 +106,23 @@ Template.SubscriptionsOverview.helpers({
     bank: function () {
         var id = this._id;
         var subscription = Subscriptions.findOne({id: _id});
+    },
+    options: {
+        id: "subscriptionsTutorial",
+        steps: subscriptionsTutorialSteps,
+        emitter: emitter,
+        onFinish: function() {
+            console.log("Finish clicked!");
+            Meteor.setTimeout( function () {
+                // Test debouncing
+                Session.set('tutorialEnabled', false);
+            }, 1000);
+        }
     }
 });
 
 Template.SubscriptionsOverview.events({
-  'click .cancel_subscription': function (e) {
+  'click .cancel-subscription': function (e) {
       e.preventDefault();
       var subscription_id = this.id;
       var customer_id = Subscriptions.findOne({_id: subscription_id}).customer;
@@ -139,11 +190,11 @@ Template.SubscriptionsOverview.events({
       evt.stopPropagation();
       Session.set('subscription_cursor', Number(Session.get('subscription_cursor')+4));
   },
-  'click #btn_modal_for_add_new_bank_account': function () {
+  'click .btn_modal_for_add_new_bank_account': function () {
     $("#modal_for_add_new_bank_account").modal('show');
     Session.set('updateSubscription', this.id);
   },
-  'click .edit-button': function (e) {
+  'click .edit-subscription': function (e) {
     e.preventDefault();
     console.log("Clicked edit");
     let self = this;

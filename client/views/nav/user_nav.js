@@ -29,3 +29,9 @@ Template.UserNav.helpers({
     }
   }
 });
+
+
+Template.UserNav.onRendered(function () {
+  console.log("Got here");
+  materialadmin.AppOffcanvas.initialize($("#offcanvas-what-is-new"));
+});

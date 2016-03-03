@@ -81,6 +81,7 @@ meteorhacks:sikka@1.0.1
 meteortoys:toykit@2.2.1
 minifiers@1.1.7
 minimongo@1.0.10
+mizzao:tutorials@0.6.7
 mobile-experience@1.0.1
 mobile-status-bar@1.0.6
 momentjs:moment@2.11.2
@@ -116,6 +117,7 @@ spacebars@1.0.7
 spacebars-compiler@1.0.7
 srp@1.0.4
 standard-minifiers@1.0.2
+stylus@2.511.1
 templating@1.1.5
 templating-tools@1.0.0
 themeteorchef:bert@2.1.0

@@ -220,13 +220,15 @@
                 <option value="2024">2024</option>
             </select>
         </div>
-        <!-- Checbox for Covering related fees-->
-        <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} />
-         Save this payment method for future use <span><i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
-             data-placement="bottom" data-trigger="hover focus" title="Save Card" data-container="body"
-             data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
-             method in the future.">
-        </i></span>
+        <div class="save-this-payment">
+            <!-- Checbox for Covering related fees-->
+            <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} />
+             Save this payment method for future use <span><i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
+                 data-placement="bottom" data-trigger="hover focus" title="Save Card" data-container="body"
+                 data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
+                 method in the future.">
+            </i></span>
+        </div>
         
     </div>
 </template>

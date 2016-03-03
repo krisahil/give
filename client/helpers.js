@@ -264,6 +264,10 @@ Template.registerHelper( 'not_dt_user', ( ) => {
   return Session.equals("NotDTUser", true);
 });
 
+Template.registerHelper( 'tutorialEnabled', ( ) => {
+  return Session.get('tutorialEnabled');
+});
+
 /*
 *  Meteor.settings.public helpers
 *  */

@@ -12,9 +12,9 @@ Template.OffCanvas.events({
     // Move the button to behind the outer section
     $(".peek-from-bottom-of-nav").css("top", "80px");
 
+  },
+  'click #start_tutorial': function () {
+    Session.set('tutorialEnabled', true);
+    Router.go("user.profile");
   }
-});
-
-Template.OffCanvas.onRendered(function () {
-  materialadmin.AppOffcanvas.initialize($("#offcanvas-what-is-new"));
 });

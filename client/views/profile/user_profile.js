@@ -1,3 +1,26 @@
+var emitter = new EventEmitter();
+
+var userProfileTutorialSteps = [
+  {
+    template: Template.tutorial_user_profile_step1,
+    onLoad: function() {
+      console.log("The tutorial has started!");
+    }
+  },
+  {
+    template: Template.tutorial_user_profile_step2,
+    spot: "#giving_section"
+  },
+  {
+    template: Template.tutorial_user_profile_step3,
+    spot: "#giving_history"
+  },
+  {
+    template: Template.tutorial_user_profile_step3,
+    spot: "#nav-subscriptions"
+  }
+];
+
 Template.UserProfile.helpers({
     user: function () {
         return Meteor.user();
@@ -115,6 +138,18 @@ Template.UserProfile.helpers({
     if(Session.equals("NotDTUser", true)){
       return true;
     }
+  },
+  options: {
+    id: "userTutorial",
+    steps: userProfileTutorialSteps,
+    emitter: emitter,
+    onFinish: function() {
+      console.log("Finish clicked!");
+      Meteor.setTimeout( function () {
+        // Test debouncing
+        Session.set('tutorialEnabled', false);
+      }, 1000);
+    }
   }
 });
 
@@ -123,8 +158,8 @@ Template.UserProfile.events({
         Session.set("showHistory", false);
     },
     'click .edit_address': function () {
-        //setup modal for entering give toward information
-        $('#modal_for_address_change').modal({show: true, static: true});
+      //setup modal for entering give toward information
+      $('#modal_for_address_change').modal({show: true, static: true});
     },
     'submit form': function (evt, tmpl) {
         evt.preventDefault();

@@ -1,5 +1,8 @@
 <template name="SubscriptionsOverview">
-    <h4>Recurring Gifts Overview</h4>
+    {{#if tutorialEnabled}}
+        {{> tutorial options}}
+    {{/if}}
+    <h4 class="billing-module-title">Recurring Gifts Overview</h4>
     <div class="panel panel-default billing-module">
     <div class="panel-body">
         {{#if subscriptions}}
@@ -56,40 +59,39 @@
                     </li>
                     {{/if}}
                     {{#if equals status "active"}}
-                        <li class="list-group-item bm-block clearfix">
-                            <a href="" class="btn btn-block btn-danger cancelButton cancel_subscription">Cancel</a>
+                        <li class="list-group-item bm-block button-blocks clearfix">
+                            <a href="" class="btn btn-block btn-danger cancel-subscription">Cancel</a>
                         </li>
-                        <li class="list-group-item bm-block clearfix">
-                            <button class="btn btn-block btn-primary edit-button">Edit Parts</button>
+                        <li class="list-group-item bm-block button-blocks clearfix">
+                            <button class="btn btn-block btn-primary edit-subscription">Edit Parts</button>
                         </li>
                         {{#if card_subscription}}
-                            <li class="list-group-item bm-block clearfix">
-                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary">Update Payment</a>
+                            <li class="list-group-item bm-block button-blocks clearfix">
+                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary update-subscription">Update Payment</a>
                             </li>
                         {{else}}
                             {{> AddNewBankAccount}}
-                            <li class="list-group-item bm-block clearfix">
-                                <a id="btn_modal_for_add_new_bank_account" class="btn btn-block btn-primary">Update Payment</a>
+                            <li class="list-group-item bm-block button-blocks clearfix">
+                                <a class="btn btn-block btn-primary btn_modal_for_add_new_bank_account">Update Payment</a>
                             </li>
                         {{/if}}
                     {{/if}}
                     {{#if equals status "past_due"}}
-                        <li class="list-group-item bm-block clearfix">
-                            <a href="{{pathFor 'FixSubscription'}}?s={{id}}" class="btn btn-block btn-default">Fix</a>
+                        <li class="list-group-item bm-block button-blocks clearfix">
+                            <a href="{{pathFor 'FixSubscription'}}?s={{id}}" class="btn btn-block btn-default past-due-subscription">Fix</a>
                         </li>
                     {{/if}}
                     {{#if equals status "canceled"}}
                         {{#if card_subscription}}
-                            <li class="list-group-item bm-block clearfix">
-                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary">Activate</a>
+                            <li class="list-group-item bm-block button-blocks clearfix">
+                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary activate-subscription">Activate</a>
                             </li>
                         {{else}}
-                            <li class="list-group-item bm-block clearfix">
-                                <a href="{{pathFor 'FixBankSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary">Activate</a>
+                            <li class="list-group-item bm-block button-blocks clearfix">
+                                <a href="{{pathFor 'FixBankSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary activate-subscription">Activate</a>
                             </li>
                         {{/if}}
                     {{/if}}
-                      <!--<a href="{{pathFor 'PaymentDevice'}}" class="btn btn-block btn-default">Update Payment Method</a>-->
                   </ul>
 
                 </div>

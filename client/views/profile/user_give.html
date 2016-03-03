@@ -1,9 +1,12 @@
 <template name="UserGive">
+    {{#if tutorialEnabled}}
+        {{> tutorial options}}
+    {{/if}}
     <div class="container form-container">
         <form class="form-horizontal" id="quick_give">
             <div class="col-md-6 col-md-offset-3">
             </div>
-            <div class="col-lg-8 col-md-8 col-md-offset-2">
+            <div class="col-lg-8 col-md-8 col-md-offset-2 quick-give-form">
                 <fieldset>
 
                     <!-- Amount of donation -->

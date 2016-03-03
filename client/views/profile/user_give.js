@@ -1,3 +1,22 @@
+var emitter = new EventEmitter();
+
+var giveTutorialSteps = [
+  {
+    template: Template.tutorial_give_step1,
+    onLoad: function() {
+      console.log("The tutorial has started!");
+    },
+    spot: ".quick-give-form"
+  },
+  {
+    template: Template.tutorial_give_step2,
+    spot: "#save_payment, #save_payment_question"
+  },
+  {
+    template: Template.tutorial_give_step3
+  }
+];
+
 Template.UserGive.helpers({
     paymentWithCard: function() {
         return Session.equals("UserPaymentMethod", "Card");
@@ -27,7 +46,19 @@ Template.UserGive.helpers({
     },
     amount: function() {
         return Session.get('params.amount');
+    },
+  options: {
+    id: "giveTutorial",
+    steps: giveTutorialSteps,
+    emitter: emitter,
+    onFinish: function() {
+      console.log("Finish clicked!");
+      Meteor.setTimeout( function () {
+        // Test debouncing
+        Session.set('tutorialEnabled', false);
+      }, 1000);
     }
+  }
 });
 
 Template.UserGive.events({
