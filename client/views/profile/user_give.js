@@ -131,7 +131,7 @@ Template.UserGive.events({
 
 Template.UserGive.onRendered(function () {
   if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
-    Router.go("admin.dashboard");
+    Router.go("Dashboard");
   }
 
     if($('#donateWith option').length > 2){

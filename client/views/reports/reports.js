@@ -1,10 +1,10 @@
-Template.ReportsDashboard.helpers({
+Template.Reports.helpers({
     showGetStripeEvent: function(){
         return Session.get("showGetStripeEvent");
     }
 });
 
-Template.ReportsDashboard.events({
+Template.Reports.events({
     'click #get_id': function(e) {
         //prevent the default reaction to submitting this form
         e.preventDefault();

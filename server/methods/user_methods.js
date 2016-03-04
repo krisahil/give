@@ -184,7 +184,6 @@ Meteor.methods({
       logger.info("Started method get_all_donations_for_this_donor.");
       check(id, Match.Optional(String));
 
-
       var userID;
       if(this.userId) {
         this.unblock();

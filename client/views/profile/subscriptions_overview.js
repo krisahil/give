@@ -221,7 +221,7 @@ Template.SubscriptionsOverview.events({
 
 Template.SubscriptionsOverview.onRendered(function() {
   if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
-    Router.go("admin.dashboard");
+    Router.go("Dashboard");
   }
     Session.setDefault('paymentMethod', 'default');
     Session.setDefault('subscription_cursor', 0);

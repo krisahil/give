@@ -42,12 +42,12 @@
                 {{#if MeteorUser}}
                     {{#if isInRole 'admin, dt-admin'}}
                         <li class="">
-                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'admin.dashboard'}}"><span class="fa fa-dashboard"></span> Admin Dashboard</a>
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Dashboard'}}"><span class="fa fa-dashboard"></span> Admin Dashboard</a>
                         </li>
                     {{/if}}
                     {{#if isInRole 'admin, reports'}}
                         <li class="">
-                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'reports.dashboard'}}"><span class="fa fa-dashboard"></span> Reports</a>
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Reports'}}"><span class="fa fa-dashboard"></span> Reports</a>
                         </li>
                     {{/if}}
                     {{#unless isInRole 'admin-only'}}

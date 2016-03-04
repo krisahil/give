@@ -222,7 +222,7 @@ Template.UserProfile.events({
 
 Template.UserProfile.onRendered(function() {
   if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
-    Router.go("admin.dashboard");
+    Router.go("Dashboard");
   }
   let selected_user = Meteor.user();
 

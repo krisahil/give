@@ -10,17 +10,27 @@ Router.configure({
 Router.plugin('ensureSignedIn', {
     except: ['donation.form', 'donation.landing', 'donation.thanks',
              'donation.gift', 'donation.scheduled', 'enrollAccount',
-             'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn', 'AdminSubscriptions']
+             'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
 });
+
+// TODO: convert all of these onBeforeAction functions to only one per route
+// so that there isn't a false negative
+
+Router.onBeforeAction(function() {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin'])) {
+    this.render("NotFound");
+  } else {
+    this.next();
+  }
+}, {only : ['Users', 'GivingOptions', 'OrgInfo']});
 
 Router.onBeforeAction(function() {
   if (!Roles.userIsInRole(Meteor.user(), ['admin', 'user-admin'])) {
     this.render("NotFound");
   } else {
     this.next();
-
   }
-}, {only : 'Users'});
+}, {only : ['Users']});
 
 Router.onBeforeAction(function() {
 
@@ -29,7 +39,7 @@ Router.onBeforeAction(function() {
   } else {
     this.next();
   }
-}, {only : 'admin.dashboard'});
+}, {only : 'Dashboard'});
 
 Router.onBeforeAction(function() {
 
@@ -38,7 +48,7 @@ Router.onBeforeAction(function() {
   } else {
     this.next();
   }
-}, {only : ['transfers', 'reports', 'reports.dashboard']});
+}, {only : ['transfers', 'Reports']});
 
 Router.route('', {
 
@@ -137,15 +147,15 @@ Router.route('/dashboard', function () {
     this.wait(Meteor.subscribe('publish_for_admin_give_form'));
     this.render('Dashboard');
 }, {
-    name: 'admin.dashboard'
+    name: 'Dashboard'
 });
 
-Router.route('/reprotsdashboard', function () {
+Router.route('/reports', function () {
     this.layout('AdminLayout');
 
-    this.render('ReportsDashboard');
+    this.render('Reports');
 }, {
-    name: 'reports.dashboard'
+    name: 'Reports'
 });
 
 
