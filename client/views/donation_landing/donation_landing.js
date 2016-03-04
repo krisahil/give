@@ -1,7 +1,3 @@
-Template.DonationLanding.helpers({
-
-});
-
 Template.DonationLanding.events({
     'click #where_most_needed_description': function (e) {
         e.preventDefault();
@@ -370,7 +366,7 @@ Template.DonationLanding.onRendered(function () {
             $('#depends-on-field-projects').val(selectedData.selectedData
                 .value);
             $('[name="donateTo"]').val(selectedData.selectedData.value);
-        },
+        }
     });
     $("#depends-on-community-sponsorship").ddslick({
         width: 260,
@@ -381,7 +377,7 @@ Template.DonationLanding.onRendered(function () {
             $('#depends-on-community-sponsorship').val(selectedData.selectedData
                 .value);
             $('[name="donateTo"]').val(selectedData.selectedData.value);
-        },
+        }
     });
 
 
