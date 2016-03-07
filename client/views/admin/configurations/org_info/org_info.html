@@ -8,18 +8,14 @@
                     <icon class="fa fa-info"></icon> Org. info.
                 </a>
             </li>
-            <li><a href="#stripe" role="tab" data-toggle="tab">
-                <i class="fa fa-cc-stripe"></i> Stripe
-            </a>
+            <li>
+                <a href="#stripe" role="tab" data-toggle="tab">
+                    <i class="fa fa-cc-stripe"></i> Stripe
+                </a>
             </li>
             <li>
                 <a href="#donor-tools" role="tab" data-toggle="tab">
                     <i class="fa fa-wrench"></i> Donor Tools
-                </a>
-            </li>
-            <li>
-                <a href="#misc-info" role="tab" data-toggle="tab">
-                    <i class="fa fa-cog"></i> Misc Settings
                 </a>
             </li>
         </ul>
@@ -28,15 +24,16 @@
         <div class="tab-content">
             <div class="tab-pane fade active in" id="org-info">
                 {{> quickForm collection="MultiConfig" doc=multiConfigDoc
-                id="updateInfoSection" type="update"}}
+                id="updateInfoSection" type="insert" omitFields="DonorTools, Stripe"
+                template="bootstrap3-horizontal"}}
             </div>
             <div class="tab-pane fade" id="stripe">
-                {{> quickForm collection="MultiConfig" doc=multiConfigDoc
-                id="updateStripeSection" type="update"}}
+                {{> quickForm collection="MultiConfig" schema="Schema.StripeForm" doc=multiConfigDoc
+                id="updateStripeSection" type=formType template="bootstrap3"}}
             </div>
             <div class="tab-pane fade" id="donor-tools">
-            </div>
-            <div class="tab-pane fade" id="misc-info">
+                {{> quickForm collection="MultiConfig" schema="Schema.DonorToolsForm" doc=multiConfigDoc
+                id="updateDonorToolsSection" type=formType template="bootstrap3"}}
             </div>
         </div>
 

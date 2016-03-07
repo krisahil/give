@@ -1,4 +1,3 @@
-
 function insertCheckbox(el, insertDiv, checked) {
   var content = '<div class="checkbox form-control" >';
   content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  <span contenteditable="true">' + el.text + '<\/span>';
@@ -96,7 +95,7 @@ Template.GivingOptions.events({
     var givingOptionsSelectedIDs = [];
 
     // Empty the select list
-    //$( '#testDropdown' ).empty();
+    $( '#testDropdown' ).empty();
 
     var optgroupName = 0;
 
@@ -126,24 +125,30 @@ Template.GivingOptions.events({
         });
       }
     });
+    console.log(arrayNames);
+    console.log(givingOptionsSelectedIDs);
 
-    MultiConfig.update({ org_name: Meteor.settings.public.org_name }, {
-      $set: {
-        "GivingOptions": arrayNames,
-        "GivingOptionsSelectedIDs": givingOptionsSelectedIDs
+    Meteor.call("update_donation_options", arrayNames, givingOptionsSelectedIDs, function (err){
+      if(err){
+        Bert.alert({
+          message: error,
+          type: 'danger',
+          icon: 'fa-frown-o',
+          style: 'growl-top-right'
+        });
+      } else {
+        Bert.alert({
+          message: "Updated",
+          type: 'success',
+          icon: 'fa-smile-o',
+          style: 'growl-top-left'
+        });
       }
     });
 
-    $('#testDropdown' ).select2( {
-      data:        arrayNames,
-      placeholder: "Select an option"
+    $('#testDropdown').select2( {
+      data: arrayNames
     });
-
-    // TODO: rewrite all of this to just update the session object
-    // TODO: have iron router load the session object up with the previously saved value from the giving options collection or config collection
-
-
-    // TODO: don't show the source on the left column if it is already loaded into the list
 
     // TODO: when unchecking, the items should go back to their alphabetic place in the list on the left
   },
@@ -184,22 +189,16 @@ Template.GivingOptions.events({
 /*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    let selectedGivingOptions =
-      MultiConfig.findOne( {org_name: Meteor.settings.public.org_name } ) &&
-      MultiConfig.findOne( {org_name: Meteor.settings.public.org_name } ).GivingOptionsSelectedIDs;
+    let org_doc = MultiConfig.findOne( {
+      "organization_info.web.domain_name": Meteor.settings.public.org_domain
+    });
+    let selectedGivingOptions = org_doc && org_doc.SelectedIDs;
+    console.log(selectedGivingOptions);
     if( selectedGivingOptions ) {
       return DT_funds.find({'id': {$nin: selectedGivingOptions}}, {sort: { name: 1 } });
     } else {
       return DT_funds.find({}, {sort: { name: 1 } });
     }
-  },
-  multi_config: function () {
-    var menu_items = MultiConfig.find( {}, {
-      sort: {
-        order: 1
-      }
-    } );
-    return menu_items;
   }
 });
 
@@ -208,6 +207,7 @@ Template.GivingOptions.helpers({
 /* GivingOptions: Lifecycle Hooks */
 /*****************************************************************************/
 Template.GivingOptions.onCreated(function () {
+  //Meteor.call("get_dt_funds");
 });
 
 Template.GivingOptions.onRendered(function () {
@@ -215,33 +215,36 @@ Template.GivingOptions.onRendered(function () {
   // Start the function to setup the table connections and make them sortable
   sortableFunction ();
 
-  var MultiConfigAllOptions = MultiConfig.findOne( {} ).GivingOptions;
-  var temp1 = MultiConfig.findOne( {} ).GivingOptions;
+  //var MultiConfigAllOptions = MultiConfig.findOne().GivingOptions;
+  var temp1 = MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
 
-  $('#testDropdown').select2({
-    data: temp1,
-    dropdownCssClass: 'dropdown-inverse'
-  });
+  console.log(temp1);
+  if(temp1){
+    $('#testDropdown').select2({
+      data: temp1,
+      dropdownCssClass: 'dropdown-inverse'
+    });
+    $("#testDropdown").select2('val',temp1[0].id);
 
-  var insertDiv = $('#selectedGivingOptionsDiv');
-  temp1.forEach(function(value) {
-    if(value.children) {
-      var content= "<div class='input-group margin-bottom-sm'>";
-      content += "<input type='text' class='form-control slim-borders groupName' value='" + value.text + "'>";
-      content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw"><\/i><\/span>';
-      content += "<\/dvi>";
-      $( content ).appendTo( insertDiv );
-      value.children.forEach(function (el) {
-        insertCheckbox(el, 'selectedGivingOptionsDiv', true);
-      })
-    } else {
-      insertCheckbox(value, 'selectedGivingOptionsDiv', true);
-    }
-  });
 
-  Session.set("givingOptionsChecked", temp1);
+    var insertDiv = $('#selectedGivingOptionsDiv');
+    temp1.forEach(function(value) {
+      if(value.children) {
+        var content= "<div class='input-group margin-bottom-sm'>";
+        content += "<input type='text' class='form-control slim-borders groupName' value='" + value.text + "'>";
+        content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw"><\/i><\/span>';
+        content += "<\/dvi>";
+        $( content ).appendTo( insertDiv );
+        value.children.forEach(function (el) {
+          insertCheckbox(el, 'selectedGivingOptionsDiv', true);
+        });
+      } else {
+        insertCheckbox(value, 'selectedGivingOptionsDiv', true);
+      }
+    });
 
-});
+    Session.set("givingOptionsChecked", temp1);
 
-Template.GivingOptions.onDestroyed(function () {
+  }
+
 });

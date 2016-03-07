@@ -1,16 +1,18 @@
 <template name="Dashboard">
     {{#if isInRole 'admin'}}
         {{> AdminGive}}
-        {{> AdminMoveGift}}
     {{/if}}
 
-    {{> AdminMergePersona}}
+    {{#if isInRole 'admin, dt-admin'}}
+        {{> AdminMoveGift}}
+        {{> AdminMergePersona}}
+    {{/if}}
     <div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					{{> Reports}}
                     <div class="panel-heading">
-                        <h2><i class="fa fa-cloud-download"></i><span
+                        <h2><i class="fa fa-wrench"></i><span
                                 class="break">Tools</span></h2>
                     </div>
                     <div class="panel-body">
@@ -54,15 +56,35 @@
                                 </div>
                             {{/if}}
                             <div class="col-sm-2">
-                                <a id="get-dt-funds" class="quick-button backgroundColor primary" href="">
+                                <a id="get-dt-funds"
+                                   class="quick-button backgroundColor primary"
+                                   href=""
+                                   data-loading-text="
+                                   <span class='fa-stack fa-lg'>
+                                     <i class='fa fa-spinner fa-spin'></i>
+                                   </span>
+                                    <h5>
+                                        Retrieving from Donor Tools...
+                                    </h5>">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-money"></i>
                                     </span>
-                                    <h5>Get DT Funds</h5>
+                                    <h5>
+                                        Get DT Funds
+                                    </h5>
                                 </a>
                             </div>
                             <div class="col-sm-2">
-                                <a id="get-dt-sources" class="quick-button backgroundColor primary" href="">
+                                <a id="get-dt-sources"
+                                   class="quick-button backgroundColor primary"
+                                   href=""
+                                   data-loading-text="
+                                   <span class='fa-stack fa-lg'>
+                                     <i class='fa fa-spinner fa-spin'></i>
+                                   </span>
+                                    <h5>
+                                        Retrieving from Donor Tools...
+                                    </h5>">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-code"></i>
                                     </span>

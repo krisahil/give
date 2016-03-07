@@ -13,6 +13,7 @@ tracker                 # Meteor's client-side reactive programming library
 
 standard-minifiers      # JS/CSS minifiers run for production mode
 ecmascript
+reactive-var
 
 email
 http

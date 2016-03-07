@@ -26,7 +26,7 @@
                              style="position: absolute;
                              height: 100px;
                              width: 90px;
-                             top: -10px;
+                             top: -14px;
                              transition: 2s;">
                             <a class="btn btn-default-bright pull-right" href="#offcanvas-what-is-new"
                                id="#offcanvas-what-is-new-button" data-toggle="offcanvas">
@@ -42,12 +42,12 @@
                 {{#if MeteorUser}}
                     {{#if isInRole 'admin, dt-admin'}}
                         <li class="">
-                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Dashboard'}}"><span class="fa fa-dashboard"></span> Admin Dashboard</a>
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Dashboard'}}"><span class="fa fa-dashboard"></span> Dashboard</a>
                         </li>
                     {{/if}}
                     {{#if isInRole 'admin, reports'}}
                         <li class="">
-                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Reports'}}"><span class="fa fa-dashboard"></span> Reports</a>
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Reports'}}"><span class="fa fa-table"></span> Reports</a>
                         </li>
                     {{/if}}
                     {{#unless isInRole 'admin-only'}}

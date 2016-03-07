@@ -1,11 +1,11 @@
 <template name="GivingOptions">
-  <div class="ResponsiveTable">
+  <div class="Admin">
     <div class="container-fluid">
       <div class="row">
-          <div class="col col-lg-3" id="appendTablesHere">
-            <h6>1. Check the items you want and add grouping.</h6>
+          <div class="col-md-4">
+            <h3>1. Check the items you want and add grouping.</h3>
             <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
-              <section class="column-bordered">
+              <section class="">
                   <div id="givingOptionsDiv">
                       <form role="form">
                         <div class="form-group">
@@ -19,28 +19,22 @@
                   </div>
               </section>
           </div>
-          <div class="col col-lg-1"></div>
-          <div class="col col-lg-3">
-            <div class="row">
-                <h6>2. Drag into the right order.</h6>
-                <p>(drag out of the box to remove)</p>
-                <p>(click text to edit)</p>
-              <section class="column-bordered">
+          <div class="col-md-4">
+            <h3>2. Drag into the right order.</h3>
+            <p>(drag out of the box or uncheck to remove, click text to edit)</p>
+              <section class="">
                   <form>
-                    <div class="sortable" id="selectedGivingOptionsDiv">
+                    <div class="sortable slim-borders" id="selectedGivingOptionsDiv">
                     </div>
                   </form>
               </section>
-            </div>
           </div>
-          <div class="col col-lg-1"></div>
-          <div class="col col-lg-3">
-            <div class="row">
-              <h6>3. Save your list.</h6>
+          <div class="col-md-4">
+              <h3>3. Save your list.</h3>
               <button id="updateDropdown" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+              <br>
               <label for="testDropdown">Dropdown Preview</label><br>
               <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
-          </div>
         </div>
       </div>
     </div>

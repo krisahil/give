@@ -125,15 +125,6 @@ Template.RequestAddress.helpers({
     }
 });
 
-/*****************************************************************************/
-/* RequestAddress: Lifecycle Hooks */
-/*****************************************************************************/
-Template.RequestAddress.created = function () {
-};
-
 Template.RequestAddress.onRendered(function () {
   $("#phone").mask("(999) 999-9999");
 });
-
-Template.RequestAddress.destroyed = function () {
-};

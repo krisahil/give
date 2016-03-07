@@ -185,10 +185,6 @@ Template.registerHelper('campaign', function() {
   var campaign = Session.get('params.campaign');
   if(campaign === '') {
     return false;
-  } else if (campaign === 'Aquaponics Marketplace - Rhiza'){
-    return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
-  } else if (campaign === 'Aquaponics Marketplace - Karpos'){
-    return '<img src="/images/marketplace.jpeg" style="width: 50%" />';
   }
 });
 

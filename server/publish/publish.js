@@ -254,7 +254,14 @@ Meteor.publish("userDT", function (id) {
 
 Meteor.publish("userDTFunds", function () {
   if (this.userId) {
-    return DT_funds.find({});
+    return DT_funds.find({}, { fields: {
+      id: 1,
+      name: 1,
+      alias: 1,
+      archived: 1,
+      description: 1,
+      tax_deductible: 1
+    }});
   } else {
     this.ready();
   }
@@ -271,7 +278,9 @@ Meteor.publish("Serve1000Sources2015", function () {
 
 Meteor.publish("MultiConfig", function () {
   if (Roles.userIsInRole(this.userId, 'admin')) {
-    return MultiConfig.find();
+    return MultiConfig.find({
+      'organization_info.web.domain_name': Meteor.settings.public.org_domain
+    });
   } else {
     this.ready();
   }

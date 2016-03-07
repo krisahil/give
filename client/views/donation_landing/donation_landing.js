@@ -36,7 +36,6 @@ Template.DonationLanding.events({
             backdrop: 'static'
         });
     },
-
     'click #cardButton': function(e) {
         e.preventDefault();
         console.log("You clicked the card button");
@@ -82,7 +81,8 @@ Template.DonationLanding.events({
 
 Template.DonationLanding.onRendered(function () {
     //Dropdown plugin data for GiveTo
-    var GiveTo = [{
+    var GiveTo = [
+      {
         text: "Wherever It's Needed Most",
         value: '1',
         selected: true,
@@ -114,7 +114,8 @@ Template.DonationLanding.onRendered(function () {
         description: ""
     }];
     //Dropdown plugin data
-    var Missionary = [{
+    var Missionary = [
+      {
         text: "Choose a missionary",
         value: "",
         selected: true
@@ -124,12 +125,6 @@ Template.DonationLanding.onRendered(function () {
         selected: false,
         description: "Executive Director",
         imageSrc: "/images/team/Brett.jpg"
-    }, {
-        text: "Russ West",
-        value: "RussellWest",
-        selected: false,
-        description: "Strategy Impact Officer",
-        imageSrc: "/images/team/Russ.jpg"
     }, {
         text: "Chris Mammoliti",
         value: "ChrisMammoliti",
@@ -160,6 +155,12 @@ Template.DonationLanding.onRendered(function () {
         selected: false,
         description: "Technology Director",
         imageSrc: "/images/team/Josh.jpg"
+    }, {
+      text: "Russ West",
+      value: "RussellWest",
+      selected: false,
+      description: "Strategy Impact Officer",
+      imageSrc: "/images/team/Russ.jpg"
     }, {
         text: "Shelley Setchell",
         value: "ShelleySetchell",

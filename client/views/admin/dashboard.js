@@ -46,19 +46,22 @@ Template.Dashboard.events({
         Session.set("showFixNoUser", true);
     },
     'click #get-dt-funds': function(e) {
-        //prevent the default reaction to submitting this form
-        e.preventDefault();
-        // Stop propagation prevents the form from being submitted more than once.
-        //e.stopPropagation();
+      //prevent the default reaction to submitting this form
+      e.preventDefault();
+      // Stop propagation prevents the form from being submitted more than once.
+      //e.stopPropagation();
 
-        console.log("Got Here");
+      console.log("Got Here");
+      $("#get-dt-funds").button('loading');
 
         Meteor.call("get_dt_funds", function (error, result) {
             if (result) {
-                console.dir(result);
-                alert("Got 'em.")
+              console.dir(result);
+              $("#get-dt-funds").button('reset');
+              Bert.alert( "Got all funds", 'success', 'growl-top-right' );
             } else {
-                console.log(error);
+              console.log(error);
+              Bert.alert( error.message, 'danger', 'growl-top-right' );
             }
         });
     },
@@ -67,15 +70,18 @@ Template.Dashboard.events({
         e.preventDefault();
         // Stop propagation prevents the form from being submitted more than once.
         e.stopPropagation();
+      $("#get-dt-sources").button('loading');
 
         console.log("Got Here");
 
         Meteor.call("get_dt_sources", function (error, result) {
             if (result) {
-                console.dir(result);
-                alert("Got 'em.")
+              console.dir(result);
+              $("#get-dt-sources").button('reset');
+              Bert.alert( "Got all sources", 'success', 'growl-top-right' );
             } else {
-                console.log(error);
+              console.log(error);
+              Bert.alert( error.message, 'danger', 'growl-top-right' );
             }
         });
     },

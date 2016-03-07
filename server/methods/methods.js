@@ -1,6 +1,7 @@
 Meteor.methods({
     get_dt_funds: function () {
         try {
+          this.unblock();
             //check to see that the user is the admin user
             if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
                 logger.info("Started get_dt_funds");
@@ -12,7 +13,7 @@ Meteor.methods({
                 return fundResults.data;
             } else{
                 logger.info("You aren't an admin, you can't do that");
-                return '';
+                return;
             }
 
         } catch (e) {
@@ -35,7 +36,7 @@ Meteor.methods({
                 return sourceResults.data;
             } else{
                 logger.info("You aren't an admin, you can't do that");
-                return '';
+                return;
             }
 
         } catch (e) {
@@ -81,7 +82,7 @@ Meteor.methods({
       return "Updating";
 
     },
-    stripeDonation: function(data, paymentDevice){
+    stripeDonation: function(data){
         logger.info("Started stripeDonation");
         try {
             //Check the form to make sure nothing malicious is being submitted to the server
@@ -768,7 +769,7 @@ Meteor.methods({
         return noteResult.data;
       } else{
         logger.info("You aren't an admin, you can't do that");
-        return '';
+        return;
       }
 
     } catch (e) {
@@ -809,7 +810,7 @@ Meteor.methods({
     try {
       logger.info("Started createUserMethod.");
       if (Roles.userIsInRole(this.userId, ['admin'])) {
-
+        SimpleSchema.debug = true;
         let user_id;
 
         // Create a new user
@@ -827,7 +828,9 @@ Meteor.methods({
           }
         } );
 
-        return user._id;
+        // Send an enrollment Email to the new user
+        Accounts.sendEnrollmentEmail(user_id);
+        return user_id;
       } else {
         return;
       }
@@ -879,6 +882,29 @@ Meteor.methods({
         return;
       }
     } catch(e) {
+      console.log(e);
+      throw new Meteor.Error(e);
+    }
+  },
+  update_donation_options: function (arrayNames, selectedIds) {
+    check(arrayNames, Array);
+    check(selectedIds, Array);
+
+    try {
+      logger.info("Started update_donation_options.");
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+        console.log("Updating");
+
+        MultiConfig.update( { "organization_info.web.domain_name": Meteor.settings.public.org_domain }, {
+          $set: {
+            "DonationOptions": arrayNames,
+            "SelectedIDs": selectedIds
+          }
+        } );
+      } else {
+        return;
+      }
+    } catch(e){
       console.log(e);
       throw new Meteor.Error(e);
     }

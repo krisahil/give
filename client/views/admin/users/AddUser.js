@@ -3,13 +3,15 @@ AutoForm.hooks({
   'new-user-form': {
     onSuccess: function (operation, result, template) {
       Session.set("addingNew", false);
-      Bert.alert( result, 'success', 'growl-top-right' );
+      $("[type='submit']").button('reset');
+      Bert.alert( 'Success', 'success', 'growl-top-right' );
       Router.go("/dashboard/users");
     },
 
     onError: function(operation, error) {
       console.log(error);
       console.log(operation);
+      $("[type='submit']").button('reset');
 
       Bert.alert( error.message, 'danger', 'growl-top-right' );
     }
@@ -20,9 +22,6 @@ AutoForm.hooks({
 Template.AddUser.helpers({
   schema: function () {
     return Schema.CreateUserFormSchema;
-  },
-  roles: function () {
-    return Meteor.roles.find({});
   },
   user: function () {
     let editUserID = Router.current().params._id;
@@ -45,5 +44,15 @@ Template.AddUser.events({
     console.log("Clicked cancel");
     Session.set("addingNew", false);
     Router.go("/dashboard/users");
+  },
+  'click [type="submit"]': function () {
+    console.log("Submitted");
+    $("[type='submit']").button('loading');
   }
+});
+
+
+Template.AddUser.onRendered(function () {
+  $("[name='profile.phone']").mask("(999) 999-9999");
+  $("[type='submit']").attr('loading-text', "Loading...");
 });

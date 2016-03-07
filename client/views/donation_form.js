@@ -249,7 +249,7 @@ Template.DonationForm.helpers({
       return Session.get('params.note');
     },
     today: function () {
-        return moment().add(1, 'day').format('D MMM, YYYY');
+        return moment().format('D MMM, YYYY');
     },
     amountWidth: function() {
         if(Session.equals("paymentMethod", "Card")){
@@ -309,7 +309,7 @@ Template.DonationForm.onRendered(function() {
   var datepickerSelector = $('#start_date');
   datepickerSelector.datepicker( {
     format: 'd MM, yyyy',
-    startDate: '+1d',
+    startDate: '+0d',
     endDate: '+40d',
     autoclose: true
   });
