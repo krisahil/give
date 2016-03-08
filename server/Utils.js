@@ -369,6 +369,14 @@ _.extend(Utils, {
             }
           });
           break;
+        case 'give.account.created':
+          Audit_trail.upsert({user_id: id}, {
+            $set: {
+              'give_account_created.sent': true,
+              'give_account_created.time': new Date()
+            }
+          });
+          break;
         default:
           logger.info("No case matched");
       };
@@ -960,7 +968,7 @@ _.extend(Utils, {
         throw new Meteor.Error("Error from Stripe Promise", err);
       });
   },
-  upadte_stripe_subscription_amount_or_designation_or_date:
+  update_stripe_subscription_amount_or_designation_or_date:
     function (subscription_id, customer_id, fields){
     var stripeSubscriptionUpdate = new Future();
 
@@ -1016,10 +1024,48 @@ _.extend(Utils, {
     });
   },
   /**
+   * Send an email to the support email contact alerting.
+   * Tell them a new user was created in Give
+   *
+   * @method send_new_give_account_added_email_to_support_email_contact
+   * @param {String} email - email of the user who has just been created
+   * @param {String} user_id - _id of the user who has just been created
+   * @param {String} personaID - id from Donor Tools identifying this user
+   */
+  send_new_give_account_added_email_to_support_email_contact: function (email, user_id, personaID){
+
+    logger.info("Started send_new_give_account_added_email_to_support_email_contact");
+    if(Audit_trail.findOne({user_id: personaID}) &&
+      Audit_trail.findOne({user_id: personaID}).give_account_created)  {
+      logger.info("Already sent a send_new_give_account_added_email_to_support_email_contact email");
+      return;
+    }
+    let wait_for_audit = Utils.audit_email(personaID, 'give.account.created');
+
+    //Create the HTML content for the email.
+    //Create the link to go to the new person that was just created.
+    var html = "<h1>Give account created</h1><p>" +
+      "Details: <br>Email: " + email + "<br>ID: " + user_id +
+      "<br>Link: <a href='" + Meteor.settings.public.donor_tools_site +
+      "/people/" + personaID +"'>" + personaID + "</a></p>";
+
+    let toAddresses = [];
+    toAddresses.push(Meteor.settings.public.support_address);
+    toAddresses = toAddresses.concat(Meteor.settings.public.other_support_addresses);
+    //Send email
+
+    Email.send({
+      from: Meteor.settings.public.support_address,
+      to: toAddresses,
+      subject: "Give Account inserted.",
+      html: html
+    });
+  },
+  /**
    * set a user's state object and update that object with a timestamp
    *
    * @method set_user_state
-   * @param {String} userId - _id of user who's stae is being updated
+   * @param {String} userId - _id of user who's state is being updated
    * @param {String} state - OneOf the values, 'disabled', 'enabled', or 'invited'
    */
   set_user_state: function ( userId, state ) {

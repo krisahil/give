@@ -147,6 +147,9 @@ Template.AdminSubscriptions.helpers({
     } else if(!Session.get("searchValue")) {
       return;
     } else {
+      // TODO: replace this find here with a call to a search method (can I make
+      // this method so generic that I can pass in the collection and fields?
+
       return Subscriptions.find( {
         $or: [
           { 'metadata.fname': {$regex: Session.get("searchValue"), $options: 'i' } },

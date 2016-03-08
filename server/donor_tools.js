@@ -192,7 +192,7 @@ _.extend(Utils, {
 
 
         // Send me an email letting me know a new user was created in DT.
-        Utils.send_dt_new_dt_account_added(email_address, user_id, single_persona_id);
+        Utils.send_new_dt_account_added_email_to_support_email_contact(email_address, user_id, single_persona_id);
       }
     } else {
       if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
@@ -276,6 +276,7 @@ _.extend(Utils, {
       // Run the necessary checks to find which DT account this customer should
       // be associated with (if any)
       dt_persona_match_id = Utils.find_dt_persona_flow( customer.email, customer.id );
+      console.log(dt_persona_match_id);
 
       if( !dt_persona_match_id ) {
         // Create a new Donor Tools account and assign the id to the dt_persona_match_id let

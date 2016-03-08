@@ -24,7 +24,7 @@ Meteor.methods({
             }
         } else {
           // TODO: this is where I could put the call for updating the amount or date or designation
-          // Utils.upadte_stripe_subscription_amount_or_designation_or_date(fields_object);
+          // Utils.update_stripe_subscription_amount_or_designation_or_date(fields_object);
 
             var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id);
             if(!updated_subscription.object){
@@ -133,7 +133,6 @@ Meteor.methods({
         console.log(e);
         throw new Meteor.Error(e.statusCode, e.message, e.type);
       }
-
     },
     stripeRestartBankSubscription: function (restart_data) {
         logger.info("Started method stripeUpdateCard.");

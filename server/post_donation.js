@@ -26,7 +26,7 @@ _.extend(Utils, {
 
         //Check for existing id array
         if(user_id.persona_id && !user_id.persona_info) {
-          console.log("Line 32 post_donation.js: This is the persona_id : ", user_id.persona_id);
+          console.log("Line 29 post_donation.js: This is the persona_id : ", user_id.persona_id);
           //check dt for user, persona_ids will be an array of 0 to many persona_ids
           persona_result = Utils.check_for_dt_user(email_address, user_id.persona_id, true);
         } else {
@@ -37,7 +37,6 @@ _.extend(Utils, {
           }
           persona_result =  findAnyMatchedDTaccount;
           matchedId =       findAnyMatchedDTaccount.matched_id;
-          console.log("*************LOOK HERE");
           console.log(matchedId);
           console.dir(persona_result);
         }

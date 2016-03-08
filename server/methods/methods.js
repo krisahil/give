@@ -133,7 +133,7 @@ Meteor.methods({
                 // account has been created in DT.
                 if(Meteor.users.findOne( {_id: user_id } ) && Meteor.users.findOne( {_id: user_id } ).newUser ){
                   Meteor.users.update( {_id: user_id }, { $unset: { newUser: "" } } );
-                  Utils.send_new_dt_account_added_email_to_support_email_contact(data.customer.email_address, user_id, dt_account_id);
+                  Utils.send_new_give_account_added_email_to_support_email_contact(data.customer.email_address, user_id, dt_account_id);
                 }
 
                 // Update the Stripe customer metadata to include this DT persona (account) ID
@@ -729,7 +729,7 @@ Meteor.methods({
 
     if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
       let newSubscription =
-        Utils.upadte_stripe_subscription_amount_or_designation_or_date(subscription_id,
+        Utils.update_stripe_subscription_amount_or_designation_or_date(subscription_id,
         customer_id, fields);
       Subscriptions.upsert({_id: subscription_id}, newSubscription);
       console.log(newSubscription);
@@ -739,7 +739,7 @@ Meteor.methods({
       let subscription_email = Subscriptions.findOne({_id: subscription_id}).metadata.email;
       if(user_email === subscription_email){
         let newSubscription =
-          Utils.upadte_stripe_subscription_amount_or_designation_or_date(subscription_id,
+          Utils.update_stripe_subscription_amount_or_designation_or_date(subscription_id,
             customer_id, fields);
         Subscriptions.upsert({_id: subscription_id}, newSubscription);
         console.log(newSubscription);
