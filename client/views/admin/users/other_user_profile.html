@@ -4,12 +4,10 @@
             <div class="row">
                 <!-- Tabs -->
                 {{#unless not_dt_user}}
-                    <legend>
-                        <span class="pull-right">
-                            <button type="button" class="btn btn-primary btn-raised cancel-button">Show all users</button>
-                        </span>
-                    </legend>
-                    <h2><strong>User Accounts</strong></h2>
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-primary btn-raised cancel-button">Show all users</button>
+                    </span>
+                    <h2><strong>User Account(s)</strong></h2>
                     <ul id="myTabs" class="nav nav-tabs nav-append-content">
                         {{#each personas}}
                             <li class="">
@@ -65,23 +63,37 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        {{#with user}}
                                             <div class="col-xs-12 col-sm-4 text-center">
+                                            {{#with user}}
                                                 <button type="button" {{disabledIfDisabled}} class="btn btn-primary forgot-password"
-                                                        title="Send Password Reset Link"
-                                                        data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                                    title="Send Password Reset Link"
+                                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
                                                     <i class="fa fa-paper-plane"></i>
                                                 </button>&nbsp;
                                                 <button type="button" {{disableIfAdmin _id}}
-                                                        title="{{toggleUserText}}"
-                                                        class="btn btn-primary disable-enable-user"
-                                                        data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
-                                                        data-_id="{{_id}}"
-                                                        aria-expanded="true">
+                                                    title="{{toggleUserText}}"
+                                                    class="btn btn-primary disable-enable-user"
+                                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                                    data-_id="{{_id}}"
+                                                    aria-expanded="true">
                                                     {{{disabledUserFA}}}
                                                 </button>
+                                            {{/with}}
+                                            <br>
+                                            <br>
+                                            <form>
+                                                <select multiple>
+                                                    {{#each roles}}
+                                                        <option {{selected}} value="{{name}}">{{name}}</option>
+                                                    {{/each}}
+                                                </select>
+
+                                            </form>
+                                            <div class="form-group">
+                                                <button id="update_roles" type="button" class="btn btn-primary">Update Roles</button>
+                                            </div><!--end .form-group -->
                                             </div>
-                                        {{/with}}
+
                                     </div>
                                     {{#if showHistory}}
                                         <div id="" class="col-md-7 col-lg-7">

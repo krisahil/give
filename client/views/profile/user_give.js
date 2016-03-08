@@ -10,10 +10,11 @@ var giveTutorialSteps = [
   },
   {
     template: Template.tutorial_give_step2,
-    spot: "#save_payment, #save_payment_question"
+    spot: ".donateWithDiv"
   },
   {
-    template: Template.tutorial_give_step3
+    template: Template.tutorial_give_step3,
+    spot: "#save_payment, #save_payment_question"
   }
 ];
 

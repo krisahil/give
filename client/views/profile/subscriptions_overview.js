@@ -10,14 +10,10 @@ var subscriptionsTutorialSteps = [
   },
   {
     template: Template.tutorial_subscriptions_step2,
-    spot: ".billing-module"
-  },
-  {
-    template: Template.tutorial_subscriptions_step3,
     spot: ".list-group"
   },
   {
-    template: Template.tutorial_subscriptions_step4,
+    template: Template.tutorial_subscriptions_step3,
     spot: ".cancel-subscription," +
           " .edit-subscription," +
           " .update-subscription," +
@@ -26,7 +22,7 @@ var subscriptionsTutorialSteps = [
           " .activate-subscription"
   },
   {
-    template: Template.tutorial_subscriptions_step5,
+    template: Template.tutorial_subscriptions_step4,
     spot: "#nav-give"
   }
 ];

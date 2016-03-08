@@ -123,6 +123,19 @@ Template.OtherUserProfile.helpers({
     } else {
       return '<i class="fa fa-lock"></i>';
     }
+  },
+  roles: function () {
+    return Meteor.roles.find();
+  },
+  selected: function (){
+    let self = this;
+    let this_user = Meteor.users.findOne({_id: Session.get("params.userID")});
+    let roles = this_user.roles;
+    if(roles){
+      if(roles.indexOf(self.name) > -1){
+        return 'selected';
+      }
+    }
   }
 });
 
@@ -182,6 +195,10 @@ Template.OtherUserProfile.events({
   },
   'click #myTabs a': function () {
     Session.set('activeTab', this.id);
+  },
+  'click #update_roles': function (e) {
+    e.preventDefault();
+    // TODO: send the role change to an update method on the server
   }
 });
 

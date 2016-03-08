@@ -29,7 +29,7 @@ Template.Users.helpers({
     return Schema.UpdateUserFormSchema;
   },
   roles: function () {
-    return Meteor.roles.find({});
+    return Meteor.roles.find();
   },
   user_roles: function () {
     return this.roles;
