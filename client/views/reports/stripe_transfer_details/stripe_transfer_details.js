@@ -101,7 +101,7 @@ Template.StripeTransferDetails.helpers({
   customers: function () {
     let charge;
 
-    if(this.source.slice(0,3) === 'pyr'){
+    if(this.source.slice(0,3) === 'pyr' || this.source.slice(0,3) === 're_'){
       charge = Refunds.findOne({_id: this.source});
       if(charge && charge.charge && charge.charge.customer){
         return Customers.findOne({_id: charge.charge.customer});
@@ -294,8 +294,8 @@ Template.StripeTransferDetails.helpers({
       return 'refunded'
     } else if(this.description && this.description === "Payment failure refund"){
       return 'failed';
-    } else {
-      return '';
+    } else if(this.type === "refund") {
+      return 'refunded';
     }
   },
   failed: function () {

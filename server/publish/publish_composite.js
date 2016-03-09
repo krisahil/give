@@ -10,7 +10,7 @@ Meteor.publishComposite('transactions', function (transfer_id) {
       children: [
         {
           find:     function ( transactions ) {
-            if(transactions.source.slice(0,3) === 'pyr'){
+            if(transactions.source.slice(0,3) === 'pyr' || transactions.source.slice(0,3) === 're_'){
               return Refunds.find(
                 { _id: transactions.source },
                 {
@@ -112,19 +112,47 @@ Meteor.publishComposite('transactions', function (transfer_id) {
   }
 });
 
-Meteor.publishComposite('subscriptions_and_customers', function () {
+Meteor.publishComposite('subscriptions_and_customers', function (searchValue) {
+  check(searchValue, Match.Optional(String));
+  // TODO: fix for empty string, don't need to send all of them down... maybe don't start the subscription?
 
   // Publish the nearly expired or expired card data to the admin dashboard
   if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
+    console.log(searchValue);
+    if(!searchValue){
+      return;
+    }
+
     return {
-      find:     function () {
+      find: function () {
         // Find posts made by user. Note arguments for callback function
         // being used in query.
         return Subscriptions.find( {
-          $or: [
-            { status: 'active' },
-            { status: 'trialing' }
-          ]
+          $and: [{
+            $or: [
+              { status: 'active' },
+              { status: 'trialing' }
+            ]
+          }, {
+            $or: [
+              {
+                'metadata.fname': {
+                $regex: searchValue, $options: 'i'
+                }
+              },
+              {
+                'metadata.lname': {
+                  $regex: searchValue, $options: 'i'
+                }
+              },
+              {
+                'metadata.business_name': {
+                  $regex:   searchValue,
+                  $options: 'i'
+                }
+              }
+            ]
+          }]
         } );
       },
       children: [

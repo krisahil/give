@@ -23,7 +23,18 @@ AutoForm.hooks({
 
 Template.Users.helpers({
   users: function () {
-    return Meteor.users.find({}, { sort: { createdAt: 1} });
+    let searchValue = Session.get("searchValue");
+    if(!searchValue){
+      return Meteor.users.find({}, { sort: { createdAt: 1} });
+    } else {
+      return Meteor.users.find({
+        $or: [
+          { 'profile.fname': { $regex: searchValue, $options: 'i' } },
+          { 'profile.lname': { $regex: searchValue, $options: 'i' } },
+          { 'emails.address': { $regex: searchValue, $options: 'i' } }
+        ]
+      }, { sort: { createdAt: 1} });
+    }
   },
   schema: function () {
     return Schema.UpdateUserFormSchema;
@@ -179,12 +190,36 @@ Template.Users.events({
     Session.delete("got_all_donations");
     Session.delete("NotDTUser");
     Session.delete("persona_info_exists");
+  },
+  'click .clear-button': function () {
+    $(".search").val("").change();
+  },
+  'keyup .search': function () {
+    let searchValue = $(".search").val();
+
+    // Remove punctuation and make it into an array of words
+    searchValue = searchValue
+      .replace(/[^\w\s]|_/g, "")
+      .replace(/\s+/g, " ");
+
+    Session.set("searchValue", searchValue);
+  },
+  'change .search': function () {
+    let searchValue = $(".search").val();
+
+    // Remove punctuation and make it into an array of words
+    searchValue = searchValue
+      .replace(/[^\w\s]|_/g, "")
+      .replace(/\s+/g, " ");
+
+    Session.set("searchValue", searchValue);
   }
 });
 
 Template.Users.onCreated(function () {
   let self = this;
   self.autorun(function () {
+
     if(Session.get("params.userID")) {
       if( Meteor.users.findOne( { _id: Session.get( "params.userID" ) } ) &&
         Meteor.users.findOne( { _id: Session.get( "params.userID" ) } ).persona_info ) {
@@ -192,6 +227,16 @@ Template.Users.onCreated(function () {
       } else {
         Session.set( "persona_info_exists", false );
       }
+      Session.set("showSingleUserDashboard", true);
+      return [Meteor.subscribe( 'all_users', Session.get('params.userID') ),
+              Meteor.subscribe('roles'),
+              Meteor.subscribe('userStripeData', Session.get('params.userID')),
+              Meteor.subscribe('userDT', Session.get('params.userID')),
+              Meteor.subscribe('userDTFunds')];
+    } else {
+      Session.set('params.userID', '');
+      Session.set("showSingleUserDashboard", false);
+      return [Meteor.subscribe( 'all_users' ), Meteor.subscribe('roles')];
     }
   });
 

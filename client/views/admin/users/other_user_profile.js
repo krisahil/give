@@ -130,10 +130,12 @@ Template.OtherUserProfile.helpers({
   selected: function (){
     let self = this;
     let this_user = Meteor.users.findOne({_id: Session.get("params.userID")});
-    let roles = this_user.roles;
-    if(roles){
-      if(roles.indexOf(self.name) > -1){
-        return 'selected';
+    if(this_user){
+      let roles = this_user.roles;
+      if(roles){
+        if(roles.indexOf(self.name) > -1){
+          return 'selected';
+        }
       }
     }
   }

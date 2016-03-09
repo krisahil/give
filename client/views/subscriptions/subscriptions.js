@@ -100,7 +100,7 @@ Template.AdminSubscriptions.events({
 
     Session.set("searchValue", searchValue);
   },
-  'click .reset-button': function () {
+  'click .clear-button': function () {
     $(".search").val("").change();
   },
   'click #btn_modal_for_add_new_bank_account': function () {
@@ -120,25 +120,29 @@ Template.AdminSubscriptions.helpers({
   card_or_bank: function () {
     const customer = this.customer;
     const customer_cursor = Customers.findOne({_id: customer});
-    const default_source_type =  customer_cursor.default_source_type;
-    if(default_source_type === 'bank_account') {
-      return 'Bank';
-    } else if(default_source_type === 'card') {
-      return 'Card';
-    } else {
-      return 'Other';
+    if(customer_cursor){
+      const default_source_type =  customer_cursor.default_source_type;
+      if(default_source_type === 'bank_account') {
+        return 'Bank';
+      } else if(default_source_type === 'card') {
+        return 'Card';
+      } else {
+        return 'Other';
+      }
     }
   },
   card_subscription: function () {
     const customer = this.customer;
     const customer_cursor = Customers.findOne({_id: customer});
-    const default_source_type =  customer_cursor.default_source_type;
-    if(default_source_type === 'bank_account') {
-      return false;
-    } else if(default_source_type === 'card') {
-      return true;
-    } else {
-      return false;
+    if(customer_cursor){
+      const default_source_type =  customer_cursor.default_source_type;
+      if(default_source_type === 'bank_account') {
+        return false;
+      } else if(default_source_type === 'card') {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
   searchSubscriptions: function () {
@@ -147,16 +151,7 @@ Template.AdminSubscriptions.helpers({
     } else if(!Session.get("searchValue")) {
       return;
     } else {
-      // TODO: replace this find here with a call to a search method (can I make
-      // this method so generic that I can pass in the collection and fields?
-
-      return Subscriptions.find( {
-        $or: [
-          { 'metadata.fname': {$regex: Session.get("searchValue"), $options: 'i' } },
-          { 'metadata.lname': {$regex: Session.get("searchValue"), $options: 'i' } },
-          { 'metadata.business_name': {$regex: Session.get("searchValue"), $options: 'i' } }
-        ]
-      } );
+      return Subscriptions.find();
     }
   },
   name: function () {
@@ -172,4 +167,9 @@ Template.AdminSubscriptions.helpers({
 
 Template.AdminSubscriptions.onCreated( function () {
   Session.set("searchValue", "");
+  let self = this;
+  self.autorun(function () {
+    Meteor.subscribe("subscriptions_and_customers", Session.get("searchValue") ?
+      Session.get("searchValue") : '');
+  });
 });

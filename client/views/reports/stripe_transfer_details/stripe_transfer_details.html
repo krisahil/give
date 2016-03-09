@@ -26,8 +26,8 @@
         </a>
         <span class="date">— {{transfer_date}}</span>
         <small class="pull-right smallerHeight">
-            Refund = <span class="refunded">Orange</span>
-            Failed = <span class="failed">Red</span>
+            Legend = <span class="refunded" title="A refund, or a refunded transaction will be orange">Refund(ed)</span> /
+            <span class="failed" title="A failed transaction will be red"> Failed</span>
         </small>
 
     </p>
@@ -56,8 +56,17 @@
               <th>Net Amount</th>
           </tr>
           {{#each transactions}}
-            <tr class="responsiveFont {{#if charges}}{{#with charges}}{{refunded}} {{failed}}{{/with}}{{else}}{{#if refunds}}{{refund_type}}{{/if}}{{/if}}" data-href="" >
-              {{#if charges}}
+            <tr class="responsiveFont
+            {{#if $eq type "charge"}}
+                {{#with charges}}
+                    {{refunded}} {{failed}}
+                {{/with}}
+            {{else}}
+                {{#if $eq type "refund"}}
+                    {{refund_type}}
+                {{/if}}
+            {{/if}}" data-href="" >
+              {{#if $eq type "charge"}}
                   {{#with charges}}
                     <td style="width: 50px;">
                       <a href="{{donor_tools_site}}donations?transaction_id={{_id}}" target="_blank">
@@ -110,7 +119,7 @@
                       <td class="change-td-padding ellipsis">
                           <a href="https://dashboard.stripe.com/payments/{{charge.id}}" target="_blank">
                               <div class="elipsis">
-                                  <span title="{{charge.id}}">{{charge.id}}</span>
+                                  <i class="fa fa-link"></i>
                               </div>
                           </a>
                       </td>

@@ -382,13 +382,7 @@ Router.route('/dashboard/subscriptions', {
   layoutTemplate: 'UserLayout',
   name: 'AdminSubscriptions',
   where: 'client',
-  template: 'AdminSubscriptions',
-  waitOn: function() {
-    return Meteor.subscribe('subscriptions_and_customers');
-  },
-  data: function () {
-    return Subscriptions.find();
-  }
+  template: 'AdminSubscriptions'
 });
 
 
@@ -400,25 +394,9 @@ Router.route('/dashboard/users', {
   waitOn: function () {
     var query = this.params.query;
     var id = query.userID;
-    if(id){
-      Session.set('params.userID', id);
-      Session.set("showSingleUserDashboard", true);
-      return [Meteor.subscribe( 'all_users', id ),
-              Meteor.subscribe('roles'),
-              Meteor.subscribe('userStripeData', Session.get('params.userID')),
-              Meteor.subscribe('userDT', Session.get('params.userID')),
-              Meteor.subscribe('userDTFunds')];
-    } else if(Session.get('params.userID')) {
-      Session.set("showSingleUserDashboard", true);
-      return [Meteor.subscribe( 'all_users', Session.get('params.userID') ),
-              Meteor.subscribe('roles'),
-              Meteor.subscribe('userStripeData', Session.get('params.userID')),
-              Meteor.subscribe('userDT', Session.get('params.userID')),
-              Meteor.subscribe('userDTFunds')];
-    } else {
-      Session.set('params.userID', '');
-      Session.set("showSingleUserDashboard", false);
-      return [Meteor.subscribe( 'all_users' ), Meteor.subscribe('roles')];
+    if(id) {
+      Session.set( 'params.userID', id );
+      Session.set( "showSingleUserDashboard", true );
     }
   },
   data: function () {

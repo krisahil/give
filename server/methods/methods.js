@@ -908,5 +908,40 @@ Meteor.methods({
       console.log(e);
       throw new Meteor.Error(e);
     }
+  },
+  search_collections: function (collectionName, searchValue, searchIn) {
+    check(collectionName, String);
+    check(searchValue, String);
+    check(searchIn, Array);
+
+    try {
+      logger.info("Started search_collections.");
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+        console.log("Searching");
+        let searchConstructor = {
+          $or:
+            _.map(searchIn, function (searchInValue) {
+              return {
+                [searchInValue]: {$regex: searchValue, $options: 'i' }
+              }
+            })
+
+        };
+        let root = Meteor.isClient ? window : global;
+        // find the instance in the global context - e.g. window['Subscriptions']
+        let collection = root[collectionName];
+
+        console.dir(searchConstructor.$or);
+        let search_result = collection.find( searchConstructor );
+        console.log(search_result);
+
+        return search_result;
+      } else {
+        return;
+      }
+    } catch(e){
+      console.log(e);
+      throw new Meteor.Error(e);
+    }
   }
 });
