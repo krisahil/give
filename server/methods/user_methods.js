@@ -188,7 +188,7 @@ Meteor.methods({
         this.unblock();
 
         if(id){
-          if (Roles.userIsInRole(this.userId, ['admin', 'user-admin'])) {
+          if (Roles.userIsInRole(this.userId, ['admin'])) {
             userID = id;
           } else {
             logger.warn("ID detected when not logged in as an admin");

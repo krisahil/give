@@ -3,7 +3,7 @@ Meteor.methods({
         try {
           this.unblock();
             //check to see that the user is the admin user
-            if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+            if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
                 logger.info("Started get_dt_funds");
                 var fundResults;
                 fundResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/settings/funds.json?per_page=1000', {
@@ -26,7 +26,7 @@ Meteor.methods({
     get_dt_sources: function () {
         try {
             //check to see that the user is the admin user
-            if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+            if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
                 logger.info("Started get_dt_sources");
                 var sourceResults;
                 sourceResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/settings/sources.json?per_page=1000', {
@@ -266,7 +266,7 @@ Meteor.methods({
       if(this.userId) {
         this.unblock();
        if(id){
-         if (Roles.userIsInRole(this.userId, ['admin', 'user-admin'])) {
+         if (Roles.userIsInRole(this.userId, ['admin'])) {
            userID = id;
          } else {
            logger.warn("ID detected when not logged in as an admin");
@@ -334,7 +334,7 @@ Meteor.methods({
     move_donation_to_other_person: function (donation_id, move_to_id) {
         check(donation_id, String);
         check(move_to_id, String);
-        if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+        if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
 
             // Move a donation from one persona_id to another
             logger.info("Inside move_donation_to_other_person.");
@@ -552,7 +552,7 @@ Meteor.methods({
 
     check(id, Number);
     console.log(id);
-    if (Roles.userIsInRole(this.userId, ['admin', 'reports', 'dt-admin'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
       this.unblock();
       try {
         // Get the persona from DT
@@ -581,7 +581,7 @@ Meteor.methods({
 
     check(current_transfer_id, String);
     check(previous_or_next, String);
-    if (Roles.userIsInRole(this.userId, ['admin', 'reports', 'dt-admin'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
       let previous_or_next_transfer = StripeFunctions.get_next_or_previous_transfer(current_transfer_id, previous_or_next);
 
       return previous_or_next_transfer.data[0].id;
@@ -617,7 +617,7 @@ Meteor.methods({
 
     check(transfer_id, String);
     check(checkbox_state, Match.OneOf("true", "false"));
-    if (Roles.userIsInRole(this.userId, ['admin', 'reports'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
       let stripe_response = Utils.stripe_set_transfer_posted_metadata(transfer_id, checkbox_state);
       Transfers.update({_id: transfer_id}, {$set: { 'metadata.posted': checkbox_state } });
       return stripe_response;
@@ -644,7 +644,7 @@ Meteor.methods({
     check(old_persona_id, Number);
     check(new_persona_id, Number);
 
-    if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
 
       // find each customer where the old_persona_id is stored
       let customers = Customers.find({'metadata.dt_persona_id': String(old_persona_id)});
@@ -727,7 +727,7 @@ Meteor.methods({
     console.log(fields);
     this.unblock();
 
-    if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
       let newSubscription =
         Utils.update_stripe_subscription_amount_or_designation_or_date(subscription_id,
         customer_id, fields);
@@ -755,7 +755,7 @@ Meteor.methods({
 
     try {
       //check to see that the user is the admin user
-      if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+      if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
         logger.info("Started post_dt_note");
         let noteResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/people/' +
           to_persona + '/notes.json', {
@@ -943,5 +943,24 @@ Meteor.methods({
       console.log(e);
       throw new Meteor.Error(e);
     }
+  },
+  update_user_roles: function (roles, user_id) {
+    check(roles, Array);
+    check(user_id, String);
+
+   /* try {*/
+      logger.info("Started update_user_roles.");
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+        console.log("Updating");
+
+        Roles.setUserRoles(user_id, roles);
+        return "Updated";
+      } else {
+        return;
+      }
+    /*} catch(e){
+      console.log(e);
+      throw new Meteor.Error(e);
+    }*/
   }
 });

@@ -163,9 +163,7 @@ Template.DonationForm.events({
       }
     },
     'blur #donation_form input': function (){
-        // TODO: remove this area and use iron-router instead.
-        // http://stackoverflow.com/questions/24367914/aborting-navigation-with-meteor-iron-router
-        if(document.URL !== "http://127.0.0.1:3000/give/user"){
+        if(window.location.pathname !== "/give/user"){
             $(window).on('beforeunload', function(){
                 return "It looks like you have input you haven't submitted."
             });
@@ -318,6 +316,10 @@ Template.DonationForm.onRendered(function() {
     $("#start_date").val(Session.get('params.start_date'));
   }
 
+});
+
+Template.DonationForm.onDestroyed( function () {
+  $(window).unbind('beforeunload');
 });
 
 Template.checkPaymentInformation.helpers({

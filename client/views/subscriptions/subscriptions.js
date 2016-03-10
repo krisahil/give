@@ -1,3 +1,16 @@
+
+function updateSearchVal(){
+  console.log("Got to updateSearchVal function");
+  let searchValue = $(".search").val();
+
+  // Remove punctuation and make it into an array of words
+  searchValue = searchValue
+    .replace(/[^\w\s]|_/g, "")
+    .replace(/\s+/g, " ");
+
+  Session.set("searchValue", searchValue);
+};
+
 Template.AdminSubscriptions.events({
   'click .addingNewPerson': function ( e ){
     e.preventDefault();
@@ -80,26 +93,9 @@ Template.AdminSubscriptions.events({
       }).prop('selected', true).change();
     }, 0);
   },
-  'keyup .search': function () {
-    let searchValue = $(".search").val();
-
-    // Remove punctuation and make it into an array of words
-    searchValue = searchValue
-      .replace(/[^\w\s]|_/g, "")
-      .replace(/\s+/g, " ");
-
-    Session.set("searchValue", searchValue);
-  },
-  'change .search': function () {
-    let searchValue = $(".search").val();
-
-    // Remove punctuation and make it into an array of words
-    searchValue = searchValue
-      .replace(/[^\w\s]|_/g, "")
-      .replace(/\s+/g, " ");
-
-    Session.set("searchValue", searchValue);
-  },
+  'keyup .search': _.debounce(function () {
+    updateSearchVal();
+  }, 300),
   'click .clear-button': function () {
     $(".search").val("").change();
   },

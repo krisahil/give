@@ -1,6 +1,6 @@
 Meteor.publishComposite('transactions', function (transfer_id) {
   check(transfer_id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
     return {
       find:     function () {
         return Transactions.find( {
@@ -114,10 +114,9 @@ Meteor.publishComposite('transactions', function (transfer_id) {
 
 Meteor.publishComposite('subscriptions_and_customers', function (searchValue) {
   check(searchValue, Match.Optional(String));
-  // TODO: fix for empty string, don't need to send all of them down... maybe don't start the subscription?
 
   // Publish the nearly expired or expired card data to the admin dashboard
-  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
     console.log(searchValue);
     if(!searchValue){
       return;
@@ -147,6 +146,12 @@ Meteor.publishComposite('subscriptions_and_customers', function (searchValue) {
               },
               {
                 'metadata.business_name': {
+                  $regex:   searchValue,
+                  $options: 'i'
+                }
+              },
+              {
+                'metadata.email': {
                   $regex:   searchValue,
                   $options: 'i'
                 }

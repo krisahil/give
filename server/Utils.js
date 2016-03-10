@@ -824,8 +824,8 @@ _.extend(Utils, {
           throw new Meteor.Error(stripe_cancel.rawType, stripe_cancel.message);
       }
 
-      // Set this subscription to canceled. Stripe's webhooks should still update this later,
-      // but this is so that the admin or customer who cancels the subscription gets
+      // Set this subscription to canceled. Stripe's webhooks will still update this later,
+      // but this is here so that the admin or customer who cancels the subscription gets
       // immediate feedback on their action
       Subscriptions.update({_id: subscription_id}, { $set: { status: 'canceled' } });
       console.dir(stripe_cancel);

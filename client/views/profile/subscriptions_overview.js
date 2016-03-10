@@ -216,7 +216,7 @@ Template.SubscriptionsOverview.events({
 });
 
 Template.SubscriptionsOverview.onRendered(function() {
-  if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
+  if(Roles.userIsInRole(Meteor.userId(), 'no-dt-person')) {
     Router.go("Dashboard");
   }
     Session.setDefault('paymentMethod', 'default');

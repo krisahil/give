@@ -25,16 +25,8 @@ Router.onBeforeAction(function() {
 }, {only : ['Users', 'GivingOptions', 'OrgInfo']});
 
 Router.onBeforeAction(function() {
-  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'user-admin'])) {
-    this.render("NotFound");
-  } else {
-    this.next();
-  }
-}, {only : ['Users']});
 
-Router.onBeforeAction(function() {
-
-  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin'])) {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager', 'reports'])) {
     this.render("NotFound");
   } else {
     this.next();
@@ -43,7 +35,7 @@ Router.onBeforeAction(function() {
 
 Router.onBeforeAction(function() {
 
-  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'dt-admin', 'reports']) ) {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager', 'reports']) ) {
     this.render("NotFound");
   } else {
     this.next();
@@ -410,4 +402,11 @@ Router.route('/dashboard/users', {
       return Meteor.users.find();
     }
   }
+});
+
+Router.route('/dashboard/upload', {
+  layoutTemplate: 'AdminLayout',
+  name: 'Upload',
+  where: 'client',
+  template: 'Upload'
 });

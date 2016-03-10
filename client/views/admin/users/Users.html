@@ -1,7 +1,7 @@
 <template name="Users">
   <div class="row">
     <div class="col col-lg-12">
-        {{#if isInRole 'admin, user-admin'}}
+        {{#if isInRole 'admin, manager'}}
             {{#unless showSingleUser}}
                 {{#if addingNew 'user'}}
                     {{> AddUser}}
@@ -9,13 +9,15 @@
                     {{#if addingNew 'role'}}
                       {{> AddRole}}
                     {{else}}
-                        <a href="" class="btn btn-success glyphicon glyphicon-plus addingNewUser" data-add="user"> User</a>
-                        {{#if isInRole 'super-admin'}}<a href="" class="btn btn-success glyphicon glyphicon-plus addingNewRole" data-add="role"> Role</a>{{/if}}
+                        {{#if isInRole 'admin'}}
+                            <a href="" class="btn btn-success glyphicon glyphicon-plus addingNewUser" data-add="user"> User</a>
+                            <a href="" class="btn btn-success glyphicon glyphicon-plus addingNewRole" data-add="role"> Role</a>
+                        {{/if}}
                         <form class="form">
                             <div class="form-group">
                                 <br>
                                 <label for="searchUsers" class="control-label">Search for Users</label>
-                                <input id="searchUsers" type="text" class="form-control search" placeholder="Search By Name, Org. or email">
+                                <input id="searchUsers" type="text" class="form-control search" placeholder="Search by; name, org. or email">
                             </div>
                         </form>
                         <button type="button" class="btn btn-danger btn-block clear-button">
@@ -87,8 +89,8 @@
                                 <br>
                                 <fieldset>
                                     <!-- TODO: what if this is the current user?
-                                Need to also log this user out if they update
-                                their email address &ndash;&gt;
+                                    Need to also log this user out if they update
+                                    their email address &ndash;&gt;
                                     &lt;!&ndash; TODO: Also need to warn the user that they
                                     are updating their own address and they won't
                                     be able to get back in until they have verified it &ndash;&gt;

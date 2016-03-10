@@ -82,15 +82,19 @@
                                             <br>
                                             <br>
                                             <form>
-                                                <select multiple>
+                                                <select multiple id="select-roles">
                                                     {{#each roles}}
                                                         <option {{selected}} value="{{name}}">{{name}}</option>
                                                     {{/each}}
                                                 </select>
-
                                             </form>
                                             <div class="form-group">
-                                                <button id="update_roles" type="button" class="btn btn-primary">Update Roles</button>
+                                                <button id="update_roles"
+                                                    type="button"
+                                                    class="btn btn-primary"
+                                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                                    Update Roles
+                                                </button>
                                             </div><!--end .form-group -->
                                             </div>
 

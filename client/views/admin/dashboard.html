@@ -3,7 +3,7 @@
         {{> AdminGive}}
     {{/if}}
 
-    {{#if isInRole 'admin, dt-admin'}}
+    {{#if isInRole 'admin, manager'}}
         {{> AdminMoveGift}}
         {{> AdminMergePersona}}
     {{/if}}
@@ -17,7 +17,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            {{#if isInRole 'admin,user-admin'}}
+                            {{#if isInRole 'admin'}}
                                 <div class="col-sm-2">
                                     <a id="users-and-roles" class="quick-button backgroundColor primary" href="/dashboard/users">
                                     <span class="fa-stack fa-lg">
