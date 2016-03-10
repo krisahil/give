@@ -13,7 +13,7 @@
             </a>
 
             {{#if MeteorUser}}
-                {{#unless dismissedNewStuff}}
+                {{#unless $or dismissedNewStuff (isInRole 'admin-only')}}
                     <div class="contain-peek" style="overflow: hidden;
                              position: relative;
                              top: 21px;

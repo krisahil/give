@@ -1,42 +1,74 @@
 <template name="tutorial_user_profile_step1">
-    Welcome.
+    <h6>Welcome to the Trash Mountain Project Give webapp. Click Next to get started.</h6>
+    <p>We'll start this tutorial with your Profile and Giving History page.</p>
 </template>
-
 <template name="tutorial_user_profile_step2">
-    This is step 2 of the user tutorial.
+    <h6>Profile</h6>
+    <p>This section is used to show you the contact information we have for this account.
+    You can update this information by clicking on the pencil icon, or clicking the 'Edit Profile' button</p>
 </template>
 <template name="tutorial_user_profile_step3">
-    This is step 3 of the user tutorial.
+    <h6>Giving History</h6>
+    <p>All of your past gifts to TMP will appear in this list. </p>
+    <p>Click a row to view the receipt for that gift (online gifts only)</p>
+</template>
+<template name="tutorial_user_profile_step4">
+    <h6>Go to the Recurring Gifts page</h6>
+    <p>Click here to see more in the recurring gifts section, or click Finish to stop the tutorial.</p>
 </template>
 
 <template name="tutorial_subscriptions_step1">
-    This is step 1 of subscriptions the tutorial.
+    <h5>Here are your recurring gifts.</h5>
+</template>
+
+<template name="tutorial_no_subscriptions_step1">
+    <p>You can setup a recurring gift by clicking this button.</p>
 </template>
 
 <template name="tutorial_subscriptions_step2">
-    This is step 2 of subscriptions the tutorial.
+    <h6>Here are some actions you can take on these gifts.</h6>
+    <ul>
+        <li>
+            Cancel, if you want to stop this recurring gift for any reason.
+        </li>
+        <li>
+            Edit Parts, if you want to change these parts
+            <ul>
+                <li>Amount</li>
+                <li>Designation (where should this money be used)</li>
+                <li>Recurring date of this gift</li>
+                <li>Change the note on this gift</li>
+            </ul>
+        </li>
+        <li>
+            Update Payment, if you have a new Debit/Credit card or want to change the bank account information associated with this gift.
+        </li>
+    </ul>
 </template>
 
 <template name="tutorial_subscriptions_step3">
-    This is step 3 of subscriptions the tutorial.
-</template>
-
-<template name="tutorial_subscriptions_step4">
-    This is step 4 of subscriptions the tutorial.
+    <h6>Go to the Give page</h6>
+    <p>Click Give to see the give page, or click Finish to stop the tutorial</p>
 </template>
 
 <template name="tutorial_give_step1">
-    This is step 1 of give the tutorial.
+    <h6>Quick Give Form</h6>
+    <p>Here is the much smaller giving form, for quick and easy giving.</p>
+    <p>Since we already know who you are, we now only need a few pieces of information about the donation.</p>
 </template>
 
 <template name="tutorial_give_step2">
-    This is step 2 of give the tutorial.
+    <h6>Save Payment checkbox</h6>
+    <p>When you give, you can check this box and we'll save a secure token of you payment method for you.</p>
 </template>
 
 <template name="tutorial_give_step3">
-    This is step 3 of give the tutorial.
+    <h6>Payment methods dropdown</h6>
+    <p>If you have saved any payment methods, you'll see them listed here. You can also choose New Card or New Bank.</p>
 </template>
 
 <template name="tutorial_give_step4">
-    This is step 4 of give the tutorial.
+    <h6>Good job, you reached the end of the tutorial</h6>
+    <p>We hope this tutorial was useful. If you have any questions, please don't hesitate to contact us. </p>
+    <p>{{{contact_us}}}</p>
 </template>

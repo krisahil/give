@@ -12,15 +12,25 @@
                 <div class="offcanvas-body">
                     <ul>
                         <li>
-                            <strong>Recurring gifts</strong><br>
+                            <strong><a href="/user">Profile</a></strong><br>
+                            Edit your profile and see your giving history.
+                        </li>
+                        <li>
+                            <strong><a href="/user/subscriptions">Recurring gifts</a></strong><br>
                             Update your recurring gifts.
                         </li>
                         <li>
-                            <strong>Profile</strong><br>
-                            Edit your profile.
+                            <strong><a href="/user/give">Give</a></strong><br>
+                            Quickly Give a new gift
                         </li>
                     </ul>
-                    <p><button id="start_tutorial" class="btn btn-primary" data-dismiss="offcanvas">Show Me</button></p>
+                    {{#unless not_safari}}
+                        <p>
+                            <button id="start_tutorial" class="btn btn-primary" data-dismiss="offcanvas">
+                                Show Me
+                            </button>
+                        </p>
+                    {{/unless}}
                     <p>&nbsp;</p>
                     <h4>Got it</h4>
                     <p>
