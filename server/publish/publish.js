@@ -52,26 +52,6 @@ Meteor.publish('receipt_charges', function (input) {
 );
 });
 
-//TODO: These functions are from the old dashboard, need to replicate in the new one
-/*Meteor.publish('give_report', function (start_date, finish_date) {
-	//Check the input that came from the client
-	check(start_date, String);
-	check(finish_date, String);
-
-	//check to see that the user is the admin user
-	if(this.userId === Meteor.settings.admin_user){
-		start_date = moment(Date.parse(start_date)).format('YYYY-MM-DD').slice(0,10);
-		finish_date = moment(Date.parse(finish_date)).format('YYYY-MM-DD').slice(0,10);
-
-		return Donate.find( { 'transactions.created_at' : { $gte: start_date, $lte : finish_date } }, { 'transactions' : true } );
-
-	}else{
-		return '';
-	}
-
-});
-*/
-
 Meteor.publish("userDonations", function () {
 	if (this.userId) {
     var donations = Meteor.users.findOne({_id: this.userId}).donations;
@@ -296,7 +276,7 @@ Meteor.publish("DTSplits", function () {
 
 Meteor.publish("transfers", function (id) {
   check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
     if(id){
       return Transfers.find({_id: id});
     } else {
@@ -314,7 +294,7 @@ Meteor.publish("transfersRange", function (range) {
     end:   Match.Optional( String )
   });
 
-  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
 
     if(range && range.start){
       let transferStart = Number(moment(new Date(range.start)).format('X'));
@@ -342,7 +322,7 @@ Meteor.publish("adminSubscriptions", function (_id) {
   console.log("Got to adminSubscriptions sub");
   let subscriptions;
 
-  if (Roles.userIsInRole(this.userId, ['admin', 'dt-admin'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
     if(_id) {
       subscriptions = Subscriptions.find({_id: _id}, {$or: [{status: 'active'}, {status: 'trialing'}]});
     } else {

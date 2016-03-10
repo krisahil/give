@@ -1,3 +1,4 @@
+.uploads
 settings.json
 doulos-settings.json
 dev_settings.json
@@ -10,9 +11,6 @@ start-local.sh
 start-doulos.sh
 start-tunnel.sh
 .DS_Store
-webdriver_error.png
-thanks-page.png
 npm-debug.log
 bundle.tar.gz
-.iron
 start-local-debug.sh

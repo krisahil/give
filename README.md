@@ -45,7 +45,6 @@ Here is an example settings.json file
   "mandrillKey": "http://mandrill.com/",
   "kadiraAppId": "Get a free account here https://kadira.io/",
   "kadiraAppSecret": "https://kadira.io/",
-  "admin_user": "user _id of any user that can use the dashboard as an admin",
   "donor_tools_user": "",
   "donor_tools_password": "",
   "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",

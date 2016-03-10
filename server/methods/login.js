@@ -15,7 +15,7 @@ Meteor.methods( {
 
     try {
       //check to see that the user is the admin user
-      if (Roles.userIsInRole(this.userId, ['admin', 'user-admin'])) {
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
 
         // Set the state of the user with userId
         Meteor.users.update( { _id: userId }, { $set: {

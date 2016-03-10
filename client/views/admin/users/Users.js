@@ -31,6 +31,7 @@ Template.Users.helpers({
         $or: [
           { 'profile.fname': { $regex: searchValue, $options: 'i' } },
           { 'profile.lname': { $regex: searchValue, $options: 'i' } },
+          { 'profile.business_name': { $regex: searchValue, $options: 'i' } },
           { 'emails.address': { $regex: searchValue, $options: 'i' } }
         ]
       }, { sort: { createdAt: 1} });

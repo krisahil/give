@@ -2,7 +2,7 @@
     {{> SubscriptionModal}}
     <form class="form">
         <div class="form-group floating-label">
-            <input type="text" class="form-control search" placeholder="Search By Name or Org. Name Here">
+            <input type="text" class="form-control search" placeholder="Search by; name, org. or email">
             <label>*Only Active or Trialing Subscriptions are Shown</label>
         </div>
     </form>
@@ -20,7 +20,7 @@
             <th>Designation</th>
             <th>Note</th>
             <th>Stripe ID</th>
-            {{#if isInRole 'admin, dt-admin'}}
+            {{#if isInRole 'admin'}}
                 <th class="text-right"></th>
             {{/if}}
         </tr>
@@ -35,7 +35,7 @@
                 <td>{{metadata.donateTo}}</td>
                 <td>{{metadata.note}}</td>
                 <td>{{_id}}</td>
-                {{#if isInRole 'admin, dt-admin'}}
+                {{#if isInRole 'admin, manager'}}
                     <td class="text-right">
                         <div class="btn-group" role="group" aria-label="Basic example">
                             {{#if card_subscription}}

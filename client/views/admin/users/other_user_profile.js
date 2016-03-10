@@ -167,7 +167,6 @@ Template.OtherUserProfile.events({
 
     Meteor.call('update_customer', fields, Number(Session.get('activeTab')), function(error, result){
       if(result){
-        console.log(result);
         $('#modal_for_address_change').modal('hide');
         loadingButton.button("reset");
         Bert.alert("This user is being updated now.", "success");
@@ -200,7 +199,22 @@ Template.OtherUserProfile.events({
   },
   'click #update_roles': function (e) {
     e.preventDefault();
-    // TODO: send the role change to an update method on the server
+
+    $("#update_roles").button("loading");
+    let roles = $("#select-roles").val();
+
+    Meteor.call('update_user_roles', roles, Session.get("params.userID"), function(error, result){
+      if(result){
+        console.log(result);
+        $("#update_roles").button("reset");
+        Bert.alert("This user's roles have been updated.", "success");
+      } else{
+        console.log(error);
+        $("#update_roles").button("reset");
+        Bert.alert("That didn't work. Please try again. If it still doesn't work, " +
+          "then please let us know, we'll check into this error." + error, "danger");
+      }
+    });
   }
 });
 
@@ -221,7 +235,6 @@ Template.OtherUserProfile.onRendered(function() {
           Session.set("NotDTUser", true);
           return;
         }
-        console.log( result );
         Session.set("got_all_donations", true);
         Meteor.setTimeout(function() {
          Session.set( "showSingleUserDashboard", true);
@@ -234,7 +247,6 @@ Template.OtherUserProfile.onRendered(function() {
   } else if(!Session.equals("got_all_donations", true)) {
     Meteor.call("get_all_donations_for_this_donor", Session.get("params.userID"), function (error, result) {
       if( result ) {
-        console.log( result );
         Session.set("got_all_donations", true);
       } else {
         console.log( error );

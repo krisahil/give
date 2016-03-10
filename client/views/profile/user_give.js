@@ -131,7 +131,7 @@ Template.UserGive.events({
 
 
 Template.UserGive.onRendered(function () {
-  if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
+  if(Roles.userIsInRole(Meteor.userId(), 'no-dt-person')) {
     Router.go("Dashboard");
   }
 
