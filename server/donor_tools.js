@@ -83,10 +83,17 @@ _.extend(Utils, {
     console.log(get_dt_donation.data[0].donation);
     dt_donation_id = get_dt_donation.data[0].donation.id;
 
-    if(get_dt_donation.data[0].donation.payment_status === event_object.data.object.status) {
+    if(get_dt_donation.data[0].donation.payment_status === event_object.data.object.status &&
+      !event_object.data.object.refunded) {
       return;
     }
-    get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
+
+    if(event_object.data.object.refunded){
+      get_dt_donation.data[0].donation.payment_status = 'refunded';
+    } else {
+      get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
+    }
+
     if(event_object.data.object.status === 'failed'){
       // 3921 is the failed type in Donor Tools
       get_dt_donation.data[0].donation.donation_type_id = 3921;

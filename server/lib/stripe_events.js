@@ -53,6 +53,17 @@ Stripe_Events = {
     console.log(stripeEvent);
     let send_successful_email;
 
+    if(stripeEvent.data.object.refunded){
+      logger.warn("This successful charge has been refunded.");
+      // TODO: Get this refund object from Stripe using
+      // let this_refund = Utils.stripe_get_refund(stripeEvent.data.object.refunds.data[0].id)
+      // store that object in the collection
+      // Refunds.upsert({_id: stripeEvent.data.object.refunds.data[0].id}, this_refund);
+      // TODO: Tell DT that this successful charge has been refunded
+      // Looks like line 92 of donor_tools.js already updates the status, need to see if this will work
+      // automatically
+
+    }
     if(stripeEvent.data.object.invoice) {
       let wait_for_metadata_update = Utils.update_charge_metadata(stripeEvent);
 
