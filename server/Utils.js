@@ -546,12 +546,13 @@ _.extend(Utils, {
       }
     });
   },
-    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
+    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, donateWith){
         logger.info("Inside update_stripe_customer_subscription.");
         var stripeSubscriptionUpdate = new Future();
 
         Stripe.customers.updateSubscription(customer_id, subscription_id, {
-                source: token_id
+          source: token_id,
+          metadata: {donateWith: donateWith}
             }, function (error, subscription) {
                 if (error) {
                     //console.dir(error);
@@ -654,13 +655,13 @@ _.extend(Utils, {
           throw new Meteor.Error("Error from Stripe Promise", err);
         });
     },
-  update_stripe_customer_default_source: function(customer_id, bank_id){
+  update_stripe_customer_default_source: function(customer_id, device_id){
       logger.info("Inside update_stripe_customer_default_source.");
-      logger.info(customer_id, bank_id);
+      logger.info(customer_id, device_id);
 
       let sourceUpdate = new Promise(function (resolve, reject) {
         Stripe.customers.update(customer_id,
-          { default_source: bank_id },
+          { default_source: device_id },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);

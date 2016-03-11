@@ -12,15 +12,11 @@ function insertCheckbox(el, insertDiv, checked) {
 function sortableFunction () {
   $(".sortable").sortable({
     cursor: 'move',
-    dropOnEmpty: true,/*
-    forceHelperSize: true,
-    forcePlaceholderSize: true,*/
+    dropOnEmpty: true,
     handle: '.fa-arrows',
     helper: function (e, li) {
       this.copyHelper = li.clone().insertAfter(li);
-
       $(this).data('copied', false);
-
       return li.clone();
     },
     start: function( event, ui ) {
@@ -35,13 +31,10 @@ function sortableFunction () {
       }
     },
     stop: function () {
-
       var copied = $(this).data('copied');
-
       if (!copied) {
         this.copyHelper.remove();
       }
-
       this.copyHelper = null;
     },
     receive: function ( e, ui ) {
@@ -70,7 +63,6 @@ function sortableFunction () {
       }
     },
     cancel: ".disable-sort"
-
   });
 }
 
@@ -79,12 +71,10 @@ function sortableFunction () {
 /*****************************************************************************/
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
-
     var content= "<div class='input-group margin-bottom-sm'>";
     content += "<input type='text' class='form-control slim-borders groupName' placeholder='Group name'>";
     content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw fa-pull-right"><\/i><\/span>';
     content += "<\/div>";
-
     $( content ).appendTo('#selectedGivingOptionsDiv');
   },
   'click #updateDropdown': function () {
@@ -158,6 +148,7 @@ Template.GivingOptions.events({
 
     var givingOptionsChecked;
     if(!$(event.target).is(":checked")){
+      console.log("Unchecked");
       givingOptionsChecked = Session.get("givingOptionsChecked");
       givingOptionsChecked = _.extend([], givingOptionsChecked);
 
@@ -166,7 +157,10 @@ Template.GivingOptions.events({
       } );
       $( event.target ).closest('div').remove();
       Session.set("givingOptionsChecked", newCheckedOptions);
-      var el = {id: $(event.target).val(), text: $(event.target).attr('data-name')};
+      var el = {
+        id: $(event.target).val(),
+        text: $(event.target).attr('data-name')
+      };
       insertCheckbox( el, 'givingOptionsDiv', false );
     } else {
       givingOptionsChecked = Session.get("givingOptionsChecked");
@@ -199,6 +193,9 @@ Template.GivingOptions.helpers({
     } else {
       return DT_funds.find({}, {sort: { name: 1 } });
     }
+  },
+  options: function () {
+    return MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
   }
 });
 
@@ -207,13 +204,13 @@ Template.GivingOptions.helpers({
 /* GivingOptions: Lifecycle Hooks */
 /*****************************************************************************/
 Template.GivingOptions.onCreated(function () {
-  //Meteor.call("get_dt_funds");
+  //TODO: uncomment this for production -> Meteor.call("get_dt_funds");
 });
 
 Template.GivingOptions.onRendered(function () {
 
   // Start the function to setup the table connections and make them sortable
-  sortableFunction ();
+  sortableFunction();
 
   //var MultiConfigAllOptions = MultiConfig.findOne().GivingOptions;
   var temp1 = MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;

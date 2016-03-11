@@ -1,5 +1,3 @@
-var emitter = new EventEmitter();
-
 var subscriptionsTutorialSteps = [
   {
     template: Template.tutorial_subscriptions_step1,
@@ -106,7 +104,6 @@ Template.SubscriptionsOverview.helpers({
     options: {
         id: "subscriptionsTutorial",
         steps: subscriptionsTutorialSteps,
-        emitter: emitter,
         onFinish: function() {
             console.log("Finish clicked!");
             Meteor.setTimeout( function () {

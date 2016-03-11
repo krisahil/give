@@ -6,22 +6,30 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h4 class="modal-title text-left"><strong>Add</strong> new account.</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="col">
-                        <br>
-                        <form class="form-horizontal donation-form" role="form" id="add-bank-form" name="donation_form" data-parsley-focus="first"
-                              data-parsley-excluded="input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
-                              style="background-color: white;">
-                            <fieldset>
-                                {{> checkPaymentInformation}}
-                                <div class="modal-footer" style="background-color: white;">
-                                    <button type="submit" class="btn btn-primary">Add Account</button>
-                                </div>
-                            </fieldset>
-                        </form>
+                <form class="form-horizontal donation-form" role="form"
+                      id="add-bank-form" name="donation_form"
+                      data-parsley-focus="first"
+                      data-parsley-excluded="input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
+                      style="background-color: white;">
+                    <div class="modal-body">
+                        <div class="col">
+                            <br>
+                                <fieldset>
+                                    {{> checkPaymentInformation}}
+                                </fieldset>
+                        </div>
                     </div>
-                </div>
-
+                    <div class="modal-footer" style="background-color: white;">
+                        <button type="submit" class="btn btn-primary pull-left">
+                            <i class="fa fa-plus"></i>
+                            Update Account
+                        </button>
+                        <button id="go-to-card"
+                                class="btn btn-primary">
+                            Use Card instead
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

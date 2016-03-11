@@ -287,7 +287,10 @@ Schema.MultiConfig = new SimpleSchema({
   "organization_info.web.donate_url": {
     type: String,
     label: "If you have an address you want to use to redirect to your 'Give' landing page.",
-    optional: true
+    optional: true,
+    autoform: {
+      placeholder: "e.g. https://trashmountain.com/donate"
+    }
   },
   "organization_info.web.heap_analytics_id": {
     type: Number,

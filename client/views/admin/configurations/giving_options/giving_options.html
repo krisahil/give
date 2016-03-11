@@ -35,7 +35,16 @@
               <br>
               <label for="testDropdown">Dropdown Preview</label><br>
               <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
-        </div>
+              <br>
+              {{#each options}}
+                  <select id="testSelect{{text}}" class="form-control select select-primary mbl" >
+                      <optgroup label="{{text}}">{{text}}</optgroup>
+                      {{#each children}}
+                          <option value="{{id}}">{{text}}</option>
+                      {{/each}}
+                  </select>
+              {{/each}}
+          </div>
       </div>
     </div>
   </div>

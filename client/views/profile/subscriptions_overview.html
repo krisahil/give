@@ -77,9 +77,17 @@
                         {{/if}}
                     {{/if}}
                     {{#if equals status "past_due"}}
-                        <li class="list-group-item bm-block button-blocks clearfix">
-                            <a href="{{pathFor 'FixSubscription'}}?s={{id}}" class="btn btn-block btn-default past-due-subscription">Fix</a>
-                        </li>
+
+                        {{#if card_subscription}}
+                            <li class="list-group-item bm-block button-blocks clearfix">
+                                <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary update-subscription">Fix</a>
+                            </li>
+                        {{else}}
+                            {{> AddNewBankAccount}}
+                            <li class="list-group-item bm-block button-blocks clearfix">
+                                <a class="btn btn-block btn-primary btn_modal_for_add_new_bank_account">Fix</a>
+                            </li>
+                        {{/if}}
                     {{/if}}
                     {{#if equals status "canceled"}}
                         {{#if card_subscription}}

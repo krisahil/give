@@ -115,7 +115,7 @@ Meteor.methods({
                 // Find a DonorTools account, create one if the account either
                 // doesn't exist or if the existing match doesn't look like the
                 // same person or business as what already exists.
-                dt_account_id = Utils.find_dt_account_or_make_a_new_one(letCustomerData, user_id);
+                dt_account_id = Utils.find_dt_account_or_make_a_new_one(letCustomerData, user_id, false);
                 if(!dt_account_id) {
                   // the find_dt_account_or_make_a_new_one function returns null
                   // if the Audit log shows that this process has already been completed
@@ -317,15 +317,31 @@ Meteor.methods({
           });
           console.log(personaResult.data.persona);
           set_this_array.push(personaResult.data.persona);
-        } else if(!Meteor.users.findOne({_id: userID}).persona_info){
+        } else if(!Meteor.users.findOne({_id: userID}).persona_info) {
+
+          let dt_account_id = Utils.find_dt_account_or_make_a_new_one(
+            Customers.findOne({'metadata.user_id': userID}), userID, true);
+          if(!dt_account_id) {
+            // the find_dt_account_or_make_a_new_one function returns null
+            // if the Audit log shows that this process has already been completed
+            // This can happen when two events come in within a very short time period
+            // (we are talking milli-seconds). I have never seen this
+            // happen in production, only dev.
+            return;
+          }
+
+          // add the dt_account_id to the user array using $addToSet so that only
+          // unique array values exist.
+          Meteor.users.update( {_id: userID}, { $addToSet: { persona_ids: dt_account_id } } );
+        } else {
           return 'Not a DT user';
         }
-      console.log(set_this_array);
+        console.log(set_this_array);
 
         Meteor.users.update({_id: userID}, {$set: {'persona_info': set_this_array}});
 
         return "Finished update_user_document_by_adding_persona_details_for_each_persona_id method call";
-      } catch(e){
+      } catch(e) {
         logger.error("error in querying DT for persona_info");
         logger.error(e);
       }
@@ -602,7 +618,7 @@ Meteor.methods({
       let user_id, dt_account_id, wait_for_user_update;
 
       user_id = StripeFunctions.find_user_account_or_make_a_new_one( customer );
-      dt_account_id = Utils.find_dt_account_or_make_a_new_one( customer, user_id );
+      dt_account_id = Utils.find_dt_account_or_make_a_new_one( customer, user_id, false );
       wait_for_user_update = Meteor.users.update( { _id: user_id }, { $addToSet: { persona_ids: dt_account_id } } );
       // commented, because I believe this is in the wrong place
       // Utils.send_new_dt_account_added_email_to_support_email_contact( customer.email, user_id, dt_account_id );

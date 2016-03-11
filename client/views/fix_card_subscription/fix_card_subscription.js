@@ -54,7 +54,6 @@ Template.FixCardSubscription.events({
           App.handleErrors(response.error);
         } else {
           // Call your backend
-          console.dir(response);
           var subscription_id = Subscriptions.findOne()._id;
           var subscription_status = Subscriptions.findOne().status;
           var customer_id = Customers.findOne()._id;
@@ -62,7 +61,7 @@ Template.FixCardSubscription.events({
           // Call our stripeSwipeCard method to replace our customer's existing
           // card with the new card they've specified.
           Meteor.call("stripeUpdateSubscription", customer_id, subscription_id,
-            response.id, subscription_status, function(error, response){
+            response.id, subscription_status, 'Card', function(error){
             if (error){
               console.dir(error);
               resubscribeButton.button("reset");
@@ -77,7 +76,9 @@ Template.FixCardSubscription.events({
                 Bert.alert("Successfully updated that recurring gift.", "success");
                 Router.go('AdminSubscriptions');
               } else {
-                Bert.alert("You fixed your gift, good job!", "success");
+                Bert.alert("If you were fixing a failed gift, it might take a " +
+                  "couple of days for the gift status to change. We have updated " +
+                  "your payment method.", "success");
                 Router.go('subscriptions');
               }
             }
@@ -124,6 +125,10 @@ Template.FixCardSubscription.events({
   },
   'click #cancel-card-form': function () {
     history.back();
+  },
+  'click .btn_modal_for_add_new_bank_account': function () {
+    $("#modal_for_add_new_bank_account").modal('show');
+    Session.set('updateSubscription', this.id);
   }
 });
 

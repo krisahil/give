@@ -1,5 +1,5 @@
 Meteor.methods({
-    stripeUpdateSubscription: function (customer_id, subscription_id, token_id, status) {
+    stripeUpdateSubscription: function (customer_id, subscription_id, token_id, status, device_type) {
         logger.info("Started method stripeUpdateSubscription.");
 
         // Check our arguments against their expected patterns. This is especially
@@ -12,9 +12,9 @@ Meteor.methods({
         if(status === 'canceled'){
             var subscription_amount = Subscriptions.findOne({_id: subscription_id}).quantity;
             var subscription_metadata = Subscriptions.findOne({_id: subscription_id}).metadata;
+          subscription_metadata.donateWith = "Card";
             var subscription_plan = Subscriptions.findOne({_id: subscription_id}).plan.name;
             var created_subscription = Utils.stripe_create_subscription(customer_id, token_id, subscription_plan, subscription_amount, subscription_metadata);
-            console.log(created_subscription)
             if(!created_subscription.object){
                 return {error: created_subscription.rawType, message: created_subscription.message};
             }
@@ -23,10 +23,7 @@ Meteor.methods({
                 return 'success';
             }
         } else {
-          // TODO: this is where I could put the call for updating the amount or date or designation
-          // Utils.update_stripe_subscription_amount_or_designation_or_date(fields_object);
-
-            var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id);
+            var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id, device_type);
             if(!updated_subscription.object){
                 return {error: updated_subscription.rawType, message: updated_subscription.message};
             }
@@ -53,6 +50,7 @@ Meteor.methods({
 
         var subscription_amount = Subscriptions.findOne({_id: updated_data.subscription_id}).quantity;
         var subscription_metadata = Subscriptions.findOne({_id: updated_data.subscription_id}).metadata;
+        subscription_metadata.donateWith = "Card";
         var subscription_plan = Subscriptions.findOne({_id: updated_data.subscription_id}).plan.name;
         if (updated_data.status === 'canceled') {
             var updated_card = Utils.update_stripe_customer_card(updated_data);
@@ -73,8 +71,9 @@ Meteor.methods({
             // Store the updated information with both the device and the customer records that use that device.
             Devices.update({_id: updated_card.id}, updated_card);
             var result_of_update = Customers.update({_id: updated_card.customer, 'sources.data.id': updated_card.id}, {$set: {'sources.data.$': updated_card}});
+            Utils.update_stripe_customer_default_source(updated_card.customer, updated_card.id);
 
-            if (!updated_card.object) {
+          if (!updated_card.object) {
                 return {error: updated_card.rawType, message: updated_card.message};
             } else {
                 return 'success';
@@ -95,6 +94,7 @@ Meteor.methods({
         let subscription_amount =     subscription.quantity;
         let subscription_status =     subscription.status;
         let subscription_metadata =   subscription.metadata;
+        subscription_metadata.donateWith = "Check";
         let subscription_plan =       subscription.plan.name;
         let customer_id =             subscription.customer;
         let bank_token =              bank;
@@ -135,7 +135,7 @@ Meteor.methods({
       }
     },
     stripeRestartBankSubscription: function (restart_data) {
-        logger.info("Started method stripeUpdateCard.");
+      logger.info("Started method stripeRestartBankSubscription.");
 
         // Check our arguments against their expected patterns. This is especially
         // important here because we're dealing with sensitive customer information.

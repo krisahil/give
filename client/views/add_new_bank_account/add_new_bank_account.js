@@ -33,10 +33,11 @@ Template.AddNewBankAccount.events({
         App.handleErrors( response.error );
       } else {
         // Call your backend
-        console.log(response);
-
         console.log(Session.get("updateSubscription"));
         let subscription_id = Session.get("updateSubscription");
+        if(!subscription_id) {
+          subscription_id = Session.get("sub");
+        }
         Meteor.call('stripeUpdateBank', response.id, subscription_id, save_payment, function (error, result) {
           if (error) {
             console.log(error);
@@ -67,7 +68,8 @@ Template.AddNewBankAccount.events({
               $('#save_payment').prop('checked', false);
               $('#modal_for_add_new_bank_account').modal('hide');
               Session.delete("updateSubscription");
-
+              Session.delete("sub");
+              Router.go("/user/subscriptions");
             }
           }
         });
@@ -75,6 +77,20 @@ Template.AddNewBankAccount.events({
       }
     });
 
+  },
+  'click #go-to-card': function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var self = this;
+    if(Router.current().route.getName() === "FixCardSubscription"){
+      $('#modal_for_add_new_bank_account').modal('hide');
+      return;
+    }
+    Meteor.setTimeout(function() {
+      Router.go("/user/subscriptions/card/resubscribe" + "?s=" + self.id + "&c=" + self.customer);
+    }, 500);
+    $('#modal_for_add_new_bank_account').modal('hide');
   }
 });
 

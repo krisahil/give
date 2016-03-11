@@ -268,10 +268,12 @@ _.extend(Utils, {
       throw new Meteor.Error( error, e._id );
     }
   },
-  'find_dt_account_or_make_a_new_one': function (customer, user_id) {
+  'find_dt_account_or_make_a_new_one': function (customer, user_id, skip_audit) {
 
     var dt_persona_match_id;
-    if(Audit_trail.findOne( {_id: customer.id} ) && Audit_trail.findOne( {_id: customer.id} ).flow_checked ) {
+    if(Audit_trail.findOne( {_id: customer.id} ) &&
+      Audit_trail.findOne( {_id: customer.id} ).flow_checked &&
+      !skip_audit) {
 
       console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
       return;
