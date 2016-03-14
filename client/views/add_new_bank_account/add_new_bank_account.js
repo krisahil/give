@@ -5,10 +5,7 @@ Template.AddNewBankAccount.events({
     // Stop propagation prevents the form from being submitted more than once.
     e.stopPropagation();
 
-    console.log("Adding");
-    let save_payment = $("#save_payment").is(':checked');
-    console.log(save_payment, Session.get('updateSubscription'));
-
+    let savePayment = $("#save_payment").is(':checked');
 
     let opts = {color: '#FFF', length: 60, width: 10, lines: 8};
     let target = document.getElementById('spinContainer');
@@ -38,7 +35,7 @@ Template.AddNewBankAccount.events({
         if(!subscription_id) {
           subscription_id = Session.get("sub");
         }
-        Meteor.call('stripeUpdateBank', response.id, subscription_id, save_payment, function (error, result) {
+        Meteor.call('stripeUpdateBank', response.id, subscription_id, savePayment, function (error, result) {
           if (error) {
             console.log(error);
             //App.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
@@ -63,12 +60,21 @@ Template.AddNewBankAccount.events({
             } else {
               Bert.alert('Updated', 'success');
 
+              // Make the form blank again
               $("#routing_number").val('');
               $("#account_number").val('');
               $('#save_payment').prop('checked', false);
+
+              // Hide the modal and backdrop
               $('#modal_for_add_new_bank_account').modal('hide');
+              $('body').removeClass('modal-open');
+              $('.modal-backdrop').remove();
+
+              // Remove the session variables associated with this udpate
               Session.delete("updateSubscription");
               Session.delete("sub");
+
+              // Go back to showing all the subscriptions
               Router.go("/user/subscriptions");
             }
           }

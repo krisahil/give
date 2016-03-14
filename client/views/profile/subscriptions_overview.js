@@ -13,11 +13,11 @@ var subscriptionsTutorialSteps = [
   {
     template: Template.tutorial_subscriptions_step3,
     spot: ".cancel-subscription," +
-          " .edit-subscription," +
-          " .update-subscription," +
-          " .btn_modal_for_add_new_bank_account, " +
-          " .past-due-subscription," +
-          " .activate-subscription"
+      " .edit-subscription," +
+      " .update-subscription," +
+      " .btn_modal_for_add_new_bank_account, " +
+      " .past-due-subscription," +
+      " .activate-subscription"
   },
   {
     template: Template.tutorial_subscriptions_step4,
@@ -26,92 +26,92 @@ var subscriptionsTutorialSteps = [
 ];
 
 Template.SubscriptionsOverview.helpers({
-    subscriptions: function(){
-        var subscription_page = Session.get('subscription_cursor');
-        var subscriptions = Subscriptions.find();
-        Session.set("number_of_subscriptions", subscriptions.count());
-        if(Session.get("number_of_subscriptions", subscriptions.count())){
-            return Subscriptions.find({}, {
-              sort: {
-                status: 1, start: -1
-              },
-              limit: 4,
-              skip: subscription_page
-            });
-        } else {
-            return;
-        }
-    },
-    plan_name: function() {
-        return this.plan.name;
-    },
-    lastFour: function () {
-        var device = Devices.findOne({customer: this.customer});
-        if(device){
-            return " - " + device.last4;
-        } else{
-            return;
-        }
-    },
-    type: function () {
-        var device = Devices.findOne({customer: this.customer});
-        if(device){
-            if(device.brand){
-                return ": " + device.brand;
-            } else {
-                return ": Bank Acct"
-            }
-        } else {
-            return;
-        }
-    },
-    frequency: function () {
-        return this.plan.id;
-    },
-    number_of_subscriptions: function () {
-        if(Session.get("number_of_subscriptions") > 4){
-            return true;
-        } else {
-            return false;
-        }
-    },
-    card_subscription: function () {
-      const customer = this.customer;
-      const customer_cursor = Customers.findOne({_id: customer});
-      const default_source_type =  customer_cursor.default_source_type;
-      if(default_source_type === 'bank_account') {
-        return false;
-      } else if(default_source_type === 'card') {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    show_donate_with: function () {
-        if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ba'){
-            return 'Bank Account';
-        } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ca') {
-            return 'Card';
-        }
-    },
-    canceled_reason: function () {
-        return this.metadata && this.metadata.canceled_reason;
-    },
-    bank: function () {
-        var id = this._id;
-        var subscription = Subscriptions.findOne({id: _id});
-    },
-    options: {
-        id: "subscriptionsTutorial",
-        steps: subscriptionsTutorialSteps,
-        onFinish: function() {
-            console.log("Finish clicked!");
-            Meteor.setTimeout( function () {
-                // Test debouncing
-                Session.set('tutorialEnabled', false);
-            }, 1000);
-        }
+  subscriptions: function(){
+    var subscription_page = Session.get('subscription_cursor');
+    var subscriptions = Subscriptions.find();
+    Session.set("number_of_subscriptions", subscriptions.count());
+    if(Session.get("number_of_subscriptions", subscriptions.count())){
+      return Subscriptions.find({}, {
+        sort: {
+          status: 1, start: -1
+        },
+        limit: 4,
+        skip: subscription_page
+      });
+    } else {
+      return;
     }
+  },
+  plan_name: function() {
+    return this.plan.name;
+  },
+  lastFour: function () {
+    var device = Devices.findOne({customer: this.customer});
+    if(device){
+      return " - " + device.last4;
+    } else{
+      return;
+    }
+  },
+  type: function () {
+    var device = Devices.findOne({customer: this.customer});
+    if(device){
+      if(device.brand){
+        return ": " + device.brand;
+      } else {
+        return ": Bank Acct"
+      }
+    } else {
+      return;
+    }
+  },
+  frequency: function () {
+    return this.plan.id;
+  },
+  number_of_subscriptions: function () {
+    if (Session.get("number_of_subscriptions") > 4) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  card_subscription: function () {
+    const customer = this.customer;
+    const customer_cursor = Customers.findOne({_id: customer});
+    const default_source_type =  customer_cursor.default_source_type;
+    if(default_source_type === 'bank_account') {
+      return false;
+    } else if(default_source_type === 'card') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  show_donate_with: function () {
+    if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ba'){
+      return 'Bank Account';
+    } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ca') {
+      return 'Card';
+    }
+  },
+  canceled_reason: function () {
+    return this.metadata && this.metadata.canceled_reason;
+  },
+  bank: function () {
+    var id = this._id;
+    var subscription = Subscriptions.findOne({id: _id});
+  },
+  options: {
+    id: "subscriptionsTutorial",
+    steps: subscriptionsTutorialSteps,
+    onFinish: function() {
+      console.log("Finish clicked!");
+      Meteor.setTimeout( function () {
+        // Test debouncing
+        Session.set('tutorialEnabled', false);
+      }, 1000);
+    }
+  }
 });
 
 Template.SubscriptionsOverview.events({

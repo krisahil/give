@@ -183,16 +183,12 @@ Template.GivingOptions.events({
 /*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    let org_doc = MultiConfig.findOne( {
-      "organization_info.web.domain_name": Meteor.settings.public.org_domain
-    });
-    let selectedGivingOptions = org_doc && org_doc.SelectedIDs;
-    console.log(selectedGivingOptions);
+    let orgDoc = MultiConfig.findOne({"organization_info.web.domain_name": Meteor.settings.public.org_domain});
+    let selectedGivingOptions = orgDoc ? orgDoc.SelectedIDs : null;
     if( selectedGivingOptions ) {
       return DT_funds.find({'id': {$nin: selectedGivingOptions}}, {sort: { name: 1 } });
-    } else {
-      return DT_funds.find({}, {sort: { name: 1 } });
     }
+    return DT_funds.find({}, {sort: { name: 1 } });
   },
   options: function () {
     return MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;

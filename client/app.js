@@ -1,249 +1,249 @@
 /*****************************************************************************/
 /* Client App Namespace  */
-/*****************************************************************************/
+
 _.extend(App, {
-  getCleanValue: function (id) {
+  getCleanValue: function(id) {
     var jqueryObjectVal = $(id).val();
     return App.cleanupString(jqueryObjectVal);
   },
-  cleanupString:  function (string) {
+  cleanupString: function(string) {
     var cleanString = s(string).stripTags().trim().value();
     return cleanString;
   },
-    get_fee: function (amount) {
-        var r = (100 - 2.9) / 100;
-        var i = (parseFloat(amount) + .3) / r;
-        var s = i - amount;
-        return {
-            fee: i,
-            total: s
+  get_fee: function(amount) {
+    var r = (100 - 2.9) / 100;
+    var i = (parseFloat(amount) + 0.3) / r;
+    var s = i - amount;
+    return {
+      fee: i,
+      total: s
+    };
+  },
+  process_give_form: function(quickForm, customer) {
+    var form = {};
+    var userCursor;
+    var customerCursor;
+    var businessName;
+    var addressLine2;
+
+    if (quickForm) {
+      if (customer) {
+        customerCursor = Customers.findOne({_id: customer});
+        if (!customerCursor.metadata) {
+          throw new Meteor.Error("402", "Can't find the metadata inside this customer");
         }
-    },
-    process_give_form: function(quick_form, customer){
-        var form = {};
-        var user_cursor, customer_cursor, business_name, address_line2;
-        if(quick_form){
-            if(customer){
-                customer_cursor = Customers.findOne({_id: customer});
-                if(!customer_cursor.metadata){
-                    throw new Meteor.error("402", "Can't find the metadata inside this customer");
-                }
-                if(customer_cursor.metadata.org){
-                    business_name = customer_cursor.metadata.org;
-                } else {
-                    business_name = '';
-                }
+        if (customerCursor.metadata.org) {
+          businessName = customerCursor.metadata.org;
+        } else {
+          businessName = '';
+        }
+        if (customerCursor.metadata.addressLine2) {
+          addressLine2 = customerCursor.metadata.addressLine2;
+        } else {
+          addressLine2 = '';
+        }
+        form = {
+          "paymentInformation": {
+            "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
+            "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0), 10),
+            "donateTo": App.getCleanValue("#donateTo"),
+            "writeIn": App.getCleanValue("#enteredWriteInValue"),
+            "donateWith": App.getCleanValue('#donateWith'),
+            "is_recurring": App.getCleanValue('#is_recurring'),
+            "coverTheFees": $('#coverTheFees').is(":checked"),
+            "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+            "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
+            "saved": $('#save_payment').is(":checked"),
+            "send_scheduled_email": "no"
+          },
+          "customer": {
+            "fname": customerCursor.metadata.fname,
+            "lname": customerCursor.metadata.lname,
+            "org": businessName,
+            "email_address": customerCursor.metadata.email,
+            "phone_number": customerCursor.metadata.phone,
+            "address_line1": customerCursor.metadata.address_line1,
+            "addressLine2": addressLine2,
+            "region": customerCursor.metadata.state,
+            "city": customerCursor.metadata.city,
+            "postal_code": customerCursor.metadata.postal_code,
+            "country": customerCursor.metadata.country
+          },
+          sessionId: Meteor.default_connection._lastSessionId
+        };
+      } else {
+        userCursor = Meteor.user();
+        if (userCursor.profile.business_name) {
+          businessName = userCursor.profile.business_name;
+        } else {
+          businessName = '';
+        }
 
-                console.log(customer_cursor.metadata);
-                if(customer_cursor.metadata.address_line2){
-                    address_line2 = customer_cursor.metadata.address_line2;
-                } else {
-                    address_line2 = '';
-                }
-                form = {
-                    "paymentInformation": {
-                        "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                        "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
-                        "donateTo": App.getCleanValue("#donateTo"),
-                        "writeIn": App.getCleanValue("#enteredWriteInValue"),
-                        "donateWith": App.getCleanValue('#donateWith'),
-                        "is_recurring": App.getCleanValue('#is_recurring'),
-                        "coverTheFees": $('#coverTheFees').is(":checked"),
-                        "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                        "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
-                        "saved": $('#save_payment').is(":checked"),
-                        "send_scheduled_email": "no"
-                    },
-                    "customer": {
-                        "fname": customer_cursor.metadata.fname,
-                        "lname": customer_cursor.metadata.lname,
-                        "org": business_name,
-                        "email_address": customer_cursor.metadata.email,
-                        "phone_number": customer_cursor.metadata.phone,
-                        "address_line1": customer_cursor.metadata.address_line1,
-                        "address_line2": address_line2,
-                        "region": customer_cursor.metadata.state,
-                        "city": customer_cursor.metadata.city,
-                        "postal_code": customer_cursor.metadata.postal_code,
-                        "country": customer_cursor.metadata.country
-                    },
-                    sessionId: Meteor.default_connection._lastSessionId
-                };
-            } else{
-                user_cursor = Meteor.user();
-                if(user_cursor.profile.business_name){
-                    business_name = user_cursor.profile.business_name;
-                } else {
-                    business_name = '';
-                }
+        if (userCursor.profile.address.addressLine2) {
+          addressLine2 = userCursor.profile.address.addressLine2;
+        } else {
+          addressLine2 = '';
+        }
 
-                if(user_cursor.profile.address.address_line2){
-                    address_line2 = user_cursor.profile.address.address_line2;
-                } else {
-                    address_line2 = '';
+        form = {
+          "paymentInformation": {
+            "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+            "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
+            "donateTo": App.getCleanValue("#donateTo"),
+            "writeIn": App.getCleanValue("#enteredWriteInValue"),
+            "donateWith": App.getCleanValue('#donateWith'),
+            "is_recurring": App.getCleanValue('#is_recurring'),
+            "coverTheFees": $('#coverTheFees').is(":checked"),
+            "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+            "dt_source": App.getCleanValue('#dt_source'),
+            "note": App.getCleanValue('#donation_note'),
+            "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
+            "saved": $('#save_payment').is(":checked")
+          },
+          "customer": {
+            "fname": userCursor.profile.fname,
+            "lname": userCursor.profile.lname,
+            "org": businessName,
+            "email_address": userCursor.emails[0].address,
+            "phone_number": userCursor.profile.phone,
+            "address_line1": userCursor.profile.address.address_line1,
+            "addressLine2": addressLine2,
+            "region": userCursor.profile.address.state,
+            "city": userCursor.profile.address.city,
+            "postal_code": userCursor.profile.address.postal_code,
+            "country": userCursor.profile.address.country
+          },
+          sessionId: Meteor.default_connection._lastSessionId
+        };
+      }
+    } else {
+        form = {
+            "paymentInformation": {
+                "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+                "campaign": App.getCleanValue('#dt_source'),
+                "coverTheFees": $('#coverTheFees').is(":checked"),
+                "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+                "donateTo": App.getCleanValue("#donateTo"),
+                "donateWith": App.getCleanValue("#donateWith"),
+                "dt_source": App.getCleanValue('#dt_source'),
+                "note": App.getCleanValue('#donation_note'),
+                "is_recurring": App.getCleanValue('#is_recurring'),
+                "saved": $('#save_payment').is(":checked"),
+                "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
+                "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
+                "writeIn": App.getCleanValue("#enteredWriteInValue")
+            },
+            "customer": {
+                "fname": App.getCleanValue('#fname'),
+                "lname": App.getCleanValue('#lname'),
+                "org": App.getCleanValue('#org'),
+                "email_address": App.getCleanValue('#email_address'),
+                "phone_number": App.getCleanValue('#phone'),
+                "address_line1": App.getCleanValue('#address_line1'),
+                "addressLine2": App.getCleanValue('#address_line2'),
+                "region": App.getCleanValue('#region'),
+                "city": App.getCleanValue('#city'),
+                "postal_code": App.getCleanValue('#postal_code'),
+                "country": App.getCleanValue('#country'),
+                "created_at": moment().format('MM/DD/YYYY, hh:mma')
+            },
+            sessionId: Meteor.default_connection._lastSessionId
+        };
+    }
 
-                }
 
-                form = {
-                    "paymentInformation": {
-                        "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                        "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
-                        "donateTo": App.getCleanValue("#donateTo"),
-                        "writeIn": App.getCleanValue("#enteredWriteInValue"),
-                        "donateWith": App.getCleanValue('#donateWith'),
-                        "is_recurring": App.getCleanValue('#is_recurring'),
-                        "coverTheFees": $('#coverTheFees').is(":checked"),
-                        "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                        "dt_source": App.getCleanValue('#dt_source'),
-                        "note": App.getCleanValue('#donation_note'),
-                        "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
-                        "saved": $('#save_payment').is(":checked")
-                    },
-                    "customer": {
-                        "fname": user_cursor.profile.fname,
-                        "lname": user_cursor.profile.lname,
-                        "org": business_name,
-                        "email_address": user_cursor.emails[0].address,
-                        "phone_number": user_cursor.profile.phone,
-                        "address_line1": user_cursor.profile.address.address_line1,
-                        "address_line2": address_line2,
-                        "region": user_cursor.profile.address.state,
-                        "city": user_cursor.profile.address.city,
-                        "postal_code": user_cursor.profile.address.postal_code,
-                        "country": user_cursor.profile.address.country
-                    },
-                    sessionId: Meteor.default_connection._lastSessionId
-                };
-            }
+    form.paymentInformation.later = (!moment(new Date(App.getCleanValue('#start_date'))).isSame(Date.now(), 'day'));
+    if (!form.paymentInformation.later) {
+        form.paymentInformation.start_date = 'today';
+    }
 
+    if (form.paymentInformation.total_amount !== form.paymentInformation.amount) {
+        form.paymentInformation.fees = (form.paymentInformation.total_amount - form.paymentInformation.amount);
+    }
+
+    if (form.paymentInformation.donateWith === "Card") {
+        form.paymentInformation.type = "card";
+        form.customer.created_at =  moment().format('MM/DD/YYYY, hh:mma');
+        var card_info = {};
+        if (quickForm) {
+            card_info = {
+                name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
+                number: App.getCleanValue('#card_number'),
+                cvc: App.getCleanValue('#cvv'),
+                exp_month: App.getCleanValue('#expiry_month'),
+                exp_year: App.getCleanValue('#expiry_year'),
+                address_line1: userCursor.profile.address.address_line1,
+                addressLine2: userCursor.profile.address.addressLine2,
+                address_city: userCursor.profile.address.city,
+                address_state: userCursor.profile.address.state,
+                address_country: userCursor.profile.address.country,
+                address_zip: userCursor.profile.address.postal_code
+            };
         } else{
-            form = {
-                "paymentInformation": {
-                    "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
-                    "campaign": App.getCleanValue('#dt_source'),
-                    "coverTheFees": $('#coverTheFees').is(":checked"),
-                    "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-                    "donateTo": App.getCleanValue("#donateTo"),
-                    "donateWith": App.getCleanValue("#donateWith"),
-                    "dt_source": App.getCleanValue('#dt_source'),
-                    "note": App.getCleanValue('#donation_note'),
-                    "is_recurring": App.getCleanValue('#is_recurring'),
-                    "saved": $('#save_payment').is(":checked"),
-                    "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
-                    "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
-                    "writeIn": App.getCleanValue("#enteredWriteInValue")
-                },
-                "customer": {
-                    "fname": App.getCleanValue('#fname'),
-                    "lname": App.getCleanValue('#lname'),
-                    "org": App.getCleanValue('#org'),
-                    "email_address": App.getCleanValue('#email_address'),
-                    "phone_number": App.getCleanValue('#phone'),
-                    "address_line1": App.getCleanValue('#address_line1'),
-                    "address_line2": App.getCleanValue('#address_line2'),
-                    "region": App.getCleanValue('#region'),
-                    "city": App.getCleanValue('#city'),
-                    "postal_code": App.getCleanValue('#postal_code'),
-                    "country": App.getCleanValue('#country'),
-                    "created_at": moment().format('MM/DD/YYYY, hh:mma')
-                },
-                sessionId: Meteor.default_connection._lastSessionId
+            card_info = {
+                name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
+                number: App.getCleanValue('#card_number'),
+                cvc: App.getCleanValue('#cvv'),
+                exp_month: App.getCleanValue('#expiry_month'),
+                exp_year: App.getCleanValue('#expiry_year'),
+                address_line1: App.getCleanValue('#address_line1'),
+                addressLine2: App.getCleanValue('#address_line2'),
+                address_city: App.getCleanValue('#city'),
+                address_state: App.getCleanValue('#region'),
+                address_zip: App.getCleanValue('#postal_code'),
+                address_country: App.getCleanValue('#country')
             };
         }
 
+        App.process_card(card_info, form);
 
-        form.paymentInformation.later = (!moment(new Date(App.getCleanValue('#start_date'))).isSame(Date.now(), 'day'));
-        if(!form.paymentInformation.later){
-            form.paymentInformation.start_date = 'today';
+    } else if(form.paymentInformation.donateWith === "Check") {
+        form.paymentInformation.type = "check";
+        form.customer.created_at =  moment().format('MM/DD/YYYY, hh:mma');
+        var bank_info = {};
+        if (quickForm) {
+          bank_info = {
+            name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
+            account_number: App.getCleanValue('#account_number'),
+            routing_number: App.getCleanValue('#routing_number'),
+            address_line1: userCursor.profile.address.address_line1,
+            addressLine2: userCursor.profile.address.addressLine2,
+            address_city: userCursor.profile.address.city,
+            address_state: userCursor.profile.address.state,
+            address_zip: userCursor.profile.address.postal_code,
+            country: userCursor.profile.address.country
+          };
+        } else{
+          bank_info = {
+            name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
+            account_number: App.getCleanValue('#account_number'),
+            routing_number: App.getCleanValue('#routing_number'),
+            address_line1: App.getCleanValue('#address_line1'),
+            addressLine2: App.getCleanValue('#address_line2'),
+            address_city: App.getCleanValue('#city'),
+            address_state: App.getCleanValue('#region'),
+            address_zip: App.getCleanValue('#postal_code'),
+            country: App.getCleanValue('#country')
+          };
         }
-
-        if (form.paymentInformation.total_amount !== form.paymentInformation.amount) {
-            form.paymentInformation.fees = (form.paymentInformation.total_amount - form.paymentInformation.amount);
+        App.process_bank(bank_info, form);
+    } else {
+        //TODO: process the gift with a saved device
+        form.paymentInformation.saved = true;
+        var payment = {id: form.paymentInformation.donateWith};
+        if (form.paymentInformation.donateWith.slice(0,3) === 'car') {
+            form.paymentInformation.type = 'card';
+        } else if (form.paymentInformation.donateWith.slice(0,2) === 'ba') {
+            form.paymentInformation.type = 'check';
         }
+        form.paymentInformation.source_id = form.paymentInformation.donateWith;
+        form.customer.id = Devices.findOne({_id: form.paymentInformation.donateWith}).customer;
+        var created_at = Customers.findOne({_id: form.customer.id}).created;
 
-        if (form.paymentInformation.donateWith === "Card") {
-            form.paymentInformation.type = "card";
-            form.customer.created_at =  moment().format('MM/DD/YYYY, hh:mma');
-            var card_info = {};
-            if(quick_form){
-                card_info = {
-                    name: user_cursor.profile.fname + ' ' + user_cursor.profile.lname,
-                    number: App.getCleanValue('#card_number'),
-                    cvc: App.getCleanValue('#cvv'),
-                    exp_month: App.getCleanValue('#expiry_month'),
-                    exp_year: App.getCleanValue('#expiry_year'),
-                    address_line1: user_cursor.profile.address.address_line1,
-                    address_line2: user_cursor.profile.address.address_line2,
-                    address_city: user_cursor.profile.address.city,
-                    address_state: user_cursor.profile.address.state,
-                    address_country: user_cursor.profile.address.country,
-                    address_zip: user_cursor.profile.address.postal_code
-                };
-            } else{
-                card_info = {
-                    name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
-                    number: App.getCleanValue('#card_number'),
-                    cvc: App.getCleanValue('#cvv'),
-                    exp_month: App.getCleanValue('#expiry_month'),
-                    exp_year: App.getCleanValue('#expiry_year'),
-                    address_line1: App.getCleanValue('#address_line1'),
-                    address_line2: App.getCleanValue('#address_line2'),
-                    address_city: App.getCleanValue('#city'),
-                    address_state: App.getCleanValue('#region'),
-                    address_zip: App.getCleanValue('#postal_code'),
-                    address_country: App.getCleanValue('#country')
-                };
-            }
-
-            App.process_card(card_info, form);
-
-        } else if(form.paymentInformation.donateWith === "Check") {
-            form.paymentInformation.type = "check";
-            form.customer.created_at =  moment().format('MM/DD/YYYY, hh:mma');
-            var bank_info = {};
-            if(quick_form){
-                bank_info = {
-                    name: user_cursor.profile.fname + ' ' + user_cursor.profile.lname,
-                    account_number: App.getCleanValue('#account_number'),
-                    routing_number: App.getCleanValue('#routing_number'),
-                    address_line1: user_cursor.profile.address.address_line1,
-                    address_line2: user_cursor.profile.address.address_line2,
-                    address_city: user_cursor.profile.address.city,
-                    address_state: user_cursor.profile.address.state,
-                    address_zip: user_cursor.profile.address.postal_code,
-                    country: user_cursor.profile.address.country
-                };
-            } else{
-                bank_info = {
-                    name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
-                    account_number: App.getCleanValue('#account_number'),
-                    routing_number: App.getCleanValue('#routing_number'),
-                    address_line1: App.getCleanValue('#address_line1'),
-                    address_line2: App.getCleanValue('#address_line2'),
-                    address_city: App.getCleanValue('#city'),
-                    address_state: App.getCleanValue('#region'),
-                    address_zip: App.getCleanValue('#postal_code'),
-                    country: App.getCleanValue('#country')
-                };
-            }
-            App.process_bank(bank_info, form);
-        } else {
-            //TODO: process the gift with a saved device
-            form.paymentInformation.saved = true;
-            var payment = {id: form.paymentInformation.donateWith};
-            if(form.paymentInformation.donateWith.slice(0,3) === 'car'){
-                form.paymentInformation.type = 'card';
-            } else if(form.paymentInformation.donateWith.slice(0,2) === 'ba'){
-                form.paymentInformation.type = 'check';
-            }
-            form.paymentInformation.source_id = form.paymentInformation.donateWith;
-            form.customer.id = Devices.findOne({_id: form.paymentInformation.donateWith}).customer;
-            var created_at = Customers.findOne({_id: form.customer.id}).created;
-
-            form.customer.created_at = moment(created_at*1000).format('MM/DD/YYYY, hh:mma');
-            App.handleCalls(payment, form);
-        }
-    },
+        form.customer.created_at = moment(created_at*1000).format('MM/DD/YYYY, hh:mma');
+        App.handleCalls(payment, form);
+    }
+  },
     //This is the callback for the client side tokenization of cards and bank_accounts.
     handleCalls: function(payment, form) {
         // payment is the token returned from Stripe
@@ -261,10 +261,10 @@ _.extend(App, {
                     App.handleErrors(send_error);
                     //run App.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
                     App.updateTotal();
-                } else if(result.charge === 'scheduled'){
+                } else if (result.charge === 'scheduled') {
                     // Send the user to the scheduled page and include the frequency and the amount in the url for displaying to them
                     Router.go('/scheduled/?frequency=' + form.paymentInformation.is_recurring + '&amount=' + form.paymentInformation.total_amount/100 + '&start_date=' + form.paymentInformation.start_date );
-                }else{
+                } else {
                     Router.go('/thanks?c=' + result.c + "&don=" + result.don + "&charge=" + result.charge);
                 }
             }
@@ -284,7 +284,7 @@ _.extend(App, {
 
         var gatherInfo = {};
         Session.set("loaded", true);
-        if(error.type === "invalid_request_error" || error.code === "invalid_expiry_month"){
+        if (error.type === "invalid_request_error" || error.code === "invalid_expiry_month") {
             gatherInfo.browser = navigator.userAgent;
 
             $('#modal_for_initial_donation_error').modal({show: true});
@@ -294,7 +294,7 @@ _.extend(App, {
             error.reason ? error.reason : '');
             return;
         }
-        if(error.message === "Your card's security code is invalid."){
+        if (error.message === "Your card's security code is invalid.") {
 
             gatherInfo.browser = navigator.userAgent;
 
@@ -320,7 +320,7 @@ _.extend(App, {
               App.handleErrors(response.error);
             } else {
                 // Call your backend
-                if(form){
+                if (form) {
                     form.paymentInformation.source_id = response.card.id;
                     App.handleCalls(response, form);
                 } else{
@@ -336,7 +336,7 @@ _.extend(App, {
                 App.handleErrors(response.error);
             } else {
                 // Call your backend
-                if(form){
+                if (form) {
                     form.paymentInformation.source_id = response.bank_account.id;
                     App.handleCalls(response, form);
                 } else{
@@ -398,7 +398,7 @@ _.extend(App, {
         }
     },
     fillForm: function(form) {
-        if(form === 'main'){
+        if (form === 'main') {
             if (Session.get("paymentMethod") === "Check") {
                 $('#routing_number').val("111000025"); // Invalid test =  fail after initial screen =  valid test = 111000025
                 $('#account_number').val("000123456789"); // Invalid test =  fail after initial screen =  valid test = 000123456789

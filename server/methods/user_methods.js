@@ -8,6 +8,7 @@ Meteor.methods({
         check(subscription_id, String);
         check(token_id, String);
         check(status, String);
+        check(device_type, String);
 
         if(status === 'canceled'){
             var subscription_amount = Subscriptions.findOne({_id: subscription_id}).quantity;
@@ -23,13 +24,14 @@ Meteor.methods({
                 return 'success';
             }
         } else {
-            var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id, device_type);
-            if(!updated_subscription.object){
-                return {error: updated_subscription.rawType, message: updated_subscription.message};
-            }
-            else {
-                return 'success';
-            }
+          var updated_subscription = Utils.update_stripe_customer_subscription(customer_id, subscription_id, token_id, device_type);
+          console.log(updated_subscription);
+          if(!updated_subscription.object){
+              return {error: updated_subscription.rawType, message: updated_subscription.message};
+          } else {
+            Subscriptions.update({_id: updated_subscription.id}, {$set: updated_subscription});
+            return 'success';
+          }
         }
 
     },
@@ -109,23 +111,23 @@ Meteor.methods({
             var created_subscription = Utils.stripe_create_subscription(customer_id, bank, subscription_plan, subscription_amount, subscription_metadata);
             if (!created_subscription.object) {
               return {error: created_subscription.rawType, message: created_subscription.message};
-            }
-            else {
+            } else {
               Subscriptions.update({_id: subscription_id}, {$set: {'metadata.replaced': true, 'metadata.replaced_with': created_subscription._id}});
               return 'new';
             }
           }
         } else {
-          // update_stripe_customer_subscription
-          //var updated_bank = Utils.update_stripe_customer_bank(customer_id, bank, save_payment);
           let updated_bank = Utils.update_stripe_customer_bank(customer_id, bank_token);
           Utils.update_stripe_bank_metadata(customer_id, updated_bank.id, save_payment);
           Utils.update_stripe_customer_default_source(customer_id, updated_bank.id);
 
-
           if (!updated_bank.object) {
             return {error: updated_bank.rawType, message: updated_bank.message};
           } else {
+            Subscriptions.update({_id: subscription.id}, {$set: {
+                'metadata.donateWith': subscription_metadata.donateWith
+              }
+            });
             return 'success';
           }
         }

@@ -498,7 +498,7 @@ _.extend(Utils,{
     }  catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.error(e);
+      throw new Meteor.Error(e);
     }
   },
 	send_mandrill_email: function(data_slug, type){
@@ -509,7 +509,7 @@ _.extend(Utils,{
     catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.error(e);
+      throw new Meteor.Error(e);
     }
   },
   send_scheduled_email: function (id, subscription_id, frequency, amount) {
@@ -585,7 +585,7 @@ _.extend(Utils,{
     } catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.error(e);
+      throw new Meteor.Error(e);
     }
   }
 });
