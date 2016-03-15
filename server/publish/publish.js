@@ -73,18 +73,26 @@ Meteor.publish("subscription", function (subscription_id) {
 });
 
 Meteor.publish("devices", function () {
-
   var customers = Customers.find({'metadata.user_id': this.userId});
   var customer_ids = [];
 
   customers.forEach(function(element) {
-      customer_ids.push(element.id);
+    customer_ids.push(element.id);
   });
 	if (this.userId) {
-    return Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
-	} else {
-    this.ready();
+    return Devices.find({$and: [
+      { 'customer': {
+        $in: customer_ids}
+      }, {
+        'metadata.saved': 'true'
+      }]
+    }, { fields: {
+      account_holder_name: 0,
+      fingerprint: 0,
+      routing_number: 0
+    }});
 	}
+  this.ready();
 });
 
 Meteor.publish("customer", function (customer) {
@@ -362,6 +370,16 @@ Meteor.publish("roles", function () {
 
   if ( isAdmin ) {
     return Meteor.roles.find({});
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publish("uploaded", function () {
+  let isAdmin = Roles.userIsInRole( this.userId, 'admin' );
+
+  if ( isAdmin ) {
+    return Uploads.find({userId: this.userId});
   } else {
     this.ready();
   }

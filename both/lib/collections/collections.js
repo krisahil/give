@@ -36,3 +36,6 @@ Transactions = new Mongo.Collection('transactions');
 
 // Used to collect Stripe transfers
 Transfers = new Mongo.Collection('transfers');
+
+// Uploads, used for admin file uploading
+Uploads = new Mongo.Collection('uploads');

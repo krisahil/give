@@ -19,42 +19,40 @@ var giveTutorialSteps = [
 ];
 
 Template.UserGive.helpers({
-    paymentWithCard: function() {
-        return Session.equals("UserPaymentMethod", "Card");
-    },
-    paymentWithCheck: function() {
-        return Session.equals("UserPaymentMethod", "Check");
-    },
-    attributes_Input_Amount: function() {
-        return {
-            name: "amount",
-            id: "amount",
-            min: 1,
-            required: true
-        };
-    },
-    amountWidth: function() {
-        if(Session.equals("paymentMethod", "Card") || Session.get("paymentMethod") && Session.get("paymentMethod").slice(0,3) === 'car'){
-            return 'form-group col-md-4 col-sm-4 col-xs-12';
-        } else if(Session.equals("paymentMethod", "Check")){
-            return 'form-group';
-        } else{
-            return 'form-group';
-        }
-    },
-    savedDevice: function() {
-        return Session.equals("savedDevice", "Card");
-    },
-    amount: function() {
-        return Session.get('params.amount');
-    },
+  paymentWithCard: function() {
+    return Session.equals("UserPaymentMethod", "Card");
+  },
+  paymentWithCheck: function() {
+    return Session.equals("UserPaymentMethod", "Check");
+  },
+  attributes_Input_Amount: function() {
+    return {
+      name: "amount",
+      id: "amount",
+      min: 1,
+      required: true
+    };
+  },
+  amountWidth: function() {
+    if (Session.equals("paymentMethod", "Card") || Session.get("paymentMethod") && Session.get("paymentMethod").slice(0,3) === 'car'){
+      return 'form-group col-md-4 col-sm-4 col-xs-12';
+    } else if (Session.equals("paymentMethod", "Check")) {
+      return 'form-group';
+    }
+    return 'form-group';
+  },
+  savedDevice: function() {
+    return Session.equals("savedDevice", "Card");
+  },
+  amount: function() {
+    return Session.get('params.amount');
+  },
   options: {
     id: "giveTutorial",
     steps: giveTutorialSteps,
     emitter: emitter,
     onFinish: function() {
-      console.log("Finish clicked!");
-      Meteor.setTimeout( function () {
+      Meteor.setTimeout( function() {
         // Test debouncing
         Session.set('tutorialEnabled', false);
       }, 1000);
@@ -63,70 +61,79 @@ Template.UserGive.helpers({
 });
 
 Template.UserGive.events({
-    'submit form': function(e) {
-        //prevent the default reaction to submitting this form
-        e.preventDefault();
-        // Stop propagation prevents the form from being submitted more than once.
-        e.stopPropagation();
+  'submit form': function(e) {
+    // prevent the default reaction to submitting this form
+    e.preventDefault();
+    // Stop propagation prevents the form from being submitted more than once.
+    e.stopPropagation();
+    console.log("Got here");
 
-        var loadingSubmitButton = $(':submit').button('loading');
+    var loadingSubmitButton = $(':submit').button('loading');
 
-        var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-        var target = document.getElementById('spinContainer');
-        spinnerObject = new Spinner(opts).spin(target);
+    var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
+    var target = document.getElementById('spinContainer');
+    spinnerObject = new Spinner(opts).spin(target);
 
-        $("#spinDiv").show();
+    $("#spinDiv").show();
 
-        $(window).off('beforeunload');
+    $(window).off('beforeunload');
 
-        App.updateTotal();
+    App.updateTotal();
 
-        App.process_give_form(true);
+    if (Session.get("savedDevice", "Check") || Session.get("savedDevice", "Card")) {
+      let deviceId = Session.get("paymentMethod");
+      let usingDevice = Devices.findOne({_id: deviceId});
+      let customer = Customers.findOne({_id: usingDevice.customer});
+      App.process_give_form(true, customer._id);
+      loadingSubmitButton.button('reset');
+    } else {
+      App.process_give_form(true);
 
-        loadingSubmitButton.button('reset');
+      loadingSubmitButton.button('reset');
+    }
 
-    },
-    'keyup, change #amount': function() {
-        return App.updateTotal();
-    },
+  },
+  'keyup, change #amount': _.debounce(function() {
+    return App.updateTotal();
+  }, 300),
     // disable mousewheel on a input number field when in focus
     // (to prevent Chromium browsers change of the value when scrolling)
-    'focus #amount': function(e, tmpl) {
-        $('#amount').on('mousewheel.disableScroll', function(e) {
-            e.preventDefault();
-        });
-    },
-    'blur #amount': function(e) {
-        $('#amount').on('mousewheel.disableScroll', function(e) {
-            e.preventDefault();
-        });
-        return App.updateTotal();
-    },
-    'change #coverTheFees': function() {
-        return App.updateTotal();
-    },
-    'change [name=donateWith]': function() {
-        var selectedValue = $("#donateWith").val();
-        Session.set("paymentMethod", selectedValue);
-        if(selectedValue === 'Check'){
-            Session.set("savedDevice", false);
-            App.updateTotal();
-            $("#show_total").hide();
-        } else if(selectedValue === 'Card'){
-            Session.set("savedDevice", false);
-            App.updateTotal();
-        } else if(selectedValue.slice(0,3) === 'car'){
-            Session.set("savedDevice", 'Card');
-        } else{
-            Session.set("savedDevice", 'Check');
-        }
-    },
-    // keypress input detection for autofilling form with test data
-    'keypress input': function(e) {
-        if (e.which === 17) { //17 is ctrl + q
-            App.fillForm();
-        }
+  'focus #amount': function(e) {
+    $('#amount').on('mousewheel.disableScroll', function(e) {
+      e.preventDefault();
+    });
+  },
+  'blur #amount': function(e) {
+    $('#amount').on('mousewheel.disableScroll', function(e) {
+      e.preventDefault();
+    });
+    return App.updateTotal();
+  },
+  'change #coverTheFees': function() {
+    return App.updateTotal();
+  },
+  'change [name=donateWith]': function() {
+    var selectedValue = $("#donateWith").val();
+    Session.set("paymentMethod", selectedValue);
+    if (selectedValue === 'Check') {
+      Session.set("savedDevice", false);
+      App.updateTotal();
+      $("#show_total").hide();
+    } else if (selectedValue === 'Card') {
+      Session.set("savedDevice", false);
+      App.updateTotal();
+    } else if (selectedValue.slice(0,3) === 'car') {
+      Session.set("savedDevice", 'Card');
+    } else {
+      Session.set("savedDevice", 'Check');
     }
+  },
+  // keypress input detection for autofilling form with test data
+  'keypress input': function(e) {
+    if (e.which === 17) { //17 is ctrl + q
+      App.fillForm();
+    }
+  }
 });
 
 

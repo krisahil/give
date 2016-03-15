@@ -110,10 +110,10 @@ Template.AdminSubscriptions.events({
 });
 
 Template.AdminSubscriptions.helpers({
-  subscriptions: function () {
-    return Subscriptions.find();
+  searchValue: function() {
+    return Session.get("searchValue");
   },
-  card_or_bank: function () {
+  card_or_bank: function() {
     const customer = this.customer;
     const customer_cursor = Customers.findOne({_id: customer});
     if(customer_cursor){
@@ -130,34 +130,35 @@ Template.AdminSubscriptions.helpers({
   card_subscription: function () {
     const customer = this.customer;
     const customer_cursor = Customers.findOne({_id: customer});
-    if(customer_cursor){
+    if (customer_cursor) {
       const default_source_type =  customer_cursor.default_source_type;
       if(default_source_type === 'bank_account') {
         return false;
-      } else if(default_source_type === 'card') {
+      } else if (default_source_type === 'card') {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
   },
   searchSubscriptions: function () {
-    if(Session.equals("searchValue", "")){
-      return Subscriptions.find();
-    } else if(!Session.get("searchValue")) {
+    if (Session.equals("searchValue", "")) {
+      return false;
+    } else if (!Session.get("searchValue")) {
       return;
-    } else {
+    } else if (Subscriptions.find().count()) {
       return Subscriptions.find();
     }
+    return false;
   },
   name: function () {
     let name = this.metadata && this.metadata.fname + " " +
-      this.metadata.lname;
-      if(this.metadata.business_name) {
-        return this.metadata.business_name + " - " + name;
-      } else {
-        return name;
-      }
+    this.metadata.lname;
+
+    if (this.metadata.business_name) {
+      return this.metadata.business_name + " - " + name;
+    }
+    return name;
+
   }
 });
 

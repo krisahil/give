@@ -1,5 +1,5 @@
 function insertCheckbox(el, insertDiv, checked) {
-  var content = '<div class="checkbox form-control" >';
+  var content = '<div class="checkbox select-options form-control" >';
   content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  <span contenteditable="true">' + el.text + '<\/span>';
   content += '<i class="fa fa-arrows fa-fw fa-pull-right"><\/i>';
   content += '<\/div>';
@@ -71,8 +71,8 @@ function sortableFunction () {
 /*****************************************************************************/
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
-    var content= "<div class='input-group margin-bottom-sm'>";
-    content += "<input type='text' class='form-control slim-borders groupName' placeholder='Group name'>";
+    var content= "<div class='input-group margin-bottom-sm select-group'>";
+    content += "<input type='text' class='form-control slim-borders group-name' placeholder='Group name'>";
     content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw fa-pull-right"><\/i><\/span>';
     content += "<\/div>";
     $( content ).appendTo('#selectedGivingOptionsDiv');
@@ -102,6 +102,8 @@ Template.GivingOptions.events({
 
         } else {
           givingOptionsSelectedIDs.push($(this).children('input').val());
+          console.log($(this).children('input').val());
+
           arrayNames.push({
             id: $(this).children('input').val(),
             text: $(this).children('input')[0].nextSibling.nextSibling.innerText
@@ -109,10 +111,32 @@ Template.GivingOptions.events({
         }
       } else {
         optgroupName = $(this).children('input').val();
-        arrayNames.push({
-          text: $(this).children('input').val(),
-          children: []
-        });
+        if (optgroupName) {
+          console.log( $(this).children('input').val() );
+          console.log( $(this).children('input').parent().next('div').hasClass("checkbox") );
+          if (!$(this).children('input').parent().next('div').hasClass("checkbox")) {
+            Bert.alert({
+              message: "You need something under each group",
+              type: 'danger',
+              icon: 'fa-frown-o',
+              style: 'growl-top-right'
+            });
+            throw new Meteor.Error("400", "That won't work, you need something under your group");
+          }
+          arrayNames.push({
+            text: $(this).children('input').val(),
+            children: []
+          });
+        } else {
+          Bert.alert({
+            message: "Can't have a blank group name",
+            type: 'danger',
+            icon: 'fa-frown-o',
+            style: 'growl-top-right'
+          });
+          throw new Meteor.Error("400", "Can't have a blank group name");
+        }
+
       }
     });
     console.log(arrayNames);
@@ -133,6 +157,9 @@ Template.GivingOptions.events({
           icon: 'fa-smile-o',
           style: 'growl-top-left'
         });
+        // With DD-Slick the operation against the select lists are destructive
+        // So we need to reload the page in order to get the new version of these lists
+        location.reload();
       }
     });
 
@@ -192,6 +219,9 @@ Template.GivingOptions.helpers({
   },
   options: function () {
     return MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
+  },
+  opt_group: function () {
+    return MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
   }
 });
 
@@ -212,21 +242,23 @@ Template.GivingOptions.onRendered(function () {
   var temp1 = MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
 
   console.log(temp1);
+  temp1[0].children[0].selected = 'selected';
   if(temp1){
     $('#testDropdown').select2({
       data: temp1,
-      dropdownCssClass: 'dropdown-inverse'
+      dropdownCssClass: 'dropdown-inverse',
+      placeholder: "Choose one"
     });
     $("#testDropdown").select2('val',temp1[0].id);
 
 
     var insertDiv = $('#selectedGivingOptionsDiv');
     temp1.forEach(function(value) {
-      if(value.children) {
-        var content= "<div class='input-group margin-bottom-sm'>";
-        content += "<input type='text' class='form-control slim-borders groupName' value='" + value.text + "'>";
-        content += '<span class="input-group-addon"><i class="fa fa-arrows fa-fw"><\/i><\/span>';
-        content += "<\/dvi>";
+      if (value.children) {
+        var content= "<div class='input-group margin-bottom-sm select-group'>" +
+        "<input type='text' class='form-control slim-borders group-name' value='" + value.text + "'>" +
+        '<span class="input-group-addon"><i class="fa fa-arrows fa-fw"><\/i><\/span>' +
+        "<\/dvi>";
         $( content ).appendTo( insertDiv );
         value.children.forEach(function (el) {
           insertCheckbox(el, 'selectedGivingOptionsDiv', true);
@@ -238,6 +270,13 @@ Template.GivingOptions.onRendered(function () {
 
     Session.set("givingOptionsChecked", temp1);
 
+    // Setup the DD-Slick version of the individual select elements
+    temp1.forEach(function(val){
+      let itemName = 'testSelect' + val.text;
+      $("select[data-dt-name='" + itemName + "']").ddslick();
+    });
+
+    $("select[data-dt-name='testSelectMain']").ddslick();
   }
 
 });

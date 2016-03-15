@@ -2,6 +2,9 @@
   <div class="row">
     <div class="col col-lg-12">
         {{#if isInRole 'admin, manager'}}
+            <p class="pull-right">
+                {{> RoleDocumentation}}
+            </p>
             {{#unless showSingleUser}}
                 {{#if addingNew 'user'}}
                     {{> AddUser}}
