@@ -11,7 +11,13 @@
                         <div class="form-group">
                           {{#each dt_funds}}
                               <div class="checkbox">
-                                  <input id="{{id}}" data-toggle="checkbox" type="checkbox" value="{{id}}" class="sortable" data-name="{{name}}">  {{name}}
+                                  <input id="{{id}}" data-toggle="checkbox"
+                                         type="checkbox"
+                                         value="{{id}}"
+                                         class="sortable"
+                                         data-el-text="{{name}}"
+                                         data-description="{{description}}">
+                                  {{name}}
                               </div>
                           {{/each}}
                         </div>
@@ -25,6 +31,41 @@
               <section class="">
                   <form>
                     <div class="sortable slim-borders" id="selectedGivingOptionsDiv">
+                        {{#each options}}
+                            {{#if children}}
+                                <div class='input-group margin-bottom-sm select-group'>
+                                    <input type='text' class='form-control slim-borders group-name' value="{{text}}">
+                                    <span class="input-group-addon"><i class="fa fa-arrows fa-fw"></i></span>
+                                </div>
+                                {{#each children}}
+                                    <div class="checkbox select-options form-control">
+
+                                    <input type="checkbox" checked value="{{id}}" id="{{id}}" class="sortable ui-sortable" data-el-text="{{text}}">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span data-el-id="{{id}}">
+                                                {{#unless imageExists}}
+                                                    {{> Upload}}
+                                                {{else}}
+                                                    <img src="{{imageSrc}}" height="64" width="64" />
+                                                {{/unless}}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span contenteditable="true" class="editable-content">{{text}}</span>
+                                            <br>
+                                            <span contenteditable="true" class="editable-content">{{description}}</span>
+                                            <i class="fa fa-arrows fa-fw fa-pull-right"></i>
+                                        </div>
+
+                                    </div>
+
+                                    </div>
+
+                                {{/each}}
+                            {{else}}
+                            {{/if}}
+                        {{/each}}
                     </div>
                   </form>
               </section>
@@ -35,50 +76,32 @@
               <br>
               <label for="testDropdown">Dropdown Preview</label><br>
               <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
-              <br>
-              <label for="selectTestMain">This will be your main selection dropdown</label>
-              <select data-dt-name="testSelectMain" class="form-control select select-primary mbl" >
-                  {{#each opt_group}}
-                      <option value="{{text}}">{{text}}</option>
-                  {{/each}}
-              </select>
-              <br>
+              {{#if options}}
 
-              <ul class="dd-options" style="width: 260px; display: block;">
-                  <li>
-                      <a class="dd-option">
-                          <input class="dd-option-value" type="hidden" value="BrettDurbin">
-                          <!--<img class="dd-option-image" src="/images/team/Brett.jpg">-->
-                          {{> Upload}}
-                          <label class="dd-option-text">Brett Durbin</label>
-                          <small class="dd-option-description dd-desc">Executive Director</small>
-                      </a>
-                  </li>
-
-                  <li>
-                    <a class="dd-option">
-                        <input class="dd-option-value" type="hidden" value="BaseCamp Test">
-                        <label class="dd-option-text">BaseCamp Test</label>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dd-option">
-                        <input class="dd-option-value" type="hidden" value="Test grouped groups">
-                        <label class="dd-option-text">Test grouped groups</label>
-                    </a>
-                  </li>
-              </ul>
-              <br>
-              <label>Here are all of the sub-option menus that are dependant on the main dropdown menu</label>
-              {{#each options}}
-                  <select data-dt-name="testSelect{{text}}" class="form-control select select-primary mbl" >
-                      <optgroup label="{{text}}">{{text}}</optgroup>
-                      {{#each children}}
-                          <option value="{{id}}">{{text}}</option>
+                  <br>
+                  <label for="selectTestMain">This will be your main selection dropdown</label>
+                  <select data-dt-name="testSelectMain" class="form-control select select-primary mbl" >
+                      {{#each options}}
+                          <option value="{{text}}">{{text}}</option>
                       {{/each}}
                   </select>
                   <br>
-              {{/each}}
+
+                  <label>Here are all of the sub-option menus that are dependant on the main dropdown menu</label>
+                  {{#each options}}
+                      <select data-dt-name="testSelect{{text}}" class="form-control select select-primary mbl" >
+                          <optgroup label="{{text}}">{{text}}</optgroup>
+                          {{#each children}}
+                              <option value="{{id}}"
+                                  data-description="{{description}}"
+                                  data-imagesrc="{{imageSrc}}">
+                                  {{text}}
+                              </option>
+                          {{/each}}
+                      </select>
+                      <br>
+                  {{/each}}
+              {{/if}}
           </div>
       </div>
     </div>

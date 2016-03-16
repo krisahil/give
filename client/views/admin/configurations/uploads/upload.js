@@ -1,7 +1,8 @@
 Template.Upload.helpers({
-  addData:  function() {
+  addData: function() {
     return {
-      userId: Meteor.userId()
+      userId: Meteor.userId(),
+      fundId: this.id
     };
   }
 });
@@ -12,8 +13,8 @@ Template.dropzone.helpers( {
     var progress = Template.instance().globalInfo.get();
 
     // we may have not yet selected a file
-    if( progress.progress == 0 || progress.progress == 100 ) {
-      return '<i class="fa fa-cloud-upload"></i>';
+    if ( progress.progress === 0 || progress.progress === 100 ) {
+      return '<i class="fa fa-2x fa-cloud-upload"></i>';
     }
     return progress.progress + "%";
   }

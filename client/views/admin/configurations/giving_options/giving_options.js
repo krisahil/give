@@ -1,8 +1,14 @@
 function insertCheckbox(el, insertDiv, checked) {
-  var content = '<div class="checkbox select-options form-control" >';
-  content += '<input type="checkbox" value="' + el.id + '" id="' + el.id + '" class="sortable ui-sortable" data-name="' + el.text + '">  <span contenteditable="true">' + el.text + '<\/span>';
-  content += '<i class="fa fa-arrows fa-fw fa-pull-right"><\/i>';
-  content += '<\/div>';
+  console.log(el);
+  let fundDescription = el.description ? el.description : 'Description Here';
+  var content = '<div class="checkbox select-options form-control" >' +
+  '<input type="checkbox" value="' + el.id + '" id="' + el.id +
+  '" class="sortable ui-sortable" data-el-text="' + el.text +
+  '"data-description="' + fundDescription + '"><span class="right-side-stuff" data-el-id="' + el.id + '">' +
+  '<i class="fa fa-arrows fa-fw fa-pull-right"></i>' +
+  '</span><span contenteditable="true" data-el-text="' + el.text + '">' + el.text + '</span>' +
+  '<br><span contenteditable="true">' + fundDescription + '</span>' +
+  '</div>';
   $( content ).appendTo( $('#' + insertDiv) );
   if(checked) {
     $('#' + el.id).prop('checked', true);
@@ -55,7 +61,8 @@ function sortableFunction () {
         if( $( self ).hasClass( 'checkbox' ) ){
           var el = {
             id: $( self ).find( 'input' ).val(),
-            text: $( self ).find( 'input' ).attr( 'data-name' )
+            text: $( self ).find( 'input' ).attr( 'data-el-text' ),
+            description: $( self ).find( 'input' ).attr( 'data-description' )
           };
           insertCheckbox(el, 'givingOptionsDiv', false);
         }
@@ -77,7 +84,8 @@ Template.GivingOptions.events({
     content += "<\/div>";
     $( content ).appendTo('#selectedGivingOptionsDiv');
   },
-  'click #updateDropdown': function () {
+  'click #updateDropdown': function (e) {
+    e.preventDefault();
     console.log("Saving");
 
     var group = $('#selectedGivingOptionsDiv').children();
@@ -89,24 +97,36 @@ Template.GivingOptions.events({
 
     var optgroupName = 0;
 
+    let nameOfOption;
+    let descriptionOfOption;
+
     group.each(function () {
       if( $(this).children('input[type="checkbox"]').val() ) {
         if( optgroupName !== 0 ){
           givingOptionsSelectedIDs.push($(this).children('input').val());
           var insertHere = _.findWhere(arrayNames, {text: optgroupName});
-          console.log($(this).children('input')[0].nextSibling.nextSibling.innerText);
+          nameOfOption = $(this).children("[contenteditable='true']")[0];
+          descriptionOfOption = $(this).children("[contenteditable='true']")[1];
+
+          console.log($(nameOfOption).text());
+          console.log($(descriptionOfOption).text());
           insertHere.children.push({
             id: $(this).children('input').val(),
-            text: $(this).children('input')[0].nextSibling.nextSibling.innerText
+            text: $(nameOfOption).text(),
+            description: $(descriptionOfOption).text()
           });
 
         } else {
+
+          nameOfOption = $(this).children("[contenteditable='true']")[0];
+          descriptionOfOption = $(this).children("[contenteditable='true']")[1];
           givingOptionsSelectedIDs.push($(this).children('input').val());
           console.log($(this).children('input').val());
 
           arrayNames.push({
             id: $(this).children('input').val(),
-            text: $(this).children('input')[0].nextSibling.nextSibling.innerText
+            text: $(nameOfOption).text(),
+            description: $(descriptionOfOption).text()
           });
         }
       } else {
@@ -159,7 +179,7 @@ Template.GivingOptions.events({
         });
         // With DD-Slick the operation against the select lists are destructive
         // So we need to reload the page in order to get the new version of these lists
-        location.reload();
+        //location.reload();
       }
     });
 
@@ -169,38 +189,67 @@ Template.GivingOptions.events({
 
     // TODO: when unchecking, the items should go back to their alphabetic place in the list on the left
   },
+  'keyup .editable-content': _.debounce(function(e){
+    console.log($(e.currentTarget).text());
+    //MultiConfig.update({})
+  },500),
   'click :checkbox': function(event) {
     event.preventDefault();
     var self = $(event.target).closest('div');
 
-    var givingOptionsChecked;
-    if(!$(event.target).is(":checked")){
-      console.log("Unchecked");
-      givingOptionsChecked = Session.get("givingOptionsChecked");
-      givingOptionsChecked = _.extend([], givingOptionsChecked);
+    let dtId = $(event.target).val();
 
-      var newCheckedOptions = _.reject(givingOptionsChecked, function (element) {
-        return element.value === $(event.target ).val();
-      } );
-      $( event.target ).closest('div').remove();
-      Session.set("givingOptionsChecked", newCheckedOptions);
-      var el = {
-        id: $(event.target).val(),
-        text: $(event.target).attr('data-name')
-      };
-      insertCheckbox( el, 'givingOptionsDiv', false );
+    let orgDocId = MultiConfig.findOne()._id;
+    if(!$(event.target).is(":checked")) {
+      MultiConfig.update({_id: orgDocId}, {$pull: {"donationOptions": {id: dtId}}});
     } else {
-      givingOptionsChecked = Session.get("givingOptionsChecked");
-      givingOptionsChecked = _.extend([], givingOptionsChecked);
-      givingOptionsChecked.push({
-        "value": $(event.target).val(),
-        "name": s( $(event.target).attr('data-name') ).trim().value()
-      });
-      $( event.target ).closest('div').remove();
-      Session.set("givingOptionsChecked", givingOptionsChecked);
-      var el = {id: $(event.target).val(), text: $(event.target).attr('data-name')};
-      insertCheckbox( el, 'selectedGivingOptionsDiv', true);
+      MultiConfig.update({_id: orgDocId}, {$addToSet: {"donationOptions": {id: dtId}}});
     }
+
+    //MultiConfig.update({_id: orgDocId}, {$pushToSet: {}});
+    /*
+
+        var givingOptionsChecked;
+        if(!$(event.target).is(":checked")){
+          console.log("Unchecked");
+          givingOptionsChecked = Session.get("givingOptionsChecked");
+          givingOptionsChecked = _.extend([], givingOptionsChecked);
+
+          var newCheckedOptions = _.reject(givingOptionsChecked, function (element) {
+            return element.value === $(event.target ).val();
+          } );
+          $( event.target ).closest('div').remove();
+          Session.set("givingOptionsChecked", newCheckedOptions);
+          var el = {
+            id: $(event.target).val(),
+            text: $(event.target).attr('data-el-text'),
+            description: $(event.target).attr('data-description')
+          };
+          insertCheckbox( el, 'givingOptionsDiv', false );
+        } else {
+          givingOptionsChecked = Session.get("givingOptionsChecked");
+          givingOptionsChecked = _.extend([], givingOptionsChecked);
+          givingOptionsChecked.push({
+            "value": $(event.target).val(),
+            "name": s( $(event.target).attr('data-el-text') ).trim().value(),
+            "description": s( $(event.target).attr('data-description') ).trim().value()
+          });
+          $( event.target ).closest('div').remove();
+          Session.set("givingOptionsChecked", givingOptionsChecked);
+          var el = {
+            id: $(event.target).val(),
+            text: $(event.target).attr('data-el-text'),
+            description: $(event.target).attr('data-description')
+          };
+          var waitForInsert = insertCheckbox( el, 'selectedGivingOptionsDiv', true);
+
+          // Insert the Upload template with Blaze.render inside of the input box
+          let dtId = $(event.target).val();
+          var nameOfOption = $("#" + dtId).parent().children(".right-side-stuff")[0];
+          Blaze.render(Template.Upload, nameOfOption);
+        }
+    */
+
 
   }
 });
@@ -220,8 +269,16 @@ Template.GivingOptions.helpers({
   options: function () {
     return MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
   },
-  opt_group: function () {
-    return MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
+  imageExists: function () {
+    let id = this.id;
+    return Uploads.findOne({fundId: id});
+  },
+  imageSrc: function () {
+    console.log(this);
+    if (Uploads.findOne({fundId: this.id})) {
+      return Uploads.findOne({fundId: this.id}).url;
+    }
+    return;
   }
 });
 
@@ -230,7 +287,12 @@ Template.GivingOptions.helpers({
 /* GivingOptions: Lifecycle Hooks */
 /*****************************************************************************/
 Template.GivingOptions.onCreated(function () {
-  //TODO: uncomment this for production -> Meteor.call("get_dt_funds");
+  // TODO: remove this for production, use debounce and at least a 1 minute timer Meteor.call("get_dt_funds");
+  let self = this;
+  // Use self.subscribe with the data context reactively
+  self.autorun(function () {
+    self.subscribe("uploaded");
+  });
 });
 
 Template.GivingOptions.onRendered(function () {
@@ -242,31 +304,14 @@ Template.GivingOptions.onRendered(function () {
   var temp1 = MultiConfig.findOne() && MultiConfig.findOne().DonationOptions;
 
   console.log(temp1);
-  temp1[0].children[0].selected = 'selected';
-  if(temp1){
+  if(temp1 && temp1.length > 0){
+
     $('#testDropdown').select2({
       data: temp1,
       dropdownCssClass: 'dropdown-inverse',
       placeholder: "Choose one"
     });
     $("#testDropdown").select2('val',temp1[0].id);
-
-
-    var insertDiv = $('#selectedGivingOptionsDiv');
-    temp1.forEach(function(value) {
-      if (value.children) {
-        var content= "<div class='input-group margin-bottom-sm select-group'>" +
-        "<input type='text' class='form-control slim-borders group-name' value='" + value.text + "'>" +
-        '<span class="input-group-addon"><i class="fa fa-arrows fa-fw"><\/i><\/span>' +
-        "<\/dvi>";
-        $( content ).appendTo( insertDiv );
-        value.children.forEach(function (el) {
-          insertCheckbox(el, 'selectedGivingOptionsDiv', true);
-        });
-      } else {
-        insertCheckbox(value, 'selectedGivingOptionsDiv', true);
-      }
-    });
 
     Session.set("givingOptionsChecked", temp1);
 
@@ -276,7 +321,8 @@ Template.GivingOptions.onRendered(function () {
       $("select[data-dt-name='" + itemName + "']").ddslick();
     });
 
-    $("select[data-dt-name='testSelectMain']").ddslick();
+    if ($("select[data-dt-name='testSelectMain']")) {
+      $("select[data-dt-name='testSelectMain']").ddslick();
+    }
   }
-
 });

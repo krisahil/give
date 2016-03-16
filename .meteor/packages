@@ -68,3 +68,4 @@ raix:handlebar-helpers
 tomi:upload-server
 tomi:upload-jquery
 #dburles:eslint
+cfs:graphicsmagick

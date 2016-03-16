@@ -64,6 +64,22 @@ Schema.MultiConfig = new SimpleSchema({
       omit: true
     }
   },
+  "donationOptions": {
+    type: Array,
+    optional: true,
+    blackbox: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "donationOptions.$": {
+    type: Object,
+    optional: true,
+    blackbox: true,
+    autoform: {
+      omit: true
+    }
+  },
   "SelectedIDs": {
     type: Array,
     optional: true,
