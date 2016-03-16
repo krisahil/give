@@ -23,6 +23,15 @@ MultiConfig._ensureIndex({
   backgrond: true
 });
 
+MultiConfig._ensureIndex(
+  { 'donationOptions.id': 1 },
+  { 'donationOptions.groupId': 1 },
+  { unique: true },
+  {
+    backgrond: true
+  }
+);
+
 Subscriptions._ensureIndex({'id': 1, 'customer': 1}, {background: true});
 
 Transactions._ensureIndex({'id': 1, 'transfer_id': 1}, {background: true});

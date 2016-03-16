@@ -38,10 +38,10 @@
 	opacity:.7
 }
 
-.capitalize_this {
+.capitalize-this {
 	text-transform:capitalize
 }
-.uppercase_this {
+.uppercase-this {
 	text-transform: uppercase;
 }
 

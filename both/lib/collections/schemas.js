@@ -48,22 +48,6 @@ Schema.Stripe = new SimpleSchema({
 });
 
 Schema.MultiConfig = new SimpleSchema({
-  "DonationOptions": {
-    type: Array,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
-    }
-  },
-  "DonationOptions.$": {
-    type: Object,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
-    }
-  },
   "donationOptions": {
     type: Array,
     optional: true,
@@ -74,22 +58,6 @@ Schema.MultiConfig = new SimpleSchema({
   },
   "donationOptions.$": {
     type: Object,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
-    }
-  },
-  "SelectedIDs": {
-    type: Array,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
-    }
-  },
-  "SelectedIDs.$": {
-    type: String,
     optional: true,
     blackbox: true,
     autoform: {

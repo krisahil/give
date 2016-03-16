@@ -5587,16 +5587,53 @@
     cursor: move;
   }
 
-  .select-options {
-    width: 90%;
-    margin-left: 30px;
+  .selected-options {
+    margin: 10px;
     height: 85px;
+    border: 1px dotted;
+    display: flex;
+    align-items: center;
   }
 
   .select-group {
     margin: 10px;
   }
 
+  .editable-content {
+    font-size: 14px;
+  }
+
+  .margin-left {
+    margin-left: 15px;
+  }
+
+  .btn-smaller {
+    padding: 6px 9px;
+    font-size: 10px;
+    line-height: 1;
+    border-radius: 4px;
+  }
+
+  .top-right {
+    align-self: flex-start;
+    margin-right: 8px;
+  }
+
+  .stop-this {
+    color: white;
+    background: #ff5454;
+    border: 1px solid #ff5454;
+  }
+
+  .stop-this:hover {
+    color: white;
+    background-color: #ff2121;
+    border-color: #ff2121;
+  }
+
+  .pointer-mouse:hover {
+    cursor: pointer;
+  }
   @media (max-width: 479px) {
     .col-xxs-12 {
       width: 100%;
