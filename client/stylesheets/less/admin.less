@@ -5634,6 +5634,42 @@
   .pointer-mouse:hover {
     cursor: pointer;
   }
+
+  .center-overlay {
+    position: absolute;
+    display: table;
+    z-index: 2;
+    opacity: 0;
+    top: 0;
+    height: 64px;
+    width: 64px;
+    vertical-align: middle;
+    text-align: center;
+    margin: auto;
+  }
+
+  .center-overlay:hover {
+    opacity:1;
+    background:rgba(0,0,0,0.5) center no-repeat;
+  }
+
+  div.inner {
+    xdisplay: block;
+    display:table-cell;
+    vertical-align:middle;
+  }
+
+  .large {
+    color: #ff5454;
+    text-decoration: none;
+  }
+
+  .large:hover {
+    color: #ff2121;
+  }
+
+
+
   @media (max-width: 479px) {
     .col-xxs-12 {
       width: 100%;

@@ -993,5 +993,26 @@ Meteor.methods({
       console.log(e);
       throw new Meteor.Error(e);
     }
+  },
+  deleteImageFile: function(name) {
+    logger.info("Started deleteImageFile method");
+
+    check(name, String);
+
+    try {
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+        console.log("Deleting");
+        Meteor.npmRequire("fs");
+        fs.unlink(process.env.PWD + '/.uploads/' + name);
+        fs.unlink(process.env.PWD + '/.uploads/thumbnailBig/' + name);
+        fs.unlink(process.env.PWD + '/.uploads/thumbnailSmall/' + name);
+        return "Done";
+      } else {
+        return;
+      }
+    } catch(e) {
+      console.log(e);
+      throw new Meteor.Error(e);
+    }
   }
 });

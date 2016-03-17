@@ -1,11 +1,9 @@
 function reorderItems() {
-  console.log("started reorder");
   let orderOfOptions = $("#selectedGivingOptionsDiv").sortable("toArray");
   let newOptionsOrder = [];
 
   let currentGroup;
   orderOfOptions.forEach(function(id, index) {
-    console.log(index, id);
     let donationOptions = MultiConfig.findOne().donationOptions;
     let thisOption = _.map(donationOptions, function(item){
       if(item.type === 'group'){
@@ -93,7 +91,6 @@ Template.GivingOptions.events({
   },
   'click #updateDropdown': function (e) {
     e.preventDefault();
-    console.log("Saving");
 
     var group = MultiConfig.findOne().donationOptions;
     let elementPos;
@@ -102,12 +99,9 @@ Template.GivingOptions.events({
         return x.id ? x.id : x.groupId;
       }
     });
-    console.log("after");
-    console.log(elementPos);
 
     if (elementPos && elementPos.length > 0) {
       elementPos.forEach( function ( item ) {
-        console.log( item.id ? item.id : item.groupId );
 
         if( item.id ) {
           Bert.alert( {
@@ -173,12 +167,10 @@ Template.GivingOptions.events({
         donationOptions: configOptions
       }
     });
-    // TODO: update the array object of this id with the new value
   },500),
   'click .remove-item': function(e) {
     e.preventDefault();
     let dtId = $(e.currentTarget).attr('data-el-id');
-    console.log(dtId);
 
     if(!dtId){
       Bert.alert({
@@ -211,11 +203,34 @@ Template.GivingOptions.events({
           id: dtId,
           text: $(e.target).attr('data-el-text'),
           description: $(e.target).attr('data-description') ?
-            $(e.target).attr('data-description') :
-            "",
+            $(e.target).attr('data-description') : "",
           type: 'option',
           position: $(".selected-options").length
         }
+      }
+    });
+  },
+  'click .clear-image': function(e) {
+    console.log(this);
+    confirm("Are you sure?");
+    let uploadId = Uploads.findOne({fundId: this.id})._id;
+    let uploadName = Uploads.findOne({fundId: this.id}).name;
+    Uploads.remove({_id: uploadId});
+    Meteor.call("deleteImageFile", uploadName, function(err){
+      if(err){
+        Bert.alert( {
+          message: "Hmm... that didn't work",
+          type:    'danger',
+          icon:    'fa-frown-o',
+          style:   'growl-top-right'
+        } );
+        throw new Meteor.Error("400", "Something went wrong and the user wasn't able to remove an image");
+      } else {
+        Bert.alert({
+          message: "Removed",
+          type: 'success',
+          icon: 'fa-smile-o'
+        });
       }
     });
   }
@@ -242,13 +257,37 @@ Template.GivingOptions.helpers({
   },
   imageSrc: function () {
     if (Uploads.findOne({fundId: this.id})) {
-      return Uploads.findOne({fundId: this.id}).url;
+      return 'http://127.0.0.1:3000/upload/thumbnailBig/' + Uploads.findOne({fundId: this.id}).name;
     }
     return;
   },
   donationOptions: function() {
-    let configOptions =  MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
-    return _.sortBy(configOptions, 'position');
+    let donationOptions =  MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+    return _.sortBy(donationOptions, 'position');
+  },
+  donationGroups: function() {
+    let donationOptions =  MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+
+    let groups = _.filter( donationOptions, function(item) {
+      return item && item.groupId;
+    });
+    let donationGroups = groups.map(function(group) {
+      group.children = _.filter(donationOptions, function(item) {
+        return group.groupId === item.currentGroup;
+      });
+      return group;
+    });
+    return donationGroups;
+  },
+  description: function() {
+    if (this.description) {
+      return this.description;
+    } else {
+      return "DESCRIPTION HERE";
+    }
+  },
+  showDD: function() {
+    return Session.get("showDD");
   }
 });
 
@@ -257,7 +296,8 @@ Template.GivingOptions.helpers({
 /* GivingOptions: Lifecycle Hooks */
 /*****************************************************************************/
 Template.GivingOptions.onCreated(function () {
-  // TODO: remove this for production, use debounce and at least a 1 minute timer Meteor.call("get_dt_funds");
+  // TODO: remove this for production, use debounce and at least a 1 minute timer
+  // with a button to call Meteor.call("get_dt_funds");
   let self = this;
   // Use self.subscribe with the data context reactively
   self.autorun(function () {
@@ -274,33 +314,58 @@ Template.GivingOptions.onRendered(function () {
   Session.set("configId", MultiConfig.findOne()._id);
 
   //var MultiConfigAllOptions = MultiConfig.findOne().GivingOptions;
-  var temp1 = MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+  var donationOptions = MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
 
-  console.log(temp1);
-  if(temp1 && temp1.length > 0){
+  if(donationOptions && donationOptions.length > 0){
 
     $('#testDropdown').select2({
-      data: _.sortBy(temp1, 'position'),
+      data: _.sortBy(donationOptions, 'position'),
       dropdownCssClass: 'dropdown-inverse',
       placeholder: "Choose one"
     });
-    $("#testDropdown").select2('val',temp1[0].id);
+    $("#testDropdown").select2('val',donationOptions[0].id);
 
-    Session.set("givingOptionsChecked", temp1);
-    let sortableArray = $("#selectedGivingOptionsDiv").sortable("toArray");
-    let groupIds = _.filter( temp1, function(item) {
+    Session.set("givingOptionsChecked", donationOptions);
+    let groups = _.filter( donationOptions, function(item) {
         return item && item.groupId;
       });
-    console.log(groupIds);
+    Session.set("showDD", false);
 
     // Setup the DD-Slick version of the individual select elements
-    /*temp1.forEach(function(val){
-      let itemName = 'testSelect' + val.text;
-      $("select[data-dt-name='" + itemName + "']").ddslick();
-    });*/
+    Meteor.setTimeout(function() {
+      Session.set( "showDD", true );
+    }, 500);
+    Meteor.setTimeout(function() {
+      groups.forEach(function(item){
+        let itemName = '#dd-' + item.groupId;
+        $(itemName).ddslick({
+          onSelected: function(selectedData) {
+            console.log(selectedData.selectedData.value);
+            $('[name="donateTo"]').val(selectedData.selectedData.value);
+          }
+        });
+        $(itemName).hide();
+      });
 
-    if ($("select[data-dt-name='testSelectMain']")) {
-      $("select[data-dt-name='testSelectMain']").ddslick();
-    }
+      if ($("#mainDD")) {
+        $("#mainDD").ddslick({
+          onSelected: _.debounce(function(selectedData){
+            console.log(selectedData);
+            $("#dd-" + selectedData.selectedData.value).show();
+
+            groups.forEach(function(item){
+              let itemName = '#dd-' + item.groupId;
+              if( selectedData.selectedData.value !== item.groupId) {
+                $( itemName ).prop('disabled', true);
+                $( itemName ).hide();
+              } else {
+                $('[name="donateTo"]').val($(itemName).find(":input").val());
+              }
+            });
+          }, 300)
+        });
+      }
+      $(".dd-container").addClass("text-center");
+    }, 600);
   }
 });

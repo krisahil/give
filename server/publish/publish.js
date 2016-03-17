@@ -66,7 +66,15 @@ Meteor.publish("subscription", function (subscription_id) {
   check(subscription_id, String);
 
 	if (this.userId) {
-    return Subscriptions.find({_id: subscription_id});
+    return Subscriptions.find({
+      _id: subscription_id
+    }, {
+      fields: {
+      transactions: 0,
+      tax_percent: 0,
+      discount: 0,
+      application_fee_percent: 0
+    }});
 	} else {
     this.ready();
 	}
@@ -100,7 +108,19 @@ Meteor.publish("customer", function (customer) {
   check(customer, String);
 
 	if (this.userId && Customers.find({_id: customer}, {'metadata.user_id': this.userId})) {
-    return Customers.find({_id: customer});
+    return Customers.find({
+      _id: customer
+    }, {
+      fields: {
+        account_balance: 0,
+        currency: 0,
+        delinquent: 0,
+        discount: 0,
+        livemode: 0,
+        shipping: 0,
+        subscriptions: 0
+      }
+    });
 	} else {
     this.ready();
 	}
@@ -149,7 +169,22 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
       var charges = Charges.find({'customer': {$in: customer_ids}});
       var subscriptions = Subscriptions.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.replaced': {$ne: true}}]});
       var user = Meteor.users.find({_id: this.userId});
-      var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
+      var devices = Devices.find({
+        $and: [{
+          'customer': {
+            $in: customer_ids
+          }
+        }, {
+          'metadata.saved': 'true'
+        }]
+      }, {
+        fields: {
+          fingerprint: 0,
+          routing_number: 0,
+          account_holder_type: 0,
+          currency: 0
+        }
+      });
       return[customers, charges, subscriptions, user, devices];
   } else {
     this.ready();
@@ -169,7 +204,22 @@ Meteor.publish("user_data_and_subscriptions_with_only_4", function () {
     var charges = Charges.find({'customer': {$in: customer_ids}});
     var subscriptions = Subscriptions.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.replaced': {$ne: true}}]});
     var user = Meteor.users.find({_id: this.userId});
-    var devices = Devices.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.saved': 'true'}]});
+    var devices = Devices.find({
+      $and: [{
+        'customer': {
+          $in: customer_ids
+        }
+      }, {
+        'metadata.saved': 'true'
+      }]
+    }, {
+      fields: {
+        fingerprint: 0,
+        routing_number: 0,
+        account_holder_type: 0,
+        currency: 0
+      }
+    });
     return[customers, charges, subscriptions, user, devices];
   } else {
     this.ready();

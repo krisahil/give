@@ -1,13 +1,22 @@
 <template name="RoleDocumentation">
-    <ul>
+    <a tabindex="0" role="button" data-toggle="popover"
+            data-trigger="focus" data-placement="bottom"
+            data-content="<ul style='padding-left: 10px;'>
         <li>
-            Admins:
+            Users:
             <ul>
                 <li>
-                    Add/Remove Users
+                    View past giving
                 </li>
                 <li>
-                    Change user roles
+                    Update profile information. <br>
+                    This info will be pushed into DonorTools
+                </li>
+                <li>
+                    Manage recurring gifts
+                </li>
+                <li>
+                    Give via the quick give form
                 </li>
             </ul>
         </li>
@@ -15,24 +24,38 @@
             Managers:
             <ul>
                 <li>
-                    View All Recurring Gifts
+                    All user functions, plus
                 </li>
                 <li>
-                    Change user roles
+                    View/Change all Recurring Gifts
+                </li>
+                <li>
+                    View/post Stripe transfer reports
+                </li>
+                <li>
+                    View expiring cards
+                </li>
+                <li>
+                    DonorTools account merging
                 </li>
             </ul>
         </li>
         <li>
-            Users:
+            Admins:
             <ul>
                 <li>
-                    Add/Remove Users
+                    All manager functions, plus
                 </li>
                 <li>
-                    Change user roles
+                    Manage Users
+                </li>
+                <li>
+                    Edit organization information
+                </li>
+                <li>
+                    View/edit giving options
                 </li>
             </ul>
         </li>
-    </ul>
-
+    </ul>"><i class="fa fa-question-circle"></i></a>
 </template>

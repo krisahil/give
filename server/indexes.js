@@ -16,6 +16,8 @@ DT_funds._ensureIndex({'name': 1}, {background: true});
 
 Invoices._ensureIndex({'id': 1, 'customer': 1, 'charge': 1, 'subscription': 1}, {background: true});
 
+Meteor.users._ensureIndex({'emails.address': 1, primary_customer_id: 1}, {background: true});
+
 MultiConfig._ensureIndex({
   'organization_info.web.domain_name': 1,
   'organization_info.name': 1

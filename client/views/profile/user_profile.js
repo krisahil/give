@@ -221,17 +221,19 @@ Template.UserProfile.events({
 });
 
 Template.UserProfile.onRendered(function() {
-  if(Roles.userIsInRole(Meteor.userId(), 'no-dt-person')) {
+  if(Roles.userIsInRole(Meteor.userId(), ['no-dt-person', 'admin-only'])) {
     Router.go("Dashboard");
   }
-  let selected_user = Meteor.user();
+  let selectedUser = Meteor.user();
 
-  if(!selected_user.persona_info ||
-    ( selected_user && selected_user.persona_info && selected_user.persona_info.length < 1 ) ||
-    ( selected_user && selected_user.persona_info && selected_user.persona_info.length <
-    ( selected_user && selected_user.persona_ids && selected_user.persona_ids.length ) ) ||
-    ( selected_user && selected_user.persona_info && selected_user.persona_info.length <
-    ( selected_user && selected_user.persona_id && selected_user.persona_id.length ) ) ) {
+  let selectedPersonaInfo = selectedUser && selectedUser.persona_info;
+  let selectedPersonaIds = selectedUser && selectedUser.persona_ids;
+  if(!selectedPersonaInfo ||
+    ( selectedPersonaInfo && selectedPersonaInfo.length < 1 ) ||
+    ( selectedPersonaInfo && selectedPersonaInfo.length <
+    ( selectedPersonaIds && selectedPersonaIds.length ) ) ||
+    ( selectedPersonaInfo && selectedPersonaInfo.length <
+    ( selectedUser && selectedUser.persona_id && selectedUser.persona_id.length ) ) ) {
     Meteor.call( 'update_user_document_by_adding_persona_details_for_each_persona_id', function ( error, result ) {
       if( result ) {
         if(result === 'Not a DT user'){
@@ -246,6 +248,7 @@ Template.UserProfile.onRendered(function() {
         location.reload();
       } else {
         console.log( error );
+        throw new Meteor.Error("400", "Couldn't retrieve any Donor Tools information for this user.");
       }
     } );
   } else if(!Session.equals("got_all_donations", true)) {

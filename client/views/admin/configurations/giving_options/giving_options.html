@@ -45,7 +45,19 @@
                                             {{#unless imageExists}}
                                                 {{> Upload}}
                                             {{else}}
-                                                <img src="{{imageSrc}}" height="64" width="64" />
+                                            <a href="" title="" class="image">
+                                                <img src="{{imageSrc}}"
+                                                     height="64"
+                                                     width="64" />
+                                            </a>
+                                                <div class="center-overlay">
+                                                    <div class="inner">
+                                                        <a class="clear-image"
+                                                           href="">
+                                                            <i class="large fa fa-2x fa-times"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             {{/unless}}
                                         </div>
                                     </div>
@@ -130,11 +142,11 @@
               <br>
               <label for="testDropdown">Dropdown Preview</label><br>
               <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
-              {{#if donationOptions}}
+              {{#if $and donationOptions showDD}}
                   <br>
                   <label for="selectTestMain">This will be your main selection dropdown</label>
                     <br>
-                  <select data-dt-name="testSelectMain" class="form-control select select-primary mbl" >
+                  <select id="mainDD" class="form-control select select-primary mbl" >
                       {{#each donationOptions}}
                           {{#if groupId}}
                             <option value="{{groupId}}">{{text}}</option>
@@ -143,9 +155,9 @@
                   </select>
                   <br>
 
-                  <label>Here are all of the sub-option menus that are dependant on the main dropdown menu</label>
-                  {{#each donationOptions}}
-                      <select data-dt-name="testSelect{{text}}" class="form-control select select-primary mbl" >
+                  <label>Select an option from the main menu to see the sub-options</label>
+                  {{#each donationGroups}}
+                      <select id="dd-{{groupId}}" class="form-control select select-primary mbl" >
                           <optgroup label="{{text}}">{{text}}</optgroup>
                           {{#each children}}
                               <option value="{{id}}"
@@ -157,9 +169,14 @@
                       </select>
                       <br>
                   {{/each}}
+              {{else}}
+                  {{> spinner}}
               {{/if}}
           </div>
       </div>
+        <form method="GET" id="landing_form">
+            <input type="hidden" name="donateTo">
+        </form>
     </div>
   </div>
 </template>
