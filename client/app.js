@@ -1,4 +1,3 @@
-/*****************************************************************************/
 /* Client App Namespace  */
 
 _.extend(App, {
@@ -119,7 +118,7 @@ _.extend(App, {
     } else {
       form = {
         "paymentInformation": {
-          "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0)),
+          "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
           "campaign": App.getCleanValue('#dt_source'),
           "coverTheFees": $('#coverTheFees').is(":checked"),
           "created_at": moment().format('MM/DD/YYYY, hh:mma'),
@@ -130,7 +129,7 @@ _.extend(App, {
           "is_recurring": App.getCleanValue('#is_recurring'),
           "saved": $('#save_payment').is(":checked"),
           "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
-          "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0)),
+          "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0), 10),
           "writeIn": App.getCleanValue("#enteredWriteInValue")
         },
         "customer": {
@@ -227,7 +226,7 @@ _.extend(App, {
       }
       App.process_bank(bankInfo, form);
     } else {
-      //TODO: process the gift with a saved device
+      // TODO: process the gift with a saved device
       form.paymentInformation.saved = true;
       var payment = {id: form.paymentInformation.donateWith};
       if (form.paymentInformation.donateWith.slice(0, 3) === 'car') {
@@ -321,7 +320,7 @@ _.extend(App, {
         if (form) {
           form.paymentInformation.source_id = response.card.id;
           App.handleCalls(response, form);
-        } else{
+        } else {
           return response;
         }
       }
