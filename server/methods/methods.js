@@ -351,75 +351,76 @@ Meteor.methods({
     logger.info( "Started method move_donation_to_other_person." );
 
     check(donation_id, String);
-      check(move_to_id, String);
-      if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
+    check(move_to_id, String);
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
 
-        // Move a donation from one persona_id to another
-        logger.info("Inside move_donation_to_other_person.");
+      // Move a donation from one persona_id to another
+      logger.info("Inside move_donation_to_other_person.");
 
-        logger.info("Moving donation: " + donation_id);
-        logger.info("Moving donation to: " + move_to_id);
+      logger.info("Moving donation: " + donation_id);
+      logger.info("Moving donation to: " + move_to_id);
 
-        // Get the donation from DT
-        var get_donation = HTTP.get(Meteor.settings.public.donor_tools_site +
-          '/donations/' + donation_id + '.json', {
-            auth: Meteor.settings.donor_tools_user + ':' +
-              Meteor.settings.donor_tools_password
+      // Get the donation from DT
+      var get_donation = HTTP.get(Meteor.settings.public.donor_tools_site +
+        '/donations/' + donation_id + '.json', {
+          auth: Meteor.settings.donor_tools_user + ':' +
+            Meteor.settings.donor_tools_password
+      });
+
+      console.dir(get_donation.data.donation);
+      var moved_from_id = get_donation.data.donation.persona_id;
+
+      // Prep the donation for insertion into the new persona
+      get_donation.data.donation.persona_id = move_to_id;
+      delete get_donation.data.donation.id;
+      delete get_donation.data.donation.splits[0].donation_id;
+      delete get_donation.data.donation.splits[0].id;
+
+      // Insert the donation into the move_to_id persona
+      var movedDonation;
+      movedDonation = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
+        data: {
+            donation: get_donation.data.donation
+        },
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      });
+
+      // Check that the response from the DT server is what of the expected format
+      if (movedDonation && movedDonation.data && movedDonation.data.donation && movedDonation.data.donation.persona_id) {
+        // Send the id of this new DT donation to the function which will update the charge to add that meta text.
+        Utils.update_charge_with_dt_donation_id(get_donation.data.donation.transaction_id, movedDonation.data.donation.id);
+
+        // Delete the old DT donation, I've setup an async callback because I'm getting a 406 response from DT, but the delete is still going through
+        var deleteDonation;
+        deleteDonation = HTTP.del(Meteor.settings.public.donor_tools_site +
+          '/donations/' + donation_id +
+          '.json', {auth: Meteor.settings.donor_tools_user + ':' +
+          Meteor.settings.donor_tools_password}, function(err, result){
+            if(err){
+                console.dir(err);
+                return err;
+            } else {
+                console.dir(result);
+                return result;
+            }
         });
 
-        console.dir(get_donation.data.donation);
-        var moved_from_id = get_donation.data.donation.persona_id;
+        let removeDonation = DT_donations.remove(Number(donation_id));
+        console.log("If this is a 1 then it was successful ", removeDonation);
+        var persona_ids = [moved_from_id, move_to_id];
 
-        // Prep the donation for insertion into the new persona
-        get_donation.data.donation.persona_id = move_to_id;
-        delete get_donation.data.donation.id;
-        delete get_donation.data.donation.splits[0].donation_id;
-        delete get_donation.data.donation.splits[0].id;
+        // Get all the donations from these two personas and put them back into the collection
+        Utils.get_all_dt_donations(persona_ids);
 
-        // Insert the donation into the move_to_id persona
-        var movedDonation;
-        movedDonation = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
-          data: {
-              donation: get_donation.data.donation
-          },
-          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-        });
-
-        // Check that the response from the DT server is what of the expected format
-        if(movedDonation && movedDonation.data && movedDonation.data.donation && movedDonation.data.donation.persona_id){
-          // Send the id of this new DT donation to the function which will update the charge to add that meta text.
-          Utils.update_charge_with_dt_donation_id(get_donation.data.donation.transaction_id, movedDonation.data.donation.id);
-
-          // Delete the old DT donation, I've setup an async callback because I'm getting a 406 response from DT, but the delete is still going through
-          var deleteDonation;
-          deleteDonation = HTTP.del(Meteor.settings.public.donor_tools_site +
-            '/donations/' + donation_id +
-            '.json', {auth: Meteor.settings.donor_tools_user + ':' +
-            Meteor.settings.donor_tools_password}, function(err, result){
-              if(err){
-                  console.dir(err);
-                  return err;
-              } else {
-                  console.dir(result);
-                  return result;
-              }
-          });
-
-          DT_donations.remove(Number(donation_id));
-          var persona_ids = [moved_from_id, move_to_id];
-
-          // Get all the donations from these two personas and put them back into the collection
-          Utils.get_all_dt_donations(persona_ids);
-
-          return movedDonation.data.donation;
-        } else {
-          logger.error("The persona ID wasn't returned from DT, or something else happened with the connection to DT.");
-          throw new Meteor.Error("Couldn't get the persona_id for some reason");
-        }
+        return movedDonation.data.donation;
       } else {
-        logger.info("You aren't an admin, you can't do that");
-        return;
+        logger.error("The persona ID wasn't returned from DT, or something else happened with the connection to DT.");
+        throw new Meteor.Error("Couldn't get the persona_id for some reason");
       }
+    } else {
+      logger.info("You aren't an admin, you can't do that");
+      return;
+    }
   },
   GetStripeEvent: function (id, process) {
     logger.info("Started GetStripeEvent");
@@ -924,7 +925,7 @@ Meteor.methods({
       if (Roles.userIsInRole(this.userId, ['admin'])) {
         console.log("Updating");
 
-        MultiConfig.update( { "organization_info.web.domain_name": Meteor.settings.public.org_domain }, {
+        Config.update( { "organization_info.web.domain_name": Meteor.settings.public.org_domain }, {
           $set: {
             "DonationOptions": arrayNames,
             "SelectedIDs": selectedIds

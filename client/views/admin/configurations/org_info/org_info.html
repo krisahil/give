@@ -23,16 +23,16 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane fade active in" id="org-info">
-                {{> quickForm collection="MultiConfig" doc=multiConfigDoc
+                {{> quickForm collection="Config" doc=configDoc
                 id="updateInfoSection" type="insert" omitFields="DonorTools, Stripe"
                 template="bootstrap3-horizontal"}}
             </div>
             <div class="tab-pane fade" id="stripe">
-                {{> quickForm collection="MultiConfig" schema="Schema.StripeForm" doc=multiConfigDoc
+                {{> quickForm collection="Config" schema="Schema.StripeForm" doc=configDoc
                 id="updateStripeSection" type=formType template="bootstrap3"}}
             </div>
             <div class="tab-pane fade" id="donor-tools">
-                {{> quickForm collection="MultiConfig" schema="Schema.DonorToolsForm" doc=multiConfigDoc
+                {{> quickForm collection="Config" schema="Schema.DonorToolsForm" doc=configDoc
                 id="updateDonorToolsSection" type=formType template="bootstrap3"}}
             </div>
         </div>

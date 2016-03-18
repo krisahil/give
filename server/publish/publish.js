@@ -314,9 +314,9 @@ Meteor.publish("Serve1000Sources2015", function () {
 });
 
 
-Meteor.publish("MultiConfig", function () {
+Meteor.publish("Config", function () {
   if (Roles.userIsInRole(this.userId, 'admin')) {
-    return MultiConfig.find({
+    return Config.find({
       'organization_info.web.domain_name': Meteor.settings.public.org_domain
     });
   } else {

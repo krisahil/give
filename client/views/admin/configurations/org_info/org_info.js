@@ -53,8 +53,8 @@ AutoForm.hooks({
 });
 
 Template.OrgInfo.helpers({
-  multiConfigDoc: function () {
-    let org_info = MultiConfig.findOne({
+  configDoc: function () {
+    let org_info = Config.findOne({
       'organization_info.web.domain_name': Meteor.settings.public.org_domain
     });
     if (org_info) {

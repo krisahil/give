@@ -1,10 +1,10 @@
 function reorderItems() {
-  let orderOfOptions = $("#selectedGivingOptionsDiv").sortable("toArray");
-  let newOptionsOrder = [];
+  let orderOfOptions = $("#selectedGivingOptionsDiv").sortable("toArray"),
+    newOptionsOrder = [],
+    currentGroup;
+  let donationOptions = Config.findOne().donationOptions;
 
-  let currentGroup;
   orderOfOptions.forEach(function(id, index) {
-    let donationOptions = MultiConfig.findOne().donationOptions;
     let thisOption = _.map(donationOptions, function(item){
       if(item.type === 'group'){
         currentGroup = item.groupId;
@@ -18,7 +18,7 @@ function reorderItems() {
     });
   });
 
-  MultiConfig.update({_id: Session.get("configId")}, {
+  Config.update({_id: Session.get("configId")}, {
     $set: {
       donationOptions: newOptionsOrder
     }
@@ -72,6 +72,24 @@ function sortableFunction () {
     },
     cancel: ".disable-sort"
   });
+};
+
+function checkForDuplicateGroupNames(donationOptions) {
+  let dupArr = [];
+  let groupedByCount = _.countBy(donationOptions, function (item) {
+    return item.text;
+  });
+
+  for (var text in groupedByCount) {
+    if (groupedByCount[text] > 1) {
+      _.where(donationOptions, {
+        text: text, type: 'group'
+      }).map(function (item) {
+        dupArr.push(item);
+      });
+    }
+  };
+  return dupArr;
 }
 
 /*****************************************************************************/
@@ -79,7 +97,7 @@ function sortableFunction () {
 /*****************************************************************************/
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
-    MultiConfig.update({_id: Session.get("configId")}, {
+    Config.update({_id: Session.get("configId")}, {
       $addToSet: {
         "donationOptions": {
           groupId: Random.id([8]),
@@ -92,7 +110,38 @@ Template.GivingOptions.events({
   'click #updateDropdown': function (e) {
     e.preventDefault();
 
-    var group = MultiConfig.findOne().donationOptions;
+    // If section two ends with a group, highlight that group and throw an error
+    if ($("#selectedGivingOptionsDiv").children().last().hasClass("group-option")) {
+      Bert.alert( {
+        message: "You have a group as the last part of your list, you'll need an option below it.",
+        type:    'danger',
+        icon:    'fa-frown-o',
+        style:   'growl-top-right'
+      } );
+      let id = $("#selectedGivingOptionsDiv").children().last().attr("id");
+      $("#" + id).addClass("backgroundColor");
+      $("#" + id).addClass("indianred");
+      return;
+    }
+
+    var group = Config.findOne().donationOptions;
+
+    // Check this group for duplicate group names
+    let duplicates = checkForDuplicateGroupNames(group);
+    if (duplicates && duplicates.length > 1) {
+      Bert.alert( {
+        message: "You have duplicate group names. Each group must have a unique name.",
+        type:    'danger',
+        icon:    'fa-frown-o',
+        style:   'growl-top-right'
+      } );
+      duplicates.forEach(function ( item ) {
+        let id = item.groupId;
+        $("#" + id).addClass("backgroundColor");
+        $("#" + id).addClass("indianred");
+      });
+      return;
+    }
     let elementPos;
     elementPos = _.filter( group, function(x) {
       if (x && !x.text) {
@@ -102,7 +151,7 @@ Template.GivingOptions.events({
 
     if (elementPos && elementPos.length > 0) {
       elementPos.forEach( function ( item ) {
-
+        let id;
         if( item.id ) {
           Bert.alert( {
             message: "You have a blank value in an option, couldn't save",
@@ -110,6 +159,7 @@ Template.GivingOptions.events({
             icon:    'fa-frown-o',
             style:   'growl-top-right'
           } );
+          id = item.id;
           // TODO: add a red background to this element to show them where they are missing text
         } else {
           Bert.alert( {
@@ -118,8 +168,11 @@ Template.GivingOptions.events({
             icon:    'fa-frown-o',
             style:   'growl-top-right'
           } );
+          id = item.groupId;
           // TODO: add a red background to this element to show them where they are missing text
         }
+        $("#" + id).addClass("backgroundColor");
+        $("#" + id).addClass("indianred");
       } );
     } else {
       // Store this new order
@@ -136,21 +189,26 @@ Template.GivingOptions.events({
     let description;
     let id;
 
-    if($(e.currentTarget).val()){
+    if ($(e.currentTarget).hasClass("group-option")) {
       text = $(e.currentTarget).val().toUpperCase();
       id = $(e.currentTarget).attr("data-el-id");
+      $("#" + id).removeClass("backgroundColor");
+      $("#" + id).removeClass("indianred");
     } else {
       let type = $(e.currentTarget).attr("data-text-type");
-      if (type === "text") {
-        text = $(e.currentTarget).text();
-      } else {
-        description = $(e.currentTarget).text();
-      }
       id = $(e.currentTarget).attr("data-el-id");
+      if (type === "text") {
+        text = $(e.currentTarget).val();
+        $("#" + id).removeClass("backgroundColor");
+        $("#" + id).removeClass("indianred");
+      } else {
+        description = $(e.currentTarget).val();
+      }
     }
 
+
     // Store all the current options
-    let configOptions = MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+    let configOptions = Config.findOne() && Config.findOne().donationOptions;
     // Find the indexOf this particular option
     let elementPos = configOptions.map(function(x) {return x.id ? x.id : x.groupId; }).indexOf(id);
     // Update the matching object
@@ -162,7 +220,7 @@ Template.GivingOptions.events({
       configOptions[elementPos].text = text;
     }
     // Store the new version of the configOptions
-    MultiConfig.update({_id: Session.get("configId")}, {
+    Config.update({_id: Session.get("configId")}, {
       $set: {
         donationOptions: configOptions
       }
@@ -183,7 +241,7 @@ Template.GivingOptions.events({
     }
     let updateOperator = dtId.length === 8 ? {groupId: dtId} : {id: dtId};
 
-    MultiConfig.update({_id: Session.get("configId")}, {
+    Config.update({_id: Session.get("configId")}, {
       $pull: {
         "donationOptions": updateOperator
       }
@@ -197,7 +255,7 @@ Template.GivingOptions.events({
     e.preventDefault();
     let dtId = $(e.target).val();
 
-    MultiConfig.update({_id: Session.get("configId")}, {
+    Config.update({_id: Session.get("configId")}, {
       $addToSet: {
         "donationOptions": {
           id: dtId,
@@ -211,7 +269,6 @@ Template.GivingOptions.events({
     });
   },
   'click .clear-image': function(e) {
-    console.log(this);
     confirm("Are you sure?");
     let uploadId = Uploads.findOne({fundId: this.id})._id;
     let uploadName = Uploads.findOne({fundId: this.id}).name;
@@ -241,7 +298,7 @@ Template.GivingOptions.events({
 /*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    let orgDoc = MultiConfig.findOne();
+    let orgDoc = Config.findOne();
     let selectedGivingOptions = orgDoc ? orgDoc.donationOptions : null;
     if(selectedGivingOptions){
       selectedGivingOptions = selectedGivingOptions.map(function(val){ return val.id; });
@@ -257,16 +314,16 @@ Template.GivingOptions.helpers({
   },
   imageSrc: function () {
     if (Uploads.findOne({fundId: this.id})) {
-      return 'http://127.0.0.1:3000/upload/thumbnailBig/' + Uploads.findOne({fundId: this.id}).name;
+      return Uploads.findOne({fundId: this.id}).baseUrl + Uploads.findOne({fundId: this.id}).name;
     }
     return;
   },
   donationOptions: function() {
-    let donationOptions =  MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+    let donationOptions =  Config.findOne() && Config.findOne().donationOptions;
     return _.sortBy(donationOptions, 'position');
   },
   donationGroups: function() {
-    let donationOptions =  MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+    let donationOptions =  Config.findOne() && Config.findOne().donationOptions;
 
     let groups = _.filter( donationOptions, function(item) {
       return item && item.groupId;
@@ -278,13 +335,6 @@ Template.GivingOptions.helpers({
       return group;
     });
     return donationGroups;
-  },
-  description: function() {
-    if (this.description) {
-      return this.description;
-    } else {
-      return "DESCRIPTION HERE";
-    }
   },
   showDD: function() {
     return Session.get("showDD");
@@ -311,10 +361,10 @@ Template.GivingOptions.onRendered(function () {
   sortableFunction();
 
   // Set configId
-  Session.set("configId", MultiConfig.findOne()._id);
+  Session.set("configId", Config.findOne()._id);
 
-  //var MultiConfigAllOptions = MultiConfig.findOne().GivingOptions;
-  var donationOptions = MultiConfig.findOne() && MultiConfig.findOne().donationOptions;
+  //var ConfigAllOptions = Config.findOne().GivingOptions;
+  var donationOptions = Config.findOne() && Config.findOne().donationOptions;
 
   if(donationOptions && donationOptions.length > 0){
 
@@ -323,7 +373,7 @@ Template.GivingOptions.onRendered(function () {
       dropdownCssClass: 'dropdown-inverse',
       placeholder: "Choose one"
     });
-    $("#testDropdown").select2('val',donationOptions[0].id);
+    //$("#testDropdown").select2('val',donationOptions[0].id);
 
     Session.set("givingOptionsChecked", donationOptions);
     let groups = _.filter( donationOptions, function(item) {
@@ -340,7 +390,6 @@ Template.GivingOptions.onRendered(function () {
         let itemName = '#dd-' + item.groupId;
         $(itemName).ddslick({
           onSelected: function(selectedData) {
-            console.log(selectedData.selectedData.value);
             $('[name="donateTo"]').val(selectedData.selectedData.value);
           }
         });
@@ -350,7 +399,6 @@ Template.GivingOptions.onRendered(function () {
       if ($("#mainDD")) {
         $("#mainDD").ddslick({
           onSelected: _.debounce(function(selectedData){
-            console.log(selectedData);
             $("#dd-" + selectedData.selectedData.value).show();
 
             groups.forEach(function(item){

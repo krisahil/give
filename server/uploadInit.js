@@ -5,6 +5,12 @@ Meteor.startup(function() {
     checkCreateDirectories: true, // create the directories for you
     imageTypes: /.(gif|jpe?g|png)$/i,
     maxFileSize: 10000000,
+    getFileName: function( fileInfo, formData ) {
+      console.log("In getFileName");
+      console.log(fileInfo);
+      console.log(formData);
+      return fileInfo.name.replace(/\s+/g, '');
+    },
     finished: function(fileInfo, formFields) {
       // Merge the formFields Object into the fileInfo Object
       Object.assign(fileInfo, formFields);

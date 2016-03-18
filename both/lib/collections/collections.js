@@ -23,7 +23,7 @@ DT_sources = new Mongo.Collection('dt_sources');
 Invoices = new Mongo.Collection('invoices');
 
 // For Multi-tenancy
-MultiConfig = new Mongo.Collection('multi_config');
+Config = new Mongo.Collection('config');
 
 Payments = new Mongo.Collection('payments');
 

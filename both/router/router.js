@@ -342,7 +342,7 @@ Router.route('/dashboard/giving_options', {
   name: 'GivingOptions',
   where: 'client',
   waitOn: function() {
-    return [ Meteor.subscribe('MultiConfig'), Meteor.subscribe('userDTFunds')];
+    return [ Meteor.subscribe('Config'), Meteor.subscribe('userDTFunds')];
   }
 });
 
@@ -350,10 +350,10 @@ Router.route('/dashboard/org_info', {
   name: 'OrgInfo',
   where: 'client',
   waitOn: function() {
-    return Meteor.subscribe('MultiConfig');
+    return Meteor.subscribe('Config');
   },
   data: function() {
-    return MultiConfig.find();
+    return Config.find();
   }
 });
 

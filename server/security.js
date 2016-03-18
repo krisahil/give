@@ -14,7 +14,7 @@ Security.permit(['insert', 'update', 'remove'])
     DT_funds,
     DT_sources,
     Invoices,
-    MultiConfig,
+    Config,
     Payments,
     Refunds,
     Subscriptions,

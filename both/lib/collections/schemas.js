@@ -47,7 +47,7 @@ Schema.Stripe = new SimpleSchema({
   }
 });
 
-Schema.MultiConfig = new SimpleSchema({
+Schema.Config = new SimpleSchema({
   "donationOptions": {
     type: Array,
     optional: true,
@@ -686,4 +686,4 @@ Schema.StripeForm = new SimpleSchema({
 
 Meteor.users.attachSchema(Schema.User);
 
-MultiConfig.attachSchema(Schema.MultiConfig);
+Config.attachSchema(Schema.Config);
