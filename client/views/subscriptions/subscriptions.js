@@ -159,6 +159,11 @@ Template.AdminSubscriptions.helpers({
     }
     return name;
 
+  },
+  trialing: function() {
+    if(this.status === 'trialing') {
+      return "trialing-subscription";
+    }
   }
 });
 

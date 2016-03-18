@@ -26,7 +26,7 @@
         <tbody>
         {{#if searchSubscriptions}}
             {{#each searchSubscriptions}}
-            <tr>
+            <tr class="{{trialing}}">
                 <td>{{name}}</td>
                 <td>{{metadata.email}}</td>
                 <td>${{twoDecimalPlaces quantity}}</td>
