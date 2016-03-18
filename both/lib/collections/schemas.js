@@ -76,25 +76,26 @@ Schema.Config = new SimpleSchema({
     type: Object,
     optional: true,
     autoform: {
+      panelClass: "panel",
       afFieldInput: {
-      class: 'slim-borders'
+        class: 'slim-borders',
       }
     }
   },
   "organization_info.name": {
-    type:  String,
+    type: String,
     label: "Name",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.full_name": {
-    type:  String,
+    type: String,
     label: "Full Name (e.g., with ', Inc.' at the end)",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.phone": {
-    type:  String,
+    type: String,
     label: "Phone",
     optional: true
   },
@@ -115,32 +116,39 @@ Schema.Config = new SimpleSchema({
     optional: true
   },
   "organization_info.address": {
-    type:  Object,
+    type: Object,
     label: "Address",
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.address.line_1": {
-    type:  String,
+    type: String,
     label: "Address Line 1",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.address.line_2": {
-    type:  String,
+    type: String,
     label: "Address Line 2",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.address.city": {
-    type:  String,
+    type: String,
     label: "City",
-    max:   50,
+    max: 50,
     optional: true
   },
   "organization_info.address.state_short": {
     type: String,
     label: "State",
-    allowedValues: ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],
+    allowedValues: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+                    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+                    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+                    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"],
     optional: true,
     autoform: {
       afFieldInput: {
@@ -149,9 +157,9 @@ Schema.Config = new SimpleSchema({
     }
   },
   "organization_info.address.zip": {
-    type:  String,
+    type: String,
     label: "Zip",
-    max:   15,
+    max: 15,
     optional: true
   },
   "organization_info.mission_statement": {
@@ -166,8 +174,8 @@ Schema.Config = new SimpleSchema({
     }
   },
   "organization_info.date_founded": {
-    type:     Date,
-    label:    "Date Founded",
+    type: Date,
+    label: "Date Founded",
     optional: true,
     autoform: {
       type: "bootstrap-datepicker",
@@ -178,14 +186,20 @@ Schema.Config = new SimpleSchema({
     }
   },
   "organization_info.emails": {
-    type:     Object,
-    label:    "Emails used for below scenarios",
-    optional: true
+    type: Object,
+    label: "Emails used for below scenarios",
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.emails.bcc": {
     type: Array,
     label: "To be BCC'd on all outgoing emails",
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.emails.bcc.$": {
     type: String,
@@ -253,7 +267,10 @@ Schema.Config = new SimpleSchema({
   "organization_info.web": {
     type: Object,
     label: "Your website addresses",
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.web.domain_name": {
     type: String,

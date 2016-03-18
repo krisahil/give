@@ -405,7 +405,8 @@ Meteor.methods({
             }
         });
 
-        let removeDonation = DT_donations.remove(Number(donation_id));
+        // Remove the old DonorTools donation document from the collection
+        let removeDonation = DT_donations.remove({_id: Number(donation_id)});
         console.log("If this is a 1 then it was successful ", removeDonation);
         var persona_ids = [moved_from_id, move_to_id];
 
