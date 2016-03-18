@@ -118,11 +118,7 @@ _.extend(Utils, {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
 
-    // TODO: What if the user's name and all their detail is correct, but they give a new
-    // email address that doesn't exist in DT?
-    // In this case we'll return null; Do we want to?
-
-    if(personResult){
+    if (personResult) {
       metadata = Customers.findOne( { _id: customer_id } ).metadata;
       // Step 1b
       if( metadata.business_name ) {

@@ -313,7 +313,7 @@ _.extend(StripeFunctions, {
   'check_for_necessary_objects_before_inserting_into_dt': function (charge_id, customer_id, interval) {
     logger.info("Started check_for_necessary_objects_before_inserting_into_dt with interval of: " + interval);
 
-    let chargeCursor, customerCursor, stripeCustomerRecord;
+    let chargeCursor, customerCursor, stripeCustomerRecord, dtPersonaId;
 
     chargeCursor =    Charges.findOne({_id: charge_id});
 
@@ -366,22 +366,22 @@ _.extend(StripeFunctions, {
         console.dir(invoice.data);
         let previous_charge_id = invoice.data[0].charge;
         console.log("Charge_id: ", previous_charge_id);
-        // TODO: if the charge id above happens to be null, it will find the first document in the collection!
-        // 1. how is their account in DT being created?
-        // 2. Can we just use that method to get this ID?
         
-
         if (previous_charge_id) {
           let dt_donation_cursor = DT_donations.findOne({transaction_id: previous_charge_id});
-          console.log("dt_donatino_cursor.persona_id : ", dt_donation_cursor.persona_id );
-          let dt_persona_id = dt_donation_cursor.persona_id;
-          let update_stripe_customer = Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dt_persona_id } });
-          StripeFunctions.update_customer_metadata(customer_id, dt_persona_id);
-          StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += .5);
+          console.log("dt_donation_cursor.persona_id : ", dt_donation_cursor.persona_id );
+          dtPersonaId = dt_donation_cursor.persona_id;
         } else {
-          logger.error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
-          throw new Meteor.Error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+          dtPersonaId = Utils.find_dt_persona_flow(customerCursor.metadata.email, customer_id);
+          logger.info("dtPersonaId : ", dtPersonaId );
+          if (!dtPersonaId) {
+            logger.error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+            throw new Meteor.Error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+          }
         }
+        Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dtPersonaId } });
+        StripeFunctions.update_customer_metadata(customer_id, dtPersonaId);
+        StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += .5);
       }
     }
 
