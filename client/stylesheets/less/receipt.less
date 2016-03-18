@@ -1,0 +1,331 @@
+// Color variables (appears count calculates by raw css)
+@color0: #dddddd; // Appears 6 times
+@color1: #e5e5e5; // Appears 4 times
+@color2: #888888; // Appears 4 times
+@color3: #ffffff; // Appears 3 times
+@color4: #333333; // Appears 2 times
+
+// Width variables (appears count calculates by raw css)
+@width3: 100%; // Appears 2 times
+@width4: 46%; // Appears 2 times
+@width7: 30%; // Appears 3 times
+
+
+.Receipt {
+  color: @color4;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin-bottom: 30px;
+  .clip {
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+  }
+  .clear {
+    clear: both;
+    content: " ";
+    display: block;
+    height: 0;
+    visibility: hidden;
+  }
+  a {
+    color: @color4;
+    text-decoration: underline;
+  }
+  strong {
+    font-weight: bold;
+  }
+  em {
+    font-style: italic;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: bold;
+    padding: 20px 0 0;
+  }
+  #invoice {
+    -moz-box-shadow: 0 0 1px @color2;
+    -moz-box-sizing: border-box;
+    -o-box-shadow: 0 0 1px @color2;
+    -webkit-box-shadow: 0 0 1px @color2;
+    -webkit-box-sizing: border-box;
+    background: #f5f5f5;
+    border: 10px solid @color3;
+    box-shadow: 0 0 1px @color2;
+    box-sizing: border-box;
+    margin: auto;
+    max-width: 840px;
+    padding: 18px;
+    position: relative;
+  }
+  .this-is {
+    border-bottom: 1px solid @color0;
+    border-top: 1px solid @color0;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 0;
+    text-align: center;
+  }
+  #header {
+    overflow: hidden;
+    padding-bottom: 20px;
+  }
+  .invoice-intro {
+    float: left;
+    padding-top: 0;
+    text-align: left;
+    width: 41%;
+    p {
+      font-size: 12px;
+      font-style: italic;
+      line-height: 1.5em;
+      padding-bottom: 20px;
+      text-align: left;
+    }
+  }
+  .invoice-meta {
+    float: right;
+    line-height: 1.5em;
+    overflow: hidden;
+    padding-top: 18px;
+    position: relative;
+    text-align: right;
+    width: 59%;
+    dt {
+      clear: both;
+      float: left;
+      font-weight: bold;
+      width: @width4;
+    }
+    dd {
+      float: right;
+      font-size: .9em;
+      text-align: right;
+      width: @width4;
+    }
+  }
+  #parties {
+    overflow: hidden;
+    position: relative;
+  }
+  .invoice-to {
+    float: left;
+    margin-right: 5%;
+    padding-bottom: 30px;
+    text-align: left;
+    width: @width7;
+  }
+  .invoice-from {
+    float: left;
+    margin-right: 5%;
+    padding-bottom: 30px;
+    text-align: left;
+    width: @width7;
+  }
+  .invoice-status {
+    float: left;
+    margin-right: 0;
+    padding-bottom: 30px;
+    text-align: left;
+    width: @width7;
+  }
+  .unpaid {
+    .invoice-status {
+      strong {
+        padding-bottom: 30px;
+        text-align: left;
+      }
+    }
+  }
+  .invoice-items {
+    padding-bottom: 30px;
+    text-align: left;
+    table {
+      font-size: 12px;
+      width: @width3;
+    }
+    caption {
+      border-bottom: 1px solid @color0;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      text-align: left;
+    }
+    thead {
+      th {
+        background: @color1;
+        font-weight: bold;
+        padding: 6px 0;
+        &:first-of-type {
+          padding-left: 8px;
+        }
+        &:last-of-type {
+          padding-right: 8px;
+          text-align: right;
+        }
+      }
+    }
+    tbody {
+      tr {
+        th {
+          padding-left: 8px;
+        }
+        td {
+          &:last-of-type {
+            padding-right: 8px;
+            text-align: right;
+          }
+        }
+      }
+      td {
+        text-align: left;
+      }
+    }
+    tfoot {
+      td {
+        background: @color1;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 6px 8px;
+        text-align: right;
+      }
+    }
+  }
+  .invoice-totals {
+    padding-bottom: 30px;
+    text-align: left;
+    table {
+      font-size: 12px;
+      width: @width3;
+    }
+    caption {
+      border-bottom: 1px solid @color0;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      text-align: left;
+    }
+    thead {
+      th {
+        background: @color1;
+        font-weight: bold;
+        padding: 6px 0;
+        &:first-of-type {
+          padding-left: 8px;
+        }
+        &:last-of-type {
+          padding-right: 8px;
+          text-align: right;
+        }
+      }
+    }
+    tbody {
+      tr {
+        th {
+          padding-left: 8px;
+        }
+        td {
+          &:last-of-type {
+            padding-right: 8px;
+            text-align: right;
+          }
+        }
+      }
+      td {
+        text-align: left;
+      }
+    }
+    tfoot {
+      td {
+        background: @color1;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 6px 8px;
+        text-align: right;
+      }
+    }
+  }
+  .invoice-notes {
+    text-align: left;
+    ul {
+      li {
+        list-style: inside disc;
+      }
+    }
+    ol {
+      li {
+        list-style: inside decimal;
+      }
+    }
+  }
+  #footer {
+    border-top: 1px solid @color0;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 18px;
+    text-align: center;
+  }
+}
+.Receipt h2, .Receipt h3, .Receipt h4, .Receipt h5, .Receipt h6, .Receipt .title  {
+  border-bottom: 1px solid @color0;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+}
+.Receipt .invoice-items tbody tr:nth-of-type(even) th, .Receipt .invoice-totals tbody tr:nth-of-type(even) th, .Receipt .invoice-items tbody tr:nth-of-type(even) td, .Receipt .invoice-totals tbody tr:nth-of-type(even) td  {
+  background: #eeeeee;
+}
+.Receipt .invoice-items tbody th, .Receipt .invoice-totals tbody th, .Receipt .invoice-items tbody td, .Receipt .invoice-totals tbody td  {
+  background: @color3;
+  padding-bottom: 6px;
+  padding-top: 6px;
+}
+.Receipt .invoice-notes p, .Receipt .invoice-notes ul, .Receipt .invoice-notes ol, .Receipt .invoice-notes dl  {
+  padding-bottom: 1em;
+}
+@media only screen and (min-width: 420px) and (max-width: 869px) {
+  .Receipt #invoice {
+    margin: 0 20px;
+  }
+}
+@media only screen and (min-width: 700px) {
+  .Receipt h1 {
+    padding: 10px 0;
+  }
+  .Receipt #header {
+    overflow: hidden;
+  }
+  .Receipt .invoice-intro {
+    float: left;
+    width: 41%;
+    text-align: left;
+    padding-top: 0;
+  }
+  .Receipt .invoice-intro p {
+    text-align: left;
+  }
+  .Receipt .invoice-meta {
+    float: right;
+    width: 59%;
+  }
+  .Receipt .invoice-meta dd {
+    text-align: right;
+  }
+  .Receipt .invoice-to,
+  .Receipt .invoice-from,
+  .Receipt .invoice-status {
+    float: left;
+    width: 30%;
+    margin-right: 5%;
+  }
+  .Receipt .invoice-status {
+    margin-right: 0;
+  }
+  .Receipt #footer {
+    padding-top: 18px;
+    font-size: 12px;
+  }
+}

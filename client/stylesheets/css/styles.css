@@ -1,0 +1,28 @@
+.trialing-subscription {
+    color: #F57F17;
+}
+
+@media print {
+
+    a[href]:after {
+        content: none !important;
+    }
+
+    @page {
+        size: portrait;
+    }
+    h3 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
+.evenHeight {
+    height: 290px;
+}
+.recap {
+    margin-bottom: 10px;
+}
+
+.invoice-frequency {
+    text-transform: capitalize;
+}

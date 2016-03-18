@@ -1,157 +1,167 @@
 <template name="GivingOptions">
   <div class="Admin">
-    <div class="container-fluid">
-      <div class="row">
-          <h2 class="text-center">Here is where you build your giving options menus.
-              Think of this as a tree of groups and options. Each group is a branch with leaves.
-              The leaves are the options.</h2>
-          <div class="col-md-4">
-            <h3>1. Add groups of giving options.</h3>
-            <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
-            <section class="">
-                {{#if donationOptions}}
-                    <div id="givingOptionsDiv">
-                        <form role="form">
-                            <div class="form-group">
-                                {{#each dt_funds}}
-                                    <div class="checkbox">
-                                        <input id="{{id}}" data-toggle="checkbox"
-                                            type="checkbox"
-                                            value="{{id}}"
-                                            class="sortable"
-                                            data-el-text="{{name}}"
-                                            data-description="{{description}}">
-                                        {{name}}
+      <div class="container-fluid">
+          {{#if configId}}
+              <div class="row">
+                  <h2 class="text-center">Here is where you build your giving options menus.
+                      Think of this as a tree of groups and options. Each group is a branch with leaves.
+                      The leaves are the options.</h2>
+                  <div class="col-md-4">
+                    <h3>1. Add groups of giving options.</h3>
+                    <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
+                    <section class="">
+                        {{#if donationOptions}}
+                            <div id="givingOptionsDiv">
+                                <form role="form">
+                                    <div class="form-group">
+                                        {{#each dt_funds}}
+                                            <div class="checkbox">
+                                                <input id="{{id}}" data-toggle="checkbox"
+                                                    type="checkbox"
+                                                    value="{{id}}"
+                                                    class="sortable"
+                                                    data-el-text="{{name}}"
+                                                    data-description="{{description}}">
+                                                {{name}}
+                                            </div>
+                                        {{/each}}
                                     </div>
+                                </form>
+                            </div>
+                        {{/if}}
+                    </section>
+                </div>
+                  <div class="col-md-4">
+                    <h3>2. Drag into the right order.</h3>
+                    <p>(drag out of the box or uncheck to remove, click text to edit)</p>
+                      <section class="">
+                          <form>
+                            <div class="sortable slim-borders"
+                                 id="selectedGivingOptionsDiv">
+                                {{#each donationOptions}}
+                                    {{#if $eq type "option"}}
+                                        <div id="{{id}}" class="row selected-options">
+                                            <div class="col-md-1">
+                                                <div class="">
+                                                    <i class="fa fa-2x fa-arrows"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="margin-left">
+                                                    {{#unless imageExists}}
+                                                        {{> Upload}}
+                                                    {{else}}
+                                                        <a href="" title="" class="image">
+                                                            <img src="{{imageSrc}}"
+                                                                 height="64"
+                                                                 width="64" />
+                                                        </a>
+                                                        <div class="center-overlay">
+                                                            <div class="inner">
+                                                                <a class="clear-image"
+                                                                   href="">
+                                                                    <i class="large fa fa-2x fa-times"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    {{/unless}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <input class="editable-content"
+                                                    data-el-id="{{id}}"
+                                                    data-text-type="text"
+                                                    value="{{text}}"
+                                                    placeholder="name">
+                                                <input class="editable-content"
+                                                    data-el-id="{{id}}"
+                                                    data-text-type="description"
+                                                    value="{{description}}"
+                                                    placeholder="description">
+                                            </div>
+                                            <div class="col-md-1 top-right">
+                                                <button type="button"
+                                                        class="btn btn-smaller btn-danger remove-item"
+                                                        data-el-id="{{id}}"
+                                                        title="Remove this item">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {{else}}
+                                        <div id="{{groupId}}" class="row selected-options group-option">
+                                            <div class='input-group margin-bottom-sm select-group'>
+                                                <span class="input-group-addon"><i class="fa fa-arrows fa-fw"></i></span>
+                                                <input type='text' class='form-control slim-borders editable-content group-option'
+                                                       value="{{text}}"
+                                                       data-el-id="{{groupId}}">
+                                                <span class="input-group-addon remove-item stop-this pointer-mouse"
+                                                      data-el-id="{{groupId}}">
+                                                    <i class="fa fa-times"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {{/if}}
                                 {{/each}}
                             </div>
-                        </form>
-                    </div>
-                {{/if}}
-            </section>
-        </div>
-          <div class="col-md-4">
-            <h3>2. Drag into the right order.</h3>
-            <p>(drag out of the box or uncheck to remove, click text to edit)</p>
-              <section class="">
-                  <form>
-                    <div class="sortable slim-borders"
-                         id="selectedGivingOptionsDiv">
-                        {{#each donationOptions}}
-                            {{#if $eq type "option"}}
-                                <div id="{{id}}" class="row selected-options">
-                                    <div class="col-md-1">
-                                        <div class="">
-                                            <i class="fa fa-2x fa-arrows"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="margin-left">
-                                            {{#unless imageExists}}
-                                                {{> Upload}}
-                                            {{else}}
-                                                <a href="" title="" class="image">
-                                                    <img src="{{imageSrc}}"
-                                                         height="64"
-                                                         width="64" />
-                                                </a>
-                                                <div class="center-overlay">
-                                                    <div class="inner">
-                                                        <a class="clear-image"
-                                                           href="">
-                                                            <i class="large fa fa-2x fa-times"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            {{/unless}}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-7">
-                                        <input class="editable-content"
-                                            data-el-id="{{id}}"
-                                            data-text-type="text"
-                                            value="{{text}}"
-                                            placeholder="name">
-                                        <input class="editable-content"
-                                            data-el-id="{{id}}"
-                                            data-text-type="description"
-                                            value="{{description}}"
-                                            placeholder="description">
-                                    </div>
-                                    <div class="col-md-1 top-right">
-                                        <button type="button"
-                                                class="btn btn-smaller btn-danger remove-item"
-                                                data-el-id="{{id}}"
-                                                title="Remove this item">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            {{else}}
-                                <div id="{{groupId}}" class="row selected-options group-option">
-                                    <div class='input-group margin-bottom-sm select-group'>
-                                        <span class="input-group-addon"><i class="fa fa-arrows fa-fw"></i></span>
-                                        <input type='text' class='form-control slim-borders editable-content group-option'
-                                               value="{{text}}"
-                                               data-el-id="{{groupId}}">
-                                        <span class="input-group-addon remove-item stop-this pointer-mouse"
-                                              data-el-id="{{groupId}}">
-                                            <i class="fa fa-times"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            {{/if}}
-                        {{/each}}
-                    </div>
-                  </form>
-              </section>
-          </div>
-          <div class="col-md-4">
-              <h3>3. Save your list.</h3>
-              <button id="updateDropdown" class="btn btn-primary"><i class="fa fa-save"></i> &nbsp; Save</button>
-              <br>
-              <label for="testDropdown">Dropdown Preview</label><br>
-              <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
-              {{#if $and donationOptions showDD}}
-                  <br>
-                  <label for="selectTestMain">This will be your main selection dropdown</label>
-                    <br>
-                  <select id="mainDD" class="form-control select select-primary mbl" >
-                      {{#each donationOptions}}
-                          {{#if groupId}}
-                            <option value="{{groupId}}">{{text}}</option>
-                          {{/if}}
-                      {{/each}}
-                  </select>
-                  <br>
-
-                  <label>
-                      Select an option from the main menu to see the sub-options
-                  </label>
-                  {{#each donationGroups}}
-                      <select id="dd-{{groupId}}" class="form-control select select-primary mbl">
-                          <optgroup label="{{text}}">{{text}}</optgroup>
-                          {{#each children}}
-                              <option value="{{id}}"
-                                  data-description="{{description}}"
-                                  data-imagesrc="{{imageSrc}}">
-                                  {{text}}
-                              </option>
-                          {{/each}}
-                      </select>
+                          </form>
+                      </section>
+                  </div>
+                  <div class="col-md-4">
+                      <h3>3. Save your list.</h3>
+                      <button id="updateDropdown" class="btn btn-primary"><i class="fa fa-save"></i> &nbsp; Save</button>
                       <br>
-                  {{/each}}
-              {{else}}
-                  {{#if $not donationOptions}}
-                      {{> spinner}}
-                  {{else}}
-                  {{/if}}
-              {{/if}}
-          </div>
+                      <label for="testDropdown">Dropdown Preview</label><br>
+                      <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
+                      {{#if $and donationOptions showDD}}
+                          <br>
+                          <label for="selectTestMain">This will be your main selection dropdown</label>
+                            <br>
+                          <select id="mainDD" class="form-control select select-primary mbl" >
+                              {{#each donationOptions}}
+                                  {{#if groupId}}
+                                    <option value="{{groupId}}">{{text}}</option>
+                                  {{/if}}
+                              {{/each}}
+                          </select>
+                          <br>
+
+                          <label>
+                              Select an option from the main menu to see the sub-options
+                          </label>
+                          {{#each donationGroups}}
+                              <select id="dd-{{groupId}}" class="form-control select select-primary mbl">
+                                  <optgroup label="{{text}}">{{text}}</optgroup>
+                                  {{#each children}}
+                                      <option value="{{id}}"
+                                          data-description="{{description}}"
+                                          data-imagesrc="{{imageSrc}}">
+                                          {{text}}
+                                      </option>
+                                  {{/each}}
+                              </select>
+                              <br>
+                          {{/each}}
+                      {{else}}
+                          {{#if $not donationOptions}}
+                              {{> spinner}}
+                          {{else}}
+                          {{/if}}
+                      {{/if}}
+                  </div>
+              </div>
+            <form method="GET" id="landing_form">
+                <input type="hidden" name="donateTo">
+            </form>
+          {{else}}
+              <div class="text-center">
+                  <h1>You need to enter your organization information first</h1>
+                  <a tabindex="0" role="button" href="{{pathFor 'OrgInfo'}}"
+                     class="btn btn-primary">
+                      Enter Organization Information
+                  </a>
+              </div>
+          {{/if}}
       </div>
-        <form method="GET" id="landing_form">
-            <input type="hidden" name="donateTo">
-        </form>
-    </div>
   </div>
 </template>

@@ -338,6 +338,13 @@ Template.GivingOptions.helpers({
   },
   showDD: function() {
     return Session.get("showDD");
+  },
+  configId: function() {
+    if (!Session.get("configId")) {
+      console.log('no configuration id, need to setup the giving information first');
+      return false;
+    }
+    return true;
   }
 });
 
@@ -361,7 +368,10 @@ Template.GivingOptions.onRendered(function () {
   sortableFunction();
 
   // Set configId
-  Session.set("configId", Config.findOne()._id);
+  Session.set("configId", Config.findOne() && Config.findOne()._id);
+  if (!Session.get("configId")) {
+    console.log('no configuration id, need to setup the giving information first');
+  }
 
   //var ConfigAllOptions = Config.findOne().GivingOptions;
   var donationOptions = Config.findOne() && Config.findOne().donationOptions;
