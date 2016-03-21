@@ -78,15 +78,14 @@ Schema.Config = new SimpleSchema({
     autoform: {
       panelClass: "panel",
       afFieldInput: {
-        class: 'slim-borders',
+        class: 'slim-borders'
       }
     }
   },
   "organization_info.name": {
     type: String,
     label: "Name",
-    max: 100,
-    optional: true
+    max: 100
   },
   "organization_info.full_name": {
     type: String,
@@ -102,7 +101,6 @@ Schema.Config = new SimpleSchema({
   "organization_info.is_501c3": {
     type: Boolean,
     label: "Are you a 501(c)3 non-profit organization?",
-    optional: true,
     autoform: {
       type: "boolean-radios",
       trueLabel: "Yes, We are.",
@@ -208,8 +206,7 @@ Schema.Config = new SimpleSchema({
   },
   "organization_info.emails.contact": {
     type: Array,
-    label: "Main contact address",
-    optional: true
+    label: "Main contact address"
   },
   "organization_info.emails.contact.$": {
     type: String,
@@ -267,7 +264,6 @@ Schema.Config = new SimpleSchema({
   "organization_info.web": {
     type: Object,
     label: "Your website addresses",
-    optional: true,
     autoform: {
       panelClass: "panel"
     }
@@ -275,7 +271,6 @@ Schema.Config = new SimpleSchema({
   "organization_info.web.domain_name": {
     type: String,
     label: "Domain name",
-    optional: true,
     autoform: {
       placeholder: "e.g. trashmountain.com"
     }

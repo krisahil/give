@@ -23,8 +23,8 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane fade active in" id="org-info">
-                {{> quickForm collection="Config" doc=configDoc
-                id="updateInfoSection" type="insert" omitFields="DonorTools, Stripe"
+                {{> quickForm collection="Config" schema="Schema.Config" doc=configDoc
+                id="updateInfoSection" type=formType omitFields="DonorTools, Stripe"
                 template="bootstrap3-horizontal"}}
             </div>
             <div class="tab-pane fade" id="stripe">

@@ -4,6 +4,23 @@ Template.Upload.helpers({
       userId: Meteor.userId(),
       fundId: this.id
     };
+  },
+  myCallbacks: function() {
+    return {
+      validate: function(file) {
+        if (!file) {
+          console.log("Failed");
+        }
+        console.log("validate area");
+        console.log(file);
+        return 'all done';
+      },
+      finished: function( index, fileInfo, context ) {
+        console.log("finished area");
+        console.log(index, fileInfo, context);
+        return;
+      }
+    };
   }
 });
 

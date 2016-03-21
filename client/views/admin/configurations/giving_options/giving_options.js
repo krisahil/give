@@ -26,52 +26,54 @@ function reorderItems() {
 };
 
 function sortableFunction () {
-  $(".sortable").sortable({
-    cursor: 'move',
-    dropOnEmpty: true,
-    handle: '.fa-arrows',
-    helper: function (e, li) {
-      this.copyHelper = li.clone().insertAfter(li);
-      $(this).data('copied', false);
-      return li.clone();
-    },
-    start: function( e, ui ) {
-      clone = $(ui.item[0].outerHTML).clone();
-    },
-    placeholder: {
-      element: function(clone) {
-        return $('<div class="row selected-options sortable-clone">'+clone[0].innerHTML+'</li>');
+  Meteor.setTimeout(function () {
+    $(".sortable").sortable({
+      cursor: 'move',
+      dropOnEmpty: true,
+      handle: '.fa-arrows',
+      helper: function (e, li) {
+        this.copyHelper = li.clone().insertAfter(li);
+        $(this).data('copied', false);
+        return li.clone();
       },
-      update: function() {
-        return;
-      }
-    },
-    stop: function () {
-      var copied = $(this).data('copied');
-      if (!copied) {
-        this.copyHelper.remove();
-      }
-      this.copyHelper = null;
-    },
-    receive: function ( e, ui ) {
-      ui.sender.data('copied', true);
-      sortableIn = 1;
-    },
-    over: function( e, ui ) {
-      sortableIn = 1;
-      $('.sorting' ).removeClass("out-sortable");
-    },
-    out: function( e, ui ) {
-      sortableIn = 0;
-      $('.sorting' ).addClass("out-sortable");
-    },
-    beforeStop: function( e, ui ) {
-      if ( sortableIn === 0 ) {
-        ui.item.remove();
-      }
-    },
-    cancel: ".disable-sort"
-  });
+      start: function( e, ui ) {
+        clone = $(ui.item[0].outerHTML).clone();
+      },
+      placeholder: {
+        element: function(clone) {
+          return $('<div class="row selected-options sortable-clone">'+clone[0].innerHTML+'</li>');
+        },
+        update: function() {
+          return;
+        }
+      },
+      stop: function () {
+        var copied = $(this).data('copied');
+        if (!copied) {
+          this.copyHelper.remove();
+        }
+        this.copyHelper = null;
+      },
+      receive: function ( e, ui ) {
+        ui.sender.data('copied', true);
+        sortableIn = 1;
+      },
+      over: function( e, ui ) {
+        sortableIn = 1;
+        $('.sorting' ).removeClass("out-sortable");
+      },
+      out: function( e, ui ) {
+        sortableIn = 0;
+        $('.sorting' ).addClass("out-sortable");
+      },
+      beforeStop: function( e, ui ) {
+        if ( sortableIn === 0 ) {
+          ui.item.remove();
+        }
+      },
+      cancel: ".disable-sort"
+    });
+  }, 500);
 };
 
 function checkForDuplicateGroupNames(donationOptions) {
@@ -340,11 +342,7 @@ Template.GivingOptions.helpers({
     return Session.get("showDD");
   },
   configId: function() {
-    if (!Session.get("configId")) {
-      console.log('no configuration id, need to setup the giving information first');
-      return false;
-    }
-    return true;
+    return Session.get("configId");
   }
 });
 
@@ -364,13 +362,13 @@ Template.GivingOptions.onCreated(function () {
 
 Template.GivingOptions.onRendered(function () {
 
-  // Start the function to setup the table connections and make them sortable
-  sortableFunction();
-
   // Set configId
   Session.set("configId", Config.findOne() && Config.findOne()._id);
   if (!Session.get("configId")) {
     console.log('no configuration id, need to setup the giving information first');
+  } else {
+    // Start the function to setup the table connections and make them sortable
+    sortableFunction();
   }
 
   //var ConfigAllOptions = Config.findOne().GivingOptions;

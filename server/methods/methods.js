@@ -317,7 +317,8 @@ Meteor.methods({
         });
         console.log(personaResult.data.persona);
         set_this_array.push(personaResult.data.persona);
-      } else if(!Meteor.users.findOne({_id: userID}).persona_info) {
+      } else if(!Meteor.users.findOne({_id: userID}).persona_info &&
+        Customers.findOne({'metadata.user_id': userID})) {
 
         let dt_account_id = Utils.find_dt_account_or_make_a_new_one(
           Customers.findOne({'metadata.user_id': userID}), userID, true);
@@ -334,6 +335,7 @@ Meteor.methods({
         // unique array values exist.
         Meteor.users.update( {_id: userID}, { $addToSet: { persona_ids: dt_account_id } } );
       } else {
+        console.log("Not a DT user");
         return 'Not a DT user';
       }
       console.log(set_this_array);
@@ -341,10 +343,10 @@ Meteor.methods({
       Meteor.users.update({_id: userID}, {$set: {'persona_info': set_this_array}});
 
       return "Finished update_user_document_by_adding_persona_details_for_each_persona_id method call";
-    } catch(e) {
-      logger.error("error in querying DT for persona_info");
-      logger.error(e);
-    }
+     } catch(e) {
+       logger.error("error in querying DT for persona_info");
+       logger.error(e);
+     }
 
   },
   move_donation_to_other_person: function(donation_id, move_to_id) {

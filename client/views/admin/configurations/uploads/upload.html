@@ -1,3 +1,5 @@
 <template name="Upload">
-    {{> dropzone contentType='images' multiple=false formData=addData}}
+    {{> dropzone contentType='images' fileTypes='.jpg,.jpeg,.png,.gif'
+    multiple=false formData=addData callbacks=myCallbacks}}
+    {{ progress }}
 </template>

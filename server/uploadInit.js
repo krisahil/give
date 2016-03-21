@@ -1,8 +1,27 @@
 Meteor.startup(function() {
   UploadServer.init({
     tmpDir: process.env.PWD + '/.uploads/tmp',
-    uploadDir: process.env.PWD + '/.uploads/',
     checkCreateDirectories: true, // create the directories for you
+    uploadDir: process.env.PWD + '/.uploads/',
+    validateRequest: function(req) {
+      logger.info("Got to validateRequest");
+      if (req.headers["content-length"] > 10000000) {
+        logger.info("File is too long");
+        return "File is too long!";
+      }
+      return null;
+    },
+    validateFile: function(file, req) {
+      logger.info("Got to validateFile");
+      if (req.maxFileSize < file.size) {
+        console.log("File is to large");
+        return 'File size to large, should be less than 10MB';
+      }
+      console.log(file.type);
+      console.log(req);
+      console.log("File is NOT to large");
+      return null;
+    },
     imageTypes: /.(gif|jpe?g|png)$/i,
     maxFileSize: 10000000,
     getFileName: function( fileInfo, formData ) {
