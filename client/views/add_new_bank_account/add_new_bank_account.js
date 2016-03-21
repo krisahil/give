@@ -88,13 +88,12 @@ Template.AddNewBankAccount.events({
     e.preventDefault();
     e.stopPropagation();
 
-    var self = this;
     if(Router.current().route.getName() === "FixCardSubscription"){
       $('#modal_for_add_new_bank_account').modal('hide');
       return;
     }
-    Meteor.setTimeout(function() {
-      Router.go("/user/subscriptions/card/resubscribe" + "?s=" + self.id + "&c=" + self.customer);
+    Meteor.setTimeout(() => {
+      Router.go("/user/subscriptions/card/resubscribe" + "?s=" + this.id + "&c=" + this.customer);
     }, 500);
     $('#modal_for_add_new_bank_account').modal('hide');
   }

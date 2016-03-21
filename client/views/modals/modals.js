@@ -63,7 +63,7 @@ Template.Modals.onRendered( function() {
   $('#options').chosen({width: "95%"});
 
   $('#modal_for_serve1000').on('hidden.bs.modal', function () {
-    var currentServed = 574;
+    var currentServed = 577;
     Meteor.call("ShowDTSplits", function (err, result){
       if(!err) {
         // Going with a static number

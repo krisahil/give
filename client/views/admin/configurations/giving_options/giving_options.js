@@ -351,12 +351,8 @@ Template.GivingOptions.helpers({
 /* GivingOptions: Lifecycle Hooks */
 /*****************************************************************************/
 Template.GivingOptions.onCreated(function () {
-  // TODO: remove this for production, use debounce and at least a 1 minute timer
-  // with a button to call Meteor.call("get_dt_funds");
-  let self = this;
-  // Use self.subscribe with the data context reactively
-  self.autorun(function () {
-    self.subscribe("uploaded");
+  this.autorun(() => {
+    this.subscribe("uploaded");
   });
 });
 

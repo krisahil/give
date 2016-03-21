@@ -5,9 +5,8 @@ Template.Uploaded.helpers( {
 });
 
 Template.Upload.onCreated(function() {
-  let self = this;
-  // Use self.subscribe with the data context reactively
-  self.autorun(function () {
-    self.subscribe("uploaded");
+  // Use this.subscribe with the data context reactively
+  this.autorun(() => {
+    this.subscribe("uploaded");
   });
 });
