@@ -10,6 +10,17 @@ Charges._ensureIndex(
   {'invoice': 1},
   {background: true});
 
+Config._ensureIndex(
+  {'organization_info.web.domain_name': 1},
+  {backgrond: true});
+
+Config._ensureIndex(
+  { 'donationOptions.id': 1 },
+  { 'donationOptions.groupId': 1 },
+  { unique: true },
+  { backgrond: true }
+);
+
 Customers._ensureIndex(
   {'id': 1},
   {'customer': 1},
@@ -55,17 +66,6 @@ Meteor.users._ensureIndex(
   {'emails.address': 1},
   {'primary_customer_id': 1},
   {background: true});
-
-Config._ensureIndex(
-  {'organization_info.web.domain_name': 1},
-  {backgrond: true});
-
-Config._ensureIndex(
-  { 'donationOptions.id': 1 },
-  { 'donationOptions.groupId': 1 },
-  { unique: true },
-  { backgrond: true }
-);
 
 Subscriptions._ensureIndex(
   {'id': 1},
