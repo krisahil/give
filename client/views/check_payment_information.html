@@ -1,0 +1,30 @@
+<template name="checkPaymentInformation">
+        <div class="row text-center">
+            <br>
+            <div class="col-md-6">
+                <!-- Bank Info -->
+                <div class="form-group">
+                    <input {{attributes_Input_AccountNumber}} data-parsley-type="number" class="form-control slim-borders" />
+                </div>
+                <div class="form-group">
+                    <input {{attributes_Input_RoutingNumber}} class="form-control slim-borders" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <img src="/images/check_image.png" class="img-responsive" />
+            </div>
+            <div class="col-md-12">
+                <br>
+                <!-- Checkbox for Covering related fees-->
+                <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} >
+                Save this payment method for future use
+                    <span>
+                        <i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
+                           data-placement="bottom" data-trigger="hover focus" title="Save Bank Account" data-container="body"
+                           data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
+                         method in the future.">
+                        </i>
+                    </span>
+            </div>
+        </div>
+</template>

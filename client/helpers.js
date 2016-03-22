@@ -1,31 +1,32 @@
 
 Template.registerHelper('formatTime', function(context) {
-  if(context)
-    return moment(context).format('MM/DD/YYYY, hh:mma');
+  if (context) {
+    return moment( context ).format( 'MM/DD/YYYY, hh:mma' );
+  }
 });
 
-Template.registerHelper('shortIt', function(stringToShorten, maxCharsAmount){
-  if(stringToShorten.length <= maxCharsAmount){
+Template.registerHelper('shortIt', function(stringToShorten, maxCharsAmount) {
+  if ( stringToShorten.length <= maxCharsAmount ) {
     return stringToShorten;
   }
   return stringToShorten.substring(0, maxCharsAmount);
 });
 
-Template.registerHelper('twoDecimalPlaces', function(stringToAddDecimal){
+Template.registerHelper('twoDecimalPlaces', function(stringToAddDecimal) {
   return parseFloat(Math.round(stringToAddDecimal) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 });
 
 Template.registerHelper('formatDate', function(date, unix) {
-  if(date && unix){
+  if (date && unix) {
     return moment.unix(date).format('MMM DD, YYYY');
-  } else if(date){
+  } else if (date) {
     return moment(date).format('MMM DD, YYYY');
   }
 });
 
 Template.registerHelper('logged_in', function(context) {
-  if(Meteor.user()){
-    switch(context){
+  if (Meteor.user()) {
+    switch (context) {
       case "fname":
         return Meteor.user().profile.fname;
         break;
@@ -54,7 +55,7 @@ Template.registerHelper('logged_in', function(context) {
         return Meteor.user().profile.phone;
         break;
       case "business_name":
-        if(Meteor.user().profile.business_name){
+        if (Meteor.user().profile.business_name) {
           return  Meteor.user().profile.business_name;
         }
         break;
@@ -62,7 +63,7 @@ Template.registerHelper('logged_in', function(context) {
         return;
     }
   }
-  else{
+  else {
     return;
   }
 });
@@ -72,14 +73,13 @@ Template.registerHelper('logged_in', function(context) {
  * Convert a UNIX epoch string to human readable time.
  */
 
-Template.registerHelper('epochToString', function(timestamp){
-  if (timestamp){
+Template.registerHelper('epochToString', function(timestamp) {
+  if (timestamp) {
     var length = timestamp.toString().length;
     if ( length === 10 ) {
       return moment.unix(timestamp).format("MM/DD/YY");
-    } else {
-      return moment.unix(timestamp / 1000).format("MM/DD/YY");
     }
+    return moment.unix(timestamp / 1000).format("MM/DD/YY");
   }
 });
 
@@ -89,9 +89,9 @@ Template.registerHelper('epochToString', function(timestamp){
  * and false if they're not.
  */
 
-Template.registerHelper('equals', function(c1,c2){
+Template.registerHelper('equals', function(c1, c2) {
   // If case1 is equal to case2, return true, else false.
-  return c1 == c2 ? true : false;
+  return c1 === c2 ? true : false;
 });
 
 /*
@@ -99,7 +99,7 @@ Template.registerHelper('equals', function(c1,c2){
  * Take the passed value in cents and convert it to USD.
  */
 
-Template.registerHelper('centsToDollars', function(cents){
+Template.registerHelper('centsToDollars', function(cents) {
   return "$" + cents / 100;
 });
 
@@ -108,8 +108,8 @@ Template.registerHelper('centsToDollars', function(cents){
  * Take the two passed values, divide them, and multiply by 100 to return percentage.
  */
 
-Template.registerHelper('percentage', function(v1,v2){
-  return ( parseInt(v1) / parseInt(v2) ) * 100 + "%";
+Template.registerHelper('percentage', function(v1, v2) {
+  return ( parseInt(v1, 10) / parseInt(v2, 10) ) * 100 + "%";
 });
 
 /*
@@ -118,7 +118,7 @@ Template.registerHelper('percentage', function(v1,v2){
  * data out of the database that's stored in lowercase.
  */
 
-Template.registerHelper('capitalize', function(string){
+Template.registerHelper('capitalize', function(string) {
   if (string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -129,36 +129,8 @@ Template.registerHelper('capitalize', function(string){
  * Return the proper string based on the number of lists.
  */
 
-Template.registerHelper('limitString', function(limit){
+Template.registerHelper('limitString', function(limit) {
   return limit > 1 ? limit + " lists" : limit + " list";
-});
-
-/*
- * Plan
- * Get the current subscription data for our user. We set this up as a UI helper
- * because we'll need to reference this information more than once.
- */
-
-Template.registerHelper('plan', function(){
-  // Get the current user.
-  var user = Meteor.userId(),
-    plan = Session.get('currentUserPlan_' + user);
-  // If we have a user, call to checkUserPlan on the server to determine
-  // their current plan. We do this so that we don't have to publish the user's
-  // subscription data to the client.
-  if ( user ) {
-    Meteor.call('checkUserPlan', user, function(error, response){
-      if (error) {
-        alert(error.reason);
-      } else {
-        // Get the response from the server and set it equal to the user's
-        // unique session variable (this will be either true or false).
-        Session.set('currentUserPlan_' + user, response);
-      }
-    });
-  }
-  // Return the result of the method being called.
-  return plan;
 });
 
 /*
@@ -168,43 +140,41 @@ Template.registerHelper('plan', function(){
  * to the helper in the template.
  */
 
-Template.registerHelper('currentRoute', function(route){
+Template.registerHelper('currentRoute', function(route) {
   return Session.equals('currentRoute', route) ? 'active' : '';
 });
 
-Template.registerHelper('MeteorUser', function(){
-  if(Meteor.user()){
+Template.registerHelper('MeteorUser', function() {
+  if (Meteor.user()) {
     return true;
-  } else{
-    return false;
   }
+  return false;
 });
 
 
 Template.registerHelper('campaign', function() {
   var campaign = Session.get('params.campaign');
-  if(campaign === '') {
+  if (campaign === '') {
     return false;
   }
 });
 
 
-Template.registerHelper('locked_amount', function () {
+Template.registerHelper('locked_amount', function() {
   var locked = Session.get("params.locked_amount");
-  if(locked === 'true') {
+  if (locked === 'true') {
     return true;
   } else {
     return false;
   }
 });
 
-Template.registerHelper('locked_frequency', function () {
+Template.registerHelper('locked_frequency', function() {
   var locked = Session.get("params.locked_frequency");
-  if(locked === 'true') {
+  if (locked === 'true') {
     return true;
-  } else {
-    return false;
   }
+  return false;
 });
 
 Template.registerHelper('cleanupString', function(string) {
@@ -217,9 +187,12 @@ Template.registerHelper('cleanupString', function(string) {
  * Take the two passed values, subtract them, and divide by 100 to return dollar amount.
  */
 
-Template.registerHelper('subtract', function(v1,v2){
-  if(v1 <= v2) return; // Don't want to divide by 0 or a negative
-  return ( v1 - v2 ) / 100 ;
+Template.registerHelper('subtract', function(v1, v2) {
+  // Don't want to divide by 0 or a negative
+  if (v1 <= v2) {
+    return;
+  }
+  return ( v1 - v2 ) / 100;
 });
 
 /*
@@ -227,17 +200,16 @@ Template.registerHelper('subtract', function(v1,v2){
  * Take the two passed values, add them, and divide by 100 to return dollar amount.
  */
 
-Template.registerHelper('add', function(v1,v2){
-  if((v1 + v2) === 0 ) return 0; // Don't want to divide by 0
-  return ( v1 + v2 ) / 100 ;
+Template.registerHelper('add', function(v1, v2) {
+  if ((v1 + v2) === 0 ) return 0; // Don't want to divide by 0
+  return ( v1 + v2 ) / 100;
 });
 
 Template.registerHelper('addingNew', function(type) {
-  if(Session.equals("addingNew", type)) {
+  if (Session.equals("addingNew", type)) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 });
 
 

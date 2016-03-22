@@ -10,9 +10,13 @@
                                 <div class="form-group">
                                     {{#if isRepair}}
                                         {{#if addNewCard}}
-                                            <label class="text-success"><i class="fa fa-lock"></i> Card Number (Secure, Like a Bank)</label>
+                                            <label class="text-success"><i class="fa fa-lock"></i> Card Number</label>
                                             <input type="text" name="cardNumber" class="form-control card-number" placeholder="Card Number"><br>
-                                            <a class="cancel-new-card btn btn-primary btn-block" href="" >Switch to update expiration form</a>
+                                            {{#if customer_device.exp_month}}
+                                                <a class="cancel-new-card btn btn-primary btn-block" href="">
+                                                    Switch to update expiration form
+                                                </a>
+                                            {{/if}}
                                         {{else}}
                                             {{#if customer}}
                                                 <p class="alert alert-info">Account used: <strong> {{customer_device.brand}}</strong> ....{{customer_device.last4}}
@@ -83,6 +87,11 @@
                     <div class="panel-footer">
                         <button type="submit" class="btn btn-primary resubscribe" data-loading-text="Processing...">Update</button>
                         <a id="cancel-card-form" class="btn btn-warning">Cancel</a>
+
+                        {{> AddNewBankAccount}}
+                        <a class="btn btn-primary btn_modal_for_add_new_bank_account pull-right">
+                            Use Bank Instead
+                        </a>
                     </div>
                 </form> <!-- end #resubscribe -->
             </div>

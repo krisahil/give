@@ -1,10 +1,17 @@
 .jqDropZone {
-    background: lightgrey;
-    width: 150px;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-weight: bold;
+  background-color: @brand-default;
+  width: 64px;
+  height: 64px;
+  line-height: 70px;
+  text-align: center;
+  font-weight: bold;
+  border: dashed 1px @brand-inverse;
+
+  color: @brand-primary;
+  vertical-align: middle;
+  float: left;
+  margin-right: 5px;
+  max-width: 64px;
 }
 .jqDropZone.in {
     width: 600px;
@@ -13,7 +20,7 @@
     font-size: larger;
 }
 .jqDropZone.hover {
-    background: lawngreen;
+    background: @brand-success;
 }
 .jqDropZone.fade {
     -webkit-transition: all 0.3s ease-out;

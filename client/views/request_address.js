@@ -107,24 +107,24 @@ Template.RequestAddress.helpers({
         required: true
       }
     },
-    attributes_Input_Zip: function () {
+    attributes_Input_Zip: function() {
       return {
         type: "text",
         name: "postal_code",
-          id: "postal_code",
+        id: "postal_code",
         placeholder: "Zip or Postal Code",
         required: true
-      }
+      };
     },
-    attributes_Select_Country: function () {
+    attributes_Select_Country: function() {
       return {
         name: "country",
-          id: "country",
+        id: "country",
         required: true
-      }
+      };
     }
 });
 
-Template.RequestAddress.onRendered(function () {
+Template.RequestAddress.onRendered(function() {
   $("#phone").mask("(999) 999-9999");
 });

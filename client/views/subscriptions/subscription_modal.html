@@ -4,7 +4,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-
                     <h4 class="modal-title">
                         Here are the recurring gift details. Edit the fields you want to change.
                     </h4>
@@ -38,7 +37,7 @@
                                     {{/unless}}
                                 </div>
                                 <div class="col col-lg-6"
-                                     style="{{#unless locked}}display: none;{{/unless}}"
+                                     style="display: none;"
                                      id="designationSection">
                                     {{> DonationTo}}
                                 </div>
@@ -53,7 +52,7 @@
                                     {{/unless}}
                                 </div>
                                 <div class="col col-lg-6"
-                                     style="{{#unless locked}}display: none;{{/unless}}"
+                                     style="display: none;"
                                      id="calendarSection">
                                     <div class="form-group">
                                         <label>Next Donation Date</label>
@@ -80,7 +79,7 @@
                                     {{/unless}}
                                 </div>
                                 <div class="col col-lg-6"
-                                     style="{{#unless locked}}display: none;{{/unless}}"
+                                     style="display: none;"
                                      id="noteSection">
                                     <label>Donation Note</label>
                                     <input id="note" value="{{note}}" class="form-control slim-borders" />

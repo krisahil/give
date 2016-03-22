@@ -2,21 +2,24 @@ _.extend(StripeFunctions, {
   'control_flow_of_stripe_event_processing': function ( request ) {
 
     // Setup locally scoped vars for this function
-    let stripe_request, check_for_violation, event, wait_for_DT_update, wait_for_storage ;
+    let check_for_violation,
+      event,
+      wait_for_DT_update,
+      wait_for_storage;
 
     // Get this event from Stripe so we know it wasn't malicious or tampered with
-    stripe_request = StripeFunctions.retrieve_stripe_event( request );
+    const STRIPE_REQUEST = StripeFunctions.retrieve_stripe_event( request );
     console.log("Finished retrieve_stripe_event");
 
     // Did this event come from Stripe?
-    if( stripe_request ){
+    if( STRIPE_REQUEST ){
 
-      console.log(stripe_request.type);
+      console.log(STRIPE_REQUEST.type);
       // Did it come as a pending charge event?
-      if(stripe_request.type === 'charge.pending') {
+      if(STRIPE_REQUEST.type === 'charge.pending') {
 
         // Does it violate an out of order rule?
-        check_for_violation = StripeFunctions.does_this_charge_event_violate_an_out_of_order_rule(stripe_request);
+        check_for_violation = StripeFunctions.does_this_charge_event_violate_an_out_of_order_rule(STRIPE_REQUEST);
 
         // If yes, then we probably received this event in the wrong order,
         // we don't want it to affect our database, so just skip out of processing this event
@@ -26,20 +29,20 @@ _.extend(StripeFunctions, {
       }
 
       // Store and wait
-      wait_for_storage = StripeFunctions.store_stripe_event(stripe_request);
+      wait_for_storage = StripeFunctions.store_stripe_event(STRIPE_REQUEST);
 
       // Send the event to the proper event function
-      event = Stripe_Events[stripe_request.type]( stripe_request );
+      event = Stripe_Events[STRIPE_REQUEST.type]( STRIPE_REQUEST );
 
-      if(stripe_request.data.object.object === 'charge'){
+      if(STRIPE_REQUEST.data.object.object === 'charge'){
         console.log("Sending to DT");
-        if(DT_donations.findOne({transaction_id: stripe_request.data.object.id})){
+        if(DT_donations.findOne({transaction_id: STRIPE_REQUEST.data.object.id})){
           // Send the donation change to Donor Tools. This function has a retry built
           // in, so also pass 1 for the interval
-          wait_for_DT_update = Utils.update_dt_donation_status( stripe_request, 1 );
+          wait_for_DT_update = Utils.update_dt_donation_status( STRIPE_REQUEST, 1 );
         } else {
           StripeFunctions.check_for_necessary_objects_before_inserting_into_dt(
-            stripe_request.data.object.id, stripe_request.data.object.customer, 1);
+            STRIPE_REQUEST.data.object.id, STRIPE_REQUEST.data.object.customer, 1);
         }
       } else {
         // TODO: not a charge, need to send to a different area, perhaps customer creation?
@@ -50,6 +53,7 @@ _.extend(StripeFunctions, {
     } else {
       // Return since this event either had an error, or it didn't come from Stripe
       console.log("Exiting control flow, since the event had an error, or didn't come from Stripe");
+      throw new Meteor.Error("401", "A request came in, but the event doesn't seem to have come from Stripe!");
       return;
     }
 
@@ -93,7 +97,7 @@ _.extend(StripeFunctions, {
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this since the event won't be sent again
         console.log(err);
-        throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+        throw new Meteor.Error("500", err);
     });
 
   },
@@ -118,7 +122,7 @@ _.extend(StripeFunctions, {
         return res;
       }, function(err) {
         console.log(err);
-        throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
+        throw new Meteor.Error("500", err);
     });
 
   },
@@ -144,7 +148,7 @@ _.extend(StripeFunctions, {
         return res;
       }, function(err) {
         console.log(err);
-        throw new Meteor.Error("Error from Stripe invoice retrieval Promise", err);
+        throw new Meteor.Error("500", err);
     });
 
   },
@@ -169,7 +173,7 @@ _.extend(StripeFunctions, {
         return res;
       }, function(err) {
         console.log(err);
-        throw new Meteor.Error("Error from Stripe customer update Promise", err);
+        throw new Meteor.Error("500", err);
     });
 
   },
@@ -303,13 +307,13 @@ _.extend(StripeFunctions, {
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
         console.log(err);
-        throw new Meteor.Error("Error from Stripe customer metadata update Promise", err);
+        throw new Meteor.Error("500", err);
       });
   },
   'check_for_necessary_objects_before_inserting_into_dt': function (charge_id, customer_id, interval) {
     logger.info("Started check_for_necessary_objects_before_inserting_into_dt with interval of: " + interval);
 
-    let chargeCursor, customerCursor, stripeCustomerRecord;
+    let chargeCursor, customerCursor, stripeCustomerRecord, dtPersonaId;
 
     chargeCursor =    Charges.findOne({_id: charge_id});
 
@@ -347,7 +351,9 @@ _.extend(StripeFunctions, {
       }, 15000)
     } else {
       if(interval % 1 === 0.5) {
-        throw new Meteor.Error("There was a problem that prevented the function from getting " +
+        logger.error("500", "There was a problem that prevented the function from getting " +
+          "a result from either Donor Tools, or the MongoDB cursors");
+        throw new Meteor.Error("500", "There was a problem that prevented the function from getting " +
           "a result from either Donor Tools, or the MongoDB cursors");
       } else {
 
@@ -360,14 +366,21 @@ _.extend(StripeFunctions, {
         console.dir(invoice.data);
         let previous_charge_id = invoice.data[0].charge;
         console.log("Charge_id: ", previous_charge_id);
-        let dt_donation_cursor = DT_donations.findOne({transaction_id: previous_charge_id});
-        console.log("dt_donatino_cursor.persona_id : ", dt_donation_cursor.persona_id );
-        let dt_persona_id = dt_donation_cursor.persona_id;
-        // TODO: Q: what happens if I change the persona_id that this subscription is associated with?
-        // Always update the customer metadata to contain this dt_persona_id and this won't be a problem...?
-
-        let update_stripe_customer = Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dt_persona_id } });
-        StripeFunctions.update_customer_metadata(customer_id, dt_persona_id);
+        
+        if (previous_charge_id) {
+          let dt_donation_cursor = DT_donations.findOne({transaction_id: previous_charge_id});
+          console.log("dt_donation_cursor.persona_id : ", dt_donation_cursor.persona_id );
+          dtPersonaId = dt_donation_cursor.persona_id;
+        } else {
+          dtPersonaId = Utils.find_dt_persona_flow(customerCursor.metadata.email, customer_id);
+          logger.info("dtPersonaId : ", dtPersonaId );
+          if (!dtPersonaId) {
+            logger.error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+            throw new Meteor.Error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+          }
+        }
+        Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dtPersonaId } });
+        StripeFunctions.update_customer_metadata(customer_id, dtPersonaId);
         StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += .5);
       }
     }
@@ -401,7 +414,7 @@ _.extend(StripeFunctions, {
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
         console.log(err);
-        throw new Meteor.Error("Error from Stripe customer metadata update Promise", err);
+        throw new Meteor.Error("500", err);
       });
 
   },
@@ -429,7 +442,7 @@ _.extend(StripeFunctions, {
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
         console.log(err);
-        throw new Meteor.Error("Error from Stripe getStripeTransfer Promise", err);
+        throw new Meteor.Error("500", err);
       });
 
   },
@@ -463,7 +476,7 @@ _.extend(StripeFunctions, {
       }, function(err) {
         // TODO: if there is a a problem we need to resolve this
         console.log(err);
-        throw new Meteor.Error("Error from Stripe getStripeTransfer Promise", err);
+        throw new Meteor.Error("500", err);
       });
 
 

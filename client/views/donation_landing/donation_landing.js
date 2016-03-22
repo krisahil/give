@@ -171,7 +171,7 @@ Template.DonationLanding.onRendered(function () {
         text: "Timm Collins",
         value: "TimmCollins",
         selected: false,
-        description: "Chief Operating Officer & Discipleship Director",
+        description: "Chief Operating Officer",
         imageSrc: "/images/team/Timm.jpg"
     }, {
         text: "Willie Brooks",

@@ -1,16 +1,15 @@
-
 Router.configure({
-    layoutTemplate: 'MasterLayout',
-    loadingTemplate: 'Loading',
-    notFoundTemplate: 'NotFound',
-    templateNameConverter: 'upperCamelCase',
-    routeControllerNameConverter: 'upperCamelCase'
+  layoutTemplate: 'MasterLayout',
+  loadingTemplate: 'Loading',
+  notFoundTemplate: 'NotFound',
+  templateNameConverter: 'upperCamelCase',
+  routeControllerNameConverter: 'upperCamelCase'
 });
 
 Router.plugin('ensureSignedIn', {
-    except: ['donation.form', 'donation.landing', 'donation.thanks',
-             'donation.gift', 'donation.scheduled', 'enrollAccount',
-             'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
+  except: ['donation.form', 'donation.landing', 'donation.thanks',
+           'donation.gift', 'donation.scheduled', 'enrollAccount',
+           'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
 });
 
 // TODO: convert all of these onBeforeAction functions to only one per route
@@ -22,142 +21,143 @@ Router.onBeforeAction(function() {
   } else {
     this.next();
   }
-}, {only : ['Users', 'GivingOptions', 'OrgInfo']});
+}, {
+  only: ['Users', 'GivingOptions', 'OrgInfo']
+});
 
 Router.onBeforeAction(function() {
-
   if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager', 'reports'])) {
     this.render("NotFound");
   } else {
     this.next();
   }
-}, {only : 'Dashboard'});
+}, {
+  only: 'Dashboard'
+});
 
 Router.onBeforeAction(function() {
-
   if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager', 'reports']) ) {
     this.render("NotFound");
   } else {
     this.next();
   }
-}, {only : ['transfers', 'Reports']});
-
-Router.route('', {
-
-    name: 'donation.form',
-    path: '',
-    subscriptions: function () {
-        this.subscribe('Serve1000Sources2015').wait();
-    },
-    waitOn: function () {
-      return Meteor.subscribe('Serve1000Sources2015');
-    },
-    action: function () {
-        var params = this.params;
-
-        if (Meteor.user()) {
-            Router.go('user.give');
-        }
-        this.render('DonationForm');
-
-        Session.set('params.amount', params.query.amount);
-        Session.set('params.campaign', params.query.campaign);
-        Session.set('params.donateTo', params.query.donateTo);
-        Session.set('params.donateWith', params.query.donateWith);
-        Session.set('params.dt_source', params.query.dt_source);
-        Session.set('params.start_date', params.query.start_date);
-        Session.set('params.note', params.query.note);
-        Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
-        Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
-        Session.set('params.exp_month', params.query.exp_month);
-        Session.set('params.exp_year', params.query.exp_year);
-        Session.set('params.locked_amount', params.query.locked_amount);
-        Session.set('params.locked_frequency', params.query.locked_frequency);
-        Session.set('params.recurring', params.query.recurring);
-        Session.set('params.writeIn', params.query.writeIn);
-    }
+}, {
+  only: ['transfers', 'Reports']
 });
 
-Router.route('/landing', function () {
+Router.route('', {
+  name: 'donation.form',
+  path: '',
+  subscriptions: function() {
+    this.subscribe('Serve1000Sources2015').wait();
+  },
+  waitOn: function() {
+    return Meteor.subscribe('Serve1000Sources2015');
+  },
+  action: function() {
     var params = this.params;
-    if(Meteor.user()){
-        Session.set('params.give', "Yes");
-        Router.go('subscriptions');
-    }
 
-    this.render('DonationLanding');
+    if (Meteor.user()) {
+      Router.go('user.give');
+    }
+    this.render('DonationForm');
+
+    Session.set('params.amount', params.query.amount);
+    Session.set('params.campaign', params.query.campaign);
+    Session.set('params.donateTo', params.query.donateTo);
+    Session.set('params.donateWith', params.query.donateWith);
+    Session.set('params.dt_source', params.query.dt_source);
+    Session.set('params.start_date', params.query.start_date);
+    Session.set('params.note', params.query.note);
+    Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
+    Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
+    Session.set('params.exp_month', params.query.exp_month);
+    Session.set('params.exp_year', params.query.exp_year);
+    Session.set('params.locked_amount', params.query.locked_amount);
+    Session.set('params.locked_frequency', params.query.locked_frequency);
+    Session.set('params.recurring', params.query.recurring);
+    Session.set('params.writeIn', params.query.writeIn);
+  }
+});
+
+Router.route('/landing', function() {
+  if (Meteor.user()) {
+    Session.set('params.give', "Yes");
+    Router.go('subscriptions');
+  }
+
+  this.render('DonationLanding');
 }, {
-    name: 'donation.landing'
+  name: 'donation.landing'
 });
 
 Router.route('/thanks', {
-    name: 'donation.thanks',
-    waitOn: function () {
-        return  [
-            Meteor.subscribe('receipt_customers', this.params.query.c),
-            Meteor.subscribe('receipt_charges', this.params.query.charge)
-        ];
-    },
-    data: function () {
-
-    },
-    action: function () {
-        this.render('Thanks', {
-            data: function () {
-                Session.set('print', this.params.query.print);
-            }
-        });
-    }
+  name: 'donation.thanks',
+  waitOn: function() {
+    return [
+      Meteor.subscribe('receipt_customers', this.params.query.c),
+      Meteor.subscribe('receipt_charges', this.params.query.charge)
+    ];
+  },
+  action: function() {
+    this.render('Thanks', {
+      data: function() {
+        Session.set('print', this.params.query.print);
+      }
+    });
+  }
 });
 
 Router.route('/gift/:_id', function () {
 
-    var params = this.params;
+  var params = this.params;
 
-    this.subscribe('donate', params._id);
+  this.subscribe('donate', params._id);
 
-    if (this.ready()) {
-        this.render('Gift', {
-            data: function () {
-                Session.set('print', params.query.print);
-                Session.set('transaction_guid', params.query.transaction_guid);
-                return Donate.findOne(params._id);
-            }
-        });
-        this.next();
-    }else {
-        this.render('Loading');
-        this.next();
-    }
+  if (this.ready()) {
+    this.render('Gift', {
+      data: function() {
+        Session.set('print', params.query.print);
+        Session.set('transaction_guid', params.query.transaction_guid);
+        return Donate.findOne(params._id);
+      }
+    });
+    this.next();
+  }else {
+    this.render('Loading');
+    this.next();
+  }
 }, {
-    name: 'donation.gift'
+  name: 'donation.gift'
 });
 
-Router.route('/dashboard', function () {
-    this.layout('AdminLayout');
+Router.route('/dashboard', function() {
+  this.layout('AdminLayout');
 
-    this.wait(Meteor.subscribe('publish_for_admin_give_form'));
-    this.render('Dashboard');
+  this.wait(Meteor.subscribe('publish_for_admin_give_form'));
+  this.render('Dashboard');
 }, {
-    name: 'Dashboard'
+  name: 'Dashboard'
 });
 
-Router.route('/reports', function () {
-    this.layout('AdminLayout');
+Router.route('/reports', function() {
+  this.layout('AdminLayout');
 
-    this.render('Reports');
+  this.render('Reports');
 }, {
-    name: 'Reports'
+  name: 'Reports'
 });
 
 
-Router.route('/user', function (){
+Router.route('/user', function() {
 
   this.layout('UserLayout');
 
-  this.wait([Meteor.subscribe('userStripeData'),
-             Meteor.subscribe('userDT'),
-             Meteor.subscribe('userDTFunds')]);
+  this.wait([
+    Meteor.subscribe('userStripeData'),
+    Meteor.subscribe('userDT'),
+    Meteor.subscribe('userDTFunds')
+  ]);
   if (this.ready()) {
     this.render('UserProfile');
   } else {
@@ -167,38 +167,38 @@ Router.route('/user', function (){
   name: 'user.profile'
 });
 
-Router.route('/transfers',{
-    layoutTemplate: 'UserLayout',
+Router.route('/transfers', {
+  layoutTemplate: 'UserLayout',
 
-    action: function () {
-        if (this.ready()) {
-            this.render();
-        } else {
-            this.render('Loading');
-        }
-    },
-    name: 'stripe.transfers'
+  action: function() {
+    if (this.ready()) {
+      this.render();
+    } else {
+      this.render('Loading');
+    }
+  },
+  name: 'stripe.transfers'
 });
 
 Router.route('/expiring',{
-    layoutTemplate: 'UserLayout',
+  layoutTemplate: 'UserLayout',
 
-    subscriptions: function(){
-        return [
-            Meteor.subscribe('subscriptions_and_customers')
-        ]
-    },
-    action: function () {
-        if (this.ready()) {
-            this.render();
-        } else {
-            this.render('Loading');
-        }
-    },
-    name: 'stripe.expiring'
+  subscriptions: function(){
+    return [
+        Meteor.subscribe('subscriptions_and_customers')
+    ];
+  },
+  action: function() {
+    if (this.ready()) {
+      this.render();
+    } else {
+      this.render('Loading');
+    }
+  },
+  name: 'stripe.expiring'
 });
 
-Router.route('/transfers/:_id', function () {
+Router.route('/transfers/:_id', function() {
   var params = this.params;
   var id = params._id;
 
@@ -212,84 +212,82 @@ Router.route('/transfers/:_id', function () {
   }
 });
 
-Router.route('/user/give',{
-    layoutTemplate: 'UserLayout',
+Router.route('/user/give', {
+  layoutTemplate: 'UserLayout',
 
-    subscriptions: function(){
-        return [
-            Meteor.subscribe('userStripeData'),
-            Meteor.subscribe('userDT'),
-            Meteor.subscribe('userDTFunds'),
-            Meteor.subscribe('devices')
-        ]
-    },
-    action: function () {
-        if (this.ready()) {
-            this.render();
-        } else {
-            this.render('Loading');
-        }
-    },
-    name: 'user.give'
+  subscriptions: function() {
+    return [
+      Meteor.subscribe('userStripeData'),
+      Meteor.subscribe('userDT'),
+      Meteor.subscribe('userDTFunds'),
+      Meteor.subscribe('devices')
+    ];
+  },
+  action: function() {
+    if (this.ready()) {
+      this.render();
+    } else {
+      this.render('Loading');
+    }
+  },
+  name: 'user.give'
 });
 
 Router.route('Subscriptions', function() {
-    var params = this.params;
-    Session.set('fix_it', params.query.fix_it);
+  var params = this.params;
+  Session.set('fix_it', params.query.fix_it);
 
-    this.wait(Meteor.subscribe('user_data_and_subscriptions_with_only_4'));
-    if (this.ready()) {
-        this.render();
-    } else {
-        this.render('Loading');
-    }
+  this.wait(Meteor.subscribe('user_data_and_subscriptions_with_only_4'));
+  if (this.ready()) {
+    this.render();
+  } else {
+    this.render('Loading');
+  }
 }, {
-    name: 'subscriptions',
-    layoutTemplate: 'UserLayout',
-    path: '/user/subscriptions'
+  name: 'subscriptions',
+  layoutTemplate: 'UserLayout',
+  path: '/user/subscriptions'
 });
 
 Router.route('/scheduled', {
-    name: 'donation.scheduled',
+  name: 'donation.scheduled',
 
-    data: function () {
-        Session.set('params.frequency', this.params.query.frequency);
-        Session.set('params.amount', this.params.query.amount);
-        Session.set('params.start_date', moment(this.params.query.start_date * 1000).format('DD MMM, YYYY'));
-    }
+  data: function() {
+    Session.set('params.frequency', this.params.query.frequency);
+    Session.set('params.amount', this.params.query.amount);
+    Session.set('params.start_date', moment(this.params.query.start_date * 1000).format('DD MMM, YYYY'));
+  }
 });
 
-Router.route('/webhooks/stripe', function () {
+Router.route('/webhooks/stripe', function() {
+  // Receive an event, check that it contains a data.object object and send along to appropriate function
+  var request = this.request.body;
+  var dtStatus;
 
-    // Receive an event, check that it contains a data.object object and send along to appropriate function
-    var request = this.request.body;
-    var dt_status;
-
-    if(request.data && request.data.object){
-      Meteor.call("checkDonorTools", function (err, res) {
-        if(res && res === true){
-          dt_status = true;
-        } else {
-          logger.info("DT connection is down");
-          dt_status = false;
-        }
-      });
-      if(dt_status){
-        // Got it, let the Stripe server go
-        this.response.statusCode = 200;
-        this.response.end('Oh hai Stripe!\n');
-
-        // Process this event, but first check that it actually came from Stripe
-        StripeFunctions.control_flow_of_stripe_event_processing( request );
+  if (request.data && request.data.object) {
+    Meteor.call("checkDonorTools", function(err, res) {
+      if (res && res === true) {
+        dtStatus = true;
       } else {
-        console.log("No connecto to DT available");
-        this.response.statusCode = 500;
-        this.response.end('Sorry, no connection to DonorTools available!');
+        logger.info("DT connection is down");
+        dtStatus = false;
       }
+    });
+    if (dtStatus) {
+      // Got it, let the Stripe server go
+      this.response.statusCode = 200;
+      this.response.end('Oh hai Stripe!\n');
+
+      // Process this event, but first check that it actually came from Stripe
+      StripeFunctions.control_flow_of_stripe_event_processing( request );
     } else {
-        this.response.statusCode = 400;
-        this.response.end('Oh hai Stripe!\n\n');
+      this.response.statusCode = 500;
+      this.response.end('Sorry, no connection to DonorTools available!');
     }
+  } else {
+    this.response.statusCode = 400;
+    this.response.end('Oh hai Stripe!\n\n');
+  }
 }, {
   where: 'server',
   name: 'stripe_webhooks'
@@ -299,15 +297,15 @@ Router.route('FixCardSubscription', {
   layoutTemplate: 'UserLayout',
   path: '/user/subscriptions/card/resubscribe',
   template: 'FixCardSubscription',
-  subscriptions: function(){
+  subscriptions: function() {
     var query = this.params.query;
 
     return [
       Meteor.subscribe( 'subscription', query.s ),
       Meteor.subscribe( 'customer', query.c )
-    ]
+    ];
    },
-  action: function () {
+  action: function() {
     var query = this.params.query;
 
     if (this.ready()) {
@@ -323,13 +321,13 @@ Router.route('FixBankSubscription', {
     layoutTemplate: 'UserLayout',
     path: '/user/subscriptions/bank/resubscribe',
     template: 'FixBankSubscription',
-    subscriptions: function(){
+    subscriptions: function() {
       return [
         Meteor.subscribe('subscription', this.params.query.s),
         Meteor.subscribe('customer', this.params.query.c)
-      ]
+      ];
     },
-    action: function () {
+    action: function() {
       if (this.ready()) {
         var query = this.params.query;
         Session.set('sub', query.s);
@@ -343,29 +341,29 @@ Router.route('FixBankSubscription', {
 Router.route('/dashboard/giving_options', {
   name: 'GivingOptions',
   where: 'client',
-  waitOn: function () {
-    return [ Meteor.subscribe('MultiConfig'), Meteor.subscribe('userDTFunds')];
+  waitOn: function() {
+    return [ Meteor.subscribe('Config'), Meteor.subscribe('userDTFunds')];
   }
 });
 
 Router.route('/dashboard/org_info', {
   name: 'OrgInfo',
   where: 'client',
-  waitOn: function () {
-    return Meteor.subscribe('MultiConfig');
+  waitOn: function() {
+    return Meteor.subscribe('Config');
   },
-  data: function () {
-    return MultiConfig.find();
+  data: function() {
+    return Config.find();
   }
 });
 
 Router.route('/dashboard/getdtdata', {
   name: 'DtReport',
   where: 'client',
-  waitOn: function () {
+  waitOn: function() {
     return Meteor.subscribe( 'DTSplits' );
   },
-  data: function () {
+  data: function() {
     return DT_splits.find();
   }
 });
@@ -383,24 +381,23 @@ Router.route('/dashboard/users', {
   name: 'Users',
   where: 'client',
   template: 'Users',
-  waitOn: function () {
+  waitOn: function() {
     var query = this.params.query;
     var id = query.userID;
-    if(id) {
+    if (id) {
       Session.set( 'params.userID', id );
       Session.set( "showSingleUserDashboard", true );
     }
   },
-  data: function () {
+  data: function() {
     var query = this.params.query;
     var id = query.userID;
-    if(id){
+    if (id) {
       return Meteor.users.findOne({_id: id});
-    }  else if(Session.get('params.userID')) {
+    } else if (Session.get('params.userID')) {
       return Meteor.users.findOne({_id: Session.get('params.userID')});
-    } else {
-      return Meteor.users.find();
     }
+    return Meteor.users.find();
   }
 });
 

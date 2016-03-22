@@ -381,70 +381,6 @@ _.extend(Utils, {
           logger.info("No case matched");
       };
     },
-    get_frequency_and_subscription: function (invoice_id) {
-        logger.info("Started get_frequency");
-
-        var return_this = {};
-        return_this.subscription = Invoices.findOne({_id: invoice_id}) && Invoices.findOne({_id: invoice_id}).subscription;
-        return_this.frequency = return_this.subscription &&
-            Subscriptions.findOne({_id: return_this.subscription}) &&
-            Subscriptions.findOne({_id: return_this.subscription}).plan.interval;
-
-        if (return_this.frequency == null || return_this.subscription == null) {
-            var get_invoice = StripeFunctions.get_invoice(invoice_id);
-            if(get_invoice && get_invoice.subscription){
-                return_this.subscription = get_invoice.subscription;
-                return_this.frequency = get_invoice.lines.data[0].plan.interval;
-                return return_this;
-            } else{
-                logger.error("Something went wrong, there doesn't seem to be an invoice with that id, exiting");
-                return;
-            }
-
-        }
-        return return_this;
-    },
-    link_card_to_customer: function(customer_id, token_id, type, customerInfo){
-        logger.info("Started link_card_to_customer");
-
-        var stripeCreateCard = new Future();
-        var payment_device = {};
-
-        if(type === 'card') {
-            payment_device.card = token_id;
-        } else{
-            payment_device.bank_account = token_id;
-        }
-
-        Stripe.customers.createCard(
-            customer_id,
-            payment_device,
-            function (error, card) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCreateCard.return(error);
-                } else {
-                    stripeCreateCard.return(card);
-                }
-            }
-        );
-
-        stripeCreateCard = stripeCreateCard.wait();
-
-        if (!stripeCreateCard.object) {
-            if(stripeCreateCard.message === "A bank account with that routing number and account number already exists for this customer."){
-                logger.info("Woops, that is a duplicate account, running the create customer function to fix this.");
-                var customer = Utils.create_customer(token_id, customerInfo);
-                return customer;
-            }
-            throw new Meteor.Error(stripeCreateCard.rawType, stripeCreateCard.message);
-        }
-
-        stripeCreateCard._id = stripeCreateCard.id;
-        console.dir(stripeCreateCard);
-
-        return stripeCreateCard;
-    },
     update_card: function(customer_id, card_id, saved){
       logger.info("Started update_card");
       logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
@@ -546,12 +482,13 @@ _.extend(Utils, {
       }
     });
   },
-    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id){
+    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, donateWith){
         logger.info("Inside update_stripe_customer_subscription.");
         var stripeSubscriptionUpdate = new Future();
 
         Stripe.customers.updateSubscription(customer_id, subscription_id, {
-                source: token_id
+          source: token_id,
+          metadata: {donateWith: donateWith}
             }, function (error, subscription) {
                 if (error) {
                     //console.dir(error);
@@ -654,13 +591,13 @@ _.extend(Utils, {
           throw new Meteor.Error("Error from Stripe Promise", err);
         });
     },
-  update_stripe_customer_default_source: function(customer_id, bank_id){
+  update_stripe_customer_default_source: function(customer_id, device_id){
       logger.info("Inside update_stripe_customer_default_source.");
-      logger.info(customer_id, bank_id);
+      logger.info(customer_id, device_id);
 
       let sourceUpdate = new Promise(function (resolve, reject) {
         Stripe.customers.update(customer_id,
-          { default_source: bank_id },
+          { default_source: device_id },
           function (err, res) {
             if (err) reject("There was a problem", err);
             else resolve(res);
@@ -677,20 +614,6 @@ _.extend(Utils, {
           console.log(err);
           throw new Meteor.Error("Error from Stripe Promise", err);
         });
-    },
-    check_charge_status: function(charge_id){
-        logger.info("Inside check_charge_status");
-
-        // Because the pending status is the only one that couldn't have been the second event thrown we need to check
-        // if there is already a stored charge and if so then I don't want to override it with a pending status
-        var check_status = Charges.findOne({_id: charge_id});
-
-        if(check_status){
-            return true;
-        }
-        else{
-            return false;
-        }
     },
     update_invoice_metadata: function(event_body){
         logger.info("Inside update_invoice_metadata");

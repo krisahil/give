@@ -130,7 +130,8 @@ Meteor.publishComposite('subscriptions_and_customers', function (searchValue) {
           $and: [{
             $or: [
               { status: 'active' },
-              { status: 'trialing' }
+              { status: 'trialing' },
+              { status: 'past_due' }
             ]
           }, {
             $or: [

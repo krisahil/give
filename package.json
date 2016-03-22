@@ -1,6 +1,6 @@
 {
   "name": "Give",
-  "Version": "0.9.4",
+  "Version": "0.9.5",
   "engines": {
     "node": "0.10.40"
   },
@@ -10,7 +10,9 @@
   "jshintConfig": {
     "undef": true,
     "unused": true,
-    "predef": [ "App", "Meteor", "AllErrors", "Audit_trail", "Charges", "Customers", "Devices", "Donations", "DT_donations", "DT_funds",
-      "Invoices", "Subscriptions", "Donate", "Payments", "Router", "Session" ]
+    "predef": [ "App", "Meteor", "AllErrors", "Audit_trail", "Charges", "Config",
+      "Customers", "Devices", "Donations", "DT_donations", "DT_funds", "DT_splits",
+      "Invoices", "Roles", "Subscriptions", "Transactions", "Transfers", "Uploads",
+      "Users", "Router", "Session" ]
   }
 }

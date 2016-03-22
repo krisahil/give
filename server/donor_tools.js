@@ -83,10 +83,17 @@ _.extend(Utils, {
     console.log(get_dt_donation.data[0].donation);
     dt_donation_id = get_dt_donation.data[0].donation.id;
 
-    if(get_dt_donation.data[0].donation.payment_status === event_object.data.object.status) {
+    if(get_dt_donation.data[0].donation.payment_status === event_object.data.object.status &&
+      !event_object.data.object.refunded) {
       return;
     }
-    get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
+
+    if(event_object.data.object.refunded){
+      get_dt_donation.data[0].donation.payment_status = 'refunded';
+    } else {
+      get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
+    }
+
     if(event_object.data.object.status === 'failed'){
       // 3921 is the failed type in Donor Tools
       get_dt_donation.data[0].donation.donation_type_id = 3921;
@@ -111,11 +118,7 @@ _.extend(Utils, {
       auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
     });
 
-    // TODO: What if the user's name and all their detail is correct, but they give a new
-    // email address that doesn't exist in DT?
-    // In this case we'll return null; Do we want to?
-
-    if(personResult){
+    if (personResult) {
       metadata = Customers.findOne( { _id: customer_id } ).metadata;
       // Step 1b
       if( metadata.business_name ) {
@@ -261,10 +264,12 @@ _.extend(Utils, {
       throw new Meteor.Error( error, e._id );
     }
   },
-  'find_dt_account_or_make_a_new_one': function (customer, user_id) {
+  'find_dt_account_or_make_a_new_one': function (customer, user_id, skip_audit) {
 
     var dt_persona_match_id;
-    if(Audit_trail.findOne( {_id: customer.id} ) && Audit_trail.findOne( {_id: customer.id} ).flow_checked ) {
+    if(Audit_trail.findOne( {_id: customer.id} ) &&
+      Audit_trail.findOne( {_id: customer.id} ).flow_checked &&
+      !skip_audit) {
 
       console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
       return;

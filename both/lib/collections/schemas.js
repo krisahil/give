@@ -47,8 +47,8 @@ Schema.Stripe = new SimpleSchema({
   }
 });
 
-Schema.MultiConfig = new SimpleSchema({
-  "DonationOptions": {
+Schema.Config = new SimpleSchema({
+  "donationOptions": {
     type: Array,
     optional: true,
     blackbox: true,
@@ -56,24 +56,8 @@ Schema.MultiConfig = new SimpleSchema({
       omit: true
     }
   },
-  "DonationOptions.$": {
+  "donationOptions.$": {
     type: Object,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
-    }
-  },
-  "SelectedIDs": {
-    type: Array,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
-    }
-  },
-  "SelectedIDs.$": {
-    type: String,
     optional: true,
     blackbox: true,
     autoform: {
@@ -92,32 +76,31 @@ Schema.MultiConfig = new SimpleSchema({
     type: Object,
     optional: true,
     autoform: {
+      panelClass: "panel",
       afFieldInput: {
-      class: 'slim-borders'
+        class: 'slim-borders'
       }
     }
   },
   "organization_info.name": {
-    type:  String,
+    type: String,
     label: "Name",
-    max:   100,
-    optional: true
+    max: 100
   },
   "organization_info.full_name": {
-    type:  String,
+    type: String,
     label: "Full Name (e.g., with ', Inc.' at the end)",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.phone": {
-    type:  String,
+    type: String,
     label: "Phone",
     optional: true
   },
   "organization_info.is_501c3": {
     type: Boolean,
     label: "Are you a 501(c)3 non-profit organization?",
-    optional: true,
     autoform: {
       type: "boolean-radios",
       trueLabel: "Yes, We are.",
@@ -131,32 +114,39 @@ Schema.MultiConfig = new SimpleSchema({
     optional: true
   },
   "organization_info.address": {
-    type:  Object,
+    type: Object,
     label: "Address",
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.address.line_1": {
-    type:  String,
+    type: String,
     label: "Address Line 1",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.address.line_2": {
-    type:  String,
+    type: String,
     label: "Address Line 2",
-    max:   100,
+    max: 100,
     optional: true
   },
   "organization_info.address.city": {
-    type:  String,
+    type: String,
     label: "City",
-    max:   50,
+    max: 50,
     optional: true
   },
   "organization_info.address.state_short": {
     type: String,
     label: "State",
-    allowedValues: ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],
+    allowedValues: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+                    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+                    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+                    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"],
     optional: true,
     autoform: {
       afFieldInput: {
@@ -165,9 +155,9 @@ Schema.MultiConfig = new SimpleSchema({
     }
   },
   "organization_info.address.zip": {
-    type:  String,
+    type: String,
     label: "Zip",
-    max:   15,
+    max: 15,
     optional: true
   },
   "organization_info.mission_statement": {
@@ -182,8 +172,8 @@ Schema.MultiConfig = new SimpleSchema({
     }
   },
   "organization_info.date_founded": {
-    type:     Date,
-    label:    "Date Founded",
+    type: Date,
+    label: "Date Founded",
     optional: true,
     autoform: {
       type: "bootstrap-datepicker",
@@ -194,14 +184,20 @@ Schema.MultiConfig = new SimpleSchema({
     }
   },
   "organization_info.emails": {
-    type:     Object,
-    label:    "Emails used for below scenarios",
-    optional: true
+    type: Object,
+    label: "Emails used for below scenarios",
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.emails.bcc": {
     type: Array,
     label: "To be BCC'd on all outgoing emails",
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.emails.bcc.$": {
     type: String,
@@ -210,8 +206,7 @@ Schema.MultiConfig = new SimpleSchema({
   },
   "organization_info.emails.contact": {
     type: Array,
-    label: "Main contact address",
-    optional: true
+    label: "Main contact address"
   },
   "organization_info.emails.contact.$": {
     type: String,
@@ -269,12 +264,13 @@ Schema.MultiConfig = new SimpleSchema({
   "organization_info.web": {
     type: Object,
     label: "Your website addresses",
-    optional: true
+    autoform: {
+      panelClass: "panel"
+    }
   },
   "organization_info.web.domain_name": {
     type: String,
     label: "Domain name",
-    optional: true,
     autoform: {
       placeholder: "e.g. trashmountain.com"
     }
@@ -287,7 +283,10 @@ Schema.MultiConfig = new SimpleSchema({
   "organization_info.web.donate_url": {
     type: String,
     label: "If you have an address you want to use to redirect to your 'Give' landing page.",
-    optional: true
+    optional: true,
+    autoform: {
+      placeholder: "e.g. https://trashmountain.com/donate"
+    }
   },
   "organization_info.web.heap_analytics_id": {
     type: Number,
@@ -699,4 +698,4 @@ Schema.StripeForm = new SimpleSchema({
 
 Meteor.users.attachSchema(Schema.User);
 
-MultiConfig.attachSchema(Schema.MultiConfig);
+Config.attachSchema(Schema.Config);

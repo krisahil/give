@@ -11,6 +11,9 @@
                     {{else}}
                         {{#if isInRole 'admin'}}
                             <a href="" class="btn btn-success glyphicon glyphicon-plus addingNewUser" data-add="user"> User</a>
+                            {{> RoleDocumentation}}
+                        {{/if}}
+                        {{#if isInRole 'super-admin'}}
                             <a href="" class="btn btn-success glyphicon glyphicon-plus addingNewRole" data-add="role"> Role</a>
                         {{/if}}
                         <form class="form">

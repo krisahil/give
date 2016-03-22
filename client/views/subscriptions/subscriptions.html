@@ -1,11 +1,9 @@
 <template name="AdminSubscriptions">
     {{> SubscriptionModal}}
-    <form class="form">
-        <div class="form-group floating-label">
-            <input type="text" class="form-control search" placeholder="Search by; name, org. or email">
-            <label>*Only Active or Trialing Subscriptions are Shown</label>
-        </div>
-    </form>
+    <div class="form-group floating-label">
+        <input type="text" class="form-control search" placeholder="Search by; name, org. or email">
+        <label>*Only Active or <span class="trialing-subscription">Trialing</span> Subscriptions are Shown</label>
+    </div>
     <button type="button" class="btn btn-danger btn-block clear-button">
         Clear
     </button>
@@ -26,8 +24,9 @@
         </tr>
         </thead>
         <tbody>
-        {{#each searchSubscriptions}}
-            <tr>
+        {{#if searchSubscriptions}}
+            {{#each searchSubscriptions}}
+            <tr class="{{trialing}}">
                 <td>{{name}}</td>
                 <td>{{metadata.email}}</td>
                 <td>${{twoDecimalPlaces quantity}}</td>
@@ -55,6 +54,13 @@
                 {{/if}}
             </tr>
         {{/each}}
+        {{else}}
+            {{#if searchValue}}
+                <p>Nothing found with that search</p>
+            {{else}}
+                <p>Starting typing in the above search box</p>
+            {{/if}}
+        {{/if}}
         </tbody>
     </table>
 </template>

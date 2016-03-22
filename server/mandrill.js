@@ -386,7 +386,9 @@ _.extend(Utils,{
                       "content": donation_cursor._id
                   }
               );
-          } else if( type === 'charge.succeeded' || type === 'payment.paid'){
+          } else if ( type === 'charge.succeeded' || 
+                      type === 'payment.paid' || 
+                      type === 'large_gift' ) {
               data_slug.message.merge_vars[0].vars.push(
                   {
                       "name": "DonateTo",
@@ -399,7 +401,7 @@ _.extend(Utils,{
                       "content": donation_cursor._id
                   }
               );
-          }
+          } 
       } else {
           donation_cursor = Donations.findOne({charge_id: id});
           if (!donation_cursor) {
@@ -489,16 +491,19 @@ _.extend(Utils,{
               return;
           }
           Utils.audit_email(id, type);
-          data_slug.message.subject = 'A Partner Just Gave $' + (amount/ 100).toFixed(2);
+          data_slug.message.subject = 'A Partner just Gave $' + (amount/ 100).toFixed(2);
           data_slug = Utils.add_recipient_to_email(data_slug, Meteor.settings.public.large_gift_address);
           data_slug.template_name = "large-gift-notice-multi-collection";
-          data_slug.message.bcc_address = null;
+          data_slug.message.bcc_address =
+            Meteor.settings.public.bcc_address ?
+            Meteor.settings.public.bcc_address :
+            '';
           Utils.send_mandrill_email(data_slug, 'large-gift');
       }
     }  catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.error(e);
+      throw new Meteor.Error(e);
     }
   },
 	send_mandrill_email: function(data_slug, type){
@@ -509,7 +514,7 @@ _.extend(Utils,{
     catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.error(e);
+      throw new Meteor.Error(e);
     }
   },
   send_scheduled_email: function (id, subscription_id, frequency, amount) {
@@ -585,7 +590,7 @@ _.extend(Utils,{
     } catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.error(e);
+      throw new Meteor.Error(e);
     }
   }
 });

@@ -1,269 +1,263 @@
 /* DonationForm: Event Handlers and Helpers */
-/*****************************************************************************/
 
 function removeParam(key, sourceURL) {
-    var rtn = sourceURL.split("?")[0],
-        param,
-        params_arr = [],
-        queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
-    if (queryString !== "") {
-        params_arr = queryString.split("&");
-        for (var i = params_arr.length - 1; i >= 0; i -= 1) {
-            param = params_arr[i].split("=")[0];
-            if (param === key) {
-                params_arr.splice(i, 1);
-            }
-        }
-        rtn = rtn + "?" + params_arr.join("&");
+  // check that the query string contains a '?', if it doesn't then the router
+  // will try to take the user to a different page.
+  if (sourceURL.split("?").length < 2) {
+    sourceURL = sourceURL + '?placeholder=';
+  }
+  console.log(key, sourceURL);
+  var rtn = sourceURL.split("?")[0],
+    param,
+    params_arr = [],
+    queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+  if (queryString !== "") {
+    params_arr = queryString.split("&");
+    for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+      param = params_arr[i].split("=")[0];
+      if (param === key) {
+        params_arr.splice(i, 1);
+      }
     }
-    return rtn;
+    rtn = rtn + "?" + params_arr.join("&");
+  }
+  return rtn;
 }
 
-$.fn.scrollView = function () {
-    return this.each(function () {
-        $('html, body').animate({
-            scrollTop: $(this).offset().top
-        }, 1000);
-    });
+$.fn.scrollView = function() {
+  return this.each(function() {
+    $('html, body').animate({
+      scrollTop: $(this).offset().top
+    }, 1000);
+  });
 };
 
 Template.DonationForm.events({
-    'submit form': function(e) {
-        //prevent the default reaction to submitting this form
-        e.preventDefault();
-        // Stop propagation prevents the form from being submitted more than once.
-        e.stopPropagation();
+  'submit form': function(e) {
+    // prevent the default reaction to submitting this form
+    e.preventDefault();
+    // Stop propagation prevents the form from being submitted more than once.
+    e.stopPropagation();
 
-        if($("#is_recurring").val() === ''){
-            $("#s2id_is_recurring").children().addClass("redText");
+    if ($("#is_recurring").val() === '') {
+      $("#s2id_is_recurring").children().addClass("redText");
 
-            $('#spinContainer').scrollView();
-            return;
-        }
-
-        var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-        var target = document.getElementById('spinContainer');
-        spinnerObject = new Spinner(opts).spin(target);
-
-        var loadingSubmitButton = $(':submit').button('loading');
-
-        if($('#donateWith').val() === 'Card'){
-            if(!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())){
-                var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"};
-                App.handleErrors(new_error);
-                return;
-            } else if(!Stripe.card.validateCardNumber($('#card_number').val())){
-                var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"};
-                App.handleErrors(new_error);
-                return;
-            }
-        }
-
-        $('#spinContainer').scrollView();
-        $("#spinDiv").show();
-
-        $(window).off('beforeunload');
-
-        App.updateTotal();
-
-        App.process_give_form();
-
-    },
-    'change #is_recurring': function() {
-        if ($("#is_recurring").val() !== 'one_time') {
-            Session.set('recurring', true);
-            $('#calendarSection').show();
-            $("#s2id_is_recurring").children().removeClass("redText");
-        } else {
-            Session.set('recurring', false);
-            $('#calendarSection').hide();
-            $("#s2id_is_recurring").children().removeClass("redText");
-        }
-    },
-    'keyup, change #amount': function() {
-        return App.updateTotal();
-    },
-    // disable mousewheel on a input number field when in focus
-    // (to prevent Chromium browsers change of the value when scrolling)
-    'focus #amount': function(e, tmpl) {
-        $('#amount').on('mousewheel.disableScroll', function(e) {
-            e.preventDefault();
-        });
-    },
-    'blur #amount': function(e) {
-        $('#amount').on('mousewheel.disableScroll', function(e) {
-            e.preventDefault();
-        });
-        return App.updateTotal();
-    },
-    'change #coverTheFees': function() {
-        return App.updateTotal();
-    },
-    'change [name=donateWith]': function() {
-        var selectedValue = $("[name=donateWith]").val();
-        Session.set("paymentMethod", selectedValue);
-        if(Session.equals("paymentMethod", "Check")){
-            App.updateTotal();
-            $("#show_total").hide();
-        }
-    },
-    'change #donateTo': function() {
-        if($('#donateTo').val() !== 'WriteIn') {
-            $('#giftDesignationText').hide();
-        } else {
-            Session.set('showWriteIn', 'yes');
-            Session.set('params.donateTo', 'WriteIn');
-            //setup modal for entering give toward information
-            $('#modal_for_write_in').modal({
-                show: true,
-                backdrop: 'static'
-            }, function(e) {
-            });
-        }
-    },
-    // keypress input detection for autofilling form with test data
-    'keypress input': function(e) {
-        if (e.which === 17) { //17 is ctrl + q
-            App.fillForm('main');
-        }
-    },
-    'focus, blur #cvv': function() {
-        $('#cvv').on('mousewheel.disableScroll', function(e) {
-            e.preventDefault();
-        });
-    },
-    'focus, blur #card_number': function(e) {
-        $('#card_number').on('mousewheel.disableScroll', function(e) {
-            e.preventDefault();
-        });
-    },
-    'click #write_in_save': function () {
-        $('#modal_for_write_in').modal('hide');
-
-        var goHere = removeParam('enteredWriteInValue', window.location.href);
-        console.log(goHere);
-        Session.set('showWriteIn', 'no');
-        var goHere = goHere + '&enteredWriteInValue=' + $('#writeIn').val();
-        Router.go(goHere);
-        $('#giftDesignationText').show();
-    },
-    'click #serve1000_save': function () {
-      var goHere;
-
-      if($('#options').val() === "") {
-        return;
-      } else {
-        $('#modal_for_serve1000').modal('hide');
-
-
-        Session.set('showserve1000', 'no');
-        var goHere = window.location.href + '&note=' +
-          $('#options').val() + '&dt_source=' + 46583; //46583 is for Serve 1000
-        Router.go(goHere);
-      }
-    },
-    'blur #donation_form input': function (){
-        if(window.location.pathname !== "/give/user"){
-            $(window).on('beforeunload', function(){
-                return "It looks like you have input you haven't submitted."
-            });
-        }
-    },
-    'click #userProfileButton': function (e){
-        //prevent the default reaction to submitting this form
-        e.preventDefault();
-        // Stop propagation prevents the form from being submitted more than once.
-        e.stopPropagation();
-        Router.go('user.profile');
+      $('#spinContainer').scrollView();
+      return;
     }
 
+    var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
+    var target = document.getElementById('spinContainer');
+    spinnerObject = new Spinner(opts).spin(target);
+
+    $(':submit').button('loading');
+
+    if ($('#donateWith').val() === 'Card') {
+      if (!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())) {
+        var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"};
+        App.handleErrors(new_error);
+        return;
+      } else if (!Stripe.card.validateCardNumber($('#card_number').val())) {
+        var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"};
+        App.handleErrors(new_error);
+        return;
+      }
+    }
+
+    $('#spinContainer').scrollView();
+    $("#spinDiv").show();
+
+    $(window).off('beforeunload');
+
+    App.updateTotal();
+
+    App.process_give_form();
+  },
+  'change #is_recurring': function() {
+    if ($("#is_recurring").val() !== 'one_time') {
+      Session.set('recurring', true);
+      $('#calendarSection').show();
+      $("#s2id_is_recurring").children().removeClass("redText");
+    } else {
+      Session.set('recurring', false);
+      $('#calendarSection').hide();
+      $("#s2id_is_recurring").children().removeClass("redText");
+    }
+  },
+  'keyup, change #amount': function() {
+    return App.updateTotal();
+  },
+  // disable mousewheel on a input number field when in focus
+  // (to prevent Chromium browsers change of the value when scrolling)
+  'focus #amount': function() {
+    $('#amount').on('mousewheel.disableScroll', function(e) {
+      e.preventDefault();
+    });
+  },
+  'blur #amount': function() {
+    $('#amount').on('mousewheel.disableScroll', function(e) {
+      e.preventDefault();
+    });
+    return App.updateTotal();
+  },
+  'change #coverTheFees': function() {
+    return App.updateTotal();
+  },
+  'change [name=donateWith]': function() {
+    var selectedValue = $("[name=donateWith]").val();
+    Session.set("paymentMethod", selectedValue);
+    if (Session.equals("paymentMethod", "Check")) {
+      App.updateTotal();
+      $("#show_total").hide();
+    }
+  },
+  'change #donateTo': function() {
+    if ($('#donateTo').val() !== 'WriteIn') {
+      $('#giftDesignationText').hide();
+    } else {
+      Session.set('showWriteIn', 'yes');
+      Session.set('params.donateTo', 'WriteIn');
+      // setup modal for entering give toward information
+      $('#modal_for_write_in').modal({
+        show: true,
+        backdrop: 'static'
+      }, function(e) {
+      });
+    }
+  },
+  // keypress input detection for autofilling form with test data
+  'keypress input': function(e) {
+    if (e.which === 17) { // 17 is ctrl + q
+      App.fillForm('main');
+    }
+  },
+  'focus, blur #cvv': function() {
+    $('#cvv').on('mousewheel.disableScroll', function(e) {
+      e.preventDefault();
+    });
+  },
+  'focus, blur #card_number': function() {
+    $('#card_number').on('mousewheel.disableScroll', function(e) {
+      e.preventDefault();
+    });
+  },
+  'click #write_in_save': function() {
+    $('#modal_for_write_in').modal('hide');
+
+    var goHere = removeParam('enteredWriteInValue', window.location.href);
+    console.log(goHere);
+    Session.set('showWriteIn', 'no');
+    goHere = goHere + '&enteredWriteInValue=' + $('#writeIn').val();
+    Router.go(goHere);
+    $('#giftDesignationText').show();
+  },
+  'click #serve1000_save': function() {
+    if ($('#options').val() === "") {
+      return;
+    }
+    $('#modal_for_serve1000').modal('hide');
+    Session.set('showserve1000', 'no');
+    Router.go(window.location.href + '&note=' + $('#options').val() + '&dt_source=' + 46583); // 46583 is for Serve 1000
+  },
+  'blur #donation_form input': function() {
+    if (window.location.pathname !== "/give/user") {
+      $(window).on('beforeunload', function() {
+        return "It looks like you have input you haven't submitted."
+      });
+    }
+  },
+  'click #userProfileButton': function(e) {
+    // prevent the default reaction to submitting this form
+    e.preventDefault();
+    // Stop propagation prevents the form from being submitted more than once.
+    e.stopPropagation();
+    Router.go('user.profile');
+  }
 });
 Template.DonationForm.helpers({
-    paymentQuestionIcon: function(){
-        if(Session.equals('paymentMethod', 'Check')){
-            return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
-                "data-trigger='hover focus' data-container='body' data-content='There are usually 3 sets of "+
-                "numbers at the bottom of a check. The short check number, the 9 digit routing number and the " +
-                "account number.'>" +
-                "</i>";
-        } else {
-            return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
-                "data-trigger='hover focus' data-container='body' data-content='" +
-                "Visa®, Mastercard®, and Discover® cardholders: " +
-                "Turn your card over and look at the signature box. You should see either the entire 16-digit credit " +
-                "card number or just the last four digits followed by a special 3-digit code. This 3-digit code is " +
-                "your CVV number / Card Security Code.  " +
-                "American Express® cardholders: " +
-                "Look for the 4-digit code printed on the front of your card just above and to the right of your " +
-                "main credit card number. This 4-digit code is your Card Identification Number (CID). The CID is the " +
-                "four-digit code printed just above the Account Number.'" +
-                "</i>";
-        }
-
-    },
-    paymentWithCard: function() {
-        return Session.equals("paymentMethod", "Card");
-    },
-    coverTheFeesChecked: function() {
-        return this.coverTheFees ? 'checked' : '';
-    },
-    attributes_Input_Amount: function() {
-        return {
-            name: "amount",
-            id: "amount",
-            min: 1,
-            required: true
-        };
-    },
-    errorCategory: function() {
-        return 'Error Category';
-    },
-    errorDescription: function() {
-        return 'Error Description';
-    },
-    amount: function() {
-        return Session.get('params.amount');
-    },
-    writeInValue: function () {
-        return Session.get('params.enteredWriteInValue');
-    },
-    campaignValue: function () {
-        return Session.get('params.enteredCampaignValueignValue');
-    },
-    campaignName: function () {
-        return Session.get('campaignName');
-    },
-    campaign: function () {
-      if(Session.equals('params.campaign', "Serve 1000")){
-        return true;
-      } else {
-        return false;
-      }
-    },
-    dt_source: function () {
-        return Session.get('params.dt_source');
-    },
-    donation_note: function () {
-      return Session.get('params.note');
-    },
-    today: function () {
-        return moment().format('D MMM, YYYY');
-    },
-    amountWidth: function() {
-        if(Session.equals("paymentMethod", "Card")){
-            return 'form-group col-md-4 col-sm-4 col-xs-12';
-        } else{
-            return 'form-group';
-        }
-    },
-    showTotal: function() {
-       return Session.equals("coverTheFees", true);
-    },
-    checkedFeeWidth: function(){
-        if(Session.equals("coverTheFees", true)){
-            return "form-group";
-        } else return "form-group";
+  paymentQuestionIcon: function() {
+    if (Session.equals('paymentMethod', 'Check')) {
+      return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+        "data-trigger='hover focus' data-container='body' data-content='There are usually 3 sets of "+
+        "numbers at the bottom of a check. The short check number, the 9 digit routing number and the " +
+        "account number.'>" +
+        "</i>";
     }
+    return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+      "data-trigger='hover focus' data-container='body' data-content='" +
+      "Visa®, Mastercard®, and Discover® cardholders: " +
+      "Turn your card over and look at the signature box. You should see either the entire 16-digit credit " +
+      "card number or just the last four digits followed by a special 3-digit code. This 3-digit code is " +
+      "your CVV number / Card Security Code.  " +
+      "American Express® cardholders: " +
+      "Look for the 4-digit code printed on the front of your card just above and to the right of your " +
+      "main credit card number. This 4-digit code is your Card Identification Number (CID). The CID is the " +
+      "four-digit code printed just above the Account Number.'" +
+      "</i>";
+  },
+  paymentWithCard: function() {
+    return Session.equals("paymentMethod", "Card");
+  },
+  coverTheFeesChecked: function() {
+    return this.coverTheFees ? 'checked' : '';
+  },
+  attributes_Input_Amount: function() {
+    return {
+      name: "amount",
+      id: "amount",
+      min: 1,
+      required: true
+    };
+  },
+  errorCategory: function() {
+    return 'Error Category';
+  },
+  errorDescription: function() {
+    return 'Error Description';
+  },
+  amount: function() {
+    return Session.get('params.amount');
+  },
+  writeInValue: function() {
+    return Session.get('params.enteredWriteInValue');
+  },
+  campaignValue: function() {
+    return Session.get('params.enteredCampaignValueignValue');
+  },
+  campaignName: function() {
+    return Session.get('campaignName');
+  },
+  campaign: function() {
+    if (Session.equals('params.campaign', "Serve 1000")){
+      return true;
+    } else {
+      return false;
+    }
+  },
+  dt_source: function() {
+    return Session.get('params.dt_source');
+  },
+  donation_note: function() {
+    return Session.get('params.note');
+  },
+  today: function() {
+    return moment().format('D MMM, YYYY');
+  },
+  amountWidth: function() {
+    if(Session.equals("paymentMethod", "Card")){
+      return 'form-group col-md-4 col-sm-4 col-xs-12';
+    } else{
+      return 'form-group';
+    }
+  },
+  showTotal: function() {
+   return Session.equals("coverTheFees", true);
+  },
+  checkedFeeWidth: function(){
+    if(Session.equals("coverTheFees", true)){
+      return "form-group";
+    } else return "form-group";
+  }
 });
 /*****************************************************************************/
 /* DonationForm: Lifecycle Hooks */
@@ -318,7 +312,7 @@ Template.DonationForm.onRendered(function() {
 
 });
 
-Template.DonationForm.onDestroyed( function () {
+Template.DonationForm.onDestroyed( function() {
   $(window).unbind('beforeunload');
 });
 

@@ -7,10 +7,9 @@ AutoForm.hooks({
         icon: 'fa-smile-o'
       });
     },
-
     onError: function(operation, error, template) {
       Bert.alert({
-        message: error,
+        message: "Looks like you might be missing some required fields.",
         type: 'danger',
         icon: 'fa-frown-o'
       });
@@ -53,14 +52,16 @@ AutoForm.hooks({
 });
 
 Template.OrgInfo.helpers({
-  multiConfigDoc: function () {
-    let org_info = MultiConfig.findOne({
+  configDoc: function () {
+    let org_info = Config.findOne({
       'organization_info.web.domain_name': Meteor.settings.public.org_domain
     });
+    console.log(org_info);
     if (org_info) {
       Template.instance().formType.set('update');
       return org_info;
     }
+    return;
   },
   formType: function() {
     var formType = Template.instance().formType.get();

@@ -5,10 +5,7 @@ Template.AddNewBankAccount.events({
     // Stop propagation prevents the form from being submitted more than once.
     e.stopPropagation();
 
-    console.log("Adding");
-    let save_payment = $("#save_payment").is(':checked');
-    console.log(save_payment, Session.get('updateSubscription'));
-
+    let savePayment = $("#save_payment").is(':checked');
 
     let opts = {color: '#FFF', length: 60, width: 10, lines: 8};
     let target = document.getElementById('spinContainer');
@@ -33,11 +30,12 @@ Template.AddNewBankAccount.events({
         App.handleErrors( response.error );
       } else {
         // Call your backend
-        console.log(response);
-
         console.log(Session.get("updateSubscription"));
         let subscription_id = Session.get("updateSubscription");
-        Meteor.call('stripeUpdateBank', response.id, subscription_id, save_payment, function (error, result) {
+        if(!subscription_id) {
+          subscription_id = Session.get("sub");
+        }
+        Meteor.call('stripeUpdateBank', response.id, subscription_id, savePayment, function (error, result) {
           if (error) {
             console.log(error);
             //App.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
@@ -62,12 +60,22 @@ Template.AddNewBankAccount.events({
             } else {
               Bert.alert('Updated', 'success');
 
+              // Make the form blank again
               $("#routing_number").val('');
               $("#account_number").val('');
               $('#save_payment').prop('checked', false);
-              $('#modal_for_add_new_bank_account').modal('hide');
-              Session.delete("updateSubscription");
 
+              // Hide the modal and backdrop
+              $('#modal_for_add_new_bank_account').modal('hide');
+              $('body').removeClass('modal-open');
+              $('.modal-backdrop').remove();
+
+              // Remove the session variables associated with this udpate
+              Session.delete("updateSubscription");
+              Session.delete("sub");
+
+              // Go back to showing all the subscriptions
+              Router.go("/user/subscriptions");
             }
           }
         });
@@ -75,6 +83,19 @@ Template.AddNewBankAccount.events({
       }
     });
 
+  },
+  'click #go-to-card': function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if(Router.current().route.getName() === "FixCardSubscription"){
+      $('#modal_for_add_new_bank_account').modal('hide');
+      return;
+    }
+    Meteor.setTimeout(() => {
+      Router.go("/user/subscriptions/card/resubscribe" + "?s=" + this.id + "&c=" + this.customer);
+    }, 500);
+    $('#modal_for_add_new_bank_account').modal('hide');
   }
 });
 

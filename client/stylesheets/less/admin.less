@@ -11,7 +11,7 @@
   }
   a:hover,
   a a:focus {
-    color: #167495;
+    color: white;
   }
   h1 {
     font-size: 32px;
@@ -19,8 +19,8 @@
     font-weight: 400;
   }
   h2 {
-    font-size: 16px;
-    line-height: 16px;
+    font-size: 20px;
+    line-height: 20px;
     font-weight: 400;
   }
   h3 {
@@ -166,7 +166,7 @@
     background: #1abc9c;
   }
   .backgroundColor.indianred {
-    background: #e7505a;
+    background-color: #e7505a;
   }
   .backgroundColor.lightOrange {
     background: #fabb3d;
@@ -5585,6 +5585,87 @@
 
   .fa-arrows:hover {
     cursor: move;
+  }
+
+  .selected-options {
+    margin: 10px;
+    height: 85px;
+    border: 1px dotted;
+    display: flex;
+    align-items: center;
+  }
+
+  .select-group {
+    margin: 10px;
+  }
+
+  .editable-content {
+    font-size: 14px;
+  }
+
+  .margin-left {
+    margin-left: 15px;
+  }
+
+  .btn-smaller {
+    padding: 6px 9px;
+    font-size: 10px;
+    line-height: 1;
+    border-radius: 4px;
+  }
+
+  .top-right {
+    align-self: flex-start;
+    margin-right: 8px;
+  }
+
+  .stop-this {
+    color: white;
+    background: #ff5454;
+    border: 1px solid #ff5454;
+  }
+
+  .stop-this:hover {
+    color: white;
+    background-color: #ff2121;
+    border-color: #ff2121;
+  }
+
+  .pointer-mouse:hover {
+    cursor: pointer;
+  }
+
+  .center-overlay {
+    position: absolute;
+    display: table;
+    z-index: 2;
+    opacity: 0;
+    top: 0;
+    height: 64px;
+    width: 64px;
+    vertical-align: middle;
+    text-align: center;
+    margin: auto;
+  }
+
+  .center-overlay:hover {
+    opacity:1;
+    background:rgba(0,0,0,0.5) center no-repeat;
+  }
+
+  div.inner {
+    xdisplay: block;
+    display:table-cell;
+    vertical-align:middle;
+  }
+
+  .large {
+    color: #ff5454;
+    text-decoration: none;
+  }
+
+  .large:hover {
+    color: #ff2121;
   }
 
   @media (max-width: 479px) {

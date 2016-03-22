@@ -53,6 +53,9 @@ Stripe_Events = {
     console.log(stripeEvent);
     let send_successful_email;
 
+    if(stripeEvent.data.object.refunded){
+      logger.warn("This successful charge has been refunded.");
+    }
     if(stripeEvent.data.object.invoice) {
       let wait_for_metadata_update = Utils.update_charge_metadata(stripeEvent);
 
