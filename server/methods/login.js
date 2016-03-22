@@ -14,7 +14,7 @@ Meteor.methods( {
     check(state, Match.OneOf('disabled','enabled','invited'));
 
     try {
-      //check to see that the user is the admin user
+      // check to see that the user is the admin user
       if (Roles.userIsInRole(this.userId, ['admin'])) {
 
         // Set the state of the user with userId
