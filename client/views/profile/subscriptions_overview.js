@@ -1,6 +1,5 @@
 var subscriptionsTutorialSteps = function() {
-  let return_tutorials;
-  if(Subscriptions.find()){
+  let return_tutorials = [];
     return_tutorials = [
       {
         template: Template.tutorial_subscriptions_step1,
@@ -23,21 +22,6 @@ var subscriptionsTutorialSteps = function() {
         spot: "#nav-give"
       }
     ];
-  } else {
-    return_tutorials = [
-      {
-        template: Template.tutorial_no_subscriptions_step1,
-        onLoad: function() {
-          console.log("The tutorial has started!");
-        },
-        spot: ".billing-module-title, .billing-module"
-      },
-      {
-        template: Template.tutorial_subscriptions_step3,
-        spot: "#nav-give"
-      }
-    ];
-  }
   return return_tutorials;
 };
 
@@ -120,7 +104,7 @@ Template.SubscriptionsOverview.helpers({
   },
   options: {
     id: "subscriptionsTutorial",
-    steps: subscriptionsTutorialSteps,
+    steps: subscriptionsTutorialSteps(),
     onFinish: function() {
       console.log("Finish clicked!");
       Meteor.setTimeout( function () {
