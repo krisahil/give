@@ -202,8 +202,10 @@ _.extend(App, {
       if (quickForm) {
         bankInfo = {
           name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
+          account_holder_name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
           account_number: App.getCleanValue('#account_number'),
           routing_number: App.getCleanValue('#routing_number'),
+          account_holder_type: form.customer.org ? 'company' : 'individual',
           address_line1: userCursor.profile.address.address_line1,
           address_line2: userCursor.profile.address.address_line2,
           address_city: userCursor.profile.address.city,
@@ -211,11 +213,13 @@ _.extend(App, {
           address_zip: userCursor.profile.address.postal_code,
           country: userCursor.profile.address.country
         };
-      } else{
+      } else {
         bankInfo = {
           name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
+          account_holder_name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
           account_number: App.getCleanValue('#account_number'),
           routing_number: App.getCleanValue('#routing_number'),
+          account_holder_type: form.customer.org ? 'company' : 'individual',
           address_line1: App.getCleanValue('#address_line1'),
           address_line2: App.getCleanValue('#address_line2'),
           address_city: App.getCleanValue('#city'),
@@ -226,7 +230,6 @@ _.extend(App, {
       }
       App.process_bank(bankInfo, form);
     } else {
-      // TODO: process the gift with a saved device
       form.paymentInformation.saved = true;
       var payment = {id: form.paymentInformation.donateWith};
       if (form.paymentInformation.donateWith.slice(0, 3) === 'car') {

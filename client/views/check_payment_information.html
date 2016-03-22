@@ -1,5 +1,6 @@
 <template name="checkPaymentInformation">
         <div class="row text-center">
+            <br>
             <div class="col-md-6">
                 <!-- Bank Info -->
                 <div class="form-group">
@@ -13,13 +14,6 @@
                 <img src="/images/check_image.png" class="img-responsive" />
             </div>
             <div class="col-md-12">
-                <br>
-                <label for="accountType">Account type</label>
-                <br>
-                <select name="accountType" class="form-control select select-primary select-block" required style="display: block;">
-                    <option value="checking" selected>Checking</option>
-                    <option value="savings">Savings</option>
-                </select>
                 <br>
                 <!-- Checkbox for Covering related fees-->
                 <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} >
