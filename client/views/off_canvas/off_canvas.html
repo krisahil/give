@@ -24,7 +24,7 @@
                             Quickly Give a new gift.
                         </li>
                     </ul>
-                    {{#if isDesktop}}
+                    {{#if $or isDesktop isTablet}}
                         {{#unless not_safari}}
                             <p>
                                 <button id="start_tutorial" class="btn btn-primary" data-dismiss="offcanvas">
