@@ -18,3 +18,18 @@ Template.UserNav.events({
   }
 });
 
+Template.UserNav.helpers({
+  dismissedNewStuff: function () {
+    let newStuffVersion = Meteor.user() && Meteor.user().profile &&
+      Meteor.user().profile.newStuffVersion;
+    if(newStuffVersion && newStuffVersion > Meteor.settings.public.newStuffVersion){
+      return true;
+    } else {
+      return false;
+    }
+  }
+});
+
+Template.UserNav.onRendered(function () {
+  materialadmin.AppOffcanvas.initialize($("#offcanvas-what-is-new"));
+});

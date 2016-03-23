@@ -1,29 +1,30 @@
-var subscriptionsTutorialSteps = [
-  {
-    template: Template.tutorial_subscriptions_step1,
-    onLoad: function() {
-      console.log("The tutorial has started!");
-    },
-    spot: ".billing-module-title, .billing-module"
-  },
-  {
-    template: Template.tutorial_subscriptions_step2,
-    spot: ".list-group"
-  },
-  {
-    template: Template.tutorial_subscriptions_step3,
-    spot: ".cancel-subscription," +
-      " .edit-subscription," +
-      " .update-subscription," +
-      " .btn_modal_for_add_new_bank_account, " +
-      " .past-due-subscription," +
-      " .activate-subscription"
-  },
-  {
-    template: Template.tutorial_subscriptions_step4,
-    spot: "#nav-give"
-  }
-];
+var subscriptionsTutorialSteps = function() {
+  let return_tutorials = [];
+    return_tutorials = [
+      {
+        template: Template.tutorial_subscriptions_step1,
+        onLoad: function() {
+          console.log("The tutorial has started!");
+        },
+        spot: ".billing-module-title, .billing-module"
+      },
+      {
+        template: Template.tutorial_subscriptions_step2,
+        spot: ".cancel-subscription," +
+                  " .edit-subscription," +
+                  " .update-subscription," +
+                  " .btn_modal_for_add_new_bank_account, " +
+                  " .past-due-subscription," +
+                  " .activate-subscription"
+      },
+      {
+        template: Template.tutorial_subscriptions_step3,
+        spot: "#nav-give"
+      }
+    ];
+  return return_tutorials;
+};
+
 
 Template.SubscriptionsOverview.helpers({
   subscriptions: function(){
@@ -88,7 +89,7 @@ Template.SubscriptionsOverview.helpers({
     }
   },
   show_donate_with: function () {
-    if(this.metadata && this.metadata.donateWith === 'Check' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ba'){
+    if (this.metadata && this.metadata.donateWith === 'Check' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ba') {
       return 'Bank Account';
     } else if(this.metadata && this.metadata.donateWith === 'Card' || this.metadata && this.metadata.donateWith && this.metadata.donateWith.slice(0,2) === 'ca') {
       return 'Card';
@@ -103,7 +104,7 @@ Template.SubscriptionsOverview.helpers({
   },
   options: {
     id: "subscriptionsTutorial",
-    steps: subscriptionsTutorialSteps,
+    steps: subscriptionsTutorialSteps(),
     onFinish: function() {
       console.log("Finish clicked!");
       Meteor.setTimeout( function () {

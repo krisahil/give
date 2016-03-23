@@ -236,6 +236,19 @@ Template.registerHelper( 'tutorialEnabled', ( ) => {
   return Session.get('tutorialEnabled');
 });
 
+Template.registerHelper( 'contact_us', ( ) => {
+  return '<a class="email" href="mailto:' + Meteor.settings.public.support_address + '">' +
+    Meteor.settings.public.support_address + '</a><div class="tel">' +
+    Meteor.settings.public.org_phone + '</div>';
+});
+
+Template.registerHelper( 'not_safari', ( ) => {
+  let user_agent = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  console.log(user_agent);
+  return user_agent;
+});
+
+
 /*
 *  Meteor.settings.public helpers
 *  */

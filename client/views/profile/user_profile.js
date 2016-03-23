@@ -16,7 +16,7 @@ var userProfileTutorialSteps = [
     spot: "#giving_history"
   },
   {
-    template: Template.tutorial_user_profile_step3,
+    template: Template.tutorial_user_profile_step4,
     spot: "#nav-subscriptions"
   }
 ];
