@@ -39,39 +39,39 @@
                             Status: Failing
                         </li>
                     {{/if}}
-                    <li class="list-group-item bm-block clearfix">
+                    <li class="list-group-item bm-block">
                       <div class="bm-block-content">
                             Frequency: <strong>{{capitalize plan_name}}</strong>
                       </div>
                     </li>
                       <!--<span class="bm-block-label">Payment<strong>{{type}}</strong> {{lastFour}}</span>-->
-                    <li class="list-group-item bm-block clearfix">To: <strong>{{metadata.donateTo}}</strong></li>
-                    <li class="list-group-item bm-block clearfix">With: <strong>{{show_donate_with}}</strong></li>
-                    <li class="list-group-item bm-block clearfix">Amount: <strong>{{centsToDollars quantity}}</strong></li>
+                    <li class="list-group-item bm-block">To: <strong>{{metadata.donateTo}}</strong></li>
+                    <li class="list-group-item bm-block">With: <strong>{{show_donate_with}}</strong></li>
+                    <li class="list-group-item bm-block">Amount: <strong>{{centsToDollars quantity}}</strong></li>
                     {{#unless equals status "canceled"}}
-                        <li class="list-group-item bm-block clearfix">Next gift on: <strong>{{epochToString current_period_end}}</strong></li>
+                        <li class="list-group-item bm-block">Next gift on: <strong>{{epochToString current_period_end}}</strong></li>
                     {{else}}
-                        <li class="list-group-item bm-block clearfix">Ended on: <strong>{{epochToString ended_at}}</strong></li>
+                        <li class="list-group-item bm-block">Ended on: <strong>{{epochToString ended_at}}</strong></li>
                     {{/unless}}
                     {{#if equals status "canceled"}}
-                    <li class="list-group-item bm-block clearfix">
+                    <li class="list-group-item bm-block">
                         <span>Canceled Reason: {{canceled_reason}}</span>
                     </li>
                     {{/if}}
                     {{#if equals status "active"}}
-                        <li class="list-group-item bm-block button-blocks clearfix">
+                        <li class="list-group-item bm-block button-blocks">
                             <a href="" class="btn btn-block btn-danger cancel-subscription">Cancel</a>
                         </li>
-                        <li class="list-group-item bm-block button-blocks clearfix">
+                        <li class="list-group-item bm-block button-blocks">
                             <button class="btn btn-block btn-primary edit-subscription">Edit Parts</button>
                         </li>
                         {{#if card_subscription}}
-                            <li class="list-group-item bm-block button-blocks clearfix">
+                            <li class="list-group-item bm-block button-blocks">
                                 <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary update-subscription">Update Payment</a>
                             </li>
                         {{else}}
                             {{> AddNewBankAccount}}
-                            <li class="list-group-item bm-block button-blocks clearfix">
+                            <li class="list-group-item bm-block button-blocks">
                                 <a class="btn btn-block btn-primary btn_modal_for_add_new_bank_account">Update Payment</a>
                             </li>
                         {{/if}}
@@ -79,23 +79,23 @@
                     {{#if equals status "past_due"}}
 
                         {{#if card_subscription}}
-                            <li class="list-group-item bm-block button-blocks clearfix">
+                            <li class="list-group-item bm-block button-blocks">
                                 <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary update-subscription">Fix</a>
                             </li>
                         {{else}}
                             {{> AddNewBankAccount}}
-                            <li class="list-group-item bm-block button-blocks clearfix">
+                            <li class="list-group-item bm-block button-blocks">
                                 <a class="btn btn-block btn-primary btn_modal_for_add_new_bank_account">Fix</a>
                             </li>
                         {{/if}}
                     {{/if}}
                     {{#if equals status "canceled"}}
                         {{#if card_subscription}}
-                            <li class="list-group-item bm-block button-blocks clearfix">
+                            <li class="list-group-item bm-block button-blocks">
                                 <a href="{{pathFor 'FixCardSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary activate-subscription">Activate</a>
                             </li>
                         {{else}}
-                            <li class="list-group-item bm-block button-blocks clearfix">
+                            <li class="list-group-item bm-block button-blocks">
                                 <a href="{{pathFor 'FixBankSubscription'}}?s={{id}}&c={{customer}}" class="btn btn-block btn-primary activate-subscription">Activate</a>
                             </li>
                         {{/if}}
