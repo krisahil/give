@@ -24,13 +24,15 @@
                             Quickly Give a new gift.
                         </li>
                     </ul>
-                    {{#unless not_safari}}
-                        <p>
-                            <button id="start_tutorial" class="btn btn-primary" data-dismiss="offcanvas">
-                                Show Me
-                            </button>
-                        </p>
-                    {{/unless}}
+                    {{#if isDesktop}}
+                        {{#unless not_safari}}
+                            <p>
+                                <button id="start_tutorial" class="btn btn-primary" data-dismiss="offcanvas">
+                                    Show Me
+                                </button>
+                            </p>
+                        {{/unless}}
+                    {{/if}}
                     <p>&nbsp;</p>
                     <h4>Got it</h4>
                     <p>
