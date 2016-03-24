@@ -70,7 +70,6 @@ Template.SubscriptionModal.events({
     let trial_end = $("#start_date").val() ? moment(new Date(App.getCleanValue('#start_date'))).format('X'): '';
     let donateToText = $("#designationSection").is(":visible") ? $('#donateTo option:selected').text() : Session.get("change_donateTo");
 
-    // TODO: update these area for change designation show/hide
     if(Session.get("change_donateTo") === donateToText && Session.get("change_amount") === amount &&
       (Session.equals("yes_change_date", false) || !Session.get("yes_change_date"))){
       alert("You haven't made any changes.");
@@ -79,19 +78,18 @@ Template.SubscriptionModal.events({
 
     amount = Session.get("change_amount") === amount ? 0 : amount;
 
-    var loadingSubmitButton = $(':submit').button('loading');
+    $(':submit').button('loading');
 
     console.log(customer_id, subscription_id, amount, trial_end, donateTo);
-    // TODO: modal for showing the user the form with current subscription values. Then from there you can call the below method
     Meteor.call( "edit_subscription", customer_id, subscription_id, amount, trial_end, donateToText, function ( error, response ) {
       if( error ) {
         console.log( error, error.message);
         Bert.alert( error.message, "danger" );
-        $( loadingSubmitButton ).button( 'reset' );
+        $(':submit').button( 'reset' );
       } else {
         console.log( response );
         Bert.alert( response, "success" );
-        $( loadingSubmitButton ).button( 'reset' );
+        $(':submit').button('reset');
 
         Session.set("yes_change_date", false);
         Session.set("yes_change_designation", false);

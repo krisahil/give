@@ -1,10 +1,10 @@
 Template.GiveDropdownGroup.onRendered(function() {
-    $('select').select2({dropdownCssClass: 'dropdown-inverse'});
+  $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
-    // show the datepicker if the frequency is monthly when the page loads
-    if(Session.equals('params.recurring', 'monthly')){
-        $('#calendarSection').show();
-    }
+  // show the datepicker if the frequency is monthly when the page loads
+  if (Session.equals('params.recurring', 'monthly')) {
+    $('#calendarSection').show();
+  }
 
   var datepickerSelector = $('#start_date');
   datepickerSelector.datepicker( {
@@ -13,69 +13,77 @@ Template.GiveDropdownGroup.onRendered(function() {
     endDate: '+40d',
     autoclose: true
   });
-    /*var datepickerSelector = $('#start_date');
-    datepickerSelector.datepicker({
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        dateFormat: 'd MM, yy',
-        minDate: 0,
-        maxDate: +32
-    }).prev('.input-group-btn').on('click', function (e) {
-        e && e.preventDefault();
-        datepickerSelector.focus();
-    });
-    $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
 
-    // Now let's align datepicker with the prepend button
-    datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });*/
+  if($('#donateWith option').length > 2){
+    $('#donateWith').val($('#donateWith option').eq(2).val());
+    if($('#donateWith').val().slice(0,3) === 'car'){
+      Session.set("savedDevice", "Card");
+      Session.set("paymentMethod", $('#donateWith option').eq(2).val());
+    } else if($('#donateWith').val().slice(0,3) === 'ban'){
+      Session.set("savedDevice", "Check");
+      Session.set("paymentMethod", $('#donateWith option').eq(2).val());
+    }
+  } else if(Session.get('params.donateWith')){
+    Session.set("paymentMethod", Session.get('params.donateWith'));
+  }
+  if ($('#donateWith').val() === 'Card') {
+    Session.set("paymentMethod", "Card");
+  } else if($('#donateWith').val() === 'Check'){
+    Session.set("paymentMethod", "Check");
+  }
+  // Setup parsley form validation
+  $('#quick_give').parsley();
+
+  _.each(_.uniq(_.pluck($("select[name='donateWith'] > option")
+    .get(), 'text')), function(name) { $("select[name='donateWith'] > option:contains(" + name + ")")
+    .not(":first").remove(); });
+
+  $('#donateWith').change();
 
 });
 
 Template.GiveDropdownGroup.helpers({
-    give_home: function() {
-        return true;
-    },
-    today: function() {
-        return moment().format('D MMM, YYYY');
-    },
-    device: function(){
-        if(!Devices.find()){
-            Session.set("UserPaymentMethod", "Check");
-        } else {
-          return Devices.find();
-        }
-    },
-    selected: function() {
-        var customer = Customers.find({_id: this.customer});
-        if(this.id === customer.default_source){
-            return 'selected';
-        } else{
-            return;
-        }
-    },
-    brand: function(){
-        if(this.brand){
-            return this.brand;
-        } else{
-            return 'Bank Acct';
-        }
+  give_home: function() {
+    return true;
+  },
+  today: function() {
+    return moment().format('D MMM, YYYY');
+  },
+  device: function(){
+    if(!Devices.find()){
+      Session.set("UserPaymentMethod", "Check");
+    } else {
+      return Devices.find();
     }
+  },
+  selected: function() {
+    var customer = Customers.find({_id: this.customer});
+    if (this.id === customer.default_source) {
+      return 'selected';
+    }
+  },
+  brand: function() {
+    if (this.brand) {
+      return this.brand;
+    }
+    return 'Bank Acct';
+  }
 });
 
 Template.GiveDropdownGroup.events({
-    'change #is_recurring': function() {
-        if ($("#is_recurring").val() !== 'one_time') {
-            Session.set('recurring', true);
-            $('#calendarSection').show();
-            $("#s2id_is_recurring").children().removeClass("redText");
-        } else {
-            Session.set('recurring', false);
-            $('#calendarSection').hide();
-            $("#s2id_is_recurring").children().removeClass("redText");
-        }
-    },
-    'change #donateWith': function() {
-        var selectedValue = $("#donateWith").val();
-        Session.set("UserPaymentMethod", selectedValue);
+  'change #is_recurring': function() {
+    if ($("#is_recurring").val() !== 'one_time') {
+      Session.set('recurring', true);
+      $('#calendarSection').show();
+      $("#s2id_is_recurring").children().removeClass("redText");
+    } else {
+      Session.set('recurring', false);
+      $('#calendarSection').hide();
+      $("#s2id_is_recurring").children().removeClass("redText");
     }
+  },
+  'change #donateWith': function() {
+    var selectedValue = $("#donateWith").val();
+    Session.set("UserPaymentMethod", selectedValue);
+  }
 });

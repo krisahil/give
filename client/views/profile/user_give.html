@@ -8,7 +8,6 @@
             </div>
             <div class="col-lg-8 col-md-8 col-md-offset-2 quick-give-form">
                 <fieldset>
-
                     <!-- Amount of donation -->
                     <div class="donation_amount text-center well well-lg form-group">
                         <div id='amount_width' class="{{amountWidth}}">
@@ -75,15 +74,14 @@
 
                     <div class="form-group padBottom">
                         <div class="col-sm-offset-2 col-sm-8">
-                            <button name="submit_quick_give" type="submit" class="btn btn-block btn-hg btn-primary"
+                            <button name="submitQuickGive" type="submit" class="btn btn-block btn-hg btn-primary"
                                     data-toggle="modal" data-target=".bs-example-modal-lg"  data-loading-text="Processing..."> <span class="fa fa-paper-plane-o"></span> Send Donation</button>
                         </div>
                     </div>
                 </fieldset>
             </div>
+            <input type="hidden" id="enteredWriteInValue" value="{{writeInValue}}" />
         </form>
     </div>
-    <div id="spinDiv" class="fadeMeQuick">
-        {{> spinner}}
-    </div>
+    {{> Modals}}
 </template>

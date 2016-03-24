@@ -7,12 +7,8 @@ Template.AddNewBankAccount.events({
 
     let savePayment = $("#save_payment").is(':checked');
 
-    let opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-    let target = document.getElementById('spinContainer');
-    spinnerObject = new Spinner(opts).spin(target);
-
-    // TODO: Set this as the new primary payment method for this customer's subscription.
-
+    Session.set("loading", true);
+    
     let name;
     if(Meteor.user().profile.business_name) {
       name = Meteor.user().profile.business_name;
@@ -82,7 +78,7 @@ Template.AddNewBankAccount.events({
 
       }
     });
-
+    Session.set("loading", false);
   },
   'click #go-to-card': function (e) {
     e.preventDefault();

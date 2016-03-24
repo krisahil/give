@@ -24,6 +24,10 @@ Template.registerHelper('formatDate', function(date, unix) {
   }
 });
 
+Template.registerHelper('writeInValue', function() {
+  return Session.get('params.enteredWriteInValue');
+});
+
 Template.registerHelper('logged_in', function(context) {
   if (Meteor.user()) {
     switch (context) {
@@ -242,12 +246,18 @@ Template.registerHelper( 'contact_us', ( ) => {
     Meteor.settings.public.org_phone + '</div>';
 });
 
-Template.registerHelper( 'not_safari', ( ) => {
+Template.registerHelper( 'not_safari', () => {
   let user_agent = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   console.log(user_agent);
   return user_agent;
 });
 
+/*
+*  This Session var is used to see if the page should be in the loading state
+ */
+Template.registerHelper( 'loading', function() {
+  return Session.get("loading");
+});
 
 /*
 *  Meteor.settings.public helpers

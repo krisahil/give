@@ -1,6 +1,6 @@
 Router.configure({
   layoutTemplate: 'MasterLayout',
-  loadingTemplate: 'Loading',
+  loadingTemplate: 'loading',
   notFoundTemplate: 'NotFound',
   templateNameConverter: 'upperCamelCase',
   routeControllerNameConverter: 'upperCamelCase'
@@ -108,8 +108,7 @@ Router.route('/thanks', {
   }
 });
 
-Router.route('/gift/:_id', function () {
-
+Router.route('/gift/:_id', function() {
   var params = this.params;
 
   this.subscribe('donate', params._id);
@@ -185,7 +184,7 @@ Router.route('/expiring',{
 
   subscriptions: function(){
     return [
-        Meteor.subscribe('subscriptions_and_customers')
+      Meteor.subscribe('subscriptions_and_customers')
     ];
   },
   action: function() {
@@ -224,11 +223,26 @@ Router.route('/user/give', {
     ];
   },
   action: function() {
-    if (this.ready()) {
-      this.render();
-    } else {
-      this.render('Loading');
-    }
+    var params = this.params;
+
+    Session.set('params.amount', params.query.amount);
+    Session.set('params.campaign', params.query.campaign);
+    Session.set('params.donateTo', params.query.donateTo);
+    Session.set('params.donateWith', params.query.donateWith);
+    Session.set('params.dt_source', params.query.dt_source);
+    Session.set('params.start_date', params.query.start_date);
+    Session.set('params.note', params.query.note);
+    Session.set('params.enteredWriteInValue', params.query.enteredWriteInValue);
+    Session.set('params.enteredCampaignValue', params.query.enteredCampaignValue);
+    Session.set('params.exp_month', params.query.exp_month);
+    Session.set('params.exp_year', params.query.exp_year);
+    Session.set('params.locked_amount', params.query.locked_amount);
+    Session.set('params.locked_frequency', params.query.locked_frequency);
+    Session.set('params.recurring', params.query.recurring);
+    Session.set('params.writeIn', params.query.writeIn);
+
+    this.render('UserGive');
+
   },
   name: 'user.give'
 });

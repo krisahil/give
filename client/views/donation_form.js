@@ -1,5 +1,3 @@
-/* DonationForm: Event Handlers and Helpers */
-
 function removeParam(key, sourceURL) {
   // check that the query string contains a '?', if it doesn't then the router
   // will try to take the user to a different page.
@@ -45,12 +43,11 @@ Template.DonationForm.events({
       $('#spinContainer').scrollView();
       return;
     }
-
-    var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-    var target = document.getElementById('spinContainer');
-    spinnerObject = new Spinner(opts).spin(target);
-
-    $(':submit').button('loading');
+    Session.set("loading", true);
+    console.log(Session.get("loading"));
+    console.log("Got here below loading");
+    $('[name="submitThisForm"]').button('loading');
+    $('#spinContainer').scrollView();
 
     if ($('#donateWith').val() === 'Card') {
       if (!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())) {
@@ -64,8 +61,6 @@ Template.DonationForm.events({
       }
     }
 
-    $('#spinContainer').scrollView();
-    $("#spinDiv").show();
 
     $(window).off('beforeunload');
 
@@ -218,9 +213,6 @@ Template.DonationForm.helpers({
   amount: function() {
     return Session.get('params.amount');
   },
-  writeInValue: function() {
-    return Session.get('params.enteredWriteInValue');
-  },
   campaignValue: function() {
     return Session.get('params.enteredCampaignValueignValue');
   },
@@ -228,11 +220,10 @@ Template.DonationForm.helpers({
     return Session.get('campaignName');
   },
   campaign: function() {
-    if (Session.equals('params.campaign', "Serve 1000")){
+    if (Session.equals('params.campaign', "Serve 1000")) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   },
   dt_source: function() {
     return Session.get('params.dt_source');
@@ -244,59 +235,47 @@ Template.DonationForm.helpers({
     return moment().format('D MMM, YYYY');
   },
   amountWidth: function() {
-    if(Session.equals("paymentMethod", "Card")){
+    if (Session.equals("paymentMethod", "Card")) {
       return 'form-group col-md-4 col-sm-4 col-xs-12';
-    } else{
-      return 'form-group';
     }
-  },
-  showTotal: function() {
-   return Session.equals("coverTheFees", true);
-  },
-  checkedFeeWidth: function(){
-    if(Session.equals("coverTheFees", true)){
-      return "form-group";
-    } else return "form-group";
+    return 'form-group';
   }
 });
-/*****************************************************************************/
-/* DonationForm: Lifecycle Hooks */
-/*****************************************************************************/
 
 Template.DonationForm.onRendered(function() {
-    // Setup parsley form validation
-    $('#donation_form').parsley();
+  // Setup parsley form validation
+  $('#donation_form').parsley();
 
-    //Set the checkboxes to unchecked
-    $(':checkbox').radiocheck('uncheck');
+  // Set the checkboxes to unchecked
+  $(':checkbox').radiocheck('uncheck');
 
-    $('[data-toggle="popover"]').popover({html: true});
+  $('[data-toggle="popover"]').popover({html: true});
 
-    // show the datepicker if the frequency is monthly when the page loads
-    if(Session.equals('params.recurring', 'monthly')){
-        $('#calendarSection').show();
-    }
-    //setup modal for entering give toward information
-    if (Session.equals('params.donateTo', 'WriteIn') && !(Session.equals('showWriteIn', 'no'))) {
-        $('#modal_for_write_in').modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
+  // show the datepicker if the frequency is monthly when the page loads
+  if (Session.equals('params.recurring', 'monthly')) {
+    $('#calendarSection').show();
+  }
+  // setup modal for entering give toward information
+  if (Session.equals('params.donateTo', 'WriteIn') && !(Session.equals('showWriteIn', 'no'))) {
+    $('#modal_for_write_in').modal({
+      show: true,
+      backdrop: 'static'
+    });
+  }
 
-    //setup modal for entering serve1000 church information
-    var campaignSession = Session.get('params.campaign');
+  // setup modal for entering serve1000 church information
+  var campaignSession = Session.get('params.campaign');
 
-    // Regex for "Serve 1000 - "
-    var re = /^Serve\s1000/;
+  // Regex for "Serve 1000 - "
+  var re = /^Serve\s1000/;
 
-    if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no')) &&
-      !Session.get("params.note")) {
-        $('#modal_for_serve1000').modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
+  if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no')) &&
+  !Session.get("params.note")) {
+    $('#modal_for_serve1000').modal({
+      show: true,
+      backdrop: 'static'
+    });
+  }
 
   var datepickerSelector = $('#start_date');
   datepickerSelector.datepicker( {
@@ -317,41 +296,41 @@ Template.DonationForm.onDestroyed( function() {
 });
 
 Template.checkPaymentInformation.helpers({
-    attributes_Input_AccountNumber: function() {
-        return {
-            type: "text",
-            id: "account_number",
-            placeholder: "Bank Account Number",
-            required: true
-        };
-    },
-    attributes_Input_RoutingNumber: function() {
-        return {
-            type: "text",
-            id: "routing_number",
-            placeholder: "Routing numbers are 9 digits long",
-            required: true
-        };
-    }
+  attributes_Input_AccountNumber: function() {
+    return {
+      type: "text",
+      id: "account_number",
+      placeholder: "Bank Account Number",
+      required: true
+    };
+  },
+  attributes_Input_RoutingNumber: function() {
+    return {
+      type: "text",
+      id: "routing_number",
+      placeholder: "Routing numbers are 9 digits long",
+      required: true
+    };
+  }
 });
-//Check Payment Template mods
+// Check Payment Template mods
 Template.checkPaymentInformation.onRendered(function() {
-    $('[data-toggle="popover"]').popover();
-    $("#routing_number").mask("999999999");
+  $('[data-toggle="popover"]').popover();
+  $("#routing_number").mask("999999999");
 
-    $('select').select2({dropdownCssClass: 'dropdown-inverse'});
+  $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 });
 
-//Card Payment Template mods
+// Card Payment Template mods
 Template.cardPaymentInformation.onRendered(function() {
-    $('[data-toggle="popover"]').popover();
-    $('select').select2({dropdownCssClass: 'dropdown-inverse'});
+  $('[data-toggle="popover"]').popover();
+  $('select').select2({dropdownCssClass: 'dropdown-inverse'});
 
-    if (Session.get('params.exp_month')) {
-        $("#expiry_month").val(Session.get('params.exp_month'));
-    }
+  if (Session.get('params.exp_month')) {
+    $("#expiry_month").val(Session.get('params.exp_month'));
+  }
 
-    if (Session.get('params.exp_year')) {
-        $("#expiry_year").val(Session.get('params.exp_year'));
-    }
+  if (Session.get('params.exp_year')) {
+    $("#expiry_year").val(Session.get('params.exp_year'));
+  }
 });

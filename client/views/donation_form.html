@@ -1,8 +1,6 @@
 <template name="DonationForm">
     <div class="container form-container">
-        <div class="row text-center" id="spinContainer">
-
-		<form class="form-horizontal donation-form" role="form" id="donation_form" name="donation_form" data-parsley-focus="first"
+        <form class="form-horizontal donation-form" role="form" id="donation_form" name="donation_form" data-parsley-focus="first"
             data-parsley-excluded="input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden"
             style="background-color: white;">
 
@@ -10,16 +8,16 @@
             </div>
             <div class="col-lg-8 col-md-8 col-md-offset-2">
 
-    			<fieldset>
+                <fieldset>
                     {{#unless campaign}}
-                        <h2>THANK YOU</h2>
+                        <h2 class="text-center">THANK YOU</h2>
                     {{else}}
                         {{> Progress}}
                     {{/unless}}
 
                     <!-- Amount of donation -->
-    				<div class="donation_amount text-center well well-lg form-group">
-    				    <div id='amount_width' class="{{amountWidth}}">
+                    <div class="donation_amount text-center well well-lg form-group">
+                        <div id='amount_width' class="{{amountWidth}}">
                             <label class="control-label" for="amount">Donation Amount</label>
 
                             {{#unless locked_amount}}
@@ -27,7 +25,6 @@
                                     <!--[if lt IE 9]>
                                         <label>Amount</label>
                                     <![endif]-->
-
                                     <span class="input-group-addon">$</span>
                                         <input {{attributes_Input_Amount}} type="digits" value="{{amount}}" class="form-control slim-borders"
                                    required data-parsley-error-message="Please enter an amount with no commas." data-parsley-errors-container="#show-amount-error-here" />
@@ -39,7 +36,7 @@
                                 <input {{attributes_Input_Amount}} type="hidden" value="{{amount}}" />
                             {{/unless}}
 
-    				    </div>
+                        </div>
                         <div class="text-left col-md-7 col-sm-8 col-xs-12">
                             {{#if paymentWithCard}}
                                 <!-- Checbox for Covering related fees-->
@@ -108,7 +105,7 @@
                     </div>
 
 
-    				<!--call the address portion of the form -->
+                    <!--call the address portion of the form -->
                     {{> RequestAddress}}
                     <h5>PAYMENT DETAILS
                         <span style="font-size: .6em;">{{{paymentQuestionIcon}}}</span>
@@ -121,20 +118,18 @@
                     {{/if}}
                     <br>
                     <br>
-    				<div class="form-group padBottom">
-    			        <div class="col-sm-offset-2 col-sm-8">
-    			          <button name="submitThisForm" type="submit" class="btn btn-block btn-hg btn-primary submit-button"
+                    <div class="form-group padBottom">
+                        <div class="col-sm-offset-2 col-sm-8">
+                          <button name="submitThisForm" type="submit" class="btn btn-block btn-hg btn-primary submit-button"
                                   data-toggle="modal" data-target=".bs-example-modal-lg" data-loading-text="Processing..."><span class="fa fa-paper-plane-o"></span> Send Donation</button>
                         </div>
                     </div>
-    			</fieldset>
+                </fieldset>
             </div>
             <input type="hidden" id="enteredWriteInValue" value="{{writeInValue}}" />
             <input type="hidden" id="dt_source" value="{{dt_source}}" />
             <input type="hidden" id="donation_note" value="{{donation_note}}" />
-    	</form>
+        </form>
     </div>
-    </div>
-
     {{> Modals}}
 </template>

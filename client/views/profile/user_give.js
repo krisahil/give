@@ -1,5 +1,3 @@
-var emitter = new EventEmitter();
-
 var giveTutorialSteps = [
   {
     template: Template.tutorial_give_step1,
@@ -53,10 +51,8 @@ Template.UserGive.helpers({
   options: {
     id: "giveTutorial",
     steps: giveTutorialSteps,
-    emitter: emitter,
     onFinish: function() {
       Meteor.setTimeout( function() {
-        // Test debouncing
         Session.set('tutorialEnabled', false);
       }, 1000);
     }
@@ -71,30 +67,20 @@ Template.UserGive.events({
     e.stopPropagation();
     console.log("Got here");
 
-    var loadingSubmitButton = $(':submit').button('loading');
-
-    var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-    var target = document.getElementById('spinContainer');
-    spinnerObject = new Spinner(opts).spin(target);
-
-    $("#spinDiv").show();
+    $("[name='submitQuickGive']").button('loading');
+    Session.set("loading", true);
 
     $(window).off('beforeunload');
 
     App.updateTotal();
 
     if (Session.get("savedDevice", "Check") || Session.get("savedDevice", "Card")) {
-      let deviceId = Session.get("paymentMethod");
-      let usingDevice = Devices.findOne({_id: deviceId});
+      let usingDevice = Devices.findOne({_id: Session.get("paymentMethod")});
       let customer = Customers.findOne({_id: usingDevice.customer});
       App.process_give_form(true, customer._id);
-      loadingSubmitButton.button('reset');
     } else {
       App.process_give_form(true);
-
-      loadingSubmitButton.button('reset');
     }
-
   },
   'keyup, change #amount': _.debounce(function() {
     return App.updateTotal();
@@ -139,41 +125,40 @@ Template.UserGive.events({
   }
 });
 
-
 Template.UserGive.onRendered(function () {
   if(Roles.userIsInRole(Meteor.userId(), 'no-dt-person')) {
     Router.go("Dashboard");
   }
 
-    if($('#donateWith option').length > 2){
-        $('#donateWith').val($('#donateWith option').eq(2).val());
-        if($('#donateWith').val().slice(0,3) === 'car'){
-            Session.set("savedDevice", "Card");
-            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
-        } else if($('#donateWith').val().slice(0,3) === 'ban'){
-            Session.set("savedDevice", "Check");
-            Session.set("paymentMethod", $('#donateWith option').eq(2).val());
-        }
-    } else if(Session.get('params.donateWith')){
-        Session.set("paymentMethod", Session.get('params.donateWith'));
-    }
+  $('[data-toggle="popover"]').popover();
 
-    if($('#donateWith').val() === 'Card'){
-        Session.set("paymentMethod", "Card");
-    } else if($('#donateWith').val() === 'Check'){
-        Session.set("paymentMethod", "Check");
-    }
-    // Setup parsley form validation
-    $('#quick_give').parsley();
+  // setup modal for entering give toward information
+  if (Session.equals('params.donateTo', 'WriteIn') && !(Session.equals('showWriteIn', 'no'))) {
+    $('#modal_for_write_in').modal({
+      show: true,
+      backdrop: 'static'
+    });
+  }
 
-    $("#spinDiv").hide();
+  if (Session.get("params.enteredWriteInValue")) {
+    $('#giftDesignationText').show();
+  }
+  // setup modal for entering serve1000 church information
+  var campaignSession = Session.get('params.campaign');
 
-    _.each(_.uniq(_.pluck($("select[name='donateWith'] > option")
-        .get(), 'text')), function(name) { $("select[name='donateWith'] > option:contains(" + name + ")")
-        .not(":first").remove(); });
+  // Regex for "Serve 1000 - "
+  var re = /^Serve\s1000/;
 
-    $('#donateWith').change();
+  if (re.exec(campaignSession) && !(Session.equals('showserve1000', 'no')) &&
+    !Session.get("params.note")) {
+    $('#modal_for_serve1000').modal({
+      show: true,
+      backdrop: 'static'
+    });
+  }
 
-    $('[data-toggle="popover"]').popover();
+});
 
+Template.UserGive.onDestroyed( function() {
+  $(window).unbind('beforeunload');
 });

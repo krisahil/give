@@ -117,60 +117,53 @@ Template.SubscriptionsOverview.helpers({
 
 Template.SubscriptionsOverview.events({
   'click .cancel-subscription': function (e) {
-      e.preventDefault();
-      var subscription_id = this.id;
-      var customer_id = Subscriptions.findOne({_id: subscription_id}).customer;
-      console.log("Got to cancel subscription call");
-      console.log("subscription id: " + subscription_id);
-      console.log("Customer id: " + customer_id);
-      $(e.currentTarget).button('Working');
+  e.preventDefault();
+  var subscription_id = this.id;
+  var customer_id = Subscriptions.findOne({_id: subscription_id}).customer;
+  console.log("Got to cancel subscription call");
+  console.log("subscription id: " + subscription_id);
+  console.log("Customer id: " + customer_id);
+  $(e.currentTarget).button('Working');
+  
+  swal({
+      title: "Are you sure?",
+      text: "Please let us know why you are stopping your gift. (optional)",
+      type: "input",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, stop it!",
+      cancelButtonText: "No",
+      closeOnConfirm: false,
+      closeOnCancel: false
+    }, function(inputValue){
 
+      if (inputValue === "") {
+        inputValue = "Not specified";
+      }
 
-    swal({
-          title: "Are you sure?",
-          text: "Please let us know why you are stopping your gift. (optional)",
-          type: "input",
-          showCancelButton: true,
-          confirmButtonColor: "#DD6B55",
-          confirmButtonText: "Yes, stop it!",
-          cancelButtonText: "No",
-          closeOnConfirm: false,
-          closeOnCancel: false
-      }, function(inputValue){
-
-          if (inputValue === "") {
-              inputValue = "Not specified";
+      if (inputValue === false){
+        swal("Ok, we didn't do anything.", "Your recurring gift is still active :)",
+            "success");
+        $(e.currentTarget).button('reset');
+      } else if (inputValue) {
+        Session.set("loading", true);
+        console.log("Got to before method call with input of " + inputValue);
+        Meteor.call("stripeCancelSubscription", customer_id, subscription_id, inputValue, function(error, response){
+          if (error){
+            confirm.button("reset");
+            Session.set("loading", false);
+            Bert.alert(error.message, "danger");
+           $(e.currentTarget).button('reset');
+          } else {
+            // If we're resubscribed, go ahead and confirm by returning to the
+            // subscriptions page and show the alert
+            console.log(response);
+            Session.set("loading", false);
+            swal("Cancelled", "Your recurring gift has been stopped.", "error");
           }
-
-          if (inputValue === false){
-              swal("Ok, we didn't do anything.", "Your recurring gift is still active :)",
-                  "success");
-            $(e.currentTarget).button('reset');
-          } else if (inputValue) {
-              console.log("Got to before method call with input of " + inputValue);
-            var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-              var target = document.getElementById('spinContainer');
-              spinnerObject = new Spinner(opts).spin(target);
-              $("#spinDiv").show();
-              Meteor.call("stripeCancelSubscription", customer_id, subscription_id, inputValue, function(error, response){
-                  if (error){
-                      confirm.button("reset");
-                      Bert.alert(error.message, "danger");
-                      spinnerObject.stop();
-                      $("#spinDiv").hide();
-                    $(e.currentTarget).button('reset');
-                  } else {
-                      // If we're resubscribed, go ahead and confirm by returning to the
-                      // subscriptions page and show the alert
-                      console.log(response);
-                      spinnerObject.stop();
-                      $("#spinDiv").hide();
-                      swal("Cancelled", "Your recurring gift has been stopped.", "error");
-                  }
-              });
-          }
-      });
-
+        });
+      }
+    });
   },
   'click .previous': function(evt){
       evt.preventDefault();

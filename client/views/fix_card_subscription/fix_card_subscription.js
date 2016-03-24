@@ -20,11 +20,6 @@ Template.FixCardSubscription.onRendered(function(){
 Template.FixCardSubscription.events({
   'submit form': function(e){
     e.preventDefault();
-    // In order to account for the possibility of our customer resubscribing
-    // with a new credit card, we need to check whether or not they're doing that.
-    var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-    var target = document.getElementById('spinContainer');
-    spinnerObject = new Spinner(opts).spin(target);
 
     var update_this = {
       customer_id: Customers.findOne()._id,
@@ -36,7 +31,6 @@ Template.FixCardSubscription.events({
     };
     var addingNewCreditCard = Session.get('addingNewCreditCard');
     var resubscribeButton   = $(".resubscribe").button('loading');
-
 
     if (addingNewCreditCard){
       // If we're adding a new card, grab our card data from the template.
@@ -113,11 +107,11 @@ Template.FixCardSubscription.events({
         }
       });
     }
+    Session.set("loading", false);
   },
   'click .add-new-card': function(){
     Session.set('addingNewCreditCard', true);
   },
-
   'click .cancel-new-card': function(e){
     e.preventDefault();
     $('form#resubscribe').unbind('submit');

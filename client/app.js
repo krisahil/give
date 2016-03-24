@@ -1,5 +1,3 @@
-/* Client App Namespace  */
-
 _.extend(App, {
   getCleanValue: function(id) {
     var jqueryObjectVal = $(id).val();
@@ -276,15 +274,11 @@ _.extend(App, {
   // amount that is shown to the user and passed as total_amount through the form
   // display error modal if there is an error while initially submitting data from the form.
   handleErrors: function(error) {
-    if (typeof spinnerObject !== "undefined") {
-      spinnerObject.stop();
-    }
-    $("#spinDiv").hide();
+    Session.set("loading", false);
     $(':submit').button('reset');
     console.dir(error);
 
     var gatherInfo = {};
-    Session.set("loaded", true);
     if (error.type === "invalid_request_error" || error.code === "invalid_expiry_month") {
       gatherInfo.browser = navigator.userAgent;
 

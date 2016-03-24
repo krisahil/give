@@ -1,3 +1,7 @@
 <template name="loading">
-    {{> spinner}}
+    {{#if loading}}
+        <div id="spinDiv" class="fadeMe">
+        </div>
+        {{> spinner}}
+    {{/if}}
 </template>

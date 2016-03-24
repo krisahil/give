@@ -17,11 +17,7 @@ Template.FixBankSubscription.onRendered(function(){
 Template.FixBankSubscription.events({
   'submit form': function(e){
     e.preventDefault();
-    // In order to account for the possibility of our customer resubscribing
-    // with a new credit card, we need to check whether or not they're doing that.
-    var opts = {color: '#FFF', length: 60, width: 10, lines: 8};
-    var target = document.getElementById('spinContainer');
-    spinnerObject = new Spinner(opts).spin(target);
+    Session.set("loading", true);
 
     var update_this = {
       customer_id: Customers.findOne()._id,
@@ -29,7 +25,7 @@ Template.FixBankSubscription.events({
       status: Subscriptions.findOne().status,
       bank: Customers.findOne().default_source
     };
-    var resubscribeButton   = $(".resubscribe").button('loading');
+    var resubscribeButton = $(".resubscribe").button('loading');
 
     Meteor.call("stripeRestartBankSubscription", update_this, function(error, response){
       if (error){
@@ -47,17 +43,16 @@ Template.FixBankSubscription.events({
         }
         Router.go('subscriptions');
       }
+      Session.set("loading", false);
     });
   },
   'click .add-new-card': function(){
-      Session.set('addingNewCreditCard', true);
+    Session.set('addingNewCreditCard', true);
   },
-
   'click .cancel-new-card': function(e){
-      e.preventDefault();
-      $('form#resubscribe').unbind('submit');
-      Session.set('addingNewCreditCard', false);
-
+    e.preventDefault();
+    $('form#resubscribe').unbind('submit');
+    Session.set('addingNewCreditCard', false);
   }
 });
 

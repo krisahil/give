@@ -413,7 +413,6 @@ legend {
     top:        0;
     left:       0;
     position:   fixed;
-    display:    none;
 }
 
 .loginButton {
