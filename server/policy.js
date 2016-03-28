@@ -21,9 +21,7 @@ var trusted = [
 ];
 
 _.each(trusted, function(origin) {
-  var nonSecureOrigin = "http://" + origin;
   var secureOrigin = "https://" + origin;
-  BrowserPolicy.content.allowOriginForAll(nonSecureOrigin);
   BrowserPolicy.content.allowOriginForAll(secureOrigin);
 });
 
