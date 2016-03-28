@@ -1,5 +1,3 @@
-var emitter = new EventEmitter();
-
 var userProfileTutorialSteps = [
   {
     template: Template.tutorial_user_profile_step1,
@@ -142,7 +140,6 @@ Template.UserProfile.helpers({
   options: {
     id: "userTutorial",
     steps: userProfileTutorialSteps,
-    emitter: emitter,
     onFinish: function() {
       console.log("Finish clicked!");
       Meteor.setTimeout( function () {
@@ -154,70 +151,70 @@ Template.UserProfile.helpers({
 });
 
 Template.UserProfile.events({
-    'click #viewHistory': function() {
-        Session.set("showHistory", false);
-    },
-    'click .edit_address': function () {
-      //setup modal for entering give toward information
-      $('#modal_for_address_change').modal({show: true, static: true});
-    },
-    'submit form': function (evt, tmpl) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        var fields = {
-            address: {
-                'address_line1':    $('#line1').val(),
-                'address_line2':    $('#line2').val(),
-                'city':             $('#city').val(),
-                'state':            $('#state').val(),
-                'postal_code':      $('#zip').val()
-            },
-            phone:                  $('#phone').val()
-        };
+  'click #viewHistory': function() {
+      Session.set("showHistory", false);
+  },
+  'click .edit_address': function () {
+    //setup modal for entering give toward information
+    $('#modal_for_address_change').modal({show: true, static: true});
+  },
+  'submit form': function (evt, tmpl) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    var fields = {
+      address: {
+        'address_line1':    $('#line1').val(),
+        'address_line2':    $('#line2').val(),
+        'city':             $('#city').val(),
+        'state':            $('#state').val(),
+        'postal_code':      $('#zip').val()
+      },
+      phone:                $('#phone').val()
+    };
 
-        var loadingButton = $(':submit').button('loading');
+    var loadingButton = $(':submit').button('loading');
 
-        var updateThis = {};
-        updateThis.profile = Meteor.user() && Meteor.user().profile;
-        updateThis.profile[Session.get('activeTab')] = fields;
+    var updateThis = {};
+    updateThis.profile = Meteor.user() && Meteor.user().profile;
+    updateThis.profile[Session.get('activeTab')] = fields;
 
-        // Update the Meteor.user profile
-        Meteor.users.update({_id: Meteor.user()._id}, {$set:  updateThis});
-        //var customer_id = Meteor.user() & Meteor.user().primary_customer_id;
+    // Update the Meteor.user profile
+    Meteor.users.update({_id: Meteor.user()._id}, {$set:  updateThis});
+    //var customer_id = Meteor.user() & Meteor.user().primary_customer_id;
 
-        Meteor.call('update_customer', fields, Number(Session.get('activeTab')), function(error, result){
-           if(result){
-               console.log(result);
-               $('#modal_for_address_change').modal('hide');
-               loadingButton.button("reset");
-               Bert.alert("We have updated your profile, thanks.", "success");
-           } else{
-               console.log(error);
-               loadingButton.button("reset");
-               Bert.alert("That didn't work. Please try again. If it still doesn't work, " +
-                   "then please let us know, we'll check into this error." + error, "danger");
-           }
-        });
-    },
-    'click .previous': function(evt, tmpl){
-        evt.preventDefault();
-        evt.stopPropagation();
-        if(Number(Session.get('dt_donations_cursor')> 9)){
-            Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')-10));
-        }
-    },
-    'click .next': function(evt, tmpl){
-        evt.preventDefault();
-        evt.stopPropagation();
-        Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')+10));
-    },
-    'click .clickable_row': function(){
-        var transaction_id = this.transaction_id;
-        Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
-    },
-    'click #myTabs a': function () {
-        Session.set('activeTab', this.id);
+    Meteor.call('update_customer', fields, Number(Session.get('activeTab')), function(error, result){
+     if(result){
+       console.log(result);
+       $('#modal_for_address_change').modal('hide');
+       loadingButton.button("reset");
+       Bert.alert("We have updated your profile, thanks.", "success");
+     } else{
+       console.log(error);
+       loadingButton.button("reset");
+       Bert.alert("That didn't work. Please try again. If it still doesn't work, " +
+           "then please let us know, we'll check into this error." + error, "danger");
+     }
+    });
+  },
+  'click .previous': function(evt, tmpl){
+    evt.preventDefault();
+    evt.stopPropagation();
+    if(Number(Session.get('dt_donations_cursor')> 9)){
+      Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')-10));
     }
+  },
+  'click .next': function(evt, tmpl){
+    evt.preventDefault();
+    evt.stopPropagation();
+    Session.set('dt_donations_cursor', Number(Session.get('dt_donations_cursor')+10));
+  },
+  'click .clickable_row': function(){
+    var transaction_id = this.transaction_id;
+    Router.go($(".clickable_row[data-dt-transaction-id='" + transaction_id + "']").data("href"));
+  },
+  'click #myTabs a': function () {
+    Session.set('activeTab', this.id);
+  }
 });
 
 Template.UserProfile.onRendered(function() {

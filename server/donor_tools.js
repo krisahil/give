@@ -466,6 +466,11 @@ _.extend(Utils, {
         logger.info( "------No Person with the DT ID of " +
           customerCursor.metadata.dt_persona_id + " found in DT--------" );
         Utils.send_failed_to_add_to_dt_email_to_support( customerCursor.metadata.dt_persona_id, charge_id );
+        Audit_trail.update({_id: charge_id}, {
+          $set: {
+            "dt_donation_inserted": false
+          }
+        });
         throw new Meteor.Error( e );
       }
 

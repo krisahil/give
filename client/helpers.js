@@ -1,4 +1,3 @@
-
 Template.registerHelper('formatTime', function(context) {
   if (context) {
     return moment( context ).format( 'MM/DD/YYYY, hh:mma' );
@@ -222,9 +221,8 @@ Template.registerHelper('addingNew', function(type) {
  */
 
 Template.registerHelper( 'isCurrentUser', ( currentUser ) => {
-  return currentUser === Meteor.userId() ? true : false;
+  return currentUser === Meteor.userId();
 });
-
 
 Template.registerHelper( 'disableIfAdmin', ( userId ) => {
   if ( Meteor.userId() === userId ) {
