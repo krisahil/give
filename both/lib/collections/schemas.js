@@ -37,7 +37,7 @@ Schema.Stripe = new SimpleSchema({
   "ach_verification_type": {
     type: String,
     label: "Which type of ACH verification do you prefer?",
-    allowedValues: ["None","Micro-deposit","Plaid"],
+    allowedValues: ["none", "manual", "micro-deposit", "plaid"],
     optional: true,
     autoform: {
       afFieldInput: {
@@ -76,7 +76,7 @@ Schema.Config = new SimpleSchema({
     type: Object,
     optional: true,
     autoform: {
-      panelClass: "panel",
+      panelClass: "panel-info",
       afFieldInput: {
         class: 'slim-borders'
       }
@@ -272,7 +272,8 @@ Schema.Config = new SimpleSchema({
     type: String,
     label: "Domain name",
     autoform: {
-      placeholder: "e.g. trashmountain.com"
+      value: Meteor.settings.public.org_domain,
+      readonly: true
     }
   },
   "organization_info.web.subdomain": {
@@ -580,10 +581,10 @@ Schema.CreateUserFormSchema = new SimpleSchema({
     autoform: {
       type: "select",
       options: function() {
-          return [
-            { label: "invited", value: "invited" }
-          ]
-        }
+        return [
+          { label: "invited", value: "invited" }
+        ];
+      }
     },
     defaultValue: 'invited'
   },
@@ -592,10 +593,10 @@ Schema.CreateUserFormSchema = new SimpleSchema({
     optional: true,
     label: 'Roles: Hold down the Ctrl (windows) / Command (Mac) button to select multiple roles',
     autoform: {
-      options: function () {
-        return Meteor.roles.find().map( function ( r ) {
+      options: function() {
+        return Meteor.roles.find().map( function(r) {
           return { label: r.name, value: r.name };
-        } );
+        });
       }
     }
   },
@@ -670,8 +671,8 @@ Schema.UpdateUserFormSchema = new SimpleSchema({
     optional: true,
     label: 'Roles: Hold down the Ctrl (windows) / Command (Mac) button to select multiple roles',
     autoform: {
-      options: function () {
-        return Meteor.roles.find().map( function ( r ) {
+      options: function() {
+        return Meteor.roles.find().map(function(r) {
           return { label: r.name, value: r.name };
         } );
       }

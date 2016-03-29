@@ -2,6 +2,8 @@ AllErrors = new Mongo.Collection('allerrors');
 
 Audit_trail = new Mongo.Collection('audit_trail');
 
+BankAccounts = new Mongo.Collection('bankAccounts');
+
 Charges = new Mongo.Collection('charges');
 
 Customers = new Mongo.Collection('customers');

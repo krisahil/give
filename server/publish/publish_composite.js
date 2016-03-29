@@ -116,7 +116,7 @@ Meteor.publishComposite('subscriptions_and_customers', function (searchValue) {
   check(searchValue, Match.Optional(String));
 
   // Publish the nearly expired or expired card data to the admin dashboard
-  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
     console.log(searchValue);
     if(!searchValue){
       return;
@@ -179,6 +179,40 @@ Meteor.publishComposite('subscriptions_and_customers', function (searchValue) {
                   subscriptions: 1
                 }
               } );
+          }
+        }
+      ]
+    }
+  } else {
+    this.stop();
+    return;
+  }
+});
+
+Meteor.publishComposite('ach', function () {
+
+  // Publish the nearly expired or expired card data to the admin dashboard
+  if (Roles.userIsInRole(this.userId, ['admin'])) {
+
+    return {
+      find: function () {
+        return BankAccounts.find();
+      },
+      children: [
+        {
+          find: function ( bankAccounts ) {
+            // Find post author. Even though we only want to return
+            // one record here, we use "find" instead of "findOne"
+            // since this function should return a cursor.
+            return Customers.find({ _id: bankAccounts.customer_id});
+          }
+        },
+        {
+          find: function ( bankAccounts ) {
+            // Find post author. Even though we only want to return
+            // one record here, we use "find" instead of "findOne"
+            // since this function should return a cursor.
+            return Donations.find({ customer_id: bankAccounts.customer_id});
           }
         }
       ]

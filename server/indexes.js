@@ -4,6 +4,10 @@ Audit_trail._ensureIndex(
   {'user_id': 1},
   {background: true});
 
+BankAccounts._ensureIndex(
+  {'customer_id': 1},
+  {background: true});
+
 Charges._ensureIndex(
   {'id': 1},
   {'customer': 1},

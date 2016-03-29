@@ -22,7 +22,7 @@ Router.onBeforeAction(function() {
     this.next();
   }
 }, {
-  only: ['Users', 'GivingOptions', 'OrgInfo']
+  only: ['Users', 'GivingOptions', 'OrgInfo', 'admin.ach']
 });
 
 Router.onBeforeAction(function() {
@@ -164,6 +164,14 @@ Router.route('/user', function() {
   }
 }, {
   name: 'user.profile'
+});
+
+Router.route('/dashboard/ach', function() {
+  this.layout('AdminLayout');
+
+  this.render('ACH');
+}, {
+  name: 'admin.ach'
 });
 
 Router.route('/transfers', {

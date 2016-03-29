@@ -52,6 +52,16 @@
                 <div class="panel-body">
                     {{#if isInRole 'admin'}}
                         <div class="row">
+                            {{#if manualACH}}
+                                <div class="col-sm-2">
+                                    <a id="manual-ach" class="quick-button backgroundColor primary" href="/dashboard/ach">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-bank"></i>
+                                </span>
+                                        <h5>ACH</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                             <div class="col-sm-2">
                                 <a id="users-and-roles" class="quick-button backgroundColor primary" href="/dashboard/users">
                                 <span class="fa-stack fa-lg">
@@ -158,14 +168,6 @@
                                     <h5>Fix No Local User</h5>
                                 </a>
                             </div>
-                            <!--<div class="col-sm-2">
-                                <a id="store-all-refunds" class="quick-button backgroundColor primary" href="">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-hdd-o"></i>
-                                    </span>
-                                    <h5>Store all refunds</h5>
-                                </a>
-                            </div>-->
                         {{/if}}
                     </div>
                 </div>
@@ -200,14 +202,6 @@
             </div>
         </div><!--/col-lg-12-->
 	</div><!--/row-->
-    {{#if showGetStripeEvent}}
-        <div class="row">
-            <div class="col col-lg-2"></div>
-            <div class="col-lg-8">
-                {{> GetStripeEvent}}
-            </div>
-        </div>
-    {{/if}}
     {{#if showFixNoUser}}
         <div class="row">
             <div class="col col-lg-2"></div>

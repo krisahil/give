@@ -434,3 +434,14 @@ Meteor.publish("uploaded", function () {
     this.ready();
   }
 });
+
+
+Meteor.publish("config", function () {
+  let isAdmin = Roles.userIsInRole( this.userId, 'admin' );
+
+  if ( isAdmin ) {
+    return Config.find();
+  } else {
+    this.ready();
+  }
+});

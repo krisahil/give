@@ -4,6 +4,14 @@ Template.Dashboard.helpers({
   },
   showFixNoUser: function() {
     return Session.get("showFixNoUser");
+  },
+  manualACH: function() {
+    let config = Config.findOne();
+    if ( config &&
+          config.Stripe &&
+          config.Stripe.ach_verification_type) {
+      return config.Stripe.ach_verification_type === 'manual';
+    }
   }
 });
 
@@ -24,7 +32,11 @@ Template.Dashboard.events({
   },
   'click #show-get-stripe-event': function(evt) {
     evt.preventDefault();
-    Session.set("showGetStripeEvent", true);
+    if (Session.equals("showGetStripeEvent", true)) {
+      Session.set("showGetStripeEvent", false);
+    } else {
+      Session.set("showGetStripeEvent", true);
+    }
   },
   'click #show-fix-no-user': function(evt) {
     evt.preventDefault();
@@ -87,4 +99,10 @@ Template.Dashboard.events({
       backdrop: 'static'
     });
   }
+});
+
+Template.Dashboard.onRendered(function() {
+  this.autorun(() => {
+    this.subscribe("config");
+  });
 });

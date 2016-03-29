@@ -4,6 +4,7 @@ Security.permit(['insert', 'update', 'remove'])
   [
     AllErrors,
     Audit_trail,
+    BankAccounts,
     Charges,
     Customers,
     Devices,
