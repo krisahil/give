@@ -98,7 +98,6 @@
     "no-implied-eval": 2,            // http://eslint.org/docs/rules/no-implied-eval
     "no-lone-blocks": 2,             // http://eslint.org/docs/rules/no-lone-blocks
     "no-loop-func": 2,               // http://eslint.org/docs/rules/no-loop-func
-    "no-multi-str": 2,               // http://eslint.org/docs/rules/no-multi-str
     "no-native-reassign": [2, {      // http://eslint.org/docs/rules/no-native-reassign
       "exceptions": ["App"]
     }],

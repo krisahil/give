@@ -1,7 +1,7 @@
 <template name="Users">
   <div class="row">
     <div class="col col-lg-12">
-        {{#if isInRole 'admin, manager'}}
+        {{#if isInRole 'admin'}}
             {{#unless showSingleUser}}
                 {{#if addingNew 'user'}}
                     {{> AddUser}}

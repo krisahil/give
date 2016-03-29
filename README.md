@@ -91,7 +91,6 @@ Here is an example settings.json file
     "org_zip": "Your org zip",
     "other_support_addresses": ["array of addresses only currently used for the new account added emails"],
     "stripe_publishable: "publishable Stripe Key",
-    "stripe_ach_verification_procedure": "e.g. none, micro-deposit, plaid (micro-deposit and plaid are still being developed and do not currently work)"
     "support_address": "support email address",
   }
 }
