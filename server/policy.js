@@ -23,6 +23,10 @@ var trusted = [
 _.each(trusted, function(origin) {
   var secureOrigin = "https://" + origin;
   BrowserPolicy.content.allowOriginForAll(secureOrigin);
+  if (Meteor.settings.dev) {
+    let nonSecureOrigin = "http://" + origin;
+    BrowserPolicy.content.allowOriginForAll(nonSecureOrigin);
+  }
 });
 
 BrowserPolicy.content.allowInlineScripts(Meteor.settings.public.URL);

@@ -35,7 +35,7 @@ Template.StripeExpiring.events({
 })
 
 Template.StripeExpiring.onRendered(function () {
-    $('.datatable').dataTable( {
+    /*$('.datatable').dataTable( {
         "columnDefs": [
             { className: "details-control", "targets": [ 0 ] }
         ],
@@ -43,5 +43,5 @@ Template.StripeExpiring.onRendered(function () {
     });
 
     //order by the date field
-    $('#mainTable').dataTable().api().order(2, 'asc').draw();
+    $('#mainTable').dataTable().api().order(2, 'asc').draw();*/
 });

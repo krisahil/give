@@ -10,9 +10,32 @@
   "jshintConfig": {
     "undef": true,
     "unused": true,
-    "predef": [ "App", "Meteor", "AllErrors", "Audit_trail", "Charges", "Config",
-      "Customers", "Devices", "Donations", "DT_donations", "DT_funds", "DT_splits",
-      "Invoices", "Roles", "Subscriptions", "Transactions", "Transfers", "Uploads",
-      "Users", "Router", "Session" ]
+    "predef": [
+      "App",
+      "Meteor",
+      "AllErrors",
+      "Audit_trail",
+      "Charges",
+      "Config",
+      "Customers",
+      "Devices",
+      "Donations",
+      "DT_donations",
+      "DT_funds",
+      "DT_splits",
+      "Invoices",
+      "Roles",
+      "Subscriptions",
+      "Transactions",
+      "Transfers",
+      "Uploads",
+      "Users",
+      "Router",
+      "Session"
+    ]
+  },
+  "dependencies": {
+    "datatables": "^1.10.11",
+    "jquery": "^2.2.2"
   }
 }
