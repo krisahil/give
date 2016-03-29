@@ -40,14 +40,14 @@ Template.DonationForm.events({
     if ($("#is_recurring").val() === '') {
       $("#s2id_is_recurring").children().addClass("redText");
 
-      $('#spinContainer').scrollView();
+      $("html, body").animate({ scrollTop: 0 }, "slow");
       return;
     }
+    $("html, body").animate({ scrollTop: 0 }, "slow");
     Session.set("loading", true);
     console.log(Session.get("loading"));
     console.log("Got here below loading");
     $('[name="submitThisForm"]').button('loading');
-    $('#spinContainer').scrollView();
 
     if ($('#donateWith').val() === 'Card') {
       if (!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())) {

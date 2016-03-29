@@ -299,14 +299,13 @@ _.extend(App, {
       $('#errorDescription').html(error.message ? error.message : '' + " " +
       error.reason ? error.reason : '');
       return;
-    } else {
-      $('#modal_for_initial_donation_error').modal({show: true});
-      $(".modal-dialog").css("z-index", "1500");
-      $('#errorCategory').html(error.code ? error.code : error.error ? error.error : 'General');
-      $('#errorDescription').html(error.message ? error.message : '' + " " +
-      error.reason ? error.reason : '');
-      return;
     }
+    $('#modal_for_initial_donation_error').modal({show: true});
+    $(".modal-dialog").css("z-index", "1500");
+    $('#errorCategory').html(error.code ? error.code : error.error ? error.error : 'General');
+    $('#errorDescription').html(error.message ? error.message : '' + " " +
+    error.reason ? error.reason : '');
+    return;
   },
   process_card: function(cardInfo, form) {
     Stripe.card.createToken(cardInfo, function(status, response) {
