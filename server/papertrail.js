@@ -28,7 +28,7 @@ logger.add(Winston_Papertrail, {
 });
 
 
-logger.info(" =====> Meteor App restarted "+ new Date( Date.now()) +" <=====");
+logger.info(" =====> Meteor App restarted " + new Date( Date.now()) + " <=====");
 //consoleLogger.debug(" =====> Meteor App restarted "+ new Date( Date.now()) +" <=====");
 
 

@@ -26,34 +26,34 @@
         <tbody>
         {{#if searchSubscriptions}}
             {{#each searchSubscriptions}}
-            <tr class="{{trialing}}">
-                <td>{{name}}</td>
-                <td>{{metadata.email}}</td>
-                <td>${{twoDecimalPlaces quantity}}</td>
-                <td>{{formatDate current_period_end true}}</td>
-                <td>{{metadata.donateTo}}</td>
-                <td>{{metadata.note}}</td>
-                <td>{{_id}}</td>
-                {{#if isInRole 'admin, manager'}}
-                    <td class="text-right">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            {{#if card_subscription}}
-                                <button id="go_to_resubscribe_link" class="btn btn-sm btn-info">
-                                    Edit {{card_or_bank}}</button>
-                            {{else}}
-                                {{> AddNewBankAccount}}
-                                <button id="btn_modal_for_add_new_bank_account"
-                                    class="btn btn-sm btn-info">
-                                        Edit {{card_or_bank}}
-                                </button>
-                            {{/if}}
-                            <button class="btn btn-sm btn-primary edit-button">Edit Parts</button>
-                            <button class="btn btn-sm btn-danger stop-button">Stop</button>
-                        </div>
-                    </td>
-                {{/if}}
-            </tr>
-        {{/each}}
+                <tr class="{{trialing}}">
+                    <td>{{name}}</td>
+                    <td>{{metadata.email}}</td>
+                    <td>${{twoDecimalPlaces quantity}}</td>
+                    <td>{{formatDate current_period_end true}}</td>
+                    <td>{{metadata.donateTo}}</td>
+                    <td>{{metadata.note}}</td>
+                    <td>{{_id}}</td>
+                    {{#if isInRole 'admin, manager'}}
+                        <td class="text-right">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                {{#if card_subscription}}
+                                    <button id="go_to_resubscribe_link" class="btn btn-sm btn-info">
+                                        Edit {{card_or_bank}}</button>
+                                {{else}}
+                                    {{> AddNewBankAccount}}
+                                    <button id="btn_modal_for_add_new_bank_account"
+                                        class="btn btn-sm btn-info">
+                                            Edit {{card_or_bank}}
+                                    </button>
+                                {{/if}}
+                                <button class="btn btn-sm btn-primary edit-button">Edit Parts</button>
+                                <button class="btn btn-sm btn-danger stop-button">Stop</button>
+                            </div>
+                        </td>
+                    {{/if}}
+                </tr>
+            {{/each}}
         {{else}}
             {{#if searchValue}}
                 <p>Nothing found with that search</p>

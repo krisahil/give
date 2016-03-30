@@ -3,12 +3,14 @@ function updateSearchVal(){
   console.log("Got to updateSearchVal function");
   let searchValue = $(".search").val();
 
-  // Remove punctuation and make it into an array of words
-  searchValue = searchValue
-    .replace(/[^\w\s]|_/g, "")
-    .replace(/\s+/g, " ");
+  if (searchValue) {
+    // Remove punctuation and make it into an array of words
+    searchValue = searchValue
+      .replace( /[^\w\s]|_/g, "" )
+      .replace( /\s+/g, " " );
 
-  Session.set("searchValue", searchValue);
+    Session.set( "searchValue", searchValue );
+  }
 };
 
 Template.AdminSubscriptions.events({
@@ -88,7 +90,7 @@ Template.AdminSubscriptions.events({
       }).prop('selected', true).change();
     }, 0);
   },
-  'keyup .search': _.debounce(function () {
+  'keyup, change .search': _.debounce(function () {
     updateSearchVal();
   }, 300),
   'click .clear-button': function () {
@@ -105,9 +107,6 @@ Template.AdminSubscriptions.events({
 });
 
 Template.AdminSubscriptions.helpers({
-  searchValue: function() {
-    return Session.get("searchValue");
-  },
   card_or_bank: function() {
     const customer = this.customer;
     const customer_cursor = Customers.findOne({_id: customer});
@@ -169,4 +168,8 @@ Template.AdminSubscriptions.onCreated( function () {
     Meteor.subscribe("subscriptions_and_customers", Session.get("searchValue") ?
       Session.get("searchValue") : '');
   });
+});
+
+Template.AdminSubscriptions.onDestroyed(function() {
+  Session.delete("searchValue");
 });

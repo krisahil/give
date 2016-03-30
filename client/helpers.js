@@ -258,6 +258,13 @@ Template.registerHelper( 'loading', function() {
 });
 
 /*
+*  This Session var is used to see if the page should be in the loading state
+ */
+Template.registerHelper( 'searchValue', function() {
+  return Session.get("searchValue");
+});
+
+/*
 *  Meteor.settings.public helpers
 *  */
 

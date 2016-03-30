@@ -52,11 +52,11 @@ Template.DonationForm.events({
     if ($('#donateWith').val() === 'Card') {
       if (!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())) {
         var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"};
-        App.handleErrors(new_error);
+        Give.handleErrors(new_error);
         return;
       } else if (!Stripe.card.validateCardNumber($('#card_number').val())) {
         var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"};
-        App.handleErrors(new_error);
+        Give.handleErrors(new_error);
         return;
       }
     }
@@ -64,9 +64,9 @@ Template.DonationForm.events({
 
     $(window).off('beforeunload');
 
-    App.updateTotal();
+    Give.updateTotal();
 
-    App.process_give_form();
+    Give.process_give_form();
   },
   'change #is_recurring': function() {
     if ($("#is_recurring").val() !== 'one_time') {
@@ -80,7 +80,7 @@ Template.DonationForm.events({
     }
   },
   'keyup, change #amount': function() {
-    return App.updateTotal();
+    return Give.updateTotal();
   },
   // disable mousewheel on a input number field when in focus
   // (to prevent Chromium browsers change of the value when scrolling)
@@ -93,16 +93,16 @@ Template.DonationForm.events({
     $('#amount').on('mousewheel.disableScroll', function(e) {
       e.preventDefault();
     });
-    return App.updateTotal();
+    return Give.updateTotal();
   },
   'change #coverTheFees': function() {
-    return App.updateTotal();
+    return Give.updateTotal();
   },
   'change [name=donateWith]': function() {
     var selectedValue = $("[name=donateWith]").val();
     Session.set("paymentMethod", selectedValue);
     if (Session.equals("paymentMethod", "Check")) {
-      App.updateTotal();
+      Give.updateTotal();
       $("#show_total").hide();
     }
   },
@@ -122,8 +122,10 @@ Template.DonationForm.events({
   },
   // keypress input detection for autofilling form with test data
   'keypress input': function(e) {
-    if (e.which === 17) { // 17 is ctrl + q
-      App.fillForm('main');
+    if (Meteor.settings.public.dev) {
+      if (e.which === 17) { // 17 is ctrl + q
+        Give.fillForm('main');
+      }
     }
   },
   'focus, blur #cvv': function() {

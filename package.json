@@ -11,7 +11,7 @@
     "undef": true,
     "unused": true,
     "predef": [
-      "App",
+      "Give",
       "Meteor",
       "AllErrors",
       "Audit_trail",

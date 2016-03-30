@@ -23,7 +23,7 @@ Template.AddNewBankAccount.events({
     }, function(status, response) {
       if( response.error ) {
         //error logic here
-        App.handleErrors( response.error );
+        Give.handleErrors( response.error );
       } else {
         // Call your backend
         console.log(Session.get("updateSubscription"));
@@ -34,7 +34,7 @@ Template.AddNewBankAccount.events({
         Meteor.call('stripeUpdateBank', response.id, subscription_id, savePayment, function (error, result) {
           if (error) {
             console.log(error);
-            //App.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
+            //Give.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
             //the error.
             Bert.alert({
               message: error.reason,

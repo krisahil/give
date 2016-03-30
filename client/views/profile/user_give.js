@@ -72,18 +72,18 @@ Template.UserGive.events({
 
     $(window).off('beforeunload');
 
-    App.updateTotal();
+    Give.updateTotal();
 
     if (Session.get("savedDevice", "Check") || Session.get("savedDevice", "Card")) {
       let usingDevice = Devices.findOne({_id: Session.get("paymentMethod")});
       let customer = Customers.findOne({_id: usingDevice.customer});
-      App.process_give_form(true, customer._id);
+      Give.process_give_form(true, customer._id);
     } else {
-      App.process_give_form(true);
+      Give.process_give_form(true);
     }
   },
   'keyup, change #amount': _.debounce(function() {
-    return App.updateTotal();
+    return Give.updateTotal();
   }, 300),
     // disable mousewheel on a input number field when in focus
     // (to prevent Chromium browsers change of the value when scrolling)
@@ -96,21 +96,21 @@ Template.UserGive.events({
     $('#amount').on('mousewheel.disableScroll', function(e) {
       e.preventDefault();
     });
-    return App.updateTotal();
+    return Give.updateTotal();
   },
   'change #coverTheFees': function() {
-    return App.updateTotal();
+    return Give.updateTotal();
   },
   'change [name=donateWith]': function() {
     var selectedValue = $("#donateWith").val();
     Session.set("paymentMethod", selectedValue);
     if (selectedValue === 'Check') {
       Session.set("savedDevice", false);
-      App.updateTotal();
+      Give.updateTotal();
       $("#show_total").hide();
     } else if (selectedValue === 'Card') {
       Session.set("savedDevice", false);
-      App.updateTotal();
+      Give.updateTotal();
     } else if (selectedValue.slice(0,3) === 'car') {
       Session.set("savedDevice", 'Card');
     } else {
@@ -120,7 +120,7 @@ Template.UserGive.events({
   // keypress input detection for autofilling form with test data
   'keypress input': function(e) {
     if (e.which === 17) { //17 is ctrl + q
-      App.fillForm();
+      Give.fillForm();
     }
   }
 });

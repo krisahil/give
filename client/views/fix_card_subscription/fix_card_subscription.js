@@ -45,7 +45,7 @@ Template.FixCardSubscription.events({
       Stripe.card.createToken(card, function(status, response){
         if (response.error) {
           //error logic here
-          App.handleErrors(response.error);
+          Give.handleErrors(response.error);
         } else {
           // Call your backend
           var subscription_id = Subscriptions.findOne()._id;

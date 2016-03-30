@@ -1,7 +1,7 @@
-_.extend(App, {
+_.extend(Give, {
   getCleanValue: function(id) {
     var jqueryObjectVal = $(id).val();
-    return App.cleanupString(jqueryObjectVal);
+    return Give.cleanupString(jqueryObjectVal);
   },
   cleanupString: function(string) {
     var cleanString = s(string).stripTags().trim().value();
@@ -41,15 +41,15 @@ _.extend(App, {
         }
         form = {
           "paymentInformation": {
-            "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
-            "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0), 10),
-            "donateTo": App.getCleanValue("#donateTo"),
-            "writeIn": App.getCleanValue("#enteredWriteInValue"),
-            "donateWith": App.getCleanValue('#donateWith'),
-            "is_recurring": App.getCleanValue('#is_recurring'),
+            "amount": parseInt(((Give.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
+            "total_amount": parseInt((Give.getCleanValue('#total_amount') * 100).toFixed(0), 10),
+            "donateTo": Give.getCleanValue("#donateTo"),
+            "writeIn": Give.getCleanValue("#enteredWriteInValue"),
+            "donateWith": Give.getCleanValue('#donateWith'),
+            "is_recurring": Give.getCleanValue('#is_recurring'),
             "coverTheFees": $('#coverTheFees').is(":checked"),
             "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-            "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
+            "start_date": moment(new Date(Give.getCleanValue('#start_date'))).format('X'),
             "saved": $('#save_payment').is(":checked"),
             "send_scheduled_email": "no"
           },
@@ -84,17 +84,17 @@ _.extend(App, {
 
         form = {
           "paymentInformation": {
-            "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
-            "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0), 10),
-            "donateTo": App.getCleanValue("#donateTo"),
-            "writeIn": App.getCleanValue("#enteredWriteInValue"),
-            "donateWith": App.getCleanValue('#donateWith'),
-            "is_recurring": App.getCleanValue('#is_recurring'),
+            "amount": parseInt(((Give.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
+            "total_amount": parseInt((Give.getCleanValue('#total_amount') * 100).toFixed(0), 10),
+            "donateTo": Give.getCleanValue("#donateTo"),
+            "writeIn": Give.getCleanValue("#enteredWriteInValue"),
+            "donateWith": Give.getCleanValue('#donateWith'),
+            "is_recurring": Give.getCleanValue('#is_recurring'),
             "coverTheFees": $('#coverTheFees').is(":checked"),
             "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-            "dt_source": App.getCleanValue('#dt_source'),
-            "note": App.getCleanValue('#donation_note'),
-            "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
+            "dt_source": Give.getCleanValue('#dt_source'),
+            "note": Give.getCleanValue('#donation_note'),
+            "start_date": moment(new Date(Give.getCleanValue('#start_date'))).format('X'),
             "saved": $('#save_payment').is(":checked")
           },
           "customer": {
@@ -116,32 +116,32 @@ _.extend(App, {
     } else {
       form = {
         "paymentInformation": {
-          "amount": parseInt(((App.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
-          "campaign": App.getCleanValue('#dt_source'),
+          "amount": parseInt(((Give.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
+          "campaign": Give.getCleanValue('#dt_source'),
           "coverTheFees": $('#coverTheFees').is(":checked"),
           "created_at": moment().format('MM/DD/YYYY, hh:mma'),
-          "donateTo": App.getCleanValue("#donateTo"),
-          "donateWith": App.getCleanValue("#donateWith"),
-          "dt_source": App.getCleanValue('#dt_source'),
-          "note": App.getCleanValue('#donation_note'),
-          "is_recurring": App.getCleanValue('#is_recurring'),
+          "donateTo": Give.getCleanValue("#donateTo"),
+          "donateWith": Give.getCleanValue("#donateWith"),
+          "dt_source": Give.getCleanValue('#dt_source'),
+          "note": Give.getCleanValue('#donation_note'),
+          "is_recurring": Give.getCleanValue('#is_recurring'),
           "saved": $('#save_payment').is(":checked"),
-          "start_date": moment(new Date(App.getCleanValue('#start_date'))).format('X'),
-          "total_amount": parseInt((App.getCleanValue('#total_amount') * 100).toFixed(0), 10),
-          "writeIn": App.getCleanValue("#enteredWriteInValue")
+          "start_date": moment(new Date(Give.getCleanValue('#start_date'))).format('X'),
+          "total_amount": parseInt((Give.getCleanValue('#total_amount') * 100).toFixed(0), 10),
+          "writeIn": Give.getCleanValue("#enteredWriteInValue")
         },
         "customer": {
-          "fname": App.getCleanValue('#fname'),
-          "lname": App.getCleanValue('#lname'),
-          "org": App.getCleanValue('#org'),
-          "email_address": App.getCleanValue('#email_address'),
-          "phone_number": App.getCleanValue('#phone'),
-          "address_line1": App.getCleanValue('#address_line1'),
-          "address_line2": App.getCleanValue('#address_line2'),
-          "region": App.getCleanValue('#region'),
-          "city": App.getCleanValue('#city'),
-          "postal_code": App.getCleanValue('#postal_code'),
-          "country": App.getCleanValue('#country'),
+          "fname": Give.getCleanValue('#fname'),
+          "lname": Give.getCleanValue('#lname'),
+          "org": Give.getCleanValue('#org'),
+          "email_address": Give.getCleanValue('#email_address'),
+          "phone_number": Give.getCleanValue('#phone'),
+          "address_line1": Give.getCleanValue('#address_line1'),
+          "address_line2": Give.getCleanValue('#address_line2'),
+          "region": Give.getCleanValue('#region'),
+          "city": Give.getCleanValue('#city'),
+          "postal_code": Give.getCleanValue('#postal_code'),
+          "country": Give.getCleanValue('#country'),
           "created_at": moment().format('MM/DD/YYYY, hh:mma')
         },
         sessionId: Meteor.default_connection._lastSessionId
@@ -149,7 +149,7 @@ _.extend(App, {
     }
 
 
-    form.paymentInformation.later = (!moment(new Date(App.getCleanValue('#start_date'))).isSame(Date.now(), 'day'));
+    form.paymentInformation.later = (!moment(new Date(Give.getCleanValue('#start_date'))).isSame(Date.now(), 'day'));
     if (!form.paymentInformation.later) {
       form.paymentInformation.start_date = 'today';
     }
@@ -165,10 +165,10 @@ _.extend(App, {
       if (quickForm) {
         cardInfo = {
           name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
-          number: App.getCleanValue('#card_number'),
-          cvc: App.getCleanValue('#cvv'),
-          exp_month: App.getCleanValue('#expiry_month'),
-          exp_year: App.getCleanValue('#expiry_year'),
+          number: Give.getCleanValue('#card_number'),
+          cvc: Give.getCleanValue('#cvv'),
+          exp_month: Give.getCleanValue('#expiry_month'),
+          exp_year: Give.getCleanValue('#expiry_year'),
           address_line1: userCursor.profile.address.address_line1,
           address_line2: userCursor.profile.address.address_line2,
           address_city: userCursor.profile.address.city,
@@ -178,21 +178,21 @@ _.extend(App, {
         };
       } else {
         cardInfo = {
-          name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
-          number: App.getCleanValue('#card_number'),
-          cvc: App.getCleanValue('#cvv'),
-          exp_month: App.getCleanValue('#expiry_month'),
-          exp_year: App.getCleanValue('#expiry_year'),
-          address_line1: App.getCleanValue('#address_line1'),
-          address_line2: App.getCleanValue('#address_line2'),
-          address_city: App.getCleanValue('#city'),
-          address_state: App.getCleanValue('#region'),
-          address_zip: App.getCleanValue('#postal_code'),
-          address_country: App.getCleanValue('#country')
+          name: Give.getCleanValue('#fname') + ' ' + Give.getCleanValue('#lname'),
+          number: Give.getCleanValue('#card_number'),
+          cvc: Give.getCleanValue('#cvv'),
+          exp_month: Give.getCleanValue('#expiry_month'),
+          exp_year: Give.getCleanValue('#expiry_year'),
+          address_line1: Give.getCleanValue('#address_line1'),
+          address_line2: Give.getCleanValue('#address_line2'),
+          address_city: Give.getCleanValue('#city'),
+          address_state: Give.getCleanValue('#region'),
+          address_zip: Give.getCleanValue('#postal_code'),
+          address_country: Give.getCleanValue('#country')
         };
       }
 
-      App.process_card(cardInfo, form);
+      Give.process_card(cardInfo, form);
     } else if (form.paymentInformation.donateWith === "Check") {
       form.paymentInformation.type = "check";
       form.customer.created_at = moment().format('MM/DD/YYYY, hh:mma');
@@ -201,8 +201,8 @@ _.extend(App, {
         bankInfo = {
           name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
           account_holder_name: userCursor.profile.fname + ' ' + userCursor.profile.lname,
-          account_number: App.getCleanValue('#account_number'),
-          routing_number: App.getCleanValue('#routing_number'),
+          account_number: Give.getCleanValue('#account_number'),
+          routing_number: Give.getCleanValue('#routing_number'),
           account_holder_type: form.customer.org ? 'company' : 'individual',
           address_line1: userCursor.profile.address.address_line1,
           address_line2: userCursor.profile.address.address_line2,
@@ -213,20 +213,20 @@ _.extend(App, {
         };
       } else {
         bankInfo = {
-          name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
-          account_holder_name: App.getCleanValue('#fname') + ' ' + App.getCleanValue('#lname'),
-          account_number: App.getCleanValue('#account_number'),
-          routing_number: App.getCleanValue('#routing_number'),
+          name: Give.getCleanValue('#fname') + ' ' + Give.getCleanValue('#lname'),
+          account_holder_name: Give.getCleanValue('#fname') + ' ' + Give.getCleanValue('#lname'),
+          account_number: Give.getCleanValue('#account_number'),
+          routing_number: Give.getCleanValue('#routing_number'),
           account_holder_type: form.customer.org ? 'company' : 'individual',
-          address_line1: App.getCleanValue('#address_line1'),
-          address_line2: App.getCleanValue('#address_line2'),
-          address_city: App.getCleanValue('#city'),
-          address_state: App.getCleanValue('#region'),
-          address_zip: App.getCleanValue('#postal_code'),
-          country: App.getCleanValue('#country')
+          address_line1: Give.getCleanValue('#address_line1'),
+          address_line2: Give.getCleanValue('#address_line2'),
+          address_city: Give.getCleanValue('#city'),
+          address_state: Give.getCleanValue('#region'),
+          address_zip: Give.getCleanValue('#postal_code'),
+          country: Give.getCleanValue('#country')
         };
       }
-      App.process_bank(bankInfo, form);
+      Give.process_bank(bankInfo, form);
     } else {
       form.paymentInformation.saved = true;
       var payment = {id: form.paymentInformation.donateWith};
@@ -240,7 +240,7 @@ _.extend(App, {
       var createdAt = Customers.findOne({_id: form.customer.id}).created;
 
       form.customer.created_at = moment(createdAt * 1000).format('MM/DD/YYYY, hh:mma');
-      App.handleCalls(payment, form);
+      Give.handleCalls(payment, form);
     }
   },
   // This is the callback for the client side tokenization of cards and bank_accounts.
@@ -249,17 +249,17 @@ _.extend(App, {
     form.paymentInformation.token_id = payment.id;
     Meteor.call('stripeDonation', form, function(error, result) {
       if (error) {
-        // App.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
+        // Give.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
         // the error.
-        App.handleErrors(error);
-        // run App.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
-        App.updateTotal();
+        Give.handleErrors(error);
+        // run Give.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
+        Give.updateTotal();
       } else {
         if ( result.error ) {
           var sendError = {code: result.error, message: result.message};
-          App.handleErrors(sendError);
-          // run App.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
-          App.updateTotal();
+          Give.handleErrors(sendError);
+          // run Give.updateTotal so that when the user resubmits the form the total_amount field won't be blank.
+          Give.updateTotal();
         } else if (result.charge === 'scheduled') {
           // Send the user to the scheduled page and include the frequency and the amount in the url for displaying to them
           Router.go('/scheduled/?frequency=' + form.paymentInformation.is_recurring + '&amount=' + form.paymentInformation.total_amount/100 + '&start_date=' + form.paymentInformation.start_date );
@@ -310,12 +310,12 @@ _.extend(App, {
   process_card: function(cardInfo, form) {
     Stripe.card.createToken(cardInfo, function(status, response) {
       if (response.error) {
-        App.handleErrors(response.error);
+        Give.handleErrors(response.error);
       } else {
         // Call your backend
         if (form) {
           form.paymentInformation.source_id = response.card.id;
-          App.handleCalls(response, form);
+          Give.handleCalls(response, form);
         } else {
           return response;
         }
@@ -325,12 +325,12 @@ _.extend(App, {
   process_bank: function(bankInfo, form) {
     Stripe.bankAccount.createToken(bankInfo, function(status, response) {
       if (response.error) {
-        App.handleErrors(response.error);
+        Give.handleErrors(response.error);
       } else {
         // Call your backend
         if (form) {
           form.paymentInformation.source_id = response.bank_account.id;
-          App.handleCalls(response, form);
+          Give.handleCalls(response, form);
         } else {
           return response;
         }
@@ -364,7 +364,7 @@ _.extend(App, {
           if ($('#coverTheFees').prop('checked')) {
             $("#show_total").show();
             Session.set("coverTheFees", true);
-            var feeAndTotal = App.get_fee(donationAmount);
+            var feeAndTotal = Give.get_fee(donationAmount);
             var fee = feeAndTotal.fee - donationAmount;
             var roundedAmount = (+donationAmount + (+fee)).toFixed(2);
             $("#total_amount_display").text(" + $" + fee.toFixed(2) + " = $" + roundedAmount).css({

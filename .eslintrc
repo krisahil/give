@@ -99,7 +99,7 @@
     "no-lone-blocks": 2,             // http://eslint.org/docs/rules/no-lone-blocks
     "no-loop-func": 2,               // http://eslint.org/docs/rules/no-loop-func
     "no-native-reassign": [2, {      // http://eslint.org/docs/rules/no-native-reassign
-      "exceptions": ["App"]
+      "exceptions": ["Give"]
     }],
     "no-new": 2,                     // http://eslint.org/docs/rules/no-new
     "no-new-func": 2,                // http://eslint.org/docs/rules/no-new-func

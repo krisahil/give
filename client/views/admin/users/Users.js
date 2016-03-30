@@ -1,4 +1,18 @@
 
+function updateSearchVal(){
+  console.log("Got to updateSearchVal function");
+  let searchValue = $( ".search" ).val();
+
+  if (searchValue) {
+    // Remove punctuation and make it into an array of words
+    searchValue = searchValue
+      .replace( /[^\w\s]|_/g, "" )
+      .replace( /\s+/g, " " );
+
+    Session.set( "searchValue", searchValue );
+  }
+};
+
 AutoForm.hooks({
   'edit-user-form': {
     onSuccess: function (operation, result) {
@@ -20,14 +34,14 @@ AutoForm.hooks({
   }
 });
 
-
 Template.Users.helpers({
   users: function () {
     let searchValue = Session.get("searchValue");
+    let matchingUsers;
     if(!searchValue){
       return Meteor.users.find({}, { sort: { createdAt: 1} });
     } else {
-      return Meteor.users.find({
+      matchingUsers = Meteor.users.find({
         $or: [
           { 'profile.fname': { $regex: searchValue, $options: 'i' } },
           { 'profile.lname': { $regex: searchValue, $options: 'i' } },
@@ -35,6 +49,11 @@ Template.Users.helpers({
           { 'emails.address': { $regex: searchValue, $options: 'i' } }
         ]
       }, { sort: { createdAt: 1} });
+      if (matchingUsers.count()) {
+        return matchingUsers;
+      } else {
+        return false;
+      }
     }
   },
   schema: function () {
@@ -86,6 +105,16 @@ Template.Users.helpers({
   },
   persona_info: function () {
     return Session.equals("persona_info_exists", true);
+  },
+  searchUsers: function() {
+    if (Session.equals("searchValue", "")) {
+      return false;
+    } else if (!Session.get("searchValue")) {
+      return false;
+    } else if (Meteor.users.find().count()) {
+      return Meteor.users.find();
+    }
+    return false;
   }
 });
 Template.Users.events({
@@ -195,26 +224,9 @@ Template.Users.events({
   'click .clear-button': function () {
     $(".search").val("").change();
   },
-  'keyup .search': function () {
-    let searchValue = $(".search").val();
-
-    // Remove punctuation and make it into an array of words
-    searchValue = searchValue
-      .replace(/[^\w\s]|_/g, "")
-      .replace(/\s+/g, " ");
-
-    Session.set("searchValue", searchValue);
-  },
-  'change .search': function () {
-    let searchValue = $(".search").val();
-
-    // Remove punctuation and make it into an array of words
-    searchValue = searchValue
-      .replace(/[^\w\s]|_/g, "")
-      .replace(/\s+/g, " ");
-
-    Session.set("searchValue", searchValue);
-  }
+  'keyup, change .search': _.debounce(function () {
+    updateSearchVal();
+  }, 300)
 });
 
 Template.Users.onCreated(function () {
@@ -241,4 +253,8 @@ Template.Users.onCreated(function () {
     }
   });
 
+});
+
+Template.Users.onDestroyed(function() {
+  Session.delete("searchValue");
 });

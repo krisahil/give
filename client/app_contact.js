@@ -1,7 +1,7 @@
-App.helpers = {
+Give.helpers = {
 };
 
-_.each(App.helpers, function(helper, key) {
+_.each(Give.helpers, function(helper, key) {
   UI.registerHelper(key, helper);
 });
 
