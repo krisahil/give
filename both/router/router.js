@@ -14,7 +14,6 @@ Router.plugin('ensureSignedIn', {
 
 // TODO: convert all of these onBeforeAction functions to only one per route
 // so that there isn't a false negative
-
 Router.onBeforeAction(function() {
   if (!Roles.userIsInRole(Meteor.user(), ['admin'])) {
     this.render("NotFound");
@@ -26,7 +25,7 @@ Router.onBeforeAction(function() {
 });
 
 Router.onBeforeAction(function() {
-  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager', 'reports'])) {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager'])) {
     this.render("NotFound");
   } else {
     this.next();
@@ -36,7 +35,7 @@ Router.onBeforeAction(function() {
 });
 
 Router.onBeforeAction(function() {
-  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager', 'reports']) ) {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'manager']) ) {
     this.render("NotFound");
   } else {
     this.next();
@@ -372,7 +371,7 @@ Router.route('/dashboard/org_info', {
   name: 'OrgInfo',
   where: 'client',
   waitOn: function() {
-    return Meteor.subscribe('Config');
+    return Meteor.subscribe('wholeConfigDoc');
   },
   data: function() {
     return Config.find();

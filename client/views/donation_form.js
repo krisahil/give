@@ -36,6 +36,7 @@ Template.DonationForm.events({
     e.preventDefault();
     // Stop propagation prevents the form from being submitted more than once.
     e.stopPropagation();
+    let new_error;
 
     if ($("#is_recurring").val() === '') {
       $("#s2id_is_recurring").children().addClass("redText");
@@ -45,22 +46,19 @@ Template.DonationForm.events({
     }
     $("html, body").animate({ scrollTop: 0 }, "slow");
     Session.set("loading", true);
-    console.log(Session.get("loading"));
-    console.log("Got here below loading");
     $('[name="submitThisForm"]').button('loading');
 
     if ($('#donateWith').val() === 'Card') {
       if (!Stripe.card.validateExpiry($('#expiry_month').val(), $('#expiry_year').val())) {
-        var new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"};
+        new_error = {reason: "The card expiration date you gave is either today or a day in the past.", error: "Expiration Date"};
         Give.handleErrors(new_error);
         return;
       } else if (!Stripe.card.validateCardNumber($('#card_number').val())) {
-        var new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"};
+        new_error = {reason: "The card number doesn't look right, please double check the number.", error: "Card Number Problem"};
         Give.handleErrors(new_error);
         return;
       }
     }
-
 
     $(window).off('beforeunload');
 

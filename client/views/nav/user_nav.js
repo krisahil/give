@@ -32,4 +32,9 @@ Template.UserNav.helpers({
 
 Template.UserNav.onRendered(function () {
   materialadmin.AppOffcanvas.initialize($("#offcanvas-what-is-new"));
+
+  // Subscribe to the configuration
+  this.autorun(() => {
+    this.subscribe("config");
+  })
 });

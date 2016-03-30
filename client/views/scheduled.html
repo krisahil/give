@@ -1,16 +1,10 @@
 <template name="DonationScheduled">
-    <!--[if lt IE 9]>
-        <style>
-            #success_pending_icon, #failed_icon {
-                display:none;
-            } 
-    <![endif]-->
     <div class="container hidden-print fix-height">
         <div class="row vertical-center-row">
             <div class="col-lg-10 col-lg-offset-1 alignReceipt">
                 <h5 class='text-center'>Thank you, we have scheduled your {{frequency}} gift of ${{amount}} to start on {{start_date}}!</h5>
                 <p class='alert alert-info'>
-                    You will receive an email acknowledgement immediately and an email receipt after your gift has been successfully processed.
+                    You will receive an email receipt after your gift has been successfully processed.
                     <strong>For ACH gifts it may take up to seven days to receive an email receipt.</strong>
                 </p>
                 <p  id='success_pending_icon' class='text-center alert alert-success'>

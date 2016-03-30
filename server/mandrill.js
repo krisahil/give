@@ -4,7 +4,7 @@ _.extend(Utils,{
 
     var push_vars = vars.push({"name": name, "content": content});
     return push_vars;
-    },
+  },
   add_recipient_to_email: function (data_slug, email) {
     logger.info("Started add_recipient_to_email");
 
@@ -13,7 +13,7 @@ _.extend(Utils,{
 
     return data_slug;
 
-    },
+  },
   send_failed_to_add_to_dt_email_to_support: function(persona_id, charge_id){
     logger.info("Started send_failed_to_add_to_dt_email_to_support");
     let data_slug = {
@@ -446,15 +446,14 @@ _.extend(Utils,{
           Utils.send_mandrill_email(data_slug, 'charge.failed');
       } else if (type === 'charge.pending') {
           if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.pending && audit_trail_cursor.charge.pending.sent) {
-              logger.info("A 'created' email has already been sent for this charge, exiting email send function.");
-              return;
+            logger.info("A 'created' email has already been sent for this charge, exiting email send function.");
+            return;
           }
           Utils.audit_email(id, type);
           data_slug.template_name = "donation-initial-email";
           data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
           data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
           Utils.send_mandrill_email(data_slug, 'charge.pending');
-
       } else if (type === 'payment.created') {
           if (audit_trail_cursor && audit_trail_cursor.payment && audit_trail_cursor.payment.created && audit_trail_cursor.payment.created.sent) {
               logger.info("A 'created' email has already been sent for this charge, exiting email send function.");
@@ -505,6 +504,73 @@ _.extend(Utils,{
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
       throw new Meteor.Error(e);
     }
+  },
+  send_manually_processed_initial_email: function(donation_id, customer_id) {
+
+    let audit_trail_id = Audit_trail.upsert({donation_id: donation_id}, {
+      $set: {
+        'charge.pending.sent': true,
+        'charge.pending.time': new Date()
+      }
+    });
+    let audit_trail_cursor = Audit_trail.findOne({_id: audit_trail_id});
+    let donation_cursor = Donations.findOne({_id: donation_id});
+
+    var customer_cursor = Customers.findOne({_id: customer_id});
+    if (!customer_cursor) {
+      logger.error("No customer found here, exiting.");
+      return;
+    }
+
+    let data_slug = {
+      "template_name":    "",
+      "template_content": [
+        {}
+      ],
+      "message":          {
+        "to":          [
+          { "email": "" }
+        ],
+        "bcc_address": "",
+        "merge_vars":  [
+          {
+            "rcpt": "",
+            "vars": [
+              {
+                "name":    "CreatedAt",
+                "content": donation_cursor.created_at
+              }, {
+                "name":    "DEV",
+                "content": Meteor.settings.dev
+              }, {
+                "name":    "TotalGiftAmount",
+                "content": (donation_cursor.total_amount / 100).toFixed( 2 )
+              }
+            ]
+          }
+        ]
+      }
+    };
+    data_slug.template_name = "donation-initial-email";
+    data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
+    data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
+
+    if (customer_cursor.metadata.business_name) {
+      data_slug.message.merge_vars[0].vars.push(
+        {
+          "name": "FULLNAME",
+          "content": customer_cursor.metadata.business_name + "<br>" + customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
+        }
+      );
+    } else {
+      data_slug.message.merge_vars[0].vars.push(
+        {
+          "name": "FULLNAME",
+          "content": customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
+        }
+      );
+    }
+    Utils.send_mandrill_email(data_slug, 'charge.pending');
   },
 	send_mandrill_email: function(data_slug, type){
     try{

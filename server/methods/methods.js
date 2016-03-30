@@ -13,7 +13,7 @@ Meteor.methods({
             });
             Utils.separate_funds(fundResults.data);
             return fundResults.data;
-        } else{
+        } else {
             logger.info("You aren't an admin, you can't do that");
             return;
         }
@@ -37,11 +37,10 @@ Meteor.methods({
           });
           Utils.separate_sources(sourceResults.data);
           return sourceResults.data;
-        } else{
+        } else {
           logger.info("You aren't an admin, you can't do that");
           return;
         }
-
       } catch (e) {
         logger.info(e);
         //e._id = AllErrors.insert(e.response);
@@ -83,17 +82,19 @@ Meteor.methods({
     }
     return;
   },
-  stripeDonation: function(data){
+  stripeDonation: function(data) {
     logger.info("Started stripeDonation");
     try {
       //Check the form to make sure nothing malicious is being submitted to the server
       Utils.checkFormFields(data);
+      console.log(data);
+      debugger;
       if(data.paymentInformation.coverTheFees === false){
           data.paymentInformation.fees = '';
       }
       logger.info(data.paymentInformation.start_date);
       let customerData = {};
-      let donateTo, user_id, dt_account_id, letCustomerData, customerInfo, metadata;
+      let donateTo, user_id, dt_account_id, customerInfo, metadata;
 
       //Convert donation to more readable format
       donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
@@ -102,21 +103,21 @@ Meteor.methods({
           donateTo = data.paymentInformation.writeIn;
       }
       if(!data.customer.id){
-        customerData = Utils.create_customer(data.paymentInformation.token_id, data.customer);
-
-        letCustomerData = customerData;
-
+        customerData = Utils.create_customer(data.paymentInformation.token_id ? 
+          data.paymentInformation.token_id : '',
+          data.customer);
+        
         // Skip this area for 2 seconds so the giver sees the next page without waiting
         // for this area to return
         Meteor.setTimeout(function() {
 
           // Find a local user account, create if it doesn't exist
-          user_id = StripeFunctions.find_user_account_or_make_a_new_one(letCustomerData);
+          user_id = StripeFunctions.find_user_account_or_make_a_new_one(customerData);
 
           // Find a DonorTools account, create one if the account either
           // doesn't exist or if the existing match doesn't look like the
           // same person or business as what already exists.
-          dt_account_id = Utils.find_dt_account_or_make_a_new_one(letCustomerData, user_id, false);
+          dt_account_id = Utils.find_dt_account_or_make_a_new_one(customerData, user_id, false);
           if(!dt_account_id) {
             // the find_dt_account_or_make_a_new_one function returns null
             // if the Audit log shows that this process has already been completed
@@ -132,7 +133,7 @@ Meteor.methods({
 
           // Send the Give support contact an email letting them know a new
           // account has been created in DT.
-          if(Meteor.users.findOne( {_id: user_id } ) && Meteor.users.findOne( {_id: user_id } ).newUser ){
+          if (Meteor.users.findOne( {_id: user_id } ) && Meteor.users.findOne( {_id: user_id } ).newUser ) {
             Meteor.users.update( {_id: user_id }, { $unset: { newUser: "" } } );
             Utils.send_new_give_account_added_email_to_support_email_contact(data.customer.email_address, user_id, dt_account_id);
           }
@@ -143,28 +144,30 @@ Meteor.methods({
 
         if(!customerData.object){
           console.error("Error: ", customerData);
-              return {error: customerData.rawType, message: customerData.message};
+            return {error: customerData.rawType, message: customerData.message};
           }
-        // Update the card metadata so we know if the user wanted this card saved or not
-        Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
       } else {
         //TODO: change these to match what you'll be using for a Stripe customer that already exists
         var customer_cursor = Customers.findOne({_id: data.customer.id});
         customerData.id = customer_cursor._id;
-        Utils.update_card(customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved);
       }
+      // Update the card/bank metadata so we know if the user wanted this card saved or not
+      if (data.paymentInformation.token_id) {
+        Utils.update_card( customerData.id, data.paymentInformation.source_id, data.paymentInformation.saved );
+      }
+
       customerInfo = {
-        "city":             data.customer.city,
-        "state":            data.customer.region,
-        "address_line1":    data.customer.address_line1,
-        "address_line2":    data.customer.address_line2,
-        "country":          data.customer.country,
-        "postal_code":      data.customer.postal_code,
-        "phone":            data.customer.phone_number,
-        "business_name":    data.customer.org,
-        "email":            data.customer.email_address,
-        "fname":            data.customer.fname,
-        "lname":            data.customer.lname
+        "city":                 data.customer.city,
+        "state":                data.customer.region,
+        "address_line1":        data.customer.address_line1,
+        "address_line2":        data.customer.address_line2,
+        "country":              data.customer.country,
+        "postal_code":          data.customer.postal_code,
+        "phone":                data.customer.phone_number,
+        "business_name":        data.customer.org,
+        "email":                data.customer.email_address,
+        "fname":                data.customer.fname,
+        "lname":                data.customer.lname
       };
 
       metadata = {
@@ -183,9 +186,10 @@ Meteor.methods({
         'send_scheduled_email': data.paymentInformation.send_scheduled_email,
         'total_amount':         data.paymentInformation.total_amount,
         'type':                 data.paymentInformation.type,
-        'sessionId':            data.sessionId
+        'sessionId':            data.paymentInformation.sessionId,
+        'source_id':            data.paymentInformation.source_id,
+        'method':               data.paymentInformation.method
       };
-
 
       data._id = Donations.insert(metadata);
       logger.info("Donation ID: " + data._id);
@@ -197,41 +201,67 @@ Meteor.methods({
       delete metadata.status;
       delete metadata.total_amount;
       delete metadata.type;
+      delete metadata.source_id;
+      delete metadata.method;
 
-      if (data.paymentInformation.is_recurring === "one_time") {
-        //Charge the card (which also connects this card or bank_account to the customer)
-        var charge = Utils.charge(data.paymentInformation.total_amount, data._id, customerData.id, data.paymentInformation.source_id, metadata);
-        if(!charge.object){
-          return {error: charge.rawType, message: charge.message};
-        }
-        Donations.update({_id: data._id}, {$set: {charge_id: charge.id}});
+      if (data.paymentInformation.token_id) {
 
-        return {c: customerData.id, don: data._id, charge: charge.id};
-      } else {
-        // Print how often it it recurs?
-        logger.info(data.paymentInformation.is_recurring);
-
-        //Start a subscription (which also connects this card, or bank_account to the customer
-        var charge_object = Utils.charge_plan(data.paymentInformation.total_amount,
-          data._id, customerData.id, data.paymentInformation.source_id,
-          data.paymentInformation.is_recurring, data.paymentInformation.start_date, metadata);
-        if (!charge_object.object) {
-          if(charge_object === 'scheduled') {
-            return {c: customerData.id, don: data._id, charge: 'scheduled'};
-          } else {
-            logger.error("The charge_id object didn't have .object attached.");
-            return {error: charge_object.rawType, message: charge_object.message};
+        if( data.paymentInformation.is_recurring === "one_time" ) {
+          // Charge the card (which also connects this card or bank_account to the customer)
+          var charge = Utils.charge( data.paymentInformation.total_amount,
+            data._id, customerData.id, data.paymentInformation.source_id, metadata );
+          if( !charge.object ) {
+            return { error: charge.rawType, message: charge.message };
           }
-        }
+          Donations.update( { _id: data._id }, { $set: { charge_id: charge.id } } );
 
-        // check for payment rather than charge id here
-        var return_charge_or_payment_id;
-        if(charge_object.payment){
-          return_charge_or_payment_id = charge_object.payment;
+          return { c: customerData.id, don: data._id, charge: charge.id };
         } else {
-          return_charge_or_payment_id = charge_object.charge;
+          // Print how often it it recurs?
+          logger.info( data.paymentInformation.is_recurring );
+
+          //Start a subscription (which also connects this card, or bank_account to the customer
+          var charge_object = Utils.charge_plan( data.paymentInformation.total_amount,
+            data._id, customerData.id, data.paymentInformation.source_id,
+            data.paymentInformation.is_recurring, data.paymentInformation.start_date, metadata );
+          if( !charge_object.object ) {
+            if( charge_object === 'scheduled' ) {
+              return { c: customerData.id, don: data._id, charge: 'scheduled' };
+            } else {
+              logger.error( "The charge_id object didn't have .object attached." );
+              return {
+                error:   charge_object.rawType,
+                message: charge_object.message
+              };
+            }
+          }
+
+          // check for payment rather than charge id here
+          var return_charge_or_payment_id;
+          if( charge_object.payment ) {
+            return_charge_or_payment_id = charge_object.payment;
+          } else {
+            return_charge_or_payment_id = charge_object.charge;
+          }
+          return {
+            c:      customerData.id,
+            don:    data._id,
+            charge: return_charge_or_payment_id
+          };
         }
-        return {c: customerData.id, don: data._id, charge: return_charge_or_payment_id};
+      } else {
+        if (data.paymentInformation.is_recurring === "one_time" && 
+          !data.paymentInformation.later) {
+          Utils.send_manually_processed_initial_email( data._id, customerData.id );
+          BankAccounts.update({_id: data.paymentInformation.source_id}, {
+            $set: {
+              customer_id: customerData.id
+            }
+          });
+          return { c: customerData.id, don: data._id, charge: 'manual' };
+        } else {
+          return { c: customerData.id, don: data._id, charge: 'scheduled' };
+        }
       }
     } catch (e) {
       logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);

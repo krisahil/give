@@ -178,45 +178,6 @@ _.extend(Utils, {
       return null;
     }
   },
-  'work_with_the_stripe_charge_to_update_dt_donations': function (charge_id) {
-    // TODO: remove this function too, not using it
-
-    var audit_item = Audit_trail.findOne({_id: charge_id});
-
-    if (!persona_result || !persona_result.persona_info || persona_result.persona_info === '' || matchedId === null) {
-      //Call DT create function
-      if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
-        return;
-      } else {
-        inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
-        var single_persona_id = Utils.insert_donation_and_donor_into_dt(customer_id, user_id, charge_id);
-        persona_result = Utils.check_for_dt_user(email_address, single_persona_id, true);
-        //return {persona_ids: personaData.persona_ids, persona_info: personaData.persona_info, matched_id: 'not used'};
-
-
-        // Send me an email letting me know a new user was created in DT.
-        Utils.send_new_dt_account_added_email_to_support_email_contact(email_address, user_id, single_persona_id);
-      }
-    } else {
-      if(audit_item && audit_item.status && audit_item.status.dt_donation_inserted){
-        return;
-      } else {
-        inserted_now = Audit_trail.update({_id: charge_id}, {$set: {status: {dt_donation_inserted: true, dt_donation_inserted_time: moment().format("MMM DD, YYYY hh:mma")}}});
-
-        Utils.insert_donation_into_dt(customer_id, user_id, persona_result.persona_info, charge_id, persona_id);
-      }
-    }
-
-    // Get all of the donations related to the persona_id that was either just created or that was just used when
-    // the user gave
-    Utils.get_all_dt_donations(persona_result.persona_ids);
-
-    Utils.for_each_persona_insert(persona_result.persona_info, user_id);
-
-    //TODO: Get persona info here, only an id right now.
-    //Meteor.users.update(user_id, {$set: {'persona_info': persona_result}});
-
-  },
   check_for_dt_user: function ( email, checkThisDTID, use_id, customer_id ){
     console.log(email);
 
@@ -265,15 +226,14 @@ _.extend(Utils, {
     }
   },
   'find_dt_account_or_make_a_new_one': function (customer, user_id, skip_audit) {
+    logger.info("Started find_dt_account_or_make_a_new_one");
 
     var dt_persona_match_id;
     if(Audit_trail.findOne( {_id: customer.id} ) &&
       Audit_trail.findOne( {_id: customer.id} ).flow_checked &&
       !skip_audit) {
-
       console.log("Checked for and found a audit record for this customer creation flow, skipping the account creation.");
       return;
-
     } else {
       logger.info( "Checked for and didn't find an audit record for this customer." );
       Audit_trail.upsert( { _id: customer.id }, { $set: { flow_checked: true } } );

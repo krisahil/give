@@ -125,71 +125,54 @@ _.extend(Utils, {
     create_customer: function (paymentDevice, customerInfo) {
       logger.info("Inside create_customer.");
 
-      var stripeCustomer = new Future();
+      let stripeCustomerObject = {
+        email: customerInfo.email_address,
+        metadata: {
+          "city": customerInfo.city,
+          "state": customerInfo.region,
+          "address_line1": customerInfo.address_line1,
+          "address_line2": customerInfo.address_line2,
+          "country": customerInfo.country,
+          "postal_code": customerInfo.postal_code,
+          "phone": customerInfo.phone_number,
+          "business_name": customerInfo.org,
+          "email": customerInfo.email_address,
+          "fname": customerInfo.fname,
+          "lname": customerInfo.lname
+        }
+      };
 
       if (paymentDevice.slice(0, 2) === 'to') {
-        Stripe.customers.create({
-            card: paymentDevice,
-            email: customerInfo.email_address,
-            metadata: {
-                "city": customerInfo.city,
-                "state": customerInfo.region,
-                "address_line1": customerInfo.address_line1,
-                "address_line2": customerInfo.address_line2,
-                "country": customerInfo.country,
-                "postal_code": customerInfo.postal_code,
-                "phone": customerInfo.phone_number,
-                "business_name": customerInfo.org,
-                "email": customerInfo.email_address,
-                "fname": customerInfo.fname,
-                "lname": customerInfo.lname
-            }
-        }, function (error, customer) {
-            if (error) {
-                //console.dir(error);
-                stripeCustomer.return(error);
-            } else {
-                stripeCustomer.return(customer);
-            }
-        });
+        logger.info( "card" );
+        stripeCustomerObject.card = paymentDevice;
       } else if (paymentDevice.slice(0, 2) === 'bt') {
-        logger.info("Bank_account");
-        Stripe.customers.create({
-            bank_account: paymentDevice,
-            email: customerInfo.email_address,
-            metadata: {
-                "city": customerInfo.city,
-                "state": customerInfo.region,
-                "address_line1": customerInfo.address_line1,
-                "address_line2": customerInfo.address_line2,
-                "postal_code": customerInfo.postal_code,
-                "country": customerInfo.country,
-                "phone": customerInfo.phone_number,
-                "business_name": customerInfo.org,
-                "email": customerInfo.email_address,
-                "fname": customerInfo.fname,
-                "lname": customerInfo.lname
-            }
-        }, function (error, customer) {
-            if (error) {
-                //console.dir(error);
-                stripeCustomer.return(error);
-            } else {
-                stripeCustomer.return(customer);
-            }
+        logger.info( "Bank_account" );
+        stripeCustomerObject.bank_account = paymentDevice;
+      }
+      let stripeEvent = new Promise(function ( resolve, reject ) {
+        Stripe.customers.create(stripeCustomerObject,
+          function (err, res) {
+            if( err ) reject( "There was a problem", err );
+            else resolve( res );
+          });
         });
-      } else {
-        throw new Meteor.Error('Token-match', "Sorry, that token doesn't match any know prefix.");
-      }
-      stripeCustomer = stripeCustomer.wait();
-      if (!stripeCustomer.object) {
-        throw new Meteor.Error(stripeCustomer.rawType, stripeCustomer.message);
-      }
+
+      // Fulfill Promise
+      let stripeCustomer = stripeEvent.await(
+        function (res) {
+          console.log(res);
+          return res;
+        }, function(err) {
+          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
+          console.log(err);
+          throw new Meteor.Error(err.rawType, err.message);
+        });
+
       stripeCustomer._id = stripeCustomer.id;
 
-      let wait_for_customer_insert = Customers.insert(stripeCustomer);
+      let customer_id = Customers.insert(stripeCustomer);
 
-      logger.info("Customer_id: " + stripeCustomer.id);
+      logger.info("Customer_id: " + customer_id);
       return stripeCustomer;
     },
     charge: function (total, donation_id, customer_id, payment_id, metadata) {

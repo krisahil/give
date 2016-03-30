@@ -56,7 +56,6 @@ Template.OrgInfo.helpers({
     let org_info = Config.findOne({
       'organization_info.web.domain_name': Meteor.settings.public.org_domain
     });
-    console.log(org_info);
     if (org_info) {
       Template.instance().formType.set('update');
       return org_info;

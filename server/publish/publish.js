@@ -313,17 +313,6 @@ Meteor.publish("Serve1000Sources2015", function () {
   return DT_sources.find({'name': {$regex : /^Serve\s1000\s-\s/}});
 });
 
-
-Meteor.publish("Config", function () {
-  if (Roles.userIsInRole(this.userId, 'admin')) {
-    return Config.find({
-      'organization_info.web.domain_name': Meteor.settings.public.org_domain
-    });
-  } else {
-    this.ready();
-  }
-});
-
 Meteor.publish("DTSplits", function () {
   if (Roles.userIsInRole(this.userId, 'admin')) {
     return DT_splits.find();
@@ -416,9 +405,7 @@ Meteor.publish("all_users", function (_id) {
 });
 
 Meteor.publish("roles", function () {
-  let isAdmin = Roles.userIsInRole( this.userId, 'admin' );
-
-  if ( isAdmin ) {
+  if (Roles.userIsInRole(this.userId, 'admin')) {
     return Meteor.roles.find({});
   } else {
     this.ready();
@@ -426,20 +413,21 @@ Meteor.publish("roles", function () {
 });
 
 Meteor.publish("uploaded", function () {
-  let isAdmin = Roles.userIsInRole( this.userId, 'admin' );
-
-  if ( isAdmin ) {
+  if (Roles.userIsInRole(this.userId, 'admin')) {
     return Uploads.find({userId: this.userId});
   } else {
     this.ready();
   }
 });
 
-
 Meteor.publish("config", function () {
-  let isAdmin = Roles.userIsInRole( this.userId, 'admin' );
+  return Config.find({}, {fields: { 
+    'Stripe.ach_verification_type': 1
+  }});
+});
 
-  if ( isAdmin ) {
+Meteor.publish("wholeConfigDoc", function () {
+  if (Roles.userIsInRole(this.userId, 'admin')) {
     return Config.find();
   } else {
     this.ready();

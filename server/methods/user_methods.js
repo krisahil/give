@@ -222,13 +222,13 @@ Meteor.methods({
   },
   get_all_donations_for_this_donor: function(id) {
     logger.info( "Started method get_all_donations_for_this_donor." );
-    if( this.userId ) {
+    if (this.userId) {
       check( id, Match.Optional( String ) );
 
       var userID;
       this.unblock();
 
-      if( id ) {
+      if (id) {
         if( Roles.userIsInRole( this.userId, ['admin'] ) ) {
           userID = id;
         } else {
@@ -247,10 +247,10 @@ Meteor.methods({
         Meteor.users.findOne( { _id: userID } ).persona_id;
       console.log( persona_id );
 
-      if( persona_ids && persona_ids.length && persona_ids.length >= 1 ) {
+      if (persona_ids && persona_ids.length && persona_ids.length >= 1) {
         Utils.get_all_dt_donations( persona_ids );
         return "got em";
-      } else if( persona_id && persona_id.length && persona_id.length >= 1 ) {
+      } else if (persona_id && persona_id.length && persona_id.length >= 1) {
         Utils.get_all_dt_donations( persona_id );
         return "got em";
       } else {
@@ -258,5 +258,25 @@ Meteor.methods({
       }
     }
     throw new Meteor.Error(403, "Not logged in");
+  },
+  process_bank_manually: function(bankInfo) {
+    logger.info("Started method get_all_donations_for_this_donor.");
+    check(bankInfo, {
+      name: String,
+      account_holder_name: String,
+      account_holder_type: String,
+      account_number: String,
+      routing_number: String,
+      address_line1: String,
+      address_line2: Match.Optional(String),
+      address_city: String,
+      address_state: String,
+      address_zip: String,
+      country: Match.Optional(String)
+    });
+    console.log("Got past check");
+    let bank = BankAccounts.insert(bankInfo);
+    return bank;
   }
 });
+

@@ -148,7 +148,6 @@ _.extend(Give, {
       };
     }
 
-
     form.paymentInformation.later = (!moment(new Date(Give.getCleanValue('#start_date'))).isSame(Date.now(), 'day'));
     if (!form.paymentInformation.later) {
       form.paymentInformation.start_date = 'today';
@@ -226,7 +225,14 @@ _.extend(Give, {
           country: Give.getCleanValue('#country')
         };
       }
-      Give.process_bank(bankInfo, form);
+      // We need to check our configuration to see how Stripe is setup to
+      // process our ACH type gifts.
+      // If it is setup to take gifts manually then don't tokenize the bank info
+      if (Config.findOne().Stripe.ach_verification_type === 'manual') {
+        Give.process_bank_manually(bankInfo, form);
+      } else {
+        Give.process_bank_with_stripe(bankInfo, form);
+      }
     } else {
       form.paymentInformation.saved = true;
       var payment = {id: form.paymentInformation.donateWith};
@@ -243,10 +249,13 @@ _.extend(Give, {
       Give.handleCalls(payment, form);
     }
   },
-  // This is the callback for the client side tokenization of cards and bank_accounts.
+  // Handle the server calls after the client side tokenization is taken care of
   handleCalls: function(payment, form) {
-    // payment is the token returned from Stripe
-    form.paymentInformation.token_id = payment.id;
+    // payment is the token returned from Stripe or the _id of the
+    // stored bankInfo document
+    if (payment.id) {
+      form.paymentInformation.token_id = payment.id;
+    }
     Meteor.call('stripeDonation', form, function(error, result) {
       if (error) {
         // Give.handleErrors is used to check the returned error and the display a user friendly message about what happened that caused
@@ -322,7 +331,7 @@ _.extend(Give, {
       }
     });
   },
-  process_bank: function(bankInfo, form) {
+  process_bank_with_stripe: function(bankInfo, form) {
     Stripe.bankAccount.createToken(bankInfo, function(status, response) {
       if (response.error) {
         Give.handleErrors(response.error);
@@ -330,10 +339,22 @@ _.extend(Give, {
         // Call your backend
         if (form) {
           form.paymentInformation.source_id = response.bank_account.id;
+          form.paymentInformation.method = 'stripeACH'; // TODO: be more specific
           Give.handleCalls(response, form);
         } else {
           return response;
         }
+      }
+    });
+  },
+  process_bank_manually: function(bankInfo, form) {
+    Meteor.call("process_bank_manually", bankInfo, function(err, res) {
+      if (res) {
+        form.paymentInformation.source_id = res;
+        form.paymentInformation.method = 'manualACH';
+        Give.handleCalls(res, form);
+      } else {
+        Give.handleErrors(err);
       }
     });
   },
