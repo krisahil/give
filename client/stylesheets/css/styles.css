@@ -2,12 +2,7 @@
     color: #F57F17;
 }
 
-.panel-primary {
-
-}
-
 @media print {
-
     a[href]:after {
         content: none !important;
     }
@@ -29,4 +24,8 @@
 
 .invoice-frequency {
     text-transform: capitalize;
+}
+
+.one-time {
+    color: #F57F17;
 }

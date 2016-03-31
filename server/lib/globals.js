@@ -76,13 +76,12 @@ Utils = {
   // Check donation form entries
   checkFormFields: function(form) {
     // Check all the form fields from the donation forms
-    console.log(form);
     check(form, {
       paymentInformation: {
         amount: Match.Integer,
         campaign: Match.Optional(String),
         coverTheFees: Boolean,
-        created_at: String,
+        created_at: Number,
         donateTo: String,
         donateWith: Match.Optional(String),
         dt_source: Match.Optional(String),
@@ -113,7 +112,7 @@ Utils = {
         city: String,
         postal_code: String,
         country: Match.Optional(String),
-        created_at: String,
+        created_at: Number,
         id: Match.Optional(String)
       },
       sessionId: String

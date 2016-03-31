@@ -48,7 +48,7 @@ _.extend(Give, {
             "donateWith": Give.getCleanValue('#donateWith'),
             "is_recurring": Give.getCleanValue('#is_recurring'),
             "coverTheFees": $('#coverTheFees').is(":checked"),
-            "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+            "created_at": new Date().getTime() / 1000 | 0,
             "start_date": moment(new Date(Give.getCleanValue('#start_date'))).format('X'),
             "saved": $('#save_payment').is(":checked"),
             "send_scheduled_email": "no"
@@ -91,7 +91,7 @@ _.extend(Give, {
             "donateWith": Give.getCleanValue('#donateWith'),
             "is_recurring": Give.getCleanValue('#is_recurring'),
             "coverTheFees": $('#coverTheFees').is(":checked"),
-            "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+            "created_at": new Date().getTime() / 1000 | 0,
             "dt_source": Give.getCleanValue('#dt_source'),
             "note": Give.getCleanValue('#donation_note'),
             "start_date": moment(new Date(Give.getCleanValue('#start_date'))).format('X'),
@@ -119,7 +119,7 @@ _.extend(Give, {
           "amount": parseInt(((Give.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0), 10),
           "campaign": Give.getCleanValue('#dt_source'),
           "coverTheFees": $('#coverTheFees').is(":checked"),
-          "created_at": moment().format('MM/DD/YYYY, hh:mma'),
+          "created_at": new Date().getTime() / 1000 | 0,
           "donateTo": Give.getCleanValue("#donateTo"),
           "donateWith": Give.getCleanValue("#donateWith"),
           "dt_source": Give.getCleanValue('#dt_source'),
@@ -142,7 +142,7 @@ _.extend(Give, {
           "city": Give.getCleanValue('#city'),
           "postal_code": Give.getCleanValue('#postal_code'),
           "country": Give.getCleanValue('#country'),
-          "created_at": moment().format('MM/DD/YYYY, hh:mma')
+          "created_at": new Date().getTime() / 1000 | 0
         },
         sessionId: Meteor.default_connection._lastSessionId
       };
@@ -159,7 +159,7 @@ _.extend(Give, {
 
     if (form.paymentInformation.donateWith === "Card") {
       form.paymentInformation.type = "card";
-      form.customer.created_at = moment().format('MM/DD/YYYY, hh:mma');
+      form.customer.created_at = new Date().getTime() / 1000 | 0;
       var cardInfo = {};
       if (quickForm) {
         cardInfo = {
@@ -194,7 +194,7 @@ _.extend(Give, {
       Give.process_card(cardInfo, form);
     } else if (form.paymentInformation.donateWith === "Check") {
       form.paymentInformation.type = "check";
-      form.customer.created_at = moment().format('MM/DD/YYYY, hh:mma');
+      form.customer.created_at = new Date().getTime() / 1000 | 0;
       var bankInfo = {};
       if (quickForm) {
         bankInfo = {
@@ -243,9 +243,8 @@ _.extend(Give, {
       }
       form.paymentInformation.source_id = form.paymentInformation.donateWith;
       form.customer.id = Devices.findOne({_id: form.paymentInformation.donateWith}).customer;
-      var createdAt = Customers.findOne({_id: form.customer.id}).created;
 
-      form.customer.created_at = moment(createdAt * 1000).format('MM/DD/YYYY, hh:mma');
+      form.customer.created_at = new Date().getTime() / 1000 | 0;
       Give.handleCalls(payment, form);
     }
   },

@@ -1,53 +1,52 @@
 _.extend(Utils, {
   update_dt_account: function(form, dt_persona_id){
-        logger.info("Inside update_dt_account.");
+    logger.info("Inside update_dt_account.");
 
-        // get the persona record from Donor Tools
-        var get_dt_persona = HTTP.get(Meteor.settings.public.donor_tools_site + '/people/' + dt_persona_id + '.json', {
-            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-        });
+    // get the persona record from Donor Tools
+    var get_dt_persona = HTTP.get(Meteor.settings.public.donor_tools_site + '/people/' + dt_persona_id + '.json', {
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+    });
 
-        // Store the relevant object
-        var persona = get_dt_persona.data.persona;
+    // Store the relevant object
+    var persona = get_dt_persona.data.persona;
 
-        // Get the IDs needed to update the object
-        var address_id = get_dt_persona.data.persona.addresses[0].id;
-        var phone_id = get_dt_persona.data.persona.phone_numbers[0].id;
+    // Get the IDs needed to update the object
+    var address_id = get_dt_persona.data.persona.addresses[0].id;
+    var phone_id = get_dt_persona.data.persona.phone_numbers[0].id;
 
-        // Reinitialize a blank persona record
-        persona = {};
+    // Reinitialize a blank persona record
+    persona = {};
 
-        // Shape the data the way it needs to go into the persona record
-        var street_address = form.address.address_line1 + " \n" + form.address.address_line2;
-        persona.addresses = [];
-        persona.addresses[0] = {
-            "id": address_id,
-            "city": form.address.city,
-            "state": form.address.state,
-            "street_address": street_address,
-            "postal_code": form.address.postal_code
-        };
-        persona.phone_numbers = [];
-        persona.phone_numbers[0] = {
-            "id": phone_id,
-            phone_number: form.phone
-        };
+    // Shape the data the way it needs to go into the persona record
+    var street_address = form.address.address_line1 + " \n" + form.address.address_line2;
+    persona.addresses = [];
+    persona.addresses[0] = {
+      "id": address_id,
+      "city": form.address.city,
+      "state": form.address.state,
+      "street_address": street_address,
+      "postal_code": form.address.postal_code
+    };
+    persona.phone_numbers = [];
+    persona.phone_numbers[0] = {
+      "id": phone_id,
+      phone_number: form.phone
+    };
 
 
-        var update_persona = HTTP.call("PUT", Meteor.settings.public.donor_tools_site + '/people/'+ dt_persona_id + '.json',
-            {
-                data: {"persona": persona},
-                auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-            });
+    var update_persona = HTTP.call("PUT", Meteor.settings.public.donor_tools_site + '/people/'+ dt_persona_id + '.json',
+      {
+        data: {"persona": persona},
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      });
 
-        var insertedPersonaInfo = Meteor.users.update({_id: Meteor.userId(), 'persona_info.id': dt_persona_id},
-            {
-                $set:
-                {
-                    'persona_info.$': update_persona.data.persona
-                }
-            });
-    },
+    var insertedPersonaInfo = Meteor.users.update({_id: Meteor.userId(), 'persona_info.id': dt_persona_id},
+      {
+        $set: {
+          'persona_info.$': update_persona.data.persona
+        }
+      });
+  },
   getFundHistory: function (fundId, dateStart, dateEnd) {
     logger.info("Got to getFundHistory with fund_id: " + fundId);
 
@@ -225,7 +224,7 @@ _.extend(Utils, {
       throw new Meteor.Error( error, e._id );
     }
   },
-  'find_dt_account_or_make_a_new_one': function (customer, user_id, skip_audit) {
+  find_dt_account_or_make_a_new_one: function (customer, user_id, skip_audit) {
     logger.info("Started find_dt_account_or_make_a_new_one");
 
     var dt_persona_match_id;
@@ -256,7 +255,7 @@ _.extend(Utils, {
 
     }
   },
-  'create_dt_account': function ( customer, user_id ){
+  create_dt_account: function ( customer, user_id ){
     console.log("Started create_dt_account");
 
     let metadata, newDTPerson, recognition_name, address_line2, is_company;
@@ -325,7 +324,7 @@ _.extend(Utils, {
 
     return newDTPerson.data.persona.id;
   },
-  'insert_gift_into_donor_tools': function ( charge_id, customer_id ) {
+  insert_gift_into_donor_tools: function ( charge_id, customer_id ) {
     logger.info("Started insert_gift_into_donor_tools");
 
     console.log("Charge_id: ", charge_id, " Customer_id: ", customer_id);
@@ -361,7 +360,7 @@ _.extend(Utils, {
       } else {
         metadata = chargeCursor.metadata;
       }
-    } else{
+    } else {
       // TODO: this area is to be used in case we start excepting bitcoin or
       // other payment methods that return something other than a ch_  or py_
       // event object id
@@ -393,20 +392,19 @@ _.extend(Utils, {
       metadata.frequency &&
       metadata.frequency.charAt(0).toUpperCase() +
       metadata.frequency.slice(1);
-      if( metadata && metadata.note ){
+      if ( metadata && metadata.note ) {
         memo = memo + " " + metadata.note;
       }
     }
-    if(!memo){
+    if (!memo) {
       logger.error(charge_id, customer_id);
       logger.error(metadata);
       logger.error("Something went wrong above, it looks like there is no metadata on this object.");
     }
 
-    if ( customerCursor && customerCursor.metadata && customerCursor.metadata.business_name ){
+    if ( customerCursor && customerCursor.metadata && customerCursor.metadata.business_name ) {
       source_id = 42776;
-    }
-    if( metadata && metadata.dt_source ){
+    } else if ( metadata && metadata.dt_source ) {
       source_id = metadata.dt_source;
     } else {
       source_id = 42754;
@@ -414,25 +412,25 @@ _.extend(Utils, {
 
     console.log("Persona ID is: ", customerCursor.metadata.dt_persona_id);
 
-      try {
-        logger.info( "Started checking for this person in DT" );
-        let checkPerson;
-        checkPerson = HTTP.get( Meteor.settings.public.donor_tools_site + '/people/' +
-          customerCursor.metadata.dt_persona_id + '.json', {
-          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-        } );
-        console.log( checkPerson.data );
-      } catch( e ) {
-        logger.info( "------No Person with the DT ID of " +
-          customerCursor.metadata.dt_persona_id + " found in DT--------" );
-        Utils.send_failed_to_add_to_dt_email_to_support( customerCursor.metadata.dt_persona_id, charge_id );
-        Audit_trail.update({_id: charge_id}, {
-          $set: {
-            "dt_donation_inserted": false
-          }
-        });
-        throw new Meteor.Error( e );
-      }
+    try {
+      logger.info( "Started checking for this person in DT" );
+      let checkPerson;
+      checkPerson = HTTP.get( Meteor.settings.public.donor_tools_site + '/people/' +
+        customerCursor.metadata.dt_persona_id + '.json', {
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      } );
+      console.log( checkPerson.data );
+    } catch( e ) {
+      logger.info( "------No Person with the DT ID of " +
+        customerCursor.metadata.dt_persona_id + " found in DT--------" );
+      Utils.send_failed_to_add_to_dt_email_to_support( customerCursor.metadata.dt_persona_id, charge_id );
+      Audit_trail.update({_id: charge_id}, {
+        $set: {
+          "dt_donation_inserted": false
+        }
+      });
+      throw new Meteor.Error( e );
+    }
 
     newDonationResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
       data: {
@@ -456,8 +454,7 @@ _.extend(Utils, {
     newDonationResult.data.donation._id = newDonationResult.data.donation.id;
     DT_donations.upsert({_id: newDonationResult.data.donation.id}, newDonationResult.data.donation );
 
-
-    if(newDonationResult && newDonationResult.data && newDonationResult.data.donation && newDonationResult.data.donation.persona_id){
+    if (newDonationResult && newDonationResult.data && newDonationResult.data.donation && newDonationResult.data.donation.persona_id) {
       // Send the id of this new DT donation to the function which will update the charge to add that meta text.
       Utils.update_charge_with_dt_donation_id(charge_id, newDonationResult.data.donation.id);
 
@@ -466,6 +463,121 @@ _.extend(Utils, {
       Utils.get_all_dt_donations([customerCursor.metadata.dt_persona_id]);
 
       return newDonationResult.data.donation.persona_id;
+    } else {
+      logger.error("The persona ID wasn't returned from DT, or something else happened with the connection to DT.");
+      throw new Meteor.Error("Couldn't get the persona_id for some reason");
+    }
+  },
+  insert_manual_gift_into_donor_tools: function ( donation_id, customer_id, dt_persona_id ) {
+    logger.info("Started insert_gift_into_donor_tools");
+
+    console.log("Donation_id: ", donation_id, " Customer_id: ", customer_id);
+    let donationCursor, dt_fund, donateTo, invoice_cursor,
+      fund_id, memo, source_id, newDonationResult, metadata;
+
+    donationCursor =  Donations.findOne({_id: donation_id});
+
+    const customerCursor =  Customers.findOne({_id: customer_id});
+
+    if( Audit_trail.findOne( { donation_id: donation_id } ) &&
+        Audit_trail.findOne( { donation_id: donation_id } ).dt_donation_inserted ){
+      logger.info("Already inserted the donation into DT.");
+
+      // TODO: update the DT donation from here?
+      return;
+    } else {
+      Audit_trail.upsert({_id: donationCursor._id}, {$set: {dt_donation_inserted: true}});
+    }
+
+    donateTo = donationCursor.donateTo;
+
+    if(donateTo){
+      dt_fund = Utils.get_fund_id( donateTo );
+      console.log(dt_fund);
+    } else {
+      dt_fund = null;
+    }
+
+    // fund_id 65663 is the No-Match-Found fund used to help reconcile
+    // write-in gifts and those not matching a fund in DT
+    if( !dt_fund ) {
+      fund_id = Meteor.settings.donor_tools_default_fund_id;
+      memo = Meteor.settings.dev + donationCursor &&
+        donationCursor.frequency &&
+        donationCursor.frequency.charAt(0).toUpperCase() +
+        donationCursor.frequency.slice(1) + " " + donateTo;
+
+    } else {
+      fund_id = dt_fund;
+      memo = Meteor.settings.dev + donationCursor &&
+        donationCursor.frequency &&
+        donationCursor.frequency.charAt(0).toUpperCase() +
+        donationCursor.frequency.slice(1);
+      if ( donationCursor && donationCursor.note ) {
+        memo = memo + " " + donationCursor.note;
+      }
+    }
+    if (!memo) {
+      logger.error(donation_id, customer_id);
+      logger.error("Something went wrong above, it looks like there is no metadata on this object.");
+    }
+
+    if ( customerCursor && customerCursor.metadata && customerCursor.metadata.business_name ) {
+      source_id = 42776;
+    } else if ( donationCursor && donationCursor.dt_source ) {
+      source_id = donationCursor.dt_source;
+    } else {
+      source_id = 42754;
+    }
+
+    // TODO: check that this line below works
+    console.log("Persona ID is: ", dt_persona_id);
+
+    try {
+      logger.info( "Started checking for this person in DT" );
+      let checkPerson;
+      checkPerson = HTTP.get( Meteor.settings.public.donor_tools_site + '/people/' +
+        dt_persona_id + '.json', {
+        auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+      } );
+      console.log( checkPerson.data );
+    } catch( e ) {
+      logger.info( "------No Person with the DT ID of " +
+        dt_persona_id + " found in DT--------" );
+      Utils.send_failed_to_add_to_dt_email_to_support( dt_persona_id, donation_id );
+      Audit_trail.update({donation_id: donation_id}, {
+        $set: {
+          "dt_donation_inserted": false
+        }
+      });
+      throw new Meteor.Error( e );
+    }
+
+    newDonationResult = HTTP.post(Meteor.settings.public.donor_tools_site + '/donations.json', {
+      data: {
+        "donation": {
+          "persona_id": dt_persona_id,
+          "splits": [{
+            "amount_in_cents": donationCursor.total_amount,
+            "fund_id": fund_id,
+            "memo": memo
+          }],
+          "donation_type_id": Meteor.settings.donor_tools_gift_type,
+          "received_on": moment(new Date(donationCursor.created_at * 1000)).format("YYYY/MM/DD hh:mma"),
+          "source_id": source_id,
+          "payment_status": 'succeeded',
+          "transaction_id": donation_id
+        }
+      },
+      auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
+    });
+
+    newDonationResult.data.donation._id = newDonationResult.data.donation.id;
+    DT_donations.upsert({_id: newDonationResult.data.donation.id}, newDonationResult.data.donation );
+
+    if (newDonationResult && newDonationResult.data && newDonationResult.data.donation && newDonationResult.data.donation.persona_id) {
+      // add this dt_donation_id to the donation
+      Donations.update({_id: donation_id}, {$set: {dt_donation_id: newDonationResult.data.donation.id}});
     } else {
       logger.error("The persona ID wasn't returned from DT, or something else happened with the connection to DT.");
       throw new Meteor.Error("Couldn't get the persona_id for some reason");

@@ -5,7 +5,6 @@
                 {{#unless showSingleRecord}}
                     <form class="form">
                         <div class="form-group">
-                            <br>
                             <label for="searchACH" class="control-label">Search for ACH(s)</label>
                             <input id="searchACH" type="text" class="form-control search" placeholder="Search by; name, org. or email">
                         </div>
@@ -21,48 +20,72 @@
                             <th>Amount</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Routing Number</th>
+                            <th>Account Number</th>
                             <th class="text-center">Actions</th>
                         </tr>
                         </thead>
                         <tbody class="users">
-                        {{#each donations}}
-                            <tr class="{{ifRecurringSelectedText}}" data-id="{{_id}}">
-                                <td>{{donorName}}</td>
-                                <td>{{donationTo}}</td>
-                                <td>{{donationAmount}}</td>
-                                <td>{{donationDate}}</td>
-                                <td>{{donationStatus}}</td>
-                                <td class="text-center">
-                                    <button type="button" {{disabledIfBeforeToday}} class="btn btn-primary forgot-password"
-                                            title="Send New Gift to Donor Tools"
-                                            data-toggle="confirmation"
-                                            data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                            {{#each donations}}
+                                <tr class="{{donationFrequency}}" data-id="{{_id}}">
+                                    <td>{{donorName}}</td>
+                                    <td>{{donateTo}}</td>
+                                    <td>{{donationAmount}}</td>
+                                    <td>{{donationDate}}</td>
+                                    <td>{{status}}</td>
+                                    <td>{{routingNumber}}</td>
+                                    <td class="show-account-number pointer-mouse">
+                                        <label class="label label-primary pointer-mouse">Show</label>
+                                    </td>
+                                    <td class="text-center">
                                         {{#if pendingSetup}}
-                                            Setup
+                                            <button type="button" {{disabledIfBeforeToday}} class="btn btn-primary pending-setup"
+                                                    title="Send new gift to Donor Tools"
+                                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                                    data-toggle="confirmation"
+                                                    aria-expanded="true">
+                                                    Completed Setup
+                                            </button>
                                         {{else}}
-                                            Send
+                                            <button type="button" {{disabledIfBeforeToday}} class="btn btn-primary"
+                                                    title="Send new instance of recurring gift to Donor Tools"
+                                                    data-toggle="confirmation"
+                                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                                    Send to DT
+                                            </button>
                                         {{/if}}
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-primary edit-ach">
-                                        <i class="fa fa-pencil"></i>
-                                    </button>
-                                    <button type="button"
-                                            title="Stop this recurring gift from showing here."
-                                            class="btn btn-primary stop-recurring"
-                                            data-id="{{_id}}"
-                                            data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
-                                            data-toggle="confirmation"
-                                            aria-expanded="true">
-                                        <i class="fa fa-stop"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        {{/each}}
+                                        <button type="button"
+                                                title="Edit the gift details"
+                                                class="btn btn-primary edit-ach"
+                                                data-id="{{_id}}">
+                                                <i class="fa fa-pencil"></i>
+                                        </button>
+                                        <button type="button"
+                                                title="Stop this recurring gift from showing here."
+                                                class="btn btn-primary stop-recurring"
+                                                data-id="{{_id}}"
+                                                data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                                data-toggle="confirmation"
+                                                aria-expanded="true">
+                                            <i class="fa fa-stop"></i>
+                                        </button>
+                                        {{#if personaId}}
+                                            <a href="{{donor_tools_site}}/people/{{personaId}}">
+                                                <button type="button"
+                                                    title="See this user in Donor Tools"
+                                                    class="btn btn-primary">
+                                                    <i class="fa fa-link"></i>
+                                                </button>
+                                            </a>
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                            {{/each}}
                         </tbody>
                     </table>
                 {{/unless}}
             {{/if}}
         </div>
     </div>
+    {{> ACHModal}}
 </template>

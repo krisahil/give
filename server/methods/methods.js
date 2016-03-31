@@ -52,7 +52,7 @@ Meteor.methods({
     logger.info( "Started method update_customer." );
 
     if (Meteor.userId()) {
-      //Check the client side form fields with the Meteor 'check' method
+      // Check the client side form fields with the Meteor 'check' method
       Utils.check_update_customer_form(form, dt_persona_id);
 
       // Setup a function for updating the accounts
@@ -87,8 +87,6 @@ Meteor.methods({
     try {
       //Check the form to make sure nothing malicious is being submitted to the server
       Utils.checkFormFields(data);
-      console.log(data);
-      debugger;
       if(data.paymentInformation.coverTheFees === false){
           data.paymentInformation.fees = '';
       }
@@ -1044,6 +1042,57 @@ Meteor.methods({
       } else {
         return;
       }
+    } catch(e) {
+      console.log(e);
+      throw new Meteor.Error(e);
+    }
+  },
+  manual_gift_processed: function(donation_id) {
+    logger.info("Started manual_gift_processed method");
+
+    check(donation_id, String);
+    try {
+      this.unblock();
+      if (Roles.userIsInRole(this.userId, ['admin'])) {
+        console.log("Sending");
+        let customer_id = Donations.findOne({_id: donation_id}).customer_id;
+        let email = Customers.findOne({_id: customer_id}).email;
+        let dt_persona_match_id = Utils.find_dt_persona_flow( email, customer_id );
+        console.log(dt_persona_match_id);
+
+        Utils.update_stripe_customer_dt_persona_id(customer_id, dt_persona_match_id);
+
+        // Send this manually processed gift to DT
+        Utils.insert_manual_gift_into_donor_tools(donation_id, customer_id, dt_persona_match_id);
+
+        // if this is frequency !== one_time then insert a copy of this
+        // donation with the date set for created_at + 1 month also set the iterationCount to +1,
+        // if it doesn't exist then set it to 2 (non-zero based count, so this would be the 2nd donation)
+        if (Donations.findOne({_id: donation_id}).frequency !== 'one_time') {
+          let newDonation = Donations.find({_id: donation_id}).fetch()[0];
+          delete newDonation._id;
+          delete newDonation.pendingSetup;
+          delete newDonation.sessionId;
+          delete newDonation.send_scheduled_email;
+          newDonation.status = 'pending';
+          // Add 1 month to the created date of this recurring gift and replace
+          // the current created_at date
+          let newDate = moment(newDonation.created_at * 1000)
+            .add(1, 'months').unix();
+          newDonation.created_at = newDate;
+          if (newDonation.iterationCount) {
+            newDonation.iterationCount++;
+          } else {
+            newDonation.iterationCount = '2';
+          }
+          Donations.insert(newDonation);
+        }
+        Donations.update({_id: donation_id}, {$set: {
+          status: 'succeeded'
+        }});
+        return "Done";
+      }
+      return;
     } catch(e) {
       console.log(e);
       throw new Meteor.Error(e);

@@ -465,33 +465,33 @@ _.extend(Utils, {
       }
     });
   },
-    update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, donateWith){
-        logger.info("Inside update_stripe_customer_subscription.");
-        var stripeSubscriptionUpdate = new Future();
+  update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, donateWith){
+    logger.info("Inside update_stripe_customer_subscription.");
+    var stripeSubscriptionUpdate = new Future();
 
-        Stripe.customers.updateSubscription(customer_id, subscription_id, {
-          source: token_id,
-          metadata: {donateWith: donateWith}
-            }, function (error, subscription) {
-                if (error) {
-                    //console.dir(error);
-                    stripeSubscriptionUpdate.return(error);
-                } else {
-                    stripeSubscriptionUpdate.return(subscription);
-                }
-            }
-        );
-
-        stripeSubscriptionUpdate = stripeSubscriptionUpdate.wait();
-
-        if (!stripeSubscriptionUpdate.object) {
-            throw new Meteor.Error(stripeSubscriptionUpdate.rawType, stripeSubscriptionUpdate.message);
+    Stripe.customers.updateSubscription(customer_id, subscription_id, {
+      source: token_id,
+      metadata: {donateWith: donateWith}
+        }, function (error, subscription) {
+          if (error) {
+            // console.dir(error);
+            stripeSubscriptionUpdate.return(error);
+          } else {
+            stripeSubscriptionUpdate.return(subscription);
+          }
         }
+    );
 
-        console.dir(stripeSubscriptionUpdate);
+    stripeSubscriptionUpdate = stripeSubscriptionUpdate.wait();
 
-        return stripeSubscriptionUpdate;
-    },
+    if (!stripeSubscriptionUpdate.object) {
+        throw new Meteor.Error(stripeSubscriptionUpdate.rawType, stripeSubscriptionUpdate.message);
+    }
+
+    console.dir(stripeSubscriptionUpdate);
+
+    return stripeSubscriptionUpdate;
+  },
     update_stripe_customer_card: function(data){
         logger.info("Inside update_stripe_customer_card.");
         var stripeCardUpdate = new Future();

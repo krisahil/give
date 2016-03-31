@@ -196,23 +196,34 @@ Meteor.publishComposite('ach', function () {
 
     return {
       find: function () {
-        return BankAccounts.find();
+        return Donations.find({
+          $and: [
+            {
+              method: "manualACH"
+            }, {
+              $or: [
+                { status: 'pending' },
+                { status: 'failed' }
+              ]
+            }
+          ]
+        });
       },
       children: [
         {
-          find: function ( bankAccounts ) {
+          find: function ( donations ) {
             // Find post author. Even though we only want to return
             // one record here, we use "find" instead of "findOne"
             // since this function should return a cursor.
-            return Customers.find({ _id: bankAccounts.customer_id});
+            return Customers.find({ _id: donations.customer_id});
           }
         },
         {
-          find: function ( bankAccounts ) {
+          find: function ( donations ) {
             // Find post author. Even though we only want to return
             // one record here, we use "find" instead of "findOne"
             // since this function should return a cursor.
-            return Donations.find({ customer_id: bankAccounts.customer_id});
+            return BankAccounts.find({ _id: donations.source_id});
           }
         }
       ]

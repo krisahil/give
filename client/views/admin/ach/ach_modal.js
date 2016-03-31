@@ -8,15 +8,7 @@ var init_calendar = function(){
   });
 };
 
-Template.SubscriptionModal.helpers({
-  attributes_Input_Amount: function() {
-    return {
-      name: "amount",
-      id: "amount",
-      min: 1,
-      required: true
-    };
-  },
+Template.ACHModal.helpers({
   amount: function () {
     return Session.get("change_amount");
   },
@@ -42,15 +34,15 @@ Template.SubscriptionModal.helpers({
   }
 });
 
-Template.SubscriptionModal.events({
+Template.ACHModal.events({
   'submit form': function(e) {
     e.preventDefault();
-    console.log("Submitted event started for AdminSubscriptionModal form");
-    let subscription_id = Session.get("change_subscription_id");
+    console.log("Submitted event started for AdminACHModal form");
+    let donation_id = Session.get("change_donation_id");
     let customer_id = Session.get("change_customer_id");
     let amount = parseInt(((Give.getCleanValue('#amount').replace(/[^\d\.\-\ ]/g, '')) * 100).toFixed(0));
     let note = $("#note").val();
-    let trial_end = $("#start_date").val() ? moment(new Date(Give.getCleanValue('#start_date'))).format('X'): '';
+    let donationDate = $("#start_date").val() ? moment(new Date(Give.getCleanValue('#start_date'))).format('X'): '';
     let donateToText = $("#designationSection").is(":visible") ? $('#donateTo option:selected').text() : Session.get("change_donateTo");
 
     if(Session.get("change_donateTo") === donateToText && Session.get("change_amount") === amount &&
@@ -59,29 +51,25 @@ Template.SubscriptionModal.events({
       return "No changes";
     }
 
-    amount = Session.get("change_amount") === amount ? 0 : amount;
-
     $(':submit').button('loading');
 
-    console.log(customer_id, subscription_id, amount, trial_end, donateTo);
-    Meteor.call( "edit_subscription", customer_id, subscription_id, amount, trial_end, donateToText, function ( error, response ) {
-      if( error ) {
-        console.log( error, error.message);
-        Bert.alert( error.message, "danger" );
-        $(':submit').button( 'reset' );
-      } else {
-        console.log( response );
-        Bert.alert( response, "success" );
-        $(':submit').button('reset');
+    console.log(customer_id, amount, donationDate, donateToText, note);
+    Donations.update({_id: donation_id}, {$set: {
+      customer_id: customer_id,
+      total_amount: amount,
+      amount: amount,
+      created_at: (Number(donationDate) + 14400),
+      donateTo: donateToText,
+      note: note
+    }});
+    Bert.alert( "Updated", "success" );
+    $(':submit').button('reset');
 
-        Session.set("yes_change_date", false);
-        Session.set("yes_change_designation", false);
-        $('#calendarSection').hide();
-        $('#designationSection').hide();
-        $('#modal_for_admin_subscription_change_form').modal('hide');
-      }
-    } );
-
+    Session.set("yes_change_date", false);
+    Session.set("yes_change_designation", false);
+    $('#calendarSection').hide();
+    $('#designationSection').hide();
+    $('#modal_for_admin_ach_change_form').modal('hide');
   },
   'click #showCalendar': function (e) {
     e.preventDefault();
@@ -122,7 +110,7 @@ Template.SubscriptionModal.events({
   }
 });
 
-Template.SubscriptionModal.onRendered(function () {
+Template.ACHModal.onRendered(function () {
 
   Session.set("yes_change_date", false);
 

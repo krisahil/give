@@ -1,0 +1,111 @@
+<template name="ACHModal">
+    <div class="modal fade" id="modal_for_admin_ach_change_form">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">
+                        Here is the ACH gift details. Edit the fields you want to change.
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="subscription_change">
+                        <fieldset>
+                            <!-- Amount of donation -->
+                            <div class="donation_amount text-center well well-lg form-group">
+                                <div id='amount_width' class="{{amountWidth}}">
+                                    <label class="control-label" for="amount">Donation Amount</label>
+                                    <div class="input-group">
+                                        <!--[if lt IE 9]>
+                                        <label>Amount</label>
+                                        <![endif]-->
+                                        <span class="input-group-addon">$</span>
+                                        <input name="amount"
+                                                id="amount"
+                                                min="1"
+                                                value="{{twoDecimalPlaces amount}}"
+                                                class="form-control slim-borders"
+                                                required
+                                                data-parsley-error-message="Please enter an amount with no commas."
+                                                data-parsley-errors-container="#show-amount-error-here" />
+                                    </div>
+                                    <div id="show-amount-error-here"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    {{#unless changeDesignation}}
+                                        <button id="showDesignation"
+                                                class="btn btn-block btn-success">Change Designation</button>
+                                    {{else}}
+                                        <button id="hideDesignation"
+                                                class="btn btn-block btn-success">Don't Change Designation</button>
+                                    {{/unless}}
+                                </div>
+                                <div class="col col-lg-6"
+                                     style="display: none;"
+                                     id="designationSection">
+                                    {{> DonationTo}}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    {{#unless changeDate}}
+                                        <button id="showCalendar" class="btn btn-block btn-success">Change Date</button>
+                                    {{else}}
+                                        <button id="hideCalendar" class="btn btn-block btn-success">Don't Change Date</button>
+                                    {{/unless}}
+                                </div>
+                                <div class="col col-lg-6"
+                                     style="display: none;"
+                                     id="calendarSection">
+                                    <div class="form-group">
+                                        <label>Next Donation Date</label>
+                                        <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button class="btn" type="button">
+                                                <span class="fui-calendar">
+                                                </span>
+                                            </button>
+                                        </span>
+                                            <input type="text" class="form-control"
+                                                   value="{{currentDate}}" id="start_date" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    {{#unless changeNote}}
+                                        <button id="showNote" class="btn btn-block btn-success">Change Note</button>
+                                    {{else}}
+                                        <button id="hideNote" class="btn btn-block btn-success">Don't Change Note</button>
+                                    {{/unless}}
+                                </div>
+                                <div class="col col-lg-6"
+                                     style="display: none;"
+                                     id="noteSection">
+                                    <label>Donation Note</label>
+                                    <input id="note" value="{{note}}" class="form-control slim-borders" />
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="modal-footer">
+                            <div class="row">
+                                <br>
+                                <button type="submit" class="btn btn-lg btn-primary" data-loading-text="Processing...">
+                                    <span class="fa fa-paper-plane-o"></span> Send Change(s)
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

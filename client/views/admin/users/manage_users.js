@@ -34,7 +34,7 @@ AutoForm.hooks({
   }
 });
 
-Template.Users.helpers({
+Template.ManageUsers.helpers({
   users: function () {
     let searchValue = Session.get("searchValue");
     let matchingUsers;
@@ -117,7 +117,7 @@ Template.Users.helpers({
     return false;
   }
 });
-Template.Users.events({
+Template.ManageUsers.events({
   'click .disable-enable-user': function () {
     console.log("got remove");
 
@@ -125,7 +125,7 @@ Template.Users.events({
 
     let toggleState;
 
-    if(self.state && self.state.status && self.state.status === 'disabled'){
+    if (self.state && self.state.status && self.state.status === 'disabled') {
       toggleState = 'enabled';
     } else {
       toggleState = 'disabled';
@@ -212,7 +212,7 @@ Template.Users.events({
     Session.delete("activeTab");
 
     if(Router.current().params.query && Router.current().params.query.userID){
-      Router.go('Users');
+      Router.go('ManageUsers');
     }
     Session.set("addingNew", false);
     Session.delete("params.userID");
@@ -229,7 +229,7 @@ Template.Users.events({
   }, 300)
 });
 
-Template.Users.onCreated(function () {
+Template.ManageUsers.onCreated(function () {
   let self = this;
   self.autorun(function () {
 
@@ -255,6 +255,6 @@ Template.Users.onCreated(function () {
 
 });
 
-Template.Users.onDestroyed(function() {
+Template.ManageUsers.onDestroyed(function() {
   Session.delete("searchValue");
 });

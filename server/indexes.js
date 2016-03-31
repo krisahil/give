@@ -37,7 +37,10 @@ Devices._ensureIndex(
   {background: true});
 
 Donations._ensureIndex(
+  {'charge_id': 1},
   {'customer_id': 1},
+  {'method': 1},
+  {'status': 1},
   {background: true});
 
 DT_splits._ensureIndex(

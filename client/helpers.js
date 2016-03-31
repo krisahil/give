@@ -246,7 +246,6 @@ Template.registerHelper( 'contact_us', ( ) => {
 
 Template.registerHelper( 'not_safari', () => {
   let user_agent = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  console.log(user_agent);
   return user_agent;
 });
 

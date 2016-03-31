@@ -538,7 +538,7 @@ _.extend(Utils,{
             "vars": [
               {
                 "name":    "CreatedAt",
-                "content": donation_cursor.created_at
+                "content": moment(donation_cursor.created_at).format("MM/DD/YYYY hh:mm a")
               }, {
                 "name":    "DEV",
                 "content": Meteor.settings.dev

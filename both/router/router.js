@@ -399,9 +399,9 @@ Router.route('/dashboard/subscriptions', {
 
 Router.route('/dashboard/users', {
   layoutTemplate: 'AdminLayout',
-  name: 'Users',
+  name: 'ManageUsers',
   where: 'client',
-  template: 'Users',
+  template: 'ManageUsers',
   waitOn: function() {
     var query = this.params.query;
     var id = query.userID;
