@@ -264,6 +264,16 @@ Template.registerHelper( 'searchValue', function() {
 });
 
 /*
+*  Config helpers
+*  */
+
+Template.registerHelper( 'stripe_ach_verification_type', ( ) => {
+  return Config.findOne() && 
+    Config.findOne().Stripe && 
+    Config.findOne().Stripe.ach_verification_type;
+});
+
+/*
 *  Meteor.settings.public helpers
 *  */
 

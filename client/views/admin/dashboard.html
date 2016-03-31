@@ -70,14 +70,16 @@
                                     <h5>Users & Roles</h5>
                                 </a>
                             </div>
-                            <!--<div class="col-sm-2">
-                                <a id="new-gift" class="quick-button backgroundColor primary" href="">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-gift"></i>
-                                </span>
-                                    <h5>New Gift</h5>
-                                </a>
-                            </div>-->
+                            {{#if isInRole 'super-admin'}}
+                                <div class="col-sm-2">
+                                    <a id="new-gift" class="quick-button backgroundColor primary" href="">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-gift"></i>
+                                    </span>
+                                        <h5>New Gift</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
                             <div class="col-sm-2">
                                 <a id="get-dt-split" class="quick-button backgroundColor primary" href="{{pathFor 'DtReport'}}">
                                     <span class="fa-stack fa-lg">

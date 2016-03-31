@@ -66,11 +66,31 @@ Schema.Config = new SimpleSchema({
   },
   "DonorTools": {
     type: Schema.DonorTools,
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel",
+      afFieldInput: {
+        class: 'slim-borders'
+      },
+      afFormGroup: {
+        label: '.'
+      },
+      label: '.'
+    }
   },
   "Stripe": {
     type: Schema.Stripe,
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel",
+      afFieldInput: {
+        class: 'slim-borders'
+      },
+      afFormGroup: {
+        label: '.'
+      },
+      label: '.'
+    }
   },
   "organization_info": {
     type: Object,
@@ -686,14 +706,34 @@ Schema.UpdateUserFormSchema = new SimpleSchema({
 Schema.DonorToolsForm = new SimpleSchema({
   "DonorTools": {
     type: Schema.DonorTools,
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel",
+      afFieldInput: {
+        class: 'slim-borders'
+      },
+      afFormGroup: {
+        label: '.'
+      },
+      label: '.'
+    }
   }
 });
 
 Schema.StripeForm = new SimpleSchema({
   "Stripe": {
     type: Schema.Stripe,
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel",
+      afFieldInput: {
+        class: 'slim-borders'
+      },
+      afFormGroup: {
+        label: '.'
+      },
+      label: '.'
+    }
   }
 });
 

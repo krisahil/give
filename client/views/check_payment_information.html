@@ -15,16 +15,18 @@
             </div>
             <div class="col-md-12">
                 <br>
-                <!-- Checkbox for Covering related fees-->
-                <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} >
-                Save this payment method for future use
-                    <span>
-                        <i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
-                           data-placement="bottom" data-trigger="hover focus" title="Save Bank Account" data-container="body"
-                           data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
-                         method in the future.">
-                        </i>
-                    </span>
+                {{#if $neq stripe_ach_verification_type 'manual'}}
+                    <!-- Checkbox for Covering related fees-->
+                    <input type="checkbox" name="save_payment" id="save_payment" data-toggle="checkbox" {{save_payment_checked}} >
+                    Save this payment method for future use
+                        <span>
+                            <i id="save_payment_question" class="fa fa-question-circle" data-toggle="popover"
+                               data-placement="bottom" data-trigger="hover focus" title="Save Bank Account" data-container="body"
+                               data-content="If checked, we'll store a secure token of your payment details so you can give quicker using this payment
+                             method in the future.">
+                            </i>
+                        </span>
+                {{/if}}
             </div>
         </div>
 </template>

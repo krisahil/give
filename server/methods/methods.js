@@ -248,35 +248,29 @@ Meteor.methods({
           };
         }
       } else {
-        if (data.paymentInformation.is_recurring === "one_time" && 
-          !data.paymentInformation.later) {
-          Utils.send_manually_processed_initial_email( data._id, customerData.id );
-          BankAccounts.update({_id: data.paymentInformation.source_id}, {
-            $set: {
-              customer_id: customerData.id
-            }
-          });
-          return { c: customerData.id, don: data._id, charge: 'manual' };
-        } else {
-          return { c: customerData.id, don: data._id, charge: 'scheduled' };
-        }
+        BankAccounts.update({_id: data.paymentInformation.source_id}, {
+          $set: {
+            customer_id: customerData.id
+          }
+        });
+        return { c: customerData.id, don: data._id, charge: 'scheduled' };
       }
     } catch (e) {
       logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);
       logger.error("e.category_code = " + e.category_code + " e.descriptoin = " + e.description);
       if(e.category_code) {
         logger.error("Got to catch error area of create_associate. ID: " + data._id + " Category Code: " + e.category_code + ' Description: ' + e.description);
-        var debitSubmitted = '';
+        var chargeSubmitted;
         if(e.category_code === 'invalid-routing-number'){
-          debitSubmitted = false;
+          chargeSubmitted = false;
         }
         Donations.update(data._id, {
           $set: {
           'failed.category_code': e.category_code,
           'failed.description': e.description,
           'failed.eventID': e.request_id,
-          'debit.status': 'failed',
-          'debit.submitted': debitSubmitted
+          'status': 'failed',
+          'charge.submitted': chargeSubmitted
           }
         });
         throw new Meteor.Error(500, e.category_code, e.description);

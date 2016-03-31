@@ -22,6 +22,7 @@
                             <th>Status</th>
                             <th>Routing Number</th>
                             <th>Account Number</th>
+                            <th>Frequency</th>
                             <th class="text-center">Actions</th>
                         </tr>
                         </thead>
@@ -37,6 +38,9 @@
                                     <td class="show-account-number pointer-mouse">
                                         <label class="label label-primary pointer-mouse">Show</label>
                                     </td>
+                                    <td>
+                                        <label class="label label-important">{{donationFrequency}}</label>
+                                    </td>
                                     <td class="text-center">
                                         {{#if pendingSetup}}
                                             <button type="button" {{disabledIfBeforeToday}} class="btn btn-primary pending-setup"
@@ -44,14 +48,14 @@
                                                     data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
                                                     data-toggle="confirmation"
                                                     aria-expanded="true">
-                                                    Completed Setup
+                                                <i class="fa fa-paper-plane"></i>
                                             </button>
                                         {{else}}
                                             <button type="button" {{disabledIfBeforeToday}} class="btn btn-primary"
                                                     title="Send new instance of recurring gift to Donor Tools"
                                                     data-toggle="confirmation"
                                                     data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
-                                                    Send to DT
+                                                <i class="fa fa-paper-plane"></i>
                                             </button>
                                         {{/if}}
                                         <button type="button"
@@ -60,15 +64,17 @@
                                                 data-id="{{_id}}">
                                                 <i class="fa fa-pencil"></i>
                                         </button>
-                                        <button type="button"
-                                                title="Stop this recurring gift from showing here."
-                                                class="btn btn-primary stop-recurring"
-                                                data-id="{{_id}}"
-                                                data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
-                                                data-toggle="confirmation"
-                                                aria-expanded="true">
-                                            <i class="fa fa-stop"></i>
-                                        </button>
+                                        {{#if ($eq donationFrequency 'recurring')}}
+                                            <button type="button"
+                                                    title="Remove this recurring gift"
+                                                    class="btn btn-primary stop-recurring"
+                                                    data-id="{{_id}}"
+                                                    data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
+                                                    data-toggle="confirmation"
+                                                    aria-expanded="true">
+                                                <i class="fa fa-stop"></i>
+                                            </button>
+                                        {{/if}}
                                         {{#if personaId}}
                                             <a href="{{donor_tools_site}}/people/{{personaId}}">
                                                 <button type="button"

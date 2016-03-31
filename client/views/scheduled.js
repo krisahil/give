@@ -1,12 +1,25 @@
 Template.DonationScheduled.helpers({
   frequency: function() {
-    return Session.get('params.frequency');
+    if (Session.get('params.frequency') &&
+      Session.get('params.frequency') === 'one_time') {
+      return 'one-time';
+    } else {
+      return Session.get('params.frequency');
+    }
   },
   amount: function() {
     return Session.get('params.amount');
   },
   start_date: function() {
     return Session.get('params.start_date');
+  },
+  one_time_language: function () {
+    if (Session.get('params.frequency') &&
+      Session.get('params.frequency') === 'one_time') {
+      return true;
+    } else {
+      return false;
+    }
   }
 });
 

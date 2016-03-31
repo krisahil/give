@@ -13,22 +13,8 @@ Template.AdminGiveDropdownGroup.onRendered(function() {
     endDate: '+40d',
     autoclose: true
   });
-  /*var datepickerSelector = $('#start_date');
-  datepickerSelector.datepicker({
-    showOtherMonths: true,
-    selectOtherMonths: true,
-    dateFormat: 'd MM, yy',
-    minDate: 0,
-    maxDate: +32
-  }).prev('.input-group-btn').on('click', function (e) {
-    e && e.preventDefault();
-    datepickerSelector.focus();
-  });
-  $.extend($.datepicker, { _checkOffset: function (inst,offset,isFixed) { return offset; } });
 
-  // Now let's align datepicker with the prepend button
-  datepickerSelector.datepicker('widget').css({ 'margin-left': -datepickerSelector.prev('.input-group-btn').find('.btn').outerWidth() + 5 });*/
-
+  Session.set("admin_give_dropdown", true);
 });
 
 Template.AdminGiveDropdownGroup.helpers({
@@ -60,7 +46,10 @@ Template.AdminGiveDropdownGroup.helpers({
     }
   },
   customer: function() {
-    return this.customer;
+    let customer = Customers.findOne({_id: this.customer});
+    if (customer) {
+      return " - " + customer.metadata.fname +  " " + customer.metadata.lname;
+    }
   }
 });
 
@@ -80,4 +69,8 @@ Template.AdminGiveDropdownGroup.events({
     var selectedValue = $("#donateWith").val();
     Session.set("UserPaymentMethod", selectedValue);
   }
+});
+
+Template.AdminGiveDropdownGroup.onDestroyed(function() {
+  Session.delete("admin_give_dropdown");
 });
