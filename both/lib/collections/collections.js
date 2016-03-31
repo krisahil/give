@@ -6,6 +6,29 @@ BankAccounts = new Mongo.Collection('bankAccounts');
 
 Charges = new Mongo.Collection('charges');
 
+// Organization configuration
+Config = new Mongo.Collection('config');
+
+Config.after.update(function (userId, doc, fieldNames, modifier, options) {
+  if (fieldNames.indexOf("Stripe") !== -1 || fieldNames.indexOf("DonorTools") !== -1){
+    if(this.previous.Stripe.ach_verification_type !==
+      doc.Stripe.ach_verification_type ||
+      this.previous.Stripe.keys_publishable !==
+      doc.Stripe.keys_publishable ||
+      this.previous.Stripe.keys_secret !==
+      doc.Stripe.keys_secret ||
+      this.previous.DonorTools.url !==
+      doc.DonorTools.url ||
+      this.previous.DonorTools.username !==
+      doc.DonorTools.username ||
+      this.previous.DonorTools.password !==
+      doc.DonorTools.password
+    ) {
+      // TODO: send email letting the admins know that one of these settings were changed
+    }
+  }
+}, {fetchPrevious: true});
+
 Customers = new Mongo.Collection('customers');
 
 Devices = new Mongo.Collection('devices');
@@ -23,9 +46,6 @@ DT_funds = new Mongo.Collection('dt_funds');
 DT_sources = new Mongo.Collection('dt_sources');
 
 Invoices = new Mongo.Collection('invoices');
-
-// For Multi-tenancy
-Config = new Mongo.Collection('config');
 
 Payments = new Mongo.Collection('payments');
 
