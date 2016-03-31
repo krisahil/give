@@ -7,8 +7,7 @@ written in <a href="http://meteor.com">Meteor</a>.
 
 ## About
 
-Give is used by Non-Profits to take donations using Stripe. Which includes Credit/Debit Cards, ACH, 
-[ coming soon -> Bitcoin, and Apple Pay ]. 
+Give is used by Non-Profits to take donations using Stripe. Which includes Credit/Debit Cards, ACH. 
 
 ## Problems addressed
 
