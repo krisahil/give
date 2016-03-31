@@ -66,6 +66,7 @@ Here is an example settings.json file
     }
   },
   "public": {
+    "dev": "****TEST****", // If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
     "URL": "giving page URL, you should use https://"
     "bcc_address": "this email is bcc'd anytime a gift receipt, schedule or pending email is sent",
     "canceled_gift_address": "group email for notifying when a recurring gift is canceled",
@@ -110,7 +111,7 @@ DonorTools, a CRM for non-profits.
 You will need an account with each of these providers in order to use Give. 
 The accounts are free up to a point. Stripe doesn't charge you a monthly fee, 
 only a fee per transaction (2.9% + .30 per transaction for credit/debit cards). 
-ACH fees are $.25 per charge and there is no fee for transfers to your own bank account after charging the customer. 
+ACH fees are $0.80 per charge and there is no fee for transfers to your own bank account after charging the customer. 
 
 ## License
 
