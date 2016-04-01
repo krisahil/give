@@ -12,8 +12,19 @@ Router.plugin('ensureSignedIn', {
            'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
 });
 
-// TODO: convert all of these onBeforeAction functions to only one per route
-// so that there isn't a false negative
+Router.onAfterAction(function() {
+  Meteor.setTimeout(() => {
+    let config = Config.findOne();
+    if (!Roles.userIsInRole(Meteor.user(), ['admin']) &&
+      !(config && config.Stripe && config.Stripe.completed) ||
+      !(config && config.DonorTools && config.DonorTools.completed)) {
+      this.render("SetupNotComplete");
+    }
+  }, 1000);
+}, {
+  only: ['donation.form', 'donation.landing']
+});
+
 Router.onBeforeAction(function() {
   if (!Roles.userIsInRole(Meteor.user(), ['admin'])) {
     this.render("NotFound");
@@ -365,12 +376,34 @@ Router.route('/dashboard/giving_options', {
   name: 'GivingOptions',
   where: 'client',
   waitOn: function() {
-    return [ Meteor.subscribe('Config'), Meteor.subscribe('userDTFunds')];
+    return [ Meteor.subscribe('wholeConfigDoc'), Meteor.subscribe('userDTFunds')];
   }
 });
 
-Router.route('/dashboard/org_info', {
+Router.route('/dashboard/orginfo', {
   name: 'OrgInfo',
+  where: 'client',
+  waitOn: function() {
+    return Meteor.subscribe('wholeConfigDoc');
+  },
+  data: function() {
+    return Config.find();
+  }
+});
+
+Router.route('/dashboard/stripeconfig', {
+  name: 'StripeConfig',
+  where: 'client',
+  waitOn: function() {
+    return Meteor.subscribe('wholeConfigDoc');
+  },
+  data: function() {
+    return Config.find();
+  }
+});
+
+Router.route('/dashboard/donortoolsconfig', {
+  name: 'DonorToolsConfig',
   where: 'client',
   waitOn: function() {
     return Meteor.subscribe('wholeConfigDoc');

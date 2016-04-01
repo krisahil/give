@@ -267,6 +267,10 @@ Template.registerHelper( 'searchValue', function() {
 *  Config helpers
 *  */
 
+Template.registerHelper('configExists', function() {
+  return Config.findOne() && Config.findOne()._id;
+});
+
 Template.registerHelper( 'stripe_ach_verification_type', ( ) => {
   return Config.findOne() && 
     Config.findOne().Stripe && 
@@ -275,9 +279,9 @@ Template.registerHelper( 'stripe_ach_verification_type', ( ) => {
 
 Template.registerHelper( 'support_emails', ( ) => {
   return Config.findOne() &&
-    Config.findOne().organization_info &&
-    Config.findOne().organization_info.emails &&
-    Config.findOne().organization_info.emails.support;
+    Config.findOne().OrgInfo &&
+    Config.findOne().OrgInfo.emails &&
+    Config.findOne().OrgInfo.emails.support;
 });
 
 /*

@@ -286,6 +286,14 @@ _.extend(Utils, {
         logger.info("Inside audit_email.");
 
       switch(type){
+        case 'config.change':
+          Audit_trail.upsert({_id: id}, {
+            $set: {
+              'config.change.sent': true,
+              'config.change.time': new Date()
+            }
+          });
+          break;
         case 'charge.pending':
           Audit_trail.upsert({charge_id: id}, {
             $set: {
@@ -915,7 +923,11 @@ _.extend(Utils, {
     //Create the HTML content for the email.
     //Create the link to go to the new person that was just created.
     var html = "<h1>DT account created</h1><p>" +
-      "Details: <br>Email: " + email + "<br>ID: " + user_id + "<br>Link: <a href='" + Meteor.settings.public.donor_tools_site + "/people/" + personaID +"'>" + personaID + "</a></p>";
+      "Details: <br>Email: " + email + "<br>ID: " +
+      user_id + "<br>Link: <a href='" + 
+      Meteor.settings.public.donor_tools_site + 
+      "/people/" + personaID +"'>" + personaID + 
+      "</a></p>";
 
     let toAddresses = [];
     toAddresses.push(Meteor.settings.public.support_address);
@@ -964,6 +976,38 @@ _.extend(Utils, {
       from: Meteor.settings.public.support_address,
       to: toAddresses,
       subject: "Give Account inserted.",
+      html: html
+    });
+  },
+  /**
+   * Send an email to the admins.
+   * Tell them a change was made to the DonorTools or Stripe Configuration
+   *
+   * @method send_change_email_notice_to_admins
+   */
+  send_change_email_notice_to_admins: function (changeMadeBy, changeIn){
+    logger.info("Started send_change_email_notice_to_admins");
+    let config = Config.findOne();
+    //Utils.audit_email(config._id, 'config.change');
+    let admins = Roles.getUsersInRole('admin');
+    let adminEmails = admins.map(function ( item ) {
+      return item.emails[0].address;
+    });
+
+    //Create the HTML content for the email.
+    //Create the link to go to the new person that was just created.
+    var html = "<h2>We thought you might want to know.</h2><p> A changed was made to your Give " +
+      "configuration. <br> Changed By: " +
+      Meteor.users.findOne({_id: changeMadeBy}).emails[0].address + "</p><p>" +
+      "To see the changes go to your <a href='https://" +
+      config.OrgInfo.web.subdomain + "." +
+      config.OrgInfo.web.domain_name + "/dashboard/" + changeIn +
+      "'>Dashboard</a></p>";
+
+    Email.send({
+      from: Meteor.settings.public.org_name + "<" + config.OrgInfo.emails.support[0] + ">",
+      to: adminEmails,
+      subject: Meteor.settings.dev + "A configuration change was made",
       html: html
     });
   },

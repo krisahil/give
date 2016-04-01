@@ -950,7 +950,7 @@ Meteor.methods({
       if (Roles.userIsInRole(this.userId, ['admin'])) {
         console.log("Updating");
 
-        Config.update( { "organization_info.web.domain_name": Meteor.settings.public.org_domain }, {
+        Config.update( { "OrgInfo.web.domain_name": Meteor.settings.public.org_domain }, {
           $set: {
             "DonationOptions": arrayNames,
             "SelectedIDs": selectedIds

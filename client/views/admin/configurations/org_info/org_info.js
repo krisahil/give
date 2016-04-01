@@ -1,14 +1,15 @@
 AutoForm.hooks({
   'updateInfoSection': {
-    onSuccess: function (operation, result, template) {
+    onSuccess: function () {
       Bert.alert({
         message: "Good work",
         type: 'success',
         icon: 'fa-smile-o',
         style: 'growl-top-right'
       });
+      Router.go("Dashboard");
     },
-    onError: function(operation, error, template) {
+    onError: function() {
       Bert.alert({
         message: "Looks like you might be missing some required fields.",
         type: 'danger',
@@ -18,16 +19,16 @@ AutoForm.hooks({
     }
   },
   'updateStripeSection': {
-    onSuccess: function (operation, result, template) {
+    onSuccess: function () {
       Bert.alert({
         message: "Great, thanks",
         type: 'success',
         icon: 'fa-smile-o',
         style: 'growl-top-right'
       });
+      Router.go("Dashboard");
     },
-
-    onError: function(operation, error, template) {
+    onError: function(operation, error) {
       Bert.alert({
         message: error,
         type: 'danger',
@@ -37,16 +38,16 @@ AutoForm.hooks({
     }
   },
   'updateDonorToolsSection': {
-    onSuccess: function (operation, result, template) {
+    onSuccess: function () {
       Bert.alert({
         message: "Got it, thanks",
         type: 'success',
         icon: 'fa-smile-o',
         style: 'growl-top-right'
       });
+      Router.go("Dashboard");
     },
-
-    onError: function(operation, error, template) {
+    onError: function(operation, error) {
       Bert.alert({
         message: error,
         type: 'danger',
@@ -57,10 +58,28 @@ AutoForm.hooks({
   }
 });
 
+Template.OrgInfo.onCreated(function () {
+  this.formType = new ReactiveVar('insert');
+});
+
+Template.OrgInfo.onRendered(function () {
+  $("[name='OrgInfo.phone']").mask("(999) 999-9999");
+  $("#updateInfoSection").parsley();
+});
+
+Template.StripeConfig.onRendered(function () {
+  $("#updateStripeSection").parsley();
+});
+
+Template.DonorToolsConfig.onRendered(function () {
+  $("#updateDonorToolsSection").parsley();
+});
+
+
 Template.OrgInfo.helpers({
   configDoc: function () {
     let org_info = Config.findOne({
-      'organization_info.web.domain_name': Meteor.settings.public.org_domain
+      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
     });
     if (org_info) {
       Template.instance().formType.set('update');
@@ -74,10 +93,26 @@ Template.OrgInfo.helpers({
   }
 });
 
-Template.OrgInfo.onRendered(function () {
-  $("[name='organization_info.phone']").mask("(999) 999-9999");
+Template.StripeConfig.helpers({
+  configDoc: function () {
+    let org_info = Config.findOne({
+      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+    });
+    if (org_info) {
+      return org_info;
+    }
+    return;
+  }
 });
 
-Template.OrgInfo.onCreated(function () {
-  this.formType = new ReactiveVar( 'insert' );
+Template.DonorToolsConfig.helpers({
+  configDoc: function () {
+    let org_info = Config.findOne({
+      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+    });
+    if (org_info) {
+      return org_info;
+    }
+    return;
+  }
 });

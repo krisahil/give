@@ -12,6 +12,22 @@ Template.Dashboard.helpers({
           config.Stripe.ach_verification_type) {
       return config.Stripe.ach_verification_type === 'manual';
     }
+  },
+  completedStripe: function() {
+    let config = Config.findOne();
+    if (config && config.Stripe && config.Stripe.completed) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  completedDonorTools: function() {
+    let config = Config.findOne();
+    if (config && config.DonorTools && config.DonorTools.completed) {
+      return true;
+    } else {
+      return false;
+    }
   }
 });
 

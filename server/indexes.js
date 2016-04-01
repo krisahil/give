@@ -15,7 +15,7 @@ Charges._ensureIndex(
   {background: true});
 
 Config._ensureIndex(
-  {'organization_info.web.domain_name': 1},
+  {'OrgInfo.web.domain_name': 1},
   {backgrond: true});
 
 Config._ensureIndex(
@@ -87,4 +87,9 @@ Transactions._ensureIndex(
 Transfers._ensureIndex(
   {'id': 1},
   {'balance_transaction': 1},
+  {background: true});
+
+Uploads._ensureIndex(
+  {'userId': 1},
+  {'configId': 1},
   {background: true});

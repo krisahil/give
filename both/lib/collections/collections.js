@@ -9,25 +9,25 @@ Charges = new Mongo.Collection('charges');
 // Organization configuration
 Config = new Mongo.Collection('config');
 
-Config.after.update(function (userId, doc, fieldNames, modifier, options) {
-  if (fieldNames.indexOf("Stripe") !== -1 || fieldNames.indexOf("DonorTools") !== -1){
-    if(this.previous.Stripe.ach_verification_type !==
-      doc.Stripe.ach_verification_type ||
-      this.previous.Stripe.keys_publishable !==
-      doc.Stripe.keys_publishable ||
-      this.previous.Stripe.keys_secret !==
-      doc.Stripe.keys_secret ||
-      this.previous.DonorTools.url !==
-      doc.DonorTools.url ||
-      this.previous.DonorTools.username !==
-      doc.DonorTools.username ||
-      this.previous.DonorTools.password !==
-      doc.DonorTools.password
-    ) {
-      // TODO: send email letting the admins know that one of these settings were changed
+Config.before.update(function (userId, doc, fieldNames, modifier) {
+  if (fieldNames.indexOf("Stripe") !== -1) {
+    // Since all Stripe form fields are required set Stripe.completed = true
+    delete modifier.$unset;
+    modifier.$set["Stripe.completed"] = true;
+    if (Meteor.isServer) {
+      // Send an email to all the admins letting them know about this change.
+      Utils.send_change_email_notice_to_admins( userId, "stripeconfig" );
+    }
+  } else if (fieldNames.indexOf("DonorTools") !== -1) {
+    // Since all DonorTools form fields are required set Stripe.completed = true
+    delete modifier.$unset;
+    modifier.$set["DonorTools.completed"] = true;
+    if (Meteor.isServer) {
+      // Send an email to all the admins letting them know about this change.
+      Utils.send_change_email_notice_to_admins( userId, "donortoolsconfig" );
     }
   }
-}, {fetchPrevious: true});
+});
 
 Customers = new Mongo.Collection('customers');
 

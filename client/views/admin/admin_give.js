@@ -97,18 +97,20 @@ Template.AdminGive.events({
   },
   'change [name=donateWith]': function() {
     var selectedValue = $("#donateWith").val();
-    Session.set("paymentMethod", selectedValue);
-    if(selectedValue === 'Check'){
-      Session.set("savedDevice", false);
-      Give.updateTotal();
-      $("#show_total").hide();
-    } else if(selectedValue === 'Card'){
-      Session.set("savedDevice", false);
-      Give.updateTotal();
-    } else if(selectedValue.slice(0,3) === 'car'){
-      Session.set("savedDevice", 'Card');
-    } else{
-      Session.set("savedDevice", 'Check');
+    if (selectedValue) {
+      Session.set("paymentMethod", selectedValue);
+      if(selectedValue === 'Check'){
+        Session.set("savedDevice", false);
+        Give.updateTotal();
+        $("#show_total").hide();
+      } else if(selectedValue === 'Card'){
+        Session.set("savedDevice", false);
+        Give.updateTotal();
+      } else if(selectedValue.slice(0,3) === 'car'){
+        Session.set("savedDevice", 'Card');
+      } else{
+        Session.set("savedDevice", 'Check');
+      }
     }
   },
   // keypress input detection for autofilling form with test data

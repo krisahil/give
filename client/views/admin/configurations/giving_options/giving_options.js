@@ -94,9 +94,6 @@ function checkForDuplicateGroupNames(donationOptions) {
   return dupArr;
 }
 
-/*****************************************************************************/
-/* GivingOptions: Event Handlers */
-/*****************************************************************************/
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
     Config.update({_id: Session.get("configId")}, {
@@ -295,9 +292,6 @@ Template.GivingOptions.events({
   }
 });
 
-/*****************************************************************************/
-/* GivingOptions: Helpers */
-/*****************************************************************************/
 Template.GivingOptions.helpers({
   dt_funds: function () {
     let orgDoc = Config.findOne();
@@ -346,10 +340,6 @@ Template.GivingOptions.helpers({
   }
 });
 
-
-/*****************************************************************************/
-/* GivingOptions: Lifecycle Hooks */
-/*****************************************************************************/
 Template.GivingOptions.onCreated(function () {
   this.autorun(() => {
     this.subscribe("uploaded");
