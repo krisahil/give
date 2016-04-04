@@ -228,7 +228,11 @@ _.extend(Give, {
       // We need to check our configuration to see how Stripe is setup to
       // process our ACH type gifts.
       // If it is setup to take gifts manually then don't tokenize the bank info
-      if (Config.findOne().Stripe.ach_verification_type === 'manual') {
+      let config = Config.findOne({
+        'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+      });
+      if (config && config.Settings &&
+        config.Settings.ach_verification_type === 'manual') {
         Give.process_bank_manually(bankInfo, form);
       } else {
         Give.process_bank_with_stripe(bankInfo, form);

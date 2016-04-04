@@ -81,7 +81,6 @@ Meteor.publish("subscription", function (subscription_id) {
 });
 
 Meteor.publish("devices", function() {
-
 	if (this.userId) {
     var customers = Customers.find({'metadata.user_id': this.userId});
     var customer_ids = [];
@@ -423,11 +422,15 @@ Meteor.publish("uploaded", function () {
 });
 
 Meteor.publish("config", function () {
-  return Config.find({}, {fields: { 
-    'Stripe.ach_verification_type': 1,
-    'Stripe.completed': 1,
-    'DonorTools.completed': 1
-  }});
+  return Config.find({
+    'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+  }, {
+    fields: {
+      'OrgInfo.web.domain_name': 1,
+      'Settings.ach_verification_type': 1,
+      'Settings.showDonatePage': 1
+    }
+  });
 });
 
 Meteor.publish("wholeConfigDoc", function () {

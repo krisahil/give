@@ -1,3 +1,21 @@
+function configBasicsSetup() {
+  let config = Config.findOne({
+    'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+  });
+  if (config &&
+    config.Settings &&
+    config.Settings.DonorTools &&
+    config.Settings.Stripe &&
+    config.Settings.DonorTools.usernameExists &&
+    config.Settings.DonorTools.passwordExists &&
+    config.Settings.Stripe.keysPublishableExists &&
+    config.Settings.Stripe.keysPublishableExists) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 Schema = {};
 
 Schema.OrgInfo = new SimpleSchema({
@@ -216,49 +234,10 @@ Schema.OrgInfo = new SimpleSchema({
   }
 });
 
-Schema.DonorTools = new SimpleSchema({
-  "url": {
+Schema.Settings = new SimpleSchema({
+  ach_verification_type: {
     type: String,
-    label: "URL",
-    autoform: {
-      placeholder: "Your Donor Tools Website Address, something like this 'https://your_part_here.donortools.com'"
-    }
-  },
-  "username": {
-    type: String,
-    label: "User (minimum privilege for this account is 'manager')",
-  },
-  "password": {
-    type: String,
-    label: "Password",
-  },
-  "completed": {
-    type: Boolean,
     optional: true,
-    autoform: {
-      afFieldInput: {
-        type: "hidden"
-      },
-      afFormGroup: {
-        label: false
-      }
-    }
-  }
-});
-
-Schema.Stripe = new SimpleSchema({
-  "keys_publishable": {
-    type: String,
-    label: "Publishable Key",
-    max: 32
-  },
-  "keys_secret": {
-    type: String,
-    label: "Secret Key",
-    max: 32
-  },
-  "ach_verification_type": {
-    type: String,
     label: "Which type of ACH verification do you prefer?",
     allowedValues: ["none", "manual"], // add these later "micro-deposit", "plaid"
     autoform: {
@@ -267,16 +246,111 @@ Schema.Stripe = new SimpleSchema({
       }
     }
   },
-  "completed": {
+  showDonatePage: {
     type: Boolean,
     optional: true,
     autoform: {
-      afFieldInput: {
-        type: "hidden"
-      },
-      afFormGroup: {
-        label: false
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: function() {
+        return !configBasicsSetup();
       }
+    },
+    autoValue: function () {
+      if (!configBasicsSetup()) {
+        return false;
+      }
+    }
+  },
+  doNotAllowOneTimeACH: {
+    type: Boolean,
+    optional: true,
+    label: "Prevent one-time ACH gifts",
+    autoform: {
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: true
+    }
+  },
+  collectBankAccountType: {
+    type: Boolean,
+    optional: true,
+    label: "Collect bank account type from ACH gifts (checking or savings)",
+    autoform: {
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: true
+    }
+  },
+  forceACHDay: {
+    type: String,
+    label: "Day of month that ACH can occur on",
+    allowedValues: ['any','1','2','3','4','5','6','7','8','9','10','11','12',
+                    '13','14','15','16','17','18','19','20','21','22','23',
+                    '24','25','26','27','28'],
+    optional: true,
+    autoform: {
+      defaultValue: 'any',
+      disabled: true
+    }
+  },
+  DonorTools: {
+    type: Object,
+    optional: true
+  },
+  "DonorTools.usernameExists": {
+    type: Boolean,
+    optional: true,
+    autoform: {
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: true
+    }
+  },
+  "DonorTools.passwordExists": {
+    type: Boolean,
+    optional: true,
+    autoform: {
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: true
+    }
+  },
+  "DonorTools.url": {
+    type: String,
+    label: "URL",
+    optional: true,
+    autoform: {
+      placeholder: "Your Donor Tools Website Address, something like this 'https://your_part_here.donortools.com'"
+    }
+  },
+  Stripe: {
+    type: Object,
+    optional: true
+  },
+  "Stripe.keysPublishableExists": {
+    type: Boolean,
+    optional: true,
+    autoform: {
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: true
+    }
+  },
+  "Stripe.keysSecretExists": {
+    type: Boolean,
+    optional: true,
+    autoform: {
+      'data-toggle': 'switch',
+      'data-on-text': 'Yes',
+      'data-off-text': 'No',
+      disabled: true
     }
   }
 });
@@ -298,18 +372,8 @@ Schema.Config = new SimpleSchema({
       omit: true
     }
   },
-  "DonorTools": {
-    type: Schema.DonorTools,
-    optional: true,
-    autoform: {
-      panelClass: "panel-primary",
-      afFieldInput: {
-        class: 'slim-borders'
-      }
-    }
-  },
-  "Stripe": {
-    type: Schema.Stripe,
+  "Settings": {
+    type: Schema.Settings,
     optional: true,
     autoform: {
       panelClass: "panel-primary",
@@ -729,22 +793,9 @@ Schema.OrgInfoForm = new SimpleSchema({
   }
 });
 
-Schema.DonorToolsForm = new SimpleSchema({
-  "DonorTools": {
-    type: Schema.DonorTools,
-    optional: true,
-    autoform: {
-      panelClass: "panel-primary",
-      afFieldInput: {
-        class: 'slim-borders'
-      }
-    }
-  }
-});
-
-Schema.StripeForm = new SimpleSchema({
-  "Stripe": {
-    type: Schema.Stripe,
+Schema.SettingsForm = new SimpleSchema({
+  "Settings": {
+    type: Schema.Settings,
     optional: true,
     autoform: {
       panelClass: "panel panel-primary",

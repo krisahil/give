@@ -1,86 +1,84 @@
 <template name="Dashboard">
     <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel panel-default">
-                    {{#if isInRole 'admin'}}
-                        <div class="panel-heading">
-                            <h2><i class="fa fa-building"></i><span
-                                    class="break">Configuration</span></h2>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-sm-2">
-                                    {{#if $not configExists}}
-                                        <span style="" class="badge alert-badge backgroundColor indianred">Start Here!</span>
-                                    {{/if}}
-                                    <a id="org-info" class="quick-button backgroundColor primary"
-                                       href="/dashboard/orginfo">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-rocket"></i>
-                                    </span>
-                                        <h5>Organization Info.</h5>
-                                    </a>
-                                </div>
-                                {{#if configExists}}
-                                    <div class="col-sm-2">
-                                        {{#if $not completedStripe}}
-                                            <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
-                                        {{/if}}
-                                        <a id="stripe-info" class="quick-button backgroundColor primary"
-                                           href="/dashboard/stripeconfig">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-cc-stripe"></i>
-                                        </span>
-                                            <h5>Stripe Config.</h5>
-                                        </a>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        {{#if $not completedDonorTools}}
-                                            <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
-                                        {{/if}}
-                                        <a id="dt-info" class="quick-button backgroundColor primary"
-                                           href="/dashboard/donortoolsconfig">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-cogs"></i>
-                                        </span>
-                                            <h5>DonorTools Config.</h5>
-                                        </a>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <a id="giving-options" class="quick-button backgroundColor primary"
-                                           href="/dashboard/giving_options">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-repeat"></i>
-                                    </span>
-                                            <h5>Giving Options</h5>
-                                        </a>
-                                    </div>
-                                {{/if}}
-                            </div>
-                        </div>
-                    {{/if}}
+            <div class="panel panel-title">
+                {{#if isInRole 'admin'}}
                     <div class="panel-heading">
-                        <h2><i class="fa fa-table"></i><span class="break">Reports</span></h2>
+                        <h2><i class="fa fa-building"></i><span
+                                class="break">Configuration</span></h2>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-2">
-                                <a id="transfers" class="quick-button backgroundColor primary" href="/transfers">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-exchange"></i>
-                                    </span>
-                                    <h5>Stripe Transfers</h5>
+                                {{#if $not configExists}}
+                                    <span style="" class="badge alert-badge backgroundColor indianred">Start Here!</span>
+                                {{/if}}
+                                <a id="org-info" class="quick-button backgroundColor primary"
+                                   href="/dashboard/orginfo">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-rocket"></i>
+                                </span>
+                                    <h5>Organization Info.</h5>
                                 </a>
                             </div>
-                            <div class="col-sm-2">
-                                <a class="quick-button backgroundColor primary" href="expiring">
+                            {{#if configExists}}
+                                <!--<div class="col-sm-2">
+                                    {{#if $not completedStripe}}
+                                        <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
+                                    {{/if}}
+                                    <a id="stripe-info" class="quick-button backgroundColor primary"
+                                       href="/dashboard/stripeconfig">
                                     <span class="fa-stack fa-lg">
-                                        <i class="fa fa-credit-card"></i>
+                                        <i class="fa fa-cc-stripe"></i>
                                     </span>
-                                    <h5>Expiring Cards</h5>
-                                </a>
-                            </div>
+                                        <h5>Stripe Config.</h5>
+                                    </a>
+                                </div>-->
+                                <div class="col-sm-2">
+                                    <a id="settings-dashboard-button" class="quick-button backgroundColor primary"
+                                       href="/dashboard/settings">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-cogs"></i>
+                                    </span>
+                                        <h5>Settings</h5>
+                                    </a>
+                                </div>
+                                <div class="col-sm-2">
+                                    {{#if $not givingOptions}}
+                                        <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
+                                    {{/if}}
+                                    <a id="giving-options" class="quick-button backgroundColor primary"
+                                       href="/dashboard/giving_options">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-repeat"></i>
+                                </span>
+                                        <h5>Giving Options</h5>
+                                    </a>
+                                </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/if}}
+                <div class="panel-heading">
+                    <h2><i class="fa fa-table"></i><span class="break">Reports</span></h2>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <a id="transfers" class="quick-button backgroundColor primary" href="/transfers">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-exchange"></i>
+                                </span>
+                                <h5>Stripe Transfers</h5>
+                            </a>
+                        </div>
+                        <div class="col-sm-2">
+                            <a class="quick-button backgroundColor primary" href="expiring">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-credit-card"></i>
+                                </span>
+                                <h5>Expiring Cards</h5>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -102,7 +100,7 @@
                 <div class="panel-body">
                     {{#if isInRole 'admin'}}
                         <div class="row">
-                            {{#if manualACH}}
+                            {{#if $eq stripe_ach_verification_type 'manual'}}
                                 <div class="col-sm-2">
                                     <a id="manual-ach" class="quick-button backgroundColor primary" href="/dashboard/ach">
                                 <span class="fa-stack fa-lg">

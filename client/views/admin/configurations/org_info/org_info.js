@@ -1,3 +1,18 @@
+function checkDependantStates() {
+  if (AutoForm.getFieldValue("Settings.ach_verification_type", "updateSettingsSection") === 'manual') {
+    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('toggleDisabled', true, true);
+    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('toggleDisabled', true, true);
+    $('[name="Settings.forceACHDay"]').prop('disabled', false);
+  } else {
+    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('state', false);
+    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('disabled', true);
+    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('state', false);
+    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('disabled', true);
+    $('[name="Settings.forceACHDay"]').val('any');
+    $('[name="Settings.forceACHDay"]').prop('disabled', true);
+  }
+}
+
 AutoForm.hooks({
   'updateInfoSection': {
     onSuccess: function () {
@@ -18,29 +33,10 @@ AutoForm.hooks({
       });
     }
   },
-  'updateStripeSection': {
+  'updateSettingsSection': {
     onSuccess: function () {
       Bert.alert({
         message: "Great, thanks",
-        type: 'success',
-        icon: 'fa-smile-o',
-        style: 'growl-top-right'
-      });
-      Router.go("Dashboard");
-    },
-    onError: function(operation, error) {
-      Bert.alert({
-        message: error,
-        type: 'danger',
-        icon: 'fa-frown-o',
-        style: 'growl-top-right'
-      });
-    }
-  },
-  'updateDonorToolsSection': {
-    onSuccess: function () {
-      Bert.alert({
-        message: "Got it, thanks",
         type: 'success',
         icon: 'fa-smile-o',
         style: 'growl-top-right'
@@ -61,20 +57,10 @@ AutoForm.hooks({
 Template.OrgInfo.onCreated(function () {
   this.formType = new ReactiveVar('insert');
 });
-
 Template.OrgInfo.onRendered(function () {
   $("[name='OrgInfo.phone']").mask("(999) 999-9999");
   $("#updateInfoSection").parsley();
 });
-
-Template.StripeConfig.onRendered(function () {
-  $("#updateStripeSection").parsley();
-});
-
-Template.DonorToolsConfig.onRendered(function () {
-  $("#updateDonorToolsSection").parsley();
-});
-
 
 Template.OrgInfo.helpers({
   configDoc: function () {
@@ -93,7 +79,13 @@ Template.OrgInfo.helpers({
   }
 });
 
-Template.StripeConfig.helpers({
+Template.Settings.onRendered(function () {
+  $("#updateStripeSection").parsley();
+  $("[data-toggle='switch']").bootstrapSwitch();
+});
+
+
+Template.Settings.helpers({
   configDoc: function () {
     let org_info = Config.findOne({
       'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
@@ -105,14 +97,16 @@ Template.StripeConfig.helpers({
   }
 });
 
-Template.DonorToolsConfig.helpers({
-  configDoc: function () {
-    let org_info = Config.findOne({
-      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
-    });
-    if (org_info) {
-      return org_info;
-    }
-    return;
+Template.Settings.events({
+
+  // check to see if the ACH verification type is set to manual
+  // if it is then change the dependant values by removing their disabled state
+  'change [name="Settings.ach_verification_type"]': function(e) {
+    checkDependantStates();
   }
+});
+
+
+Template.Settings.onRendered(function () {
+  checkDependantStates();
 });

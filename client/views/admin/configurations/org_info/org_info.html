@@ -4,15 +4,17 @@
         id="updateInfoSection" type=formType template="bootstrap3"}}
     </div>
 </template>
-<template name="StripeConfig">
-    <div class="container stripe-config">
-        {{> quickForm collection="Config" schema="Schema.StripeForm" doc=configDoc
-        id="updateStripeSection" type='update' template="bootstrap3"}}
+<template name="Settings">
+    <div class="container settings-section">
+        {{> quickForm collection="Config" schema="Schema.SettingsForm" doc=configDoc
+        id="updateSettingsSection" type='update' template="bootstrap3"}}
     </div>
 </template>
-<template name="DonorToolsConfig">
-    <div class="container donor-tools-config">
-        {{> quickForm collection="Config" schema="Schema.DonorToolsForm" doc=configDoc
-        id="updateDonorToolsSection" type='update' template="bootstrap3"}}
+
+<template name="SwitchFormField">
+    <div class="form-group {{#if afFieldIsInvalid name=this.name}} has-error{{/if}}">
+        {{> UI.contentBlock}}
+        <label class="control-label" for={{this.name}}>{{this.label}}</label>
+        <span class="help-block">{{afFieldMessage name=this.name}}</span>
     </div>
 </template>

@@ -15,9 +15,7 @@ Router.plugin('ensureSignedIn', {
 Router.onAfterAction(function() {
   Meteor.setTimeout(() => {
     let config = Config.findOne();
-    if (!Roles.userIsInRole(Meteor.user(), ['admin']) &&
-      !(config && config.Stripe && config.Stripe.completed) ||
-      !(config && config.DonorTools && config.DonorTools.completed)) {
+    if (!(config && config.Settings && config.Settings.showDonatePage)){
       this.render("SetupNotComplete");
     }
   }, 1000);
@@ -391,19 +389,8 @@ Router.route('/dashboard/orginfo', {
   }
 });
 
-Router.route('/dashboard/stripeconfig', {
-  name: 'StripeConfig',
-  where: 'client',
-  waitOn: function() {
-    return Meteor.subscribe('wholeConfigDoc');
-  },
-  data: function() {
-    return Config.find();
-  }
-});
-
-Router.route('/dashboard/donortoolsconfig', {
-  name: 'DonorToolsConfig',
+Router.route('/dashboard/settings', {
+  name: 'settings',
   where: 'client',
   waitOn: function() {
     return Meteor.subscribe('wholeConfigDoc');

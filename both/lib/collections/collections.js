@@ -10,21 +10,14 @@ Charges = new Mongo.Collection('charges');
 Config = new Mongo.Collection('config');
 
 Config.before.update(function (userId, doc, fieldNames, modifier) {
-  if (fieldNames.indexOf("Stripe") !== -1) {
-    // Since all Stripe form fields are required set Stripe.completed = true
-    delete modifier.$unset;
-    modifier.$set["Stripe.completed"] = true;
+
+  console.log(fieldNames);
+  console.log(modifier);
+  if (fieldNames.indexOf("Settings") !== -1) {
     if (Meteor.isServer) {
       // Send an email to all the admins letting them know about this change.
-      Utils.send_change_email_notice_to_admins( userId, "stripeconfig" );
-    }
-  } else if (fieldNames.indexOf("DonorTools") !== -1) {
-    // Since all DonorTools form fields are required set Stripe.completed = true
-    delete modifier.$unset;
-    modifier.$set["DonorTools.completed"] = true;
-    if (Meteor.isServer) {
-      // Send an email to all the admins letting them know about this change.
-      Utils.send_change_email_notice_to_admins( userId, "donortoolsconfig" );
+      
+      //Utils.send_change_email_notice_to_admins( userId, "stripeconfig" );
     }
   }
 });

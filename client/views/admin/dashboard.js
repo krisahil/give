@@ -5,25 +5,17 @@ Template.Dashboard.helpers({
   showFixNoUser: function() {
     return Session.get("showFixNoUser");
   },
-  manualACH: function() {
+  completedDonorTools: function() {
     let config = Config.findOne();
-    if ( config &&
-          config.Stripe &&
-          config.Stripe.ach_verification_type) {
-      return config.Stripe.ach_verification_type === 'manual';
-    }
-  },
-  completedStripe: function() {
-    let config = Config.findOne();
-    if (config && config.Stripe && config.Stripe.completed) {
+    if (config && config.DonorTools && config.DonorTools.completed) {
       return true;
     } else {
       return false;
     }
   },
-  completedDonorTools: function() {
+  givingOptions: function() {
     let config = Config.findOne();
-    if (config && config.DonorTools && config.DonorTools.completed) {
+    if (config && config.GivingOptions) {
       return true;
     } else {
       return false;

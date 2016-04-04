@@ -273,8 +273,8 @@ Template.registerHelper('configExists', function() {
 
 Template.registerHelper( 'stripe_ach_verification_type', ( ) => {
   return Config.findOne() && 
-    Config.findOne().Stripe && 
-    Config.findOne().Stripe.ach_verification_type;
+    Config.findOne().Settings &&
+    Config.findOne().Settings.ach_verification_type;
 });
 
 Template.registerHelper( 'support_emails', ( ) => {

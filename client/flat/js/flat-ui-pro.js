@@ -2346,7 +2346,7 @@ if (typeof jQuery === 'undefined') {
  * ========================================================================
  */
 
-(function() {
+/*(function() {
   var __slice = [].slice;
 
   (function($, window) {
@@ -2856,7 +2856,7 @@ if (typeof jQuery === 'undefined') {
     };
   })(window.jQuery, window);
 
-}).call(this);
+}).call(this);*/
 
 (function ($) {
   "use strict";
