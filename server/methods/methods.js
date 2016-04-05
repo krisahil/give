@@ -1,3 +1,5 @@
+import FS from 'fs';
+
 Meteor.methods({
   get_dt_funds: function() {
     logger.info( "Started method get_dt_funds." );
@@ -458,31 +460,15 @@ Meteor.methods({
         check(id, String);
         check(process, Boolean);
 
-        if(process){
+        if (process) {
           let thisRequest = {id: id};
           StripeFunctions.control_flow_of_stripe_event_processing(thisRequest);
           return "Sent to control_flow_of_stripe_event_processing for processing";
         } else {
-          var stripe_event = new Future();
+          let stripeEvent = StripeFunctions.stripe_retrieve('events', 'retrieve', id, '');
 
-          Stripe.events.retrieve( id,
-            function ( error, events ) {
-              if( error ) {
-                stripe_event.return( error );
-              } else {
-                stripe_event.return( events );
-              }
-            }
-          );
-
-          stripe_event = stripe_event.wait();
-
-          if( !stripe_event.object ) {
-            throw new Meteor.Error( stripe_event.rawType, stripe_event.message );
-          }
-
-          var event = Stripe_Events[stripe_event.type]( stripe_event );
-          return stripe_event;
+          var event = Stripe_Events[stripeEvent.type]( stripeEvent );
+          return stripeEvent;
         }
 
       } catch (e) {
@@ -615,10 +601,6 @@ Meteor.methods({
         } else {
           return null;
         }
-
-        /*var result = HTTP.call( "GET", "http://api.twitter.com/xyz",
-          { params: { user: userId } } );
-        return true;*/
       } catch( e ) {
         // Got a network error, time-out or HTTP error in the 400 or 500 range.
         return false;
@@ -1030,10 +1012,9 @@ Meteor.methods({
     try {
       if (Roles.userIsInRole(this.userId, ['admin'])) {
         console.log("Deleting");
-        Meteor.npmRequire("fs");
-        fs.unlink(process.env.PWD + '/.uploads/' + name);
-        fs.unlink(process.env.PWD + '/.uploads/thumbnailBig/' + name);
-        fs.unlink(process.env.PWD + '/.uploads/thumbnailSmall/' + name);
+        FS.unlink(process.env.PWD + '/.uploads/' + name);
+        FS.unlink(process.env.PWD + '/.uploads/thumbnailBig/' + name);
+        FS.unlink(process.env.PWD + '/.uploads/thumbnailSmall/' + name);
         return "Done";
       } else {
         return;

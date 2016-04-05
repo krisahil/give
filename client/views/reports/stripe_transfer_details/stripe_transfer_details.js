@@ -8,7 +8,12 @@ Template.StripeTransferDetails.events({
     Meteor.call("get_next_or_previous_transfer", this.id, 'starting_after', function (err, result) {
       if(err) {
         console.error(err);
-        Bert.alert("Nothing older", "danger");
+        Bert.alert({
+          message: "Nothing older",
+          type: 'warning',
+          icon: 'fa-ban',
+          style: 'growl-bottom-right'
+        });
         loadButton.button("reset");
       } else {
         loadButton.button("reset");
@@ -22,7 +27,12 @@ Template.StripeTransferDetails.events({
     Meteor.call("get_next_or_previous_transfer", this.id, 'ending_before', function (err, result) {
       if(err) {
         console.error(err);
-        Bert.alert("Nothing newer", "danger");
+        Bert.alert({
+          message: "Nothing newer",
+          type: 'warning',
+          icon: 'fa-ban',
+          style: 'growl-bottom-right'
+        });
         loadButton.button("reset");
       } else {
         loadButton.button("reset");
@@ -52,7 +62,12 @@ Template.StripeTransferDetails.events({
         if (err){
           console.dir(err);
           $(e.currentTarget).removeClass('disabled');
-          Bert.alert(err.message, "danger");
+          Bert.alert({
+            message: err.message,
+            type: 'danger',
+            icon: 'fa-smile-o',
+            style: 'growl-bottom-right'
+          });
         } else {
           $(e.currentTarget).removeClass('disabled');
         }
@@ -80,7 +95,12 @@ Template.StripeTransferDetails.events({
         if (err){
           console.dir(err);
           $(e.currentTarget).removeClass('disabled');
-          Bert.alert(err.message, "danger");
+          Bert.alert({
+            message: err.message,
+            type: 'danger',
+            icon: 'fa-smile-o',
+            style: 'growl-bottom-right'
+          });
         } else {
           $(e.currentTarget).removeClass('disabled');
         }

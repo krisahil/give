@@ -1,4 +1,210 @@
 _.extend(StripeFunctions, {
+  /**
+   * Stripe general purpose resource creator
+   * Crud (C in CRUD)
+   * https://stripe.com/docs/api
+   *
+   * @method stripe_create
+   * @param {String} stripeObject - The main Stripe API Object (e.g. 'customers')
+   * @param {Object|String} stripeArgs - One or many arguments to be passed to the Stripe task
+   */
+  stripe_create: function ( stripeObject, stripeArgs ) {
+    logger.info("Started stripe_create");
+    console.log(stripeObject, stripeArgs);
+
+    let stripeResource = new Promise(function (resolve, reject) {
+      Stripe[stripeObject].create(
+        stripeArgs,
+        function (err, res) {
+          if (err) reject(err);
+          else resolve(res);
+        });
+    });
+
+    // Fulfill Promise
+    return stripeResource.await(
+      function (res) {
+        logger.info(res);
+        return res;
+      }, function(err) {
+        logger.error(err);
+        throw new Meteor.Error("500", err);
+      });
+  },/**
+   * Stripe general purpose resource retriever
+   * cRud (R in CRUD)
+   * https://stripe.com/docs/api
+   *
+   * @method stripe_retrieve
+   * @param {String} stripeObject - The main Stripe API Object (e.g. 'customers')
+   * @param {String} stripeTask - The specific resource within the Stripe Object, (e.g. 'retrieve')
+   * @param {Object|String} stripeArgs - One or many arguments to be passed to the Stripe task
+   * @param {Object} stripeExpand - The Stripe Object that should be expanded inside the response
+   */
+  stripe_retrieve: function( stripeObject, stripeTask, stripeArgs, stripeExpand ) {
+    logger.info("Started stripe_retrieve");
+    logger.info(stripeObject, stripeTask, stripeArgs);
+
+    if (!stripeExpand) {
+      let stripeResource = new Promise(function (resolve, reject) {
+        Stripe[stripeObject][stripeTask](
+          stripeArgs,
+          function (err, res) {
+            if (err) reject(err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeResource.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          logger.error(err);
+          throw new Meteor.Error("500", err);
+        });
+    } else {
+      let stripeResource = new Promise(function (resolve, reject) {
+        Stripe[stripeObject][stripeTask](
+          stripeArgs,
+          stripeExpand,
+          function (err, res) {
+            if (err) reject(err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeResource.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          logger.error(err);
+          throw new Meteor.Error("500", err);
+        });
+    }
+
+
+  },
+  /**
+   * Stripe general purpose resource updater
+   * crUd (U in CRUD)
+   * https://stripe.com/docs/api
+   *
+   * @method stripe_update
+   * @param {String} stripeObject - The main Stripe API Object (e.g. 'customers')
+   * @param {String} stripeTask - The specific resource within the Stripe Object that should be updated, (e.g. 'updateSubscription')
+   * @param {String} stripeID - The id of the specific resource to be updated
+   * @param {String} stripeSupportingID - The id of the specific resource that is attached to the primary stripeID
+   * @param {Object|String} stripeArgs - One or many arguments to be passed to the Stripe task
+   */
+  stripe_update: function ( stripeObject, stripeTask, stripeID, stripeSupportingID, stripeArgs ) {
+    logger.info("Started stripe_update");
+    console.log(stripeObject, stripeTask, stripeID, stripeSupportingID, stripeArgs);
+
+    if (!stripeSupportingID) {
+      let stripeResource = new Promise(function (resolve, reject) {
+        Stripe[stripeObject][stripeTask](
+          stripeID,
+          stripeArgs,
+          function (err, res) {
+            if (err) reject(err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeResource.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          logger.error(err);
+          throw new Meteor.Error("500", err);
+        });
+    } else {
+      let stripeResource = new Promise(function (resolve, reject) {
+        Stripe[stripeObject][stripeTask](
+          stripeID,
+          stripeSupportingID,
+          stripeArgs,
+          function (err, res) {
+            if (err) reject(err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeResource.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          logger.error(err);
+          throw new Meteor.Error("500", err);
+        });
+    }
+    
+  },
+  /**
+   * Stripe general purpose resource deleter
+   * cruD (D in CRUD)
+   * https://stripe.com/docs/api
+   *
+   * @method stripe_delete
+   * @param {String} stripeObject - The main Stripe API Object (e.g. 'customers')
+   * @param {String} stripeTask - The specific resource within the Stripe Object that should be updated, (e.g. 'deleteCard')
+   * @param {String} stripeID - The id of the specific resource to be updated
+   * @param {Object} stripeSupportingID - The id of the specific resource that is attached to the primary stripeID
+   */
+  stripe_delete: function ( stripeObject, stripeTask, stripeID, stripeSupportingID ) {
+    logger.info("Started stripe_delete");
+    console.log(stripeObject, stripeTask, stripeID, stripeSupportingID);
+
+    if (!stripeSupportingID) {
+      let stripeResource = new Promise(function (resolve, reject) {
+        Stripe[stripeObject][stripeTask](
+          stripeID,
+          function (err, res) {
+            if (err) reject(err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeResource.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          logger.error(err);
+          throw new Meteor.Error("500", err);
+        });
+    } else {
+      let stripeResource = new Promise(function (resolve, reject) {
+        Stripe[stripeObject][stripeTask](
+          stripeID,
+          stripeSupportingID,
+          function (err, res) {
+            if (err) reject(err);
+            else resolve(res);
+          });
+      });
+
+      // Fulfill Promise
+      return stripeResource.await(
+        function (res) {
+          logger.info(res);
+          return res;
+        }, function(err) {
+          logger.error(err);
+          throw new Meteor.Error("500", err);
+        });
+    }
+
+  },
   'control_flow_of_stripe_event_processing': function ( request ) {
 
     // Setup locally scoped vars for this function
@@ -80,77 +286,29 @@ _.extend(StripeFunctions, {
     console.log("Event ID: ", webhookEvent.id);
 
     // For security purposes, let's verify the event by retrieving it from Stripe.
-    var stripeEvent = new Promise(function (resolve, reject) {
-        Stripe.events.retrieve(
-          webhookEvent.id,
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
-
-    // Fulfill Promise
-    return stripeEvent.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-        console.log(err);
-        throw new Meteor.Error("500", err);
-    });
-
+    var stripeEvent = StripeFunctions.stripe_retrieve('events', 'retrieve', webhookEvent.id, '');
+    return stripeEvent;
   },
   'get_invoice': function ( invoice_id ) {
-    console.log("Started get_invoice");
-    console.log("Invoice ID: ", invoice_id );
+    logger.info("Started get_invoice");
+    logger.info("Invoice ID: ", invoice_id );
 
     // Get the invoice from Stripe
-    var invoice = new Promise(function (resolve, reject) {
-        Stripe.invoices.retrieve(
-          invoice_id,
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
-
-    // Fulfill Promise
-    return invoice.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        console.log(err);
-        throw new Meteor.Error("500", err);
-    });
+    let stripeResource = StripeFunctions.stripe_retrieve('invoices', 'retrieve', invoice_id, '');
+    return stripeResource;
 
   },
   'get_previous_invoice': function ( customer_id, invoice_id ) {
-    console.log("Started get_previous_invoice");
-    console.log("Customer ID: ", customer_id );
-    console.log("Invoice ID: ", invoice_id );
+    logger.info("Started get_previous_invoice");
+    logger.info("Customer ID: ", customer_id );
+    logger.info("Invoice ID: ", invoice_id );
 
     // Get the invoice from Stripe
-    let invoice = new Promise(function (resolve, reject) {
-        Stripe.invoices.list(
-          { customer: customer_id, limit: 1, starting_after: invoice_id },
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
-
-    // Fulfill Promise
-    return invoice.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        console.log(err);
-        throw new Meteor.Error("500", err);
-    });
-
+    let stripeResource = StripeFunctions.stripe_retrieve('invoices', 'list',
+      {
+        customer: customer_id, limit: 1, starting_after: invoice_id
+      }, '');
+    return stripeResource;
   },
   'update_customer_metadata': function ( customer_id, dt_persona_id ) {
     console.log("Started update_customer_metadata");
@@ -158,24 +316,9 @@ _.extend(StripeFunctions, {
     console.log("DT_persona_id ID: ", dt_persona_id );
 
     // Update the metadata, dt_persona_id of the customer in Stripe
-    let customer = new Promise(function (resolve, reject) {
-        Stripe.customers.update(customer_id, { "metadata": { "dt_persona_id": dt_persona_id } },
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
-
-    // Fulfill Promise
-    return customer.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        console.log(err);
-        throw new Meteor.Error("500", err);
-    });
-
+    let stripeResourceUpdate = StripeFunctions.stripe_update(
+      'customers', 'update', customer_id, '', { "metadata": { "dt_persona_id": dt_persona_id } });
+    return stripeResourceUpdate;
   },
   'does_this_charge_event_violate_an_out_of_order_rule': function(request_object) {
     console.log("Started does_this_event_violate_an_out_of_order_rule");
@@ -283,32 +426,12 @@ _.extend(StripeFunctions, {
   'add_user_id_to_customer_metadata': function (user_id, customer_id) {
     logger.info("Stared add_user_id_to_customer_metadata");
 
-    let stripeCustomerUpdate;
-
-    // For security purposes, let's verify the event by retrieving it from Stripe.
-      stripeCustomerUpdate = new Promise(function (resolve, reject) {
-        Stripe.customers.update(customer_id, {
-            "metadata": {
-              "user_id": user_id
-            }
-          },
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
-
-    // Fulfill Promise
-    return stripeCustomerUpdate.await(
-      function (res) {
-        // Log and return the value
-        console.log(res);
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this
-        console.log(err);
-        throw new Meteor.Error("500", err);
-      });
+    let stripeResourceUpdate = StripeFunctions.stripe_update(
+      'customers', 'update', customer_id, '', {
+        "metadata": {
+          "user_id": user_id
+        }});
+    return stripeResourceUpdate;
   },
   'check_for_necessary_objects_before_inserting_into_dt': function (charge_id, customer_id, interval) {
     logger.info("Started check_for_necessary_objects_before_inserting_into_dt with interval of: " + interval);
@@ -390,60 +513,22 @@ _.extend(StripeFunctions, {
     logger.info("Started add_dt_account_id_to_stripe_customer_metadata");
     logger.info("DT Persona ID: ", dt_persona_id);
 
-    let stripeCustomerUpdate;
-
-    // For security purposes, let's verify the event by retrieving it from Stripe.
-    stripeCustomerUpdate = new Promise(function (resolve, reject) {
-      Stripe.customers.update(customer_id, {
-          "metadata": {
-            "dt_persona_id": dt_persona_id
-          }
-        },
-        function (err, res) {
-          if (err) reject("There was a problem", err);
-          else resolve(res);
-        });
-    });
-
-    // Fulfill Promise
-    return stripeCustomerUpdate.await(
-      function (res) {
-        // Log and return the value
-        console.log(res);
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this
-        console.log(err);
-        throw new Meteor.Error("500", err);
+    let stripeUpdate = StripeFunctions.stripe_update('customers', 'update', customer_id, '',
+      {
+        "metadata": {
+          "dt_persona_id": dt_persona_id
+        }
       });
+    return stripeUpdate;
 
   },
   get_transactions_from_transfer: function ( id ) {
     logger.info("Started get_transactions_from_transfer");
     logger.info("Transfer id: ", id);
 
-    let getStripeTransfer;
-
-    // For security purposes, let's verify the event by retrieving it from Stripe.
-    getStripeTransfer = new Promise(function (resolve, reject) {
-      Stripe.balance.listTransactions({ limit: 100, transfer: id
-        },
-        function (err, res) {
-          if (err) reject("There was a problem", err);
-          else resolve(res);
-        });
-    });
-
-    // Fulfill Promise
-    return getStripeTransfer.await(
-      function (res) {
-        // Log and return the value
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this
-        console.log(err);
-        throw new Meteor.Error("500", err);
-      });
+    let stripeGet = StripeFunctions.stripe_retrieve('balance', 'listTransactions',
+      { limit: 100, transfer: id }, '');
+    return stripeGet;
 
   },
   upsert_stripe_transactions: function ( transactions, transfer_id ) {
@@ -457,33 +542,13 @@ _.extend(StripeFunctions, {
   get_next_or_previous_transfer: function (transfer_id, previous_or_next) {
     logger.info("Started get_next_or_previous_transfer");
 
-    let getStripeTransfer;
+    let stripeGet = StripeFunctions.stripe_retrieve('transfers', 'list',
+      { limit: 1, [previous_or_next]: transfer_id }, '');
 
-    // For security purposes, let's verify the event by retrieving it from Stripe.
-    getStripeTransfer = new Promise(function (resolve, reject) {
-      Stripe.transfers.list({ limit: 1, [previous_or_next]: transfer_id
-        },
-        function (err, res) {
-          if (err) reject("There was a problem", err);
-          else resolve(res);
-        });
-    });
+    Transfers.upsert({_id: stripeGet.data[0].id}, stripeGet.data[0]);
+    let transactions = StripeFunctions.get_transactions_from_transfer(stripeGet.data[0].id);
+    StripeFunctions.upsert_stripe_transactions(transactions, stripeGet.data[0].id);
 
-    // Fulfill Promise
-    getStripeTransfer = getStripeTransfer.await(
-      function (res) {
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this
-        console.log(err);
-        throw new Meteor.Error("500", err);
-      });
-
-
-    Transfers.upsert({_id: getStripeTransfer.data[0].id}, getStripeTransfer.data[0]);
-    let transactions = StripeFunctions.get_transactions_from_transfer(getStripeTransfer.data[0].id);
-    StripeFunctions.upsert_stripe_transactions(transactions, getStripeTransfer.data[0].id);
-
-    return getStripeTransfer;
+    return stripeGet;
   }
 });

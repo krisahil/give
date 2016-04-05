@@ -7428,8 +7428,8 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
   line-height: 1.292;
   }
 .panel-footer {
-  background-color: #bdc3c7;
-  border-top: 2px solid #bdc3c7;
+  background-color: white;
+  border-top: 2px solid white;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
   }

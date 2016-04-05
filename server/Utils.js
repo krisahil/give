@@ -149,24 +149,8 @@ _.extend(Utils, {
         logger.info( "Bank_account" );
         stripeCustomerObject.bank_account = paymentDevice;
       }
-      let stripeEvent = new Promise(function ( resolve, reject ) {
-        Stripe.customers.create(stripeCustomerObject,
-          function (err, res) {
-            if( err ) reject( "There was a problem", err );
-            else resolve( res );
-          });
-        });
 
-      // Fulfill Promise
-      let stripeCustomer = stripeEvent.await(
-        function (res) {
-          console.log(res);
-          return res;
-        }, function(err) {
-          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-          console.log(err);
-          throw new Meteor.Error(err.rawType, err.message);
-        });
+      let stripeCustomer = StripeFunctions.stripe_create('customers', stripeCustomerObject);
 
       stripeCustomer._id = stripeCustomer.id;
 
@@ -176,31 +160,17 @@ _.extend(Utils, {
       return stripeCustomer;
     },
     charge: function (total, donation_id, customer_id, payment_id, metadata) {
-        logger.info("Inside charge.");
+      logger.info("Inside charge.");
 
-        var stripeCharge = new Future();
-
-        Stripe.charges.create({
-            amount: total,
-            currency: "usd",
-            customer: customer_id,
-            source: payment_id,
-            metadata: metadata
-        }, function (error, charge) {
-            if (error) {
-                //console.dir(error);
-                stripeCharge.return(error);
-            } else {
-                stripeCharge.return(charge);
-            }
+      let stripeCharge = StripeFunctions.stripe_create('charges',
+        { amount: total,
+          currency: "usd",
+          customer: customer_id,
+          source: payment_id,
+          metadata: metadata
         });
-        stripeCharge = stripeCharge.wait();
-        if (!stripeCharge.object) {
-            throw new Meteor.Error(stripeCharge.rawType, stripeCharge.message);
-        }
         stripeCharge._id = stripeCharge.id;
 
-        console.dir(stripeCharge);
         // Add charge response from Stripe to the collection
         Charges.insert(stripeCharge);
         logger.info("Finished Stripe charge. Charges ID: " + stripeCharge._id);
@@ -233,26 +203,12 @@ _.extend(Utils, {
             quantity: total,
             metadata: metadata
         };
-        if (start_date === 'today') {
-        } else {
-            attributes.trial_end = start_date;
+        if (start_date !== 'today') {
+          attributes.trial_end = start_date;
         }
-        var stripeChargePlan = new Future();
-        Stripe.customers.createSubscription(
-            customer_id,
-            attributes,
-            function (error, charge) {
-                if (error) {
-                    //console.dir(error);
-                    stripeChargePlan.return(error);
-                } else {
-                    stripeChargePlan.return(charge);
-                }
-            });
-        stripeChargePlan = stripeChargePlan.wait();
-        if (!stripeChargePlan.object) {
-            throw new Meteor.Error(stripeChargePlan.rawType, stripeChargePlan.message);
-        }
+
+        let stripeChargePlan = StripeFunctions.stripe_update('customers', 'createSubscription', customer_id, '', attributes);
+      
         stripeChargePlan._id = stripeChargePlan.id;
         logger.info("Stripe charge Plan information");
         console.dir(stripeChargePlan);
@@ -260,23 +216,10 @@ _.extend(Utils, {
         Subscriptions.insert(stripeChargePlan);
         Donations.update({_id: donation_id}, {$set: {subscription_id: stripeChargePlan.id}});
         if (start_date === 'today') {
-            var stripeInvoiceList = new Future();
-            // Query Stripe to get the first invoice from this new subscription
-            Stripe.invoices.list(
-                {customer: customer_id, limit: 1},
-                function (error, invoice) {
-                    if (error) {
-                        stripeInvoiceList.return(error);
-                    } else {
-                        stripeInvoiceList.return(invoice);
-                    }
-                });
-
-            stripeInvoiceList = stripeInvoiceList.wait();
-
-            logger.info("Finished Stripe charge_plan. Subscription ID: " + stripeChargePlan.id);
-            console.dir(stripeInvoiceList);
-            return stripeInvoiceList.data[0];
+          // Query Stripe to get the first invoice from this new subscription
+          let stripeInvoiceList = StripeFunctions.stripe_retrieve('invoices', 'list', {customer: customer_id, limit: 1}, '');
+          console.dir(stripeInvoiceList);
+          return stripeInvoiceList.data[0];
         } else {
             Utils.send_scheduled_email(donation_id, stripeChargePlan.id, subscription_frequency, total);
             return 'scheduled';
@@ -376,34 +319,13 @@ _.extend(Utils, {
       logger.info("Started update_card");
       logger.info("Customer: " + customer_id + " card_id: " + card_id + " saved: " + saved);
 
-      var stripeUpdatedCard = new Future();
-
-      Stripe.customers.updateCard(
-        customer_id,
-        card_id,{
-          metadata: {
-            saved: saved
-          }
-        },
-        function (error, card) {
-          if (error) {
-            //console.dir(error);
-            stripeUpdatedCard.return(error);
-          } else {
-            stripeUpdatedCard.return(card);
-          }
+      let stripeUpdatedCard = StripeFunctions.stripe_update('customers', 'updateCard', customer_id, card_id,{
+        metadata: {
+          saved: saved
         }
-      );
-
-      stripeUpdatedCard = stripeUpdatedCard.wait();
-
-      if (!stripeUpdatedCard.object) {
-        throw new Meteor.Error(stripeUpdatedCard.rawType, stripeUpdatedCard.message);
-      }
+      });
 
       stripeUpdatedCard._id = stripeUpdatedCard.id;
-      console.dir(stripeUpdatedCard);
-
       return stripeUpdatedCard;
     },
     add_meta_from_subscription_to_charge: function(stripeEvent) {
@@ -445,9 +367,9 @@ _.extend(Utils, {
 
     customers.forEach(function(customer_id){
       console.log(customer_id);
-      let stripeCustomerUpdate = new Future();
 
-      Stripe.customers.update( customer_id, {
+      let stripeCustomerUpdate = StripeFunctions.stripe_update('customers', 'update',
+        customer_id, '', {
           "metadata": {
             "city":          form.address.city,
             "state":         form.address.state,
@@ -456,102 +378,34 @@ _.extend(Utils, {
             "postal_code":   form.address.postal_code,
             "phone":         form.phone
           }
-        }, function ( error, customer ) {
-          if( error ) {
-            //console.dir(error);
-            stripeCustomerUpdate.return( error );
-          } else {
-            stripeCustomerUpdate.return( customer );
-          }
         }
       );
-
-      stripeCustomerUpdate = stripeCustomerUpdate.wait();
-
-      if (!stripeCustomerUpdate.object) {
-        throw new Meteor.Error(stripeCustomerUpdate.rawType, stripeCustomerUpdate.message);
-      }
     });
   },
   update_stripe_customer_subscription: function(customer_id, subscription_id, token_id, donateWith){
     logger.info("Inside update_stripe_customer_subscription.");
-    var stripeSubscriptionUpdate = new Future();
 
-    Stripe.customers.updateSubscription(customer_id, subscription_id, {
+    let stripeSubscriptionUpdate = StripeFunctions.stripe_update('customers', 'updateSubscription', customer_id, subscription_id, {
       source: token_id,
       metadata: {donateWith: donateWith}
-        }, function (error, subscription) {
-          if (error) {
-            // console.dir(error);
-            stripeSubscriptionUpdate.return(error);
-          } else {
-            stripeSubscriptionUpdate.return(subscription);
-          }
-        }
-    );
-
-    stripeSubscriptionUpdate = stripeSubscriptionUpdate.wait();
-
-    if (!stripeSubscriptionUpdate.object) {
-        throw new Meteor.Error(stripeSubscriptionUpdate.rawType, stripeSubscriptionUpdate.message);
-    }
-
-    console.dir(stripeSubscriptionUpdate);
+    });
 
     return stripeSubscriptionUpdate;
   },
     update_stripe_customer_card: function(data){
-        logger.info("Inside update_stripe_customer_card.");
-        var stripeCardUpdate = new Future();
-
-        Stripe.customers.updateCard(data.customer_id, data.card, {
-                exp_month: data.exp_month,
-                exp_year: data.exp_year
-            }, function (error, card) {
-                if (error) {
-                    //console.dir(error);
-                    stripeCardUpdate.return(error);
-                } else {
-                    stripeCardUpdate.return(card);
-                }
-            }
-        );
-
-        stripeCardUpdate = stripeCardUpdate.wait();
-
-        if (!stripeCardUpdate.object) {
-            throw new Meteor.Error(stripeCardUpdate.rawType, stripeCardUpdate.message);
-        }
-
-        console.dir(stripeCardUpdate);
-
-        return stripeCardUpdate;
+      logger.info("Inside update_stripe_customer_card.");
+      let stripeCardUpdate = StripeFunctions.stripe_update('customers', 'updateCard', data.customer_id, data.card, {
+          exp_month: data.exp_month,
+          exp_year: data.exp_year
+      });
+      return stripeCardUpdate;
     },
     update_stripe_customer_bank: function(customer_id, bank){
       logger.info("Inside update_stripe_customer_bank.");
       console.log(customer_id, bank);
 
-      let stripeBankUpdate = new Promise(function (resolve, reject) {
-        Stripe.customers.createSource(customer_id, {source: bank},
-          function (err, res) {
-            if (err) {
-              reject(err.raw);
-            }
-            else resolve(res);
-          });
-      });
-
-      // Fulfill Promise
-      return stripeBankUpdate.await(
-        function (res) {
-          logger.info(res);
-          return res;
-        }, function(err) {
-          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-          logger.info(err);
-          throw new Meteor.Error(err.statusCode, err.type, err.message);
-          //return err;
-        });
+      let stripeBankUpdate = StripeFunctions.stripe_update('customers', 'createSource', customer_id, '', {source: bank});
+      return stripeBankUpdate;
     },
     update_stripe_bank_metadata: function(customer_id, bank_id, saved){
       logger.info("Inside update_stripe_bank_metadata.");
@@ -562,181 +416,75 @@ _.extend(Utils, {
         saved = 'false';
       }
 
-      let stripeBankUpdate = new Promise(function (resolve, reject) {
-        Stripe.customers.updateCard(customer_id, bank_id,
-          { metadata: {saved: saved} },
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
+      let stripeBankUpdate = StripeFunctions.stripe_update('customers', 'updateCard', customer_id, bank_id, { metadata: {saved: saved} })
 
-      // Fulfill Promise
-      return stripeBankUpdate.await(
-        function (res) {
-          console.log(res);
-          return res;
-        }, function(err) {
-          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-          console.log(err);
-          throw new Meteor.Error("Error from Stripe Promise", err);
-        });
     },
   update_stripe_customer_default_source: function(customer_id, device_id){
-      logger.info("Inside update_stripe_customer_default_source.");
-      logger.info(customer_id, device_id);
+    logger.info("Inside update_stripe_customer_default_source.");
+    logger.info(customer_id, device_id);
 
-      let sourceUpdate = new Promise(function (resolve, reject) {
-        Stripe.customers.update(customer_id,
-          { default_source: device_id },
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
-      });
-
-      // Fulfill Promise
-      return sourceUpdate.await(
-        function (res) {
-          console.log(res);
-          return res;
-        }, function(err) {
-          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-          console.log(err);
-          throw new Meteor.Error("Error from Stripe Promise", err);
-        });
+    let sourceUpdate = StripeFunctions.stripe_update('customers', 'update', customer_id, '', { default_source: device_id });
+    return sourceUpdate;
     },
     update_invoice_metadata: function(event_body){
-        logger.info("Inside update_invoice_metadata");
+      logger.info("Inside update_invoice_metadata");
 
-        // Get the subscription cursor
-        var subscription_cursor = Subscriptions.findOne({_id: event_body.data.object.subscription});
+      // Get the subscription cursor
+      var subscription_cursor = Subscriptions.findOne({_id: event_body.data.object.subscription});
 
-        // Use the metadata from the subscription to udpate the invoice with Stripe
-        var stripeInvoice = new Future();
-
-        if(subscription_cursor.metadata){
-            Stripe.invoices.update(event_body.data.object.id,{
-                    "metadata":  subscription_cursor.metadata
-                }, function (error, invoice) {
-                    if (error) {
-                        //console.dir(error);
-                        stripeInvoice.return(error);
-                    } else {
-                        stripeInvoice.return(invoice);
-                    }
-                }
-            );
-        } else {
-            return;
-        }
-
-        stripeInvoice = stripeInvoice.wait();
-
-        if (!stripeInvoice.object) {
-            throw new Meteor.Error(stripeInvoice.rawType, stripeInvoice.message);
-        }
-
-        console.dir(stripeInvoice);
-
+      if (subscription_cursor.metadata) {
+        // Use the metadata from the subscription to update the invoice with Stripe
+        StripeFunctions.stripe_update('invoices', 'update', event_body.data.object.id, '', {
+          "metadata":  subscription_cursor.metadata
+        });
+      } else {
+        return;
+      }
     },
     update_charge_metadata: function(event_body){
-        logger.info("Inside update_charge_metadata");
+      logger.info("Inside update_charge_metadata");
 
-        // Get the subscription cursor
-        var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
-        if(!invoice_cursor){
-            //TODO: get the invoice from Stripe here, or wait for a set period of time
-            var invoice = StripeFunctions.get_invoice(event_body.data.object.invoice);
-            invoice._id = invoice.id;
-            Invoices.upsert({_id: invoice._id}, invoice);
-            invoice_cursor = Invoices.findOne({_id: invoice.id});
-        }
-        var subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
-
-        // setup the future for the async Stripe call
-        var stripeCharges = new Future();
-
-        logger.info("Charge id: " + event_body.data.object.id);
-        // Use the metadata from the subscription to update the charge with Stripe
-        if(subscription_cursor.metadata){
-            Stripe.charges.update(event_body.data.object.id,{
-                    "metadata":  subscription_cursor.metadata
-                }, function (error, charges) {
-                    if (error) {
-                        //console.dir(error);
-                        stripeCharges.return(error);
-                    } else {
-                        stripeCharges.return(charges);
-                    }
-                }
-            );
-        } else {
-            return;
-        }
-
-        stripeCharges = stripeCharges.wait();
-
-        if(subscription_cursor.metadata){
-            Charges.update({_id: event_body.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
-        }
-        if (!stripeCharges.object) {
-            throw new Meteor.Error(stripeCharges.rawType, stripeCharges.message);
-        }
-
-        console.dir(stripeCharges);
-
+      // Get the subscription cursor
+      var invoice_cursor = Invoices.findOne({_id: event_body.data.object.invoice});
+      if(!invoice_cursor){
+        var invoice = StripeFunctions.get_invoice(event_body.data.object.invoice);
+        invoice._id = invoice.id;
+        Invoices.upsert({_id: invoice._id}, invoice);
+        invoice_cursor = Invoices.findOne({_id: invoice.id});
+      }
+      var subscription_cursor = Subscriptions.findOne({_id: invoice_cursor.subscription});
+      
+      logger.info("Charge id: " + event_body.data.object.id);
+      // Use the metadata from the subscription to update the charge with Stripe
+      if(subscription_cursor.metadata){
+        StripeFunctions.stripe_update('charges', 'update', event_body.data.object.id, '', {
+          "metadata":  subscription_cursor.metadata
+        });
+      } else {
+        return;
+      }
+      
+      if(subscription_cursor.metadata){
+        Charges.update({_id: event_body.data.object.id}, {$set: {metadata: subscription_cursor.metadata}});
+      }
     },
     cancel_stripe_subscription: function(customer_id, subscription_id, reason){
       logger.info("Inside cancel_stripe_subscription");
       logger.info(customer_id + " " + " " + subscription_id + " " + reason);
 
-      // setup the future for the async Stripe call
-      var stripe_update= new Future();
 
-      Stripe.customers.updateSubscription(customer_id, subscription_id,{
-              metadata: {canceled_reason: reason}
-      },
-      function (error, subscription) {
-              if (error) {
-                  console.dir(error);
-                  stripe_update.return(error);
-              } else {
-                  stripe_update.return(subscription);
-              }
-          }
+      let stripe_subscription = StripeFunctions.stripe_update('customers',
+        'updateSubscription',
+        customer_id,
+        subscription_id,
+        { metadata: {canceled_reason: reason} }
       );
 
-      stripe_update = stripe_update.wait();
-
-      if (!stripe_update.object) {
-          throw new Meteor.Error(stripe_update.rawType, stripe_update.message);
-      }
-      if (stripe_update.error) {
-          throw new Meteor.Error(stripe_update.rawType, stripe_update.message);
-      }
-
-      console.dir(stripe_update);
-
-      // setup the future for the async Stripe call
-      var stripe_cancel = new Future();
-
-      Stripe.customers.cancelSubscription(customer_id, subscription_id,
-      function (error, subscription) {
-              if (error) {
-                  console.dir(error);
-                  stripe_cancel.return(error);
-              } else {
-                  stripe_cancel.return(subscription);
-              }
-          }
+      let stripe_cancel = StripeFunctions.stripe_delete('customers',
+        'cancelSubscription',
+        customer_id,
+        subscription_id
       );
-
-      stripe_cancel = stripe_cancel.wait();
-
-      if (!stripe_cancel.object) {
-          throw new Meteor.Error(stripe_cancel.rawType, stripe_cancel.message);
-      }
 
       // Set this subscription to canceled. Stripe's webhooks will still update this later,
       // but this is here so that the admin or customer who cancels the subscription gets
@@ -746,168 +494,72 @@ _.extend(Utils, {
       return stripe_cancel;
     },
     stripe_create_subscription: function (customer_id, source_id, plan, quantity, metadata) {
-        logger.info("Inside stripe_create_subscription.");
-        logger.info(customer_id);
+      logger.info("Inside stripe_create_subscription.");
+      logger.info(customer_id);
 
-        // don't want to copy the canceled reason to the new subscription
-        delete metadata.reason;
+      // don't want to copy the canceled reason to the new subscription
+      delete metadata.reason;
 
-        var stripeCreateSubscription = new Future();
-        Stripe.customers.createSubscription(customer_id,
-            {
-                plan: plan,
-                quantity: quantity,
-                metadata: metadata
-            },
-            function (error, subscription) {
-                if (error) {
-                    console.dir(error);
-                    stripeCreateSubscription.return(error);
-                } else {
-                    stripeCreateSubscription.return(subscription);
-                }
-            });
-        stripeCreateSubscription = stripeCreateSubscription.wait();
-        if (!stripeCreateSubscription.object) {
-            throw new Meteor.Error(stripeCreateSubscription.rawType, stripeCreateSubscription.message);
-        }
-        stripeCreateSubscription._id = stripeCreateSubscription.id;
-        logger.info("Stripe charge plan information");
-        console.dir(stripeCreateSubscription);
-        // Add charge response from Stripe to the collection
-        Subscriptions.insert(stripeCreateSubscription);
-        metadata.subscription_id = stripeCreateSubscription.id;
-        Donations.insert(metadata);
+      let stripeCreateSubscription = StripeFunctions.stripe_update('customers', 'createSubscription', customer_id, '', {
+        plan: plan,
+        quantity: quantity,
+        metadata: metadata
+      });
 
-        return stripeCreateSubscription;
+      stripeCreateSubscription._id = stripeCreateSubscription.id;
+      // Add charge response from Stripe to the collection
+      Subscriptions.insert(stripeCreateSubscription);
+      metadata.subscription_id = stripeCreateSubscription.id;
+      Donations.insert(metadata);
+
+      return stripeCreateSubscription;
     },
     stripe_set_transfer_posted_metadata: function (transfer_id, set_to){
-      logger.info("Inside stripe_set_transfer_posted_metadata.");
-      logger.info(transfer_id);
-      logger.info(set_to);
+      logger.info("Inside stripe_set_transfer_posted_metadata with transfer id: " +
+        transfer_id + "and set_to: " + set_to);
 
-      let stripeTransfer = new Promise(function (resolve, reject) {
-        Stripe.transfers.update(
-          transfer_id,{
-            metadata: {
-              posted: set_to
-            }
-          },
-          function (err, res) {
-            if (err) reject("There was a problem", err);
-            else resolve(res);
-          });
+      let stripeTransfer = StripeFunctions.stripe_update('transfers', 'update', transfer_id, '', {
+          metadata: {
+            posted: set_to
+          }
       });
-
-      // Fulfill Promise
-      return stripeTransfer.await(
-        function (res) {
-          console.log(res);
-          return res;
-        }, function(err) {
-          // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-          console.log(err);
-          throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
-        });
+      return stripeTransfer;
     },
   stripe_get_refund: function (refund_id) {
-    logger.info("Started stripe_get_refund");
-    logger.info("Refund id: " + refund_id);
+    logger.info("Started stripe_get_refund. Refund id: " + refund_id);
 
-    let stripeRefund = new Promise(function (resolve, reject) {
-      Stripe.refunds.retrieve(refund_id, {
-        expand: ["charge"]
-      }, function (err, res) {
-          if (err) reject("There was a problem", err);
-          else resolve(res);
-        });
+    let stripeRefund = StripeFunctions.stripe_retrieve('refunds', 'retrieve', refund_id, {
+      expand: ["charge"]
     });
-
-    // Fulfill Promise
-    return stripeRefund.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-        console.log(err);
-        throw new Meteor.Error("Error from Stripe event retrieval Promise", err);
-      });
+    
+    return stripeRefund;
   },
   get_all_stripe_refunds: function(){
     logger.info("Inside get_all_stripe_refunds.");
 
-    let allRefunds = new Promise(function (resolve, reject) {
-      Stripe.refunds.list(
-        { limit: 100 },
-        function (err, res) {
-          if (err) reject("There was a problem", err);
-          else resolve(res);
-      });
-    });
-
-    // Fulfill Promise
-    return allRefunds.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-        console.log(err);
-        throw new Meteor.Error("Error from Stripe Promise", err);
-      });
+    let allRefunds = StripeFunctions.stripe_retrieve('refunds', 'list', { limit: 100 }, '');
+    return allRefunds;
   },
   update_stripe_customer_dt_persona_id: function(customer_id, new_persona_id){
     logger.info("Inside update_stripe_customer_dt_persona_id.");
     logger.info(new_persona_id);
 
-    let stripeCustomerUpdate = new Promise(function (resolve, reject) {
-      Stripe.customers.update( customer_id, {
-        "metadata": {
-          "dt_persona_id": new_persona_id
-        }
-      }, function ( err, res ) {
-        if( err ) reject( "There was a problem", err );
-        else resolve( res );
-      });
+    let stripeCustomerUpdate = StripeFunctions.stripe_update('customers', 'update', customer_id, '', {
+      "metadata": {
+        "dt_persona_id": new_persona_id
+      }
     });
-    // Fulfill Promise
-    return stripeCustomerUpdate.await(
-      function (res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        // TODO: if there is a a problem we need to resolve this since the event won't be sent again
-        console.log(err);
-        throw new Meteor.Error("Error from Stripe Promise", err);
-      });
+    return stripeCustomerUpdate;
   },
   update_stripe_subscription_amount_or_designation_or_date:
     function (subscription_id, customer_id, fields){
-    var stripeSubscriptionUpdate = new Future();
 
-    // fields should looks something like this
-    // { quantity: 500, trial_end: unix timestamp of new monthly date, metadata: {donateTo: 'new designation'}}
-
-    Stripe.customers.updateSubscription(customer_id, subscription_id, fields,
-      function (error, subscription) {
-        if (error) {
-          //console.dir(error);
-          stripeSubscriptionUpdate.return(error);
-        } else {
-          stripeSubscriptionUpdate.return(subscription);
-        }
-      }
-    );
-
-    stripeSubscriptionUpdate = stripeSubscriptionUpdate.wait();
-
-    if (!stripeSubscriptionUpdate.object) {
-      throw new Meteor.Error(stripeSubscriptionUpdate.rawType, stripeSubscriptionUpdate.message);
-    }
-
-    console.dir(stripeSubscriptionUpdate);
-
+    let stripeSubscriptionUpdate = StripeFunctions.stripe_update('customers', 
+      'updateSubscription',
+      customer_id,
+      subscription_id, 
+      fields);
+      
     return stripeSubscriptionUpdate;
   },
   send_new_dt_account_added_email_to_support_email_contact: function (email, user_id, personaID){
@@ -1154,25 +806,9 @@ _.extend(Utils, {
     logger.info("Started retrieve_stripe_plan with name: " + name);
 
     try {
-      let stripePlan = new Promise( function ( resolve, reject ) {
-        Stripe.plans.retrieve( name,
-          function ( err, res ) {
-            if( err ) reject( err );
-            else resolve( res );
-          } );
-      } );
+      let stripePlan = StripeFunctions.stripe_retrieve('plans', 'retrieve', name, '');
 
-      // Fulfill Promise
-      let retrievedPlan = stripePlan.await(
-        function ( res ) {
-          console.log( res );
-          return res;
-        }, function ( err ) {
-          console.log( err );
-          return;
-        } );
-      console.log(retrievedPlan);
-      return retrievedPlan;
+      return stripePlan;
     } catch(e) {
       logger.error(e);
       //e._id = AllErrors.insert(e.response);
@@ -1184,33 +820,18 @@ _.extend(Utils, {
    * This function creates a Stripe plan
    * @method create_stripe_plan
    * @param {Object} plan - The plan to be created
-   * @param {string} plan.name - The name of the plan
-   * @param {string} plan.interval - The interval of the plan
+   * @param {String} plan.name - The name of the plan
+   * @param {String} plan.interval - The interval of the plan
    */
   create_stripe_plan: function(plan) {
     logger.info("Started create_stripe_plan with name: " + plan.name);
-    let stripePlan = new Promise(function ( resolve, reject ) {
-      Stripe.plans.create({
-        amount: 1,
-        interval: plan.interval,
-        name: plan.name,
-        currency: "usd",
-        id: plan.name
-      }, function (err, res) {
-          if( err ) reject( "There was a problem", err );
-          else resolve( res );
-        });
+    let createdPlan = StripeFunctions.stripe_create('plans', {
+      amount: 1,
+      interval: plan.interval,
+      name: plan.name,
+      currency: "usd",
+      id: plan.name
     });
-
-    // Fulfill Promise
-    let createdPlan = stripePlan.await(
-      function(res) {
-        console.log(res);
-        return res;
-      }, function(err) {
-        console.log(err);
-        throw new Meteor.Error(err.rawType, err.message);
-      });
     return createdPlan;
   }
 });

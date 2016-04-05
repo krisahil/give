@@ -3,7 +3,7 @@ var init_calendar = function(){
   datepickerSelector.datepicker( {
     format: 'd MM, yyyy',
     startDate: '+1d',
-    endDate: '+40d',
+    endDate: '+61d',
     autoclose: true
   });
 };

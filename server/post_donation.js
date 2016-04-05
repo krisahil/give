@@ -691,32 +691,13 @@ _.extend(Utils, {
   update_charge_with_dt_donation_id: function(charge_id, dt_donation_id){
     logger.info("Started update_charge_with_dt_donation_id");
 
-    var stripeUpdateCharge = new Future();
-
-    Stripe.charges.update(
+    let stripeUpdate = StripeFunctions.stripe_update('charges',
+      'update',
       charge_id,
-      {
+      '', {
         metadata: {dt_donation_id: dt_donation_id}
-      },
-      function (error, charge) {
-        if (error) {
-          //console.dir(error);
-          stripeUpdateCharge.return(error);
-        } else {
-          stripeUpdateCharge.return(charge);
-        }
-      }
-    );
-
-    stripeUpdateCharge = stripeUpdateCharge.wait();
-
-    if (!stripeUpdateCharge.object) {
-      throw new Meteor.Error(stripeUpdateCharge.rawType, stripeUpdateCharge.message);
-    }
-
-    console.dir(stripeUpdateCharge);
-
-    return stripeUpdateCharge;
+      });
+    return stripeUpdate;
   },
   split_dt_persona_info: function (email, personResultInSplit) {
     logger.info("Started split_dt_persona_info");
