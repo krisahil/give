@@ -11,6 +11,10 @@ function checkDependantStates() {
     $('[name="Settings.forceACHDay"]').val('any');
     $('[name="Settings.forceACHDay"]').prop('disabled', true);
   }
+  let config = Config.findOne({
+    'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+  });
+
 }
 
 AutoForm.hooks({
@@ -20,35 +24,42 @@ AutoForm.hooks({
         message: "Good work",
         type: 'success',
         icon: 'fa-smile-o',
-        style: 'growl-top-right'
+        style: 'growl-bottom-right'
       });
+
+      Meteor.call("afterUpdateInfoSection", function(err, res) {
+        if(!err) console.log(res);
+      });
+      
       Router.go("Dashboard");
     },
-    onError: function() {
+    onError: function(formType, error) {
+      console.error(error);
       Bert.alert({
         message: "Looks like you might be missing some required fields.",
         type: 'danger',
         icon: 'fa-frown-o',
-        style: 'growl-top-right'
+        style: 'growl-bottom-right'
       });
     }
   },
   'updateSettingsSection': {
-    onSuccess: function () {
+    onSuccess: function() {
       Bert.alert({
         message: "Great, thanks",
         type: 'success',
         icon: 'fa-smile-o',
-        style: 'growl-top-right'
+        style: 'growl-bottom-right'
       });
       Router.go("Dashboard");
     },
-    onError: function(operation, error) {
+    onError: function(formType, error) {
+      console.error(error);
       Bert.alert({
-        message: error,
+        message: "Looks like you might be missing some required fields or you need to change something.",
         type: 'danger',
         icon: 'fa-frown-o',
-        style: 'growl-top-right'
+        style: 'growl-bottom-right'
       });
     }
   }
@@ -64,12 +75,12 @@ Template.OrgInfo.onRendered(function () {
 
 Template.OrgInfo.helpers({
   configDoc: function () {
-    let org_info = Config.findOne({
+    let config = Config.findOne({
       'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
     });
-    if (org_info) {
+    if (config) {
       Template.instance().formType.set('update');
-      return org_info;
+      return config;
     }
     return;
   },
@@ -80,7 +91,9 @@ Template.OrgInfo.helpers({
 });
 
 Template.Settings.onRendered(function () {
-  $("#updateStripeSection").parsley();
+  $("[name='Settings.ach_verification_type']").attr('required', true);
+  $("[name='Settings.DonorTools.url']").attr('required', true);
+  $("#updateSettingsSection").parsley();
   $("[data-toggle='switch']").bootstrapSwitch();
 });
 
@@ -103,7 +116,6 @@ Template.Settings.events({
     checkDependantStates();
   }
 });
-
 
 Template.Settings.onRendered(function () {
   checkDependantStates();

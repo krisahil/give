@@ -10,7 +10,7 @@ Meteor.startup( function() {
       message: "Uploaded " + fileInfo.name,
       type: 'success',
       icon: 'fa-smile-o',
-      style: 'growl-top-left'
+      style: 'growl-bottom-right'
     });
   };
 

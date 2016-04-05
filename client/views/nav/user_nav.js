@@ -36,5 +36,5 @@ Template.UserNav.onRendered(function () {
   // Subscribe to the configuration
   this.autorun(() => {
     this.subscribe("config");
-  })
+  });
 });

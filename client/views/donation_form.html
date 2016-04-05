@@ -59,20 +59,22 @@
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <label for="donateWith">Method of Payment</label>
                                 <select name="donateWith" id="donateWith" class="form-control select select-primary mbl" required>
-                                    <option value="Check">Check</option>
                                     <option value="Card">Card</option>
+                                    <option value="Check">Check</option>
                                 </select>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
-                                <label for="is_recurring" id="frequency_label">Donation Frequency</label>
+                                <label for="is_recurring" id="frequency_label">Donation Frequency {{#if doNotShowOneTime}}<span style="font-size: .8em;">{{{onlyOneTimeIcon}}}</span> {{/if}}</label>
                                 {{#unless locked_frequency}}
                                         <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
-                                        <option selected></option>
+                                        {{#unless doNotShowOneTime}}
+                                            <option selected></option>
+                                        {{/unless}}
                                         <!--<option value="daily">Daily</option>-->
                                         <option value="monthly">Monthly</option>
-                                        <option value="one_time">One-Time</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="yearly">Yearly</option>
+                                        {{#unless doNotShowOneTime}}
+                                            <option value="one_time">One-Time</option>
+                                        {{/unless}}
                                     </select>
                                 {{else}}
                                     <br>
@@ -85,13 +87,13 @@
                     <div class="row">
                         <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-10 col-xs-offset-1" style="{{#unless locked}}display: none;{{/unless}}" id="calendarSection">
                             <div class="form-group">
-                                <label>Choose Your Donation Start Date</label>
+                                <label>Choose Your Donation Start Date {{#if forceACHDay}}<span style="font-size: .8em;">{{{onlyOnSpecificDay}}}</span> {{/if}}</label>
                                 <div class="input-group">
 
                                 <span class="input-group-btn">
                                     <button class="btn" type="button"><span class="fui-calendar"></span></button>
                                 </span>
-                                    <input type="text" class="form-control" value="{{today}}" id="start_date" />
+                                    <input type="text"  class="form-control" {{forceACHDay}} value="{{today}}" id="start_date" />
                                 </div>
                             </div>
                         </div>

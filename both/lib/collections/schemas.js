@@ -9,7 +9,8 @@ function configBasicsSetup() {
     config.Settings.DonorTools.usernameExists &&
     config.Settings.DonorTools.passwordExists &&
     config.Settings.Stripe.keysPublishableExists &&
-    config.Settings.Stripe.keysPublishableExists) {
+    config.Settings.Stripe.keysPublishableExists &&
+    config.donationOptions) {
     return true;
   } else {
     return false;
@@ -27,13 +28,11 @@ Schema.OrgInfo = new SimpleSchema({
   "full_name": {
     type: String,
     label: "Full Name (e.g., with ', Inc.' at the end)",
-    max: 100,
-    optional: true
+    max: 100
   },
   "phone": {
     type: String,
-    label: "Phone",
-    optional: true
+    label: "Phone"
   },
   "is_501c3": {
     type: Boolean,
@@ -61,8 +60,7 @@ Schema.OrgInfo = new SimpleSchema({
   "address.line_1": {
     type: String,
     label: "Address Line 1",
-    max: 100,
-    optional: true
+    max: 100
   },
   "address.line_2": {
     type: String,
@@ -73,8 +71,7 @@ Schema.OrgInfo = new SimpleSchema({
   "address.city": {
     type: String,
     label: "City",
-    max: 50,
-    optional: true
+    max: 50
   },
   "address.state_short": {
     type: String,
@@ -84,7 +81,6 @@ Schema.OrgInfo = new SimpleSchema({
                     "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
                     "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
                     "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"],
-    optional: true,
     autoform: {
       afFieldInput: {
         firstOption: "(Select a State)"
@@ -94,8 +90,7 @@ Schema.OrgInfo = new SimpleSchema({
   "address.zip": {
     type: String,
     label: "Zip",
-    max: 15,
-    optional: true
+    max: 15
   },
   "mission_statement": {
     type: String,
@@ -131,10 +126,7 @@ Schema.OrgInfo = new SimpleSchema({
   "emails.bcc": {
     type: Array,
     label: "To be BCC'd on all outgoing emails",
-    optional: true,
-    autoform: {
-      panelClass: "panel"
-    }
+    optional: true
   },
   "emails.bcc.$": {
     type: String,
@@ -143,7 +135,8 @@ Schema.OrgInfo = new SimpleSchema({
   },
   "emails.contact": {
     type: Array,
-    label: "Main contact address"
+    label: "Main contact address",
+    optional: true
   },
   "emails.contact.$": {
     type: String,
@@ -163,13 +156,11 @@ Schema.OrgInfo = new SimpleSchema({
   },
   "emails.support": {
     type: Array,
-    label: "Technical support address",
-    optional: true
+    label: "Technical support address"
   },
   "emails.support.$": {
     type: String,
-    regEx: SimpleSchema.RegEx.Email,
-    optional: true
+    regEx: SimpleSchema.RegEx.Email
   },
   "emails.other_support_addresses": {
     type: Array,
@@ -200,9 +191,9 @@ Schema.OrgInfo = new SimpleSchema({
   },
   "web": {
     type: Object,
-    label: "Your website addresses",
+    label: "Your website info.",
     autoform: {
-      panelClass: "panel"
+      panelClass: "panel-info"
     }
   },
   "web.domain_name": {
@@ -218,15 +209,15 @@ Schema.OrgInfo = new SimpleSchema({
     label: "The Subdomain you would like 'Give' to run at.",
     optional: true
   },
-  "web.donate_url": {
-    type: String,
-    label: "If you have an address you want to use to redirect to your 'Give' landing page.",
+  "other": {
+    type: Object,
+    label: "Other info.",
     optional: true,
     autoform: {
-      placeholder: "e.g. https://trashmountain.com/donate"
+      panelClass: "panel-info"
     }
   },
-  "web.heap_analytics_id": {
+  "other.heap_analytics_id": {
     type: Number,
     label: "Heap analytics ID",
     max: 9999999999,
@@ -237,9 +228,9 @@ Schema.OrgInfo = new SimpleSchema({
 Schema.Settings = new SimpleSchema({
   ach_verification_type: {
     type: String,
-    optional: true,
     label: "Which type of ACH verification do you prefer?",
     allowedValues: ["none", "manual"], // add these later "micro-deposit", "plaid"
+    optional: true,
     autoform: {
       afFieldInput: {
         firstOption: "(Select a type)"
@@ -249,6 +240,7 @@ Schema.Settings = new SimpleSchema({
   showDonatePage: {
     type: Boolean,
     optional: true,
+    label: "Show the donation page to guests? (this option will be disabled if you haven't setup your giving options first)",
     autoform: {
       'data-toggle': 'switch',
       'data-on-text': 'Yes',
@@ -299,26 +291,35 @@ Schema.Settings = new SimpleSchema({
   },
   DonorTools: {
     type: Object,
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel-info"
+    }
   },
   "DonorTools.usernameExists": {
     type: Boolean,
     optional: true,
     autoform: {
-      'data-toggle': 'switch',
-      'data-on-text': 'Yes',
-      'data-off-text': 'No',
-      disabled: true
+      disabled: true,
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
     }
   },
   "DonorTools.passwordExists": {
     type: Boolean,
     optional: true,
     autoform: {
-      'data-toggle': 'switch',
-      'data-on-text': 'Yes',
-      'data-off-text': 'No',
-      disabled: true
+      disabled: true,
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
     }
   },
   "DonorTools.url": {
@@ -327,30 +328,43 @@ Schema.Settings = new SimpleSchema({
     optional: true,
     autoform: {
       placeholder: "Your Donor Tools Website Address, something like this 'https://your_part_here.donortools.com'"
-    }
+    },
+    regEx: SimpleSchema.RegEx.Url
   },
   Stripe: {
     type: Object,
-    optional: true
+    optional: true,
+    autoform: {
+      panelClass: "panel-info",
+      afFieldInput: {
+        class: 'slim-borders'
+      }
+    }
   },
   "Stripe.keysPublishableExists": {
     type: Boolean,
     optional: true,
     autoform: {
-      'data-toggle': 'switch',
-      'data-on-text': 'Yes',
-      'data-off-text': 'No',
-      disabled: true
+      disabled: true,
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
     }
   },
   "Stripe.keysSecretExists": {
     type: Boolean,
     optional: true,
     autoform: {
-      'data-toggle': 'switch',
-      'data-on-text': 'Yes',
-      'data-off-text': 'No',
-      disabled: true
+      disabled: true,
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
     }
   }
 });

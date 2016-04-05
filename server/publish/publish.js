@@ -428,7 +428,12 @@ Meteor.publish("config", function () {
     fields: {
       'OrgInfo.web.domain_name': 1,
       'Settings.ach_verification_type': 1,
-      'Settings.showDonatePage': 1
+      'Settings.showDonatePage': 1,
+      'Settings.collectBankAccountType': 1,
+      'Settings.forceACHDay': 1,
+      'Settings.doNotAllowOneTimeACH': 1,
+      'Settings.DonorTools.url': 1,
+      'donationOptions': 1
     }
   });
 });

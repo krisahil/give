@@ -10,11 +10,3 @@
         id="updateSettingsSection" type='update' template="bootstrap3"}}
     </div>
 </template>
-
-<template name="SwitchFormField">
-    <div class="form-group {{#if afFieldIsInvalid name=this.name}} has-error{{/if}}">
-        {{> UI.contentBlock}}
-        <label class="control-label" for={{this.name}}>{{this.label}}</label>
-        <span class="help-block">{{afFieldMessage name=this.name}}</span>
-    </div>
-</template>

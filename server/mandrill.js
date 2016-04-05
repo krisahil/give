@@ -116,8 +116,8 @@ _.extend(Utils,{
                   "name": "LastGift",
                   "content": last_gift
                 }, {
-                  "name": "Frequency",
-                  "content": stripeEvent.data.object.plan.name
+                  "name": "Interval",
+                  "content": stripeEvent.data.object.plan.interval
                 }, {
                   "name": "TotalGiftAmount",
                   "content": (stripeEvent.data.object.quantity / 100).toFixed(2)
@@ -316,14 +316,14 @@ _.extend(Utils,{
           if (frequency === 'day') {
               data_slug.message.merge_vars[0].vars.push(
                   {
-                      "name": "frequency",
+                      "name": "Frequency",
                       "content": "daily"
                   }
               );
           } else {
               data_slug.message.merge_vars[0].vars.push(
                   {
-                      "name": "frequency",
+                      "name": "Frequency",
                       "content": frequency + "ly"
                   }
               );
@@ -331,7 +331,7 @@ _.extend(Utils,{
       } else {
           data_slug.message.merge_vars[0].vars.push(
               {
-                  "name": "frequency",
+                  "name": "Frequency",
                   "content": "one time"
               }
           );

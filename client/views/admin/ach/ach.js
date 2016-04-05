@@ -23,7 +23,7 @@ Template.ACH.helpers({
     let searchValue = Session.get("searchValue");
     let customers;
     if (!searchValue) {
-      return Donations.find({}, { sort: { createdAt: 1} });
+      return Donations.find({}, { sort: { created_at: 1} });
     } else {
       customers = Customers.find({
         $or: [
@@ -67,15 +67,21 @@ Template.ACH.helpers({
     return (this.total_amount / 100).toFixed(2);
   },
   'donationDate': function() {
-    return moment(this.created_at * 1000).format("MM/DD/YYYY hh:mma");
+    return moment(this.start_date * 1000).format("MM/DD/YYYY");
   },
   'disabledIfBeforeToday': function() {
-    return (this.created_at > (new Date().getTime() / 1000 | 0)) ? 'disabled': '';
+    return (this.start_date > (new Date().getTime() / 1000 | 0)) ? 'disabled': '';
   },
   'routingNumber': function() {
     let bankInfo = BankAccounts.findOne({_id: this.source_id});
     if (bankInfo) {
       return bankInfo.routing_number;
+    }
+  },
+  'accountType': function() {
+    let bankInfo = BankAccounts.findOne({_id: this.source_id});
+    if (bankInfo) {
+      return bankInfo.account_type;
     }
   },
   'personaId': function() {
@@ -158,7 +164,7 @@ Template.ACH.events({
     Session.set('change_donateTo', this.donateTo);
     Session.set('change_note', this.note);
     Session.set('change_amount', this.total_amount);
-    Session.set('change_date', this.created_at);
+    Session.set('change_date', this.start_date);
 
     $('#modal_for_admin_ach_change_form').modal({
       show: true,

@@ -22,19 +22,10 @@
                                 </a>
                             </div>
                             {{#if configExists}}
-                                <!--<div class="col-sm-2">
-                                    {{#if $not completedStripe}}
+                                <div class="col-sm-2">
+                                    {{#if $not completedDonorTools}}
                                         <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
                                     {{/if}}
-                                    <a id="stripe-info" class="quick-button backgroundColor primary"
-                                       href="/dashboard/stripeconfig">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-cc-stripe"></i>
-                                    </span>
-                                        <h5>Stripe Config.</h5>
-                                    </a>
-                                </div>-->
-                                <div class="col-sm-2">
                                     <a id="settings-dashboard-button" class="quick-button backgroundColor primary"
                                        href="/dashboard/settings">
                                     <span class="fa-stack fa-lg">
@@ -44,7 +35,7 @@
                                     </a>
                                 </div>
                                 <div class="col-sm-2">
-                                    {{#if $not givingOptions}}
+                                    {{#if $not donationOptions}}
                                         <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
                                     {{/if}}
                                     <a id="giving-options" class="quick-button backgroundColor primary"
@@ -59,29 +50,30 @@
                         </div>
                     </div>
                 {{/if}}
-                <div class="panel-heading">
-                    <h2><i class="fa fa-table"></i><span class="break">Reports</span></h2>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <a id="transfers" class="quick-button backgroundColor primary" href="/transfers">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-exchange"></i>
-                                </span>
-                                <h5>Stripe Transfers</h5>
-                            </a>
-                        </div>
-                        <div class="col-sm-2">
-                            <a class="quick-button backgroundColor primary" href="expiring">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-credit-card"></i>
-                                </span>
-                                <h5>Expiring Cards</h5>
-                            </a>
+                {{#if showOtherThanConfig}}
+                    <div class="panel-heading">
+                        <h2><i class="fa fa-table"></i><span class="break">Reports</span></h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <a id="transfers" class="quick-button backgroundColor primary" href="/transfers">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-exchange"></i>
+                                    </span>
+                                    <h5>Stripe Transfers</h5>
+                                </a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a class="quick-button backgroundColor primary" href="expiring">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-credit-card"></i>
+                                    </span>
+                                    <h5>Expiring Cards</h5>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
                 {{#if showGetStripeEvent}}
                     <div class="row">
                         <div class="col col-lg-2"></div>
@@ -221,6 +213,7 @@
                         {{/if}}
                     </div>
                 </div>
+                {{/if}}
             </div>
         </div><!--/col-lg-12-->
 	</div><!--/row-->

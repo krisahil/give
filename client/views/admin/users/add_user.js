@@ -4,7 +4,7 @@ AutoForm.hooks({
     onSuccess: function (operation, result, template) {
       Session.set("addingNew", false);
       $("[type='submit']").button('reset');
-      Bert.alert( 'Success', 'success', 'growl-top-right' );
+      Bert.alert( 'Success', 'success', 'growl-bottom-right' );
       Router.go("/dashboard/users");
     },
 
@@ -13,7 +13,7 @@ AutoForm.hooks({
       console.log(operation);
       $("[type='submit']").button('reset');
 
-      Bert.alert( error.message, 'danger', 'growl-top-right' );
+      Bert.alert( error.message, 'danger', 'growl-bottom-right' );
     }
   }
 });

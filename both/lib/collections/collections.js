@@ -14,10 +14,9 @@ Config.before.update(function (userId, doc, fieldNames, modifier) {
   console.log(fieldNames);
   console.log(modifier);
   if (fieldNames.indexOf("Settings") !== -1) {
-    if (Meteor.isServer) {
+    if (Meteor.isServer && userId) {
       // Send an email to all the admins letting them know about this change.
-      
-      //Utils.send_change_email_notice_to_admins( userId, "stripeconfig" );
+      Utils.send_change_email_notice_to_admins( userId, "stripeconfig" );
     }
   }
 });

@@ -6,20 +6,28 @@ Template.Dashboard.helpers({
     return Session.get("showFixNoUser");
   },
   completedDonorTools: function() {
-    let config = Config.findOne();
-    if (config && config.DonorTools && config.DonorTools.completed) {
-      return true;
-    } else {
-      return false;
-    }
+    let config = Config.findOne({
+      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
+    });
+    return config && 
+      config.Settings &&
+      config.Settings.DonorTools &&
+      config.Settings.DonorTools.url;
   },
-  givingOptions: function() {
-    let config = Config.findOne();
-    if (config && config.GivingOptions) {
-      return true;
-    } else {
-      return false;
-    }
+  donationOptions: function() {
+    let config = Config.findOne({
+      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
+    });
+    return config && config.donationOptions;
+  },
+  showOtherThanConfig: function() {
+    let config = Config.findOne({
+      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
+    });
+    return config && config.donationOptions &&
+      config.Settings &&
+      config.Settings.DonorTools &&
+      config.Settings.DonorTools.url;
   }
 });
 
@@ -61,9 +69,9 @@ Template.Dashboard.events({
     Meteor.call("get_dt_funds", function(error, result) {
       if (result) {
         $("#get-dt-funds").button('reset');
-        Bert.alert( "Got all funds", 'success', 'growl-top-right' );
+        Bert.alert( "Got all funds", 'success', 'growl-bottom-right' );
       } else {
-        Bert.alert( error.message, 'danger', 'growl-top-right' );
+        Bert.alert( error.message, 'danger', 'growl-bottom-right' );
       }
     });
   },
@@ -77,9 +85,9 @@ Template.Dashboard.events({
     Meteor.call("get_dt_sources", function(error, result) {
       if (result) {
         $("#get-dt-sources").button('reset');
-        Bert.alert( "Got all sources", 'success', 'growl-top-right' );
+        Bert.alert( "Got all sources", 'success', 'growl-bottom-right' );
       } else {
-        Bert.alert( error.message, 'danger', 'growl-top-right' );
+        Bert.alert( error.message, 'danger', 'growl-bottom-right' );
       }
     });
   },

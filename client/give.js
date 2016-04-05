@@ -233,6 +233,9 @@ _.extend(Give, {
       });
       if (config && config.Settings &&
         config.Settings.ach_verification_type === 'manual') {
+        if (config.Settings.collectBankAccountType) {
+          bankInfo.account_type = Give.getCleanValue('#account_type');
+        }
         Give.process_bank_manually(bankInfo, form);
       } else {
         Give.process_bank_with_stripe(bankInfo, form);

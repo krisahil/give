@@ -115,7 +115,7 @@ Template.GivingOptions.events({
         message: "You have a group as the last part of your list, you'll need an option below it.",
         type:    'danger',
         icon:    'fa-frown-o',
-        style:   'growl-top-right'
+        style:   'growl-bottom-right'
       } );
       let id = $("#selectedGivingOptionsDiv").children().last().attr("id");
       $("#" + id).addClass("backgroundColor");
@@ -132,7 +132,7 @@ Template.GivingOptions.events({
         message: "You have duplicate group names. Each group must have a unique name.",
         type:    'danger',
         icon:    'fa-frown-o',
-        style:   'growl-top-right'
+        style:   'growl-bottom-right'
       } );
       duplicates.forEach(function ( item ) {
         let id = item.groupId;
@@ -156,7 +156,7 @@ Template.GivingOptions.events({
             message: "You have a blank value in an option, couldn't save",
             type:    'danger',
             icon:    'fa-frown-o',
-            style:   'growl-top-right'
+            style:   'growl-bottom-right'
           } );
           id = item.id;
           // TODO: add a red background to this element to show them where they are missing text
@@ -165,7 +165,7 @@ Template.GivingOptions.events({
             message: "You have a blank value in a group, couldn't save",
             type:    'danger',
             icon:    'fa-frown-o',
-            style:   'growl-top-right'
+            style:   'growl-bottom-right'
           } );
           id = item.groupId;
           // TODO: add a red background to this element to show them where they are missing text
@@ -234,7 +234,7 @@ Template.GivingOptions.events({
         message: "Couldn't remove that item. Please save and reload the page",
         type: 'danger',
         icon: 'fa-frown-o',
-        style: 'growl-top-right'
+        style: 'growl-bottom-right'
       });
       throw new Meteor.Error("400", "Something went wrong, there is no id on this element.");
     }
@@ -278,7 +278,7 @@ Template.GivingOptions.events({
           message: "Hmm... that didn't work",
           type:    'danger',
           icon:    'fa-frown-o',
-          style:   'growl-top-right'
+          style:   'growl-bottom-right'
         } );
         throw new Meteor.Error("400", "Something went wrong and the user wasn't able to remove an image");
       } else {

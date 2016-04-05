@@ -182,6 +182,7 @@ Meteor.methods({
         'note':                 data.paymentInformation.note,
         'status':               'pending',
         'send_scheduled_email': data.paymentInformation.send_scheduled_email,
+        'start_date':           data.paymentInformation.start_date,
         'total_amount':         data.paymentInformation.total_amount,
         'type':                 data.paymentInformation.type,
         'sessionId':            data.paymentInformation.sessionId,
@@ -201,6 +202,7 @@ Meteor.methods({
       delete metadata.type;
       delete metadata.source_id;
       delete metadata.method;
+      delete metadata.start_date;
 
       if (data.paymentInformation.token_id) {
 
@@ -1041,13 +1043,77 @@ Meteor.methods({
       throw new Meteor.Error(e);
     }
   },
+  afterUpdateInfoSection: function() {
+    logger.info("Started afterUpdateInfoSection method");
+
+    try {
+      this.unblock();
+      if( Roles.userIsInRole( this.userId, ['admin', 'manager'] ) ) {
+
+        // We store our DonorTools username and password in our Meteor.settings
+        // We store out Stripe keys in the Meteor.settings as well
+        // Here we store the status of these settings in our Config document
+        // This way we can show certain states from within the app, both to admins and
+        // guests
+
+        let config = Config.findOne({
+          'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+        });
+        if (config) {
+          if (!config.Settings.DonorTools) {
+            config.Settings.DonorTools = {};
+          }
+
+          if (!config.Settings.Stripe) {
+            config.Settings.Stripe = {};
+          }
+
+          if (Meteor.settings.donor_tools_user) {
+            config.Settings.DonorTools.usernameExists = true;
+          } else {
+            config.Settings.DonorTools.usernameExists = false;
+          }
+          if (Meteor.settings.donor_tools_password) {
+            config.Settings.DonorTools.passwordExists = true;
+          } else {
+            config.Settings.DonorTools.passwordExists = false;
+          }
+          if (Meteor.settings.stripe.secret) {
+            config.Settings.Stripe.keysPublishableExists = true;
+          } else {
+            config.Settings.Stripe.keysPublishableExists = false;
+          }
+          if (Meteor.settings.public.stripe_publishable) {
+            config.Settings.Stripe.keysSecretExists = true;
+          } else {
+            config.Settings.Stripe.keysSecretExists = false;
+          }
+          Config.update({_id: config._id}, {$set: config});
+        }
+
+        if (config.Settings.Stripe.keysSecretExists && config.Settings.Stripe.keysPublishableExists) {
+          // If the necessary Stripe keys exist then create the Stripe plans needed for Give
+          Utils.create_stripe_plans();
+        }
+
+        if (config.Settings.DonorTools.usernameExists && config.Settings.DonorTools.passwordExists) {
+          // TODO: write the function that will go out to DT and setup the necessary funds, types,
+          // and sources
+
+        }
+      }
+    } catch(e) {
+      console.log(e);
+      throw new Meteor.Error(e);
+    }
+  },
   manual_gift_processed: function(donation_id) {
     logger.info("Started manual_gift_processed method");
 
     check(donation_id, String);
     try {
       this.unblock();
-      if (Roles.userIsInRole(this.userId, ['admin'])) {
+      if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
         console.log("Sending");
         let customer_id = Donations.findOne({_id: donation_id}).customer_id;
         let email = Customers.findOne({_id: customer_id}).email;

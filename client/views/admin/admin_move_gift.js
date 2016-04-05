@@ -30,7 +30,7 @@ Template.AdminMoveGift.events({
           message: "Hmmm...that didn't work, please check the IDs you used.",
           type: 'danger',
           icon: 'fa-frown-o',
-          style: 'growl-top-right'
+          style: 'growl-bottom-right'
         });
         $("[name='submit_move_gift']").button("reset");
       }

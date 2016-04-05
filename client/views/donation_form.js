@@ -190,6 +190,16 @@ Template.DonationForm.helpers({
       "four-digit code printed just above the Account Number.'" +
       "</i>";
   },
+  onlyOneTimeIcon: function() {
+    return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+      "data-trigger='hover focus' data-container='body' data-content='When giving by Check we can only accept monthly recurring gifts'>" +
+      "</i>";
+  },
+  onlyOnSpecificDay: function() {
+    return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+      "data-trigger='hover focus' data-container='body' data-content='When giving by Check we can only accept monthly gifts for a specific day of the month.'>" +
+      "</i>";
+  },
   paymentWithCard: function() {
     return Session.equals("paymentMethod", "Card");
   },

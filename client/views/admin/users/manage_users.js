@@ -17,7 +17,7 @@ AutoForm.hooks({
   'edit-user-form': {
     onSuccess: function (operation, result) {
       Session.set("addingNew", false);
-      Bert.alert( result, 'success', 'growl-top-right' );
+      Bert.alert( result, 'success', 'growl-bottom-right' );
       Router.go("/dashboard/users");
     },
 
@@ -25,9 +25,8 @@ AutoForm.hooks({
       console.log(error);
       console.log(operation);
 
-      Bert.alert( error.message, 'danger', 'growl-top-right' );
+      Bert.alert( error.message, 'danger', 'growl-bottom-right' );
     },
-
     onSubmit: function () {
       return this.event.preventDefault();
     }

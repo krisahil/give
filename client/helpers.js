@@ -180,6 +180,53 @@ Template.registerHelper('locked_frequency', function() {
   return false;
 });
 
+Template.registerHelper('doNotShowOneTime', function() {
+  let config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
+  if (Session.equals("paymentMethod", "Card")) {
+    return false;
+  } else {
+    if (config && config.Settings && config.Settings.doNotAllowOneTimeACH) {
+      // set monthly
+      $("#is_recurring").val("monthly");
+      $("#is_recurring").change();
+      return true;
+    }
+  }
+});
+
+Template.registerHelper('forceACHDay', function() {
+  let config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
+  let newRecurringDate;
+  if (Session.equals("paymentMethod", "Card") ||
+    (config && config.Settings && config.Settings.forceACHDay === 'any')) {
+    newRecurringDate =  moment().format('D MMM, YYYY');
+    $("#start_date").val(newRecurringDate);
+    return '';
+  } else {
+    if (config && config.Settings && config.Settings.forceACHDay) {
+      // set monthly
+      $("#is_recurring").val("monthly");
+      $("#is_recurring").change();
+      let thisDay = Number(moment().format("D"));
+      if(thisDay > Number(config.Settings.forceACHDay)) {
+        newRecurringDate = moment().add(1, 'months').format(Number(config.Settings.forceACHDay) + " MMM, YYYY");
+      } else {
+        newRecurringDate = moment().format(Number(config.Settings.forceACHDay) + " MMM, YYYY");
+      }
+      $("#start_date").val(newRecurringDate);
+      return 'disabled';
+    }
+  }
+});
+
+Template.registerHelper('collectBankAccountType', function() {
+  let config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
+  if (config && config.Settings && config.Settings.collectBankAccountType) {
+    return true;
+  }
+  return false;
+});
+
 Template.registerHelper('cleanupString', function(string) {
   var cleanString = s(string).stripTags().trim().value();
   return cleanString;
@@ -268,7 +315,9 @@ Template.registerHelper( 'searchValue', function() {
 *  */
 
 Template.registerHelper('configExists', function() {
-  return Config.findOne() && Config.findOne()._id;
+  return Config.findOne({
+      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
+    });
 });
 
 Template.registerHelper( 'stripe_ach_verification_type', ( ) => {

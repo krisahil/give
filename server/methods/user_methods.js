@@ -265,6 +265,7 @@ Meteor.methods({
       name: String,
       account_holder_name: String,
       account_holder_type: String,
+      account_type: Match.Optional(String),
       account_number: String,
       routing_number: String,
       address_line1: String,

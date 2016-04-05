@@ -43,9 +43,6 @@ Template.SubscriptionsOverview.helpers({
       return;
     }
   },
-  plan_name: function() {
-    return this.plan.name;
-  },
   lastFour: function () {
     var device = Devices.findOne({customer: this.customer});
     if(device){
@@ -66,8 +63,8 @@ Template.SubscriptionsOverview.helpers({
       return;
     }
   },
-  frequency: function () {
-    return this.plan.id;
+  planInterval: function () {
+    return this.plan.interval;
   },
   number_of_subscriptions: function () {
     if (Session.get("number_of_subscriptions") > 4) {

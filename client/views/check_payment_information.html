@@ -3,6 +3,15 @@
             <br>
             <div class="col-md-6">
                 <!-- Bank Info -->
+                {{#if collectBankAccountType}}
+                    <div class="form-group">
+                        <label for="account_type">Bank Account Type</label>
+                        <select type="text" id="account_type" class="form-control select select-primary mbl" required>
+                            <option selected value="checking">Checking</option>
+                            <option value="savings">Savings</option>
+                        </select>
+                    </div>
+                {{/if}}
                 <div class="form-group">
                     <input {{attributes_Input_AccountNumber}} data-parsley-type="number" class="form-control slim-borders" />
                 </div>

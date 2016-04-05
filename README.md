@@ -49,12 +49,7 @@ Here is an example settings.json file
   "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",
   "donor_tools_default_fund_id": "If a match can't be found 'Give' will use this id",
   "stripe": {
-    "secret": "Secrete Stripe key",
-    "plan": {
-      "yearly": "Stripe plan name associated with yearly (annual) gifts",
-      "monthly": "Stripe plan name associated with monthly gifts",
-      "weekly": "Stripe plan name associated with weekly gifts"
-    }
+    "secret": "Secrete Stripe key"
   },
   "papertrail": {
     "port": "12344" // Used for sending logs to papertrailapp.com
