@@ -282,8 +282,6 @@ _.extend(Utils, {
       address_line2 = '';
     }
 
-
-
     newDTPerson = HTTP.post(Meteor.settings.public.donor_tools_site + '/people.json', {
       "data": {
         "persona": {

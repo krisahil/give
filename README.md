@@ -25,14 +25,14 @@ Users misspell things, they change their address and phone numbers and sometimes
 
 ## Setup
 
-I'm working hard to make this something that any organization can use.
-
 Once you have this repo cloned you'll want to setup a settings.json file. This 
 is where your Donor Tools and Stripe settings go (you can use the example below 
 to get started) as well as your organization's domain name and other settings. 
 
 Before running this app edit the server/fixtures.js file and change the email 
 address to your address and a set a temporary password there too.
+
+Run the app with ```meteor --settings settings.json```
 
 Once you are logged in you should see the "Start Here!" label on the "Organization 
 Info." button. Click that and complete the form.
@@ -45,6 +45,39 @@ Options buttons.
 You'll want to complete the Settings form first, then the Giving Options. The 
 Giving Options section pulls in all the Donor Tools funds so that you can use 
 them to create all the giving options you want donors to be able to choose. 
+
+## TODO
+
+Move these to the configuration and out of the setings.json file
+
+  Kadira
+  
+  papertrail: {host: '', port: ''}
+  
+  sikka: {rateLimits: { "perIp": "100" }, 
+    "captcha": {
+      "siteKey": "",
+      "secret":  ""
+    } }
+    
+  newStuffVersion
+  
+  donor_tools_default_fund_id
+  
+  donor_tools_gift_type
+  
+  donor_tools_individual_source_id
+  
+  donor_tools_org_source_id
+  
+  donor_tools_default_fund_id
+  
+  public.donor_tools_site
+  
+
+Change these from static references to pulling form the config
+
+  donation_type_id = 3921;
 
 ## Example
 
@@ -59,26 +92,13 @@ Here is an example settings.json file
 ```
 {
   "dev": "****TEST****", //Remove this text. If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
-  "kadiraAppId": "Get a free account here https://kadira.io/",
-  "kadiraAppSecret": "https://kadira.io/",
   "donor_tools_user": "",
   "donor_tools_password": "",
-  "donor_tools_gift_type": "use this to assign a type to any gifts given through the site",
-  "donor_tools_default_fund_id": "If a match can't be found 'Give' will use this id",
   "stripe": {
     "secret": "Secrete Stripe key"
   },
-  "papertrail": {
-    "port": "12344" // Used for sending logs to papertrailapp.com
-  },
-  "sikka": { //Remove this text, sikka is a firewall for Meteor (prevents DOS) https://atmospherejs.com/meteorhacks/sikka
-    "rateLimits": {
-      "perIp": "100"
-    }
-  },
   "public": {
     "dev": "****TEST****", // If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
-    "newStuffVersion": "e.g. '0.9' This is used to show the user new updates and then increment those updates.",
     "org_domain": "Your org domain, for example 'trashmountain.com'",
     "stripe_publishable: "publishable Stripe Key",
   }
