@@ -1,13 +1,13 @@
 function checkDependantStates() {
   if (AutoForm.getFieldValue("Settings.ach_verification_type", "updateSettingsSection") === 'manual') {
-    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('toggleDisabled', true, true);
-    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('toggleDisabled', true, true);
     $('[name="Settings.forceACHDay"]').prop('disabled', false);
+    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('readonly', false);
+    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('readonly', false);
   } else {
     $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('state', false);
-    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('disabled', true);
+    $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('readonly', true);
     $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('state', false);
-    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('disabled', true);
+    $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('readonly', true);
     $('[name="Settings.forceACHDay"]').val('any');
     $('[name="Settings.forceACHDay"]').prop('disabled', true);
   }
@@ -45,6 +45,13 @@ AutoForm.hooks({
   },
   'updateSettingsSection': {
     onSuccess: function() {
+      Meteor.call("get_dt_funds", function(error, result) {
+        if (result) {
+          console.log("Got all funds");
+        } else {
+          console.error(error);
+        }
+      });
       Bert.alert({
         message: "Great, thanks",
         type: 'success',

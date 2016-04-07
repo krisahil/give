@@ -126,8 +126,9 @@ Template.UserGive.events({
 });
 
 Template.UserGive.onRendered(function () {
-  if(Roles.userIsInRole(Meteor.userId(), 'no-dt-person')) {
+  if(Roles.userIsInRole(Meteor.userId(), 'admin-only')) {
     Router.go("Dashboard");
+    return;
   }
 
   $('[data-toggle="popover"]').popover();

@@ -9,14 +9,27 @@ Charges = new Mongo.Collection('charges');
 // Organization configuration
 Config = new Mongo.Collection('config');
 
-Config.before.update(function (userId, doc, fieldNames, modifier) {
+Config.after.update(function (userId, doc, fieldNames) {
 
-  console.log(fieldNames);
-  console.log(modifier);
   if (fieldNames.indexOf("Settings") !== -1) {
-    if (Meteor.isServer && userId) {
-      // Send an email to all the admins letting them know about this change.
-      Utils.send_change_email_notice_to_admins( userId, "stripeconfig" );
+    if( Meteor.isServer && userId ) {
+
+      let config = Config.findOne( {
+        'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+      });
+
+      if( config ) {
+        Meteor.setTimeout( ()=> {
+          // Send an email to all the admins letting them know about this change.
+          Utils.send_change_email_notice_to_admins( userId, fieldNames[0].toLowerCase() );
+        }, 1000 );
+
+        return Mandrill.config( {
+          username: config.OrgInfo.emails.mandrillUsername,
+          "key":    config.OrgInfo.emails.mandrillKey
+        } );
+
+      }
     }
   }
 });

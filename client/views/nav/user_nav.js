@@ -22,7 +22,7 @@ Template.UserNav.helpers({
   dismissedNewStuff: function () {
     let newStuffVersion = Meteor.user() && Meteor.user().profile &&
       Meteor.user().profile.newStuffVersion;
-    if(newStuffVersion && newStuffVersion > Meteor.settings.public.newStuffVersion){
+    if (newStuffVersion && newStuffVersion > Meteor.settings.public.newStuffVersion) {
       return true;
     } else {
       return false;
@@ -37,4 +37,5 @@ Template.UserNav.onRendered(function () {
   this.autorun(() => {
     this.subscribe("config");
   });
+
 });

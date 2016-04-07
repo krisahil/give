@@ -571,23 +571,26 @@ _.extend(Utils, {
       return;
     }
     let wait_for_audit = Utils.audit_email(personaID, 'dt.account.created');
+    let config = Config.findOne({
+      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+    });
 
     //Create the HTML content for the email.
     //Create the link to go to the new person that was just created.
     var html = "<h1>DT account created</h1><p>" +
       "Details: <br>Email: " + email + "<br>ID: " +
-      user_id + "<br>Link: <a href='" + 
-      Meteor.settings.public.donor_tools_site + 
+      user_id + "<br>Link: <a href='" +
+      config.Settings.DonorTools.url +
       "/people/" + personaID +"'>" + personaID + 
       "</a></p>";
 
     let toAddresses = [];
-    toAddresses.push(Meteor.settings.public.support_address);
-    toAddresses = toAddresses.concat(Meteor.settings.public.other_support_addresses);
+    toAddresses.push(config.OrgInfo.emails.support);
+    toAddresses = toAddresses.concat(config.OrgInfo.emails.other_support_addresses);
     //Send email
 
     Email.send({
-      from: Meteor.settings.public.support_address,
+      from: config.OrgInfo.emails.support,
       to: toAddresses,
       subject: "DT Account inserted.",
       html: html
@@ -639,10 +642,11 @@ _.extend(Utils, {
    */
   send_change_email_notice_to_admins: function (changeMadeBy, changeIn){
     logger.info("Started send_change_email_notice_to_admins");
-    let config = Config.findOne();
+    let config = Config.findOne({
+      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
+    });
 
-    if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.support &&
-      config.OrgInfo.emails.support[0])) {
+    if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.support)) {
       return;
     }
     //Utils.audit_email(config._id, 'config.change');
@@ -656,13 +660,11 @@ _.extend(Utils, {
     var html = "<h2>We thought you might want to know.</h2><p> A changed was made to your Give " +
       "configuration. <br> Changed By: " +
       Meteor.users.findOne({_id: changeMadeBy}).emails[0].address + "</p><p>" +
-      "To see the changes go to your <a href='https://" +
-      config.OrgInfo.web.subdomain + "." +
-      config.OrgInfo.web.domain_name + "/dashboard/" + changeIn +
-      "'>Dashboard</a></p>";
-
+      "To see the changes go to your <a href='" + Meteor.absoluteUrl() +
+      "dashboard/" + changeIn + "'>Dashboard</a></p>";
+    
     Email.send({
-      from: Meteor.settings.public.org_name + "<" + config.OrgInfo.emails.support[0] + ">",
+      from: config.OrgInfo.name + "<" + config.OrgInfo.emails.support + ">",
       to: adminEmails,
       subject: Meteor.settings.dev + "A configuration change was made",
       html: html

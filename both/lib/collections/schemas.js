@@ -30,6 +30,19 @@ Schema.OrgInfo = new SimpleSchema({
     label: "Full Name (e.g., with ', Inc.' at the end)",
     max: 100
   },
+  "logoURL": {
+    type: String,
+    optional: true,
+    autoform: {
+      disabled: true,
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
   "phone": {
     type: String,
     label: "Phone"
@@ -123,25 +136,15 @@ Schema.OrgInfo = new SimpleSchema({
       panelClass: "panel"
     }
   },
-  "emails.bcc": {
-    type: Array,
-    label: "To be BCC'd on all outgoing emails",
-    optional: true
-  },
-  "emails.bcc.$": {
+  "emails.support": {
     type: String,
-    regEx: SimpleSchema.RegEx.Email,
-    optional: true
+    label: "Technical support address",
+    regEx: SimpleSchema.RegEx.Email
   },
   "emails.contact": {
-    type: Array,
-    label: "Main contact address",
-    optional: true
-  },
-  "emails.contact.$": {
     type: String,
-    regEx: SimpleSchema.RegEx.Email,
-    optional: true
+    label: "Main contact address",
+    regEx: SimpleSchema.RegEx.Email
   },
   "emails.canceled_gift": {
     type: Array,
@@ -153,14 +156,6 @@ Schema.OrgInfo = new SimpleSchema({
     label: "Notify for any canceled gifts",
     regEx: SimpleSchema.RegEx.Email,
     optional: true
-  },
-  "emails.support": {
-    type: Array,
-    label: "Technical support address"
-  },
-  "emails.support.$": {
-    type: String,
-    regEx: SimpleSchema.RegEx.Email
   },
   "emails.other_support_addresses": {
     type: Array,
@@ -176,7 +171,7 @@ Schema.OrgInfo = new SimpleSchema({
     type: Number,
     optional: true,
     autoform: {
-      placeholder: "At or above this number and the large gift email addresses will receive an email"
+      placeholder: "Any gift at or above this gift amount will trigger the large gift email"
     }
   },
   "emails.large_gift": {
@@ -188,6 +183,31 @@ Schema.OrgInfo = new SimpleSchema({
     type: String,
     regEx: SimpleSchema.RegEx.Email,
     optional: true
+  },
+  "emails.emailSendMethod": {
+    type: String,
+    label: "What service do you want to use to send emails?",
+    allowedValues: ["Mandrill"], // add these later "mailgun", "sendgrid", "smtp"
+    autoform: {
+      defaultValue: "Mandrill"
+    }
+  },
+  "emails.mandrillUsername": {
+    type: String,
+    label: "Mandrill username",
+    regEx: SimpleSchema.RegEx.Email
+  },
+  "emails.mandrillKey": {
+    type: String,
+    label: "Mandrill key"
+  },
+  "emails.enrollmentName": {
+    type: String,
+    label: "The template name of the enrollment email"
+  },
+  "emails.resetPasswordName": {
+    type: String,
+    label: "The template name of the password reset email"
   },
   "web": {
     type: Object,
@@ -206,7 +226,7 @@ Schema.OrgInfo = new SimpleSchema({
   },
   "web.subdomain": {
     type: String,
-    label: "The Subdomain you would like 'Give' to run at.",
+    label: "The subdomain you would like 'Give' to run at",
     optional: true
   },
   "other": {
@@ -262,8 +282,7 @@ Schema.Settings = new SimpleSchema({
     autoform: {
       'data-toggle': 'switch',
       'data-on-text': 'Yes',
-      'data-off-text': 'No',
-      disabled: true
+      'data-off-text': 'No'
     }
   },
   collectBankAccountType: {
@@ -273,8 +292,7 @@ Schema.Settings = new SimpleSchema({
     autoform: {
       'data-toggle': 'switch',
       'data-on-text': 'Yes',
-      'data-off-text': 'No',
-      disabled: true
+      'data-off-text': 'No'
     }
   },
   forceACHDay: {
@@ -285,8 +303,7 @@ Schema.Settings = new SimpleSchema({
                     '24','25','26','27','28'],
     optional: true,
     autoform: {
-      defaultValue: 'any',
-      disabled: true
+      defaultValue: 'any'
     }
   },
   DonorTools: {

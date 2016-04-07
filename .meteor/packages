@@ -69,3 +69,4 @@ mystor:device-detection
 matb33:collection-hooks
 standard-minifier-css
 standard-minifier-js
+meteorhacks:ssr

@@ -1,3 +1,5 @@
+var config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
+
 Template.registerHelper('formatTime', function(context) {
   if (context) {
     return moment( context ).format( 'MM/DD/YYYY, hh:mma' );
@@ -181,7 +183,6 @@ Template.registerHelper('locked_frequency', function() {
 });
 
 Template.registerHelper('doNotShowOneTime', function() {
-  let config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
   if (Session.equals("paymentMethod", "Card")) {
     return false;
   } else {
@@ -195,7 +196,6 @@ Template.registerHelper('doNotShowOneTime', function() {
 });
 
 Template.registerHelper('forceACHDay', function() {
-  let config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
   let newRecurringDate;
   if (Session.equals("paymentMethod", "Card") ||
     (config && config.Settings && config.Settings.forceACHDay === 'any')) {
@@ -220,7 +220,6 @@ Template.registerHelper('forceACHDay', function() {
 });
 
 Template.registerHelper('collectBankAccountType', function() {
-  let config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
   if (config && config.Settings && config.Settings.collectBankAccountType) {
     return true;
   }
@@ -315,22 +314,23 @@ Template.registerHelper( 'searchValue', function() {
 *  */
 
 Template.registerHelper('configExists', function() {
-  return Config.findOne({
-      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
-    });
+  let trackedConfig = Tracker.autorun(function () {
+    return config;
+  });
+  return trackedConfig;
 });
 
-Template.registerHelper( 'stripe_ach_verification_type', ( ) => {
-  return Config.findOne() && 
-    Config.findOne().Settings &&
-    Config.findOne().Settings.ach_verification_type;
+Template.registerHelper( 'stripe_ach_verification_type', () => {
+  return config &&
+    config.Settings &&
+    config.Settings.ach_verification_type;
 });
 
 Template.registerHelper( 'support_emails', ( ) => {
-  return Config.findOne() &&
-    Config.findOne().OrgInfo &&
-    Config.findOne().OrgInfo.emails &&
-    Config.findOne().OrgInfo.emails.support;
+  return config &&
+    config.OrgInfo &&
+    config.OrgInfo.emails &&
+    config.OrgInfo.emails.support;
 });
 
 /*

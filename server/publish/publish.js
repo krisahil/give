@@ -324,7 +324,7 @@ Meteor.publish("DTSplits", function () {
 
 Meteor.publish("transfers", function (id) {
   check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
     if(id){
       return Transfers.find({_id: id});
     } else {
@@ -342,7 +342,7 @@ Meteor.publish("transfersRange", function (range) {
     end:   Match.Optional( String )
   });
 
-  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
 
     if(range && range.start){
       let transferStart = Number(moment(new Date(range.start)).format('X'));

@@ -1,4 +1,5 @@
 import FS from 'fs';
+import {config} from '/server/imports/config.js';
 
 Meteor.methods({
   get_dt_funds: function() {
@@ -10,13 +11,20 @@ Meteor.methods({
         if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
             logger.info("Started get_dt_funds");
             var fundResults;
-            fundResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/settings/funds.json?per_page=1000', {
+
+          console.log(config);
+            if (config && config.Settings && config.Settings.DonorTools && config.Settings.DonorTools.url) {
+              fundResults = HTTP.get( config.Settings.DonorTools.url + '/settings/funds.json?per_page=1000', {
                 auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-            });
-            Utils.separate_funds(fundResults.data);
-            return fundResults.data;
+              } );
+              Utils.separate_funds( fundResults.data );
+              return fundResults.data;
+            } else {
+              logger.error("No DonorTools url set.");
+              return;
+            }
         } else {
-            logger.info("You aren't an admin, you can't do that");
+            logger.error("You aren't an admin, you can't do that");
             return;
         }
       } catch (e) {
@@ -589,7 +597,7 @@ Meteor.methods({
 
     check(id, Number);
     console.log(id);
-    if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
       this.unblock();
       try {
         // Get the persona from DT
@@ -614,7 +622,7 @@ Meteor.methods({
 
     check(current_transfer_id, String);
     check(previous_or_next, String);
-    if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
       let previous_or_next_transfer = StripeFunctions.get_next_or_previous_transfer(current_transfer_id, previous_or_next);
 
       return previous_or_next_transfer.data[0].id;
@@ -650,7 +658,7 @@ Meteor.methods({
 
     check(transfer_id, String);
     check(checkbox_state, Match.OneOf("true", "false"));
-    if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
       let stripe_response = Utils.stripe_set_transfer_posted_metadata(transfer_id, checkbox_state);
       Transfers.update({_id: transfer_id}, {$set: { 'metadata.posted': checkbox_state } });
       return stripe_response;
@@ -1037,9 +1045,6 @@ Meteor.methods({
         // This way we can show certain states from within the app, both to admins and
         // guests
 
-        let config = Config.findOne({
-          'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
-        });
         if (config) {
           if (!config.Settings.DonorTools) {
             config.Settings.DonorTools = {};

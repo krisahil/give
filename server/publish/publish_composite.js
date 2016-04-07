@@ -1,6 +1,6 @@
 Meteor.publishComposite('transactions', function (transfer_id) {
   check(transfer_id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'manager', 'reports'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
     return {
       find:     function () {
         return Transactions.find( {

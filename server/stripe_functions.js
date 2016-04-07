@@ -16,8 +16,11 @@ _.extend(StripeFunctions, {
       Stripe[stripeObject].create(
         stripeArgs,
         function (err, res) {
-          if (err) reject(err);
-          else resolve(res);
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res);
+          }
         });
     });
 
@@ -50,8 +53,11 @@ _.extend(StripeFunctions, {
         Stripe[stripeObject][stripeTask](
           stripeArgs,
           function (err, res) {
-            if (err) reject(err);
-            else resolve(res);
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
           });
       });
 
@@ -70,8 +76,11 @@ _.extend(StripeFunctions, {
           stripeArgs,
           stripeExpand,
           function (err, res) {
-            if (err) reject(err);
-            else resolve(res);
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
           });
       });
 
@@ -110,8 +119,11 @@ _.extend(StripeFunctions, {
           stripeID,
           stripeArgs,
           function (err, res) {
-            if (err) reject(err);
-            else resolve(res);
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
           });
       });
 
@@ -168,8 +180,11 @@ _.extend(StripeFunctions, {
         Stripe[stripeObject][stripeTask](
           stripeID,
           function (err, res) {
-            if (err) reject(err);
-            else resolve(res);
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
           });
       });
 
@@ -188,8 +203,11 @@ _.extend(StripeFunctions, {
           stripeID,
           stripeSupportingID,
           function (err, res) {
-            if (err) reject(err);
-            else resolve(res);
+            if (err) {
+              reject(err);
+            } else {
+              resolve(res);
+            }
           });
       });
 

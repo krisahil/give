@@ -25,7 +25,26 @@ Users misspell things, they change their address and phone numbers and sometimes
 
 ## Setup
 
-At this point you will need a developer to use this software. Give is a working system, but it does take some knowledge of Meteor/Node.js to configure and make it useful for your organization. I'm working hard to make this something that any organization can use.
+I'm working hard to make this something that any organization can use.
+
+Once you have this repo cloned you'll want to setup a settings.json file. This 
+is where your Donor Tools and Stripe settings go (you can use the example below 
+to get started) as well as your organization's domain name and other settings. 
+
+Before running this app edit the server/fixtures.js file and change the email 
+address to your address and a set a temporary password there too.
+
+Once you are logged in you should see the "Start Here!" label on the "Organization 
+Info." button. Click that and complete the form.
+
+Each time you complete a section, more of the app is unlocked.
+
+After the Organization Info. form is completed you'll see the Settings and Giving 
+Options buttons. 
+
+You'll want to complete the Settings form first, then the Giving Options. The 
+Giving Options section pulls in all the Donor Tools funds so that you can use 
+them to create all the giving options you want donors to be able to choose. 
 
 ## Example
 
@@ -40,8 +59,6 @@ Here is an example settings.json file
 ```
 {
   "dev": "****TEST****", //Remove this text. If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
-  "mandrillUsername": "Get a free Mandrill account http://mandrill.com/",
-  "mandrillKey": "http://mandrill.com/",
   "kadiraAppId": "Get a free account here https://kadira.io/",
   "kadiraAppSecret": "https://kadira.io/",
   "donor_tools_user": "",
@@ -61,32 +78,9 @@ Here is an example settings.json file
   },
   "public": {
     "dev": "****TEST****", // If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
-    "URL": "giving page URL, you should use https://"
-    "bcc_address": "this email is bcc'd anytime a gift receipt, schedule or pending email is sent",
-    "canceled_gift_address": "group email for notifying when a recurring gift is canceled",
-    "contact_address": "general contact email address",
-    "donor_tools_site": "Get a DonorTools site, there is a two week free trial. http://www.donortools.com. Then use the site name that is assigned to you. It should look like this https://your_name.donortools.com",
-    "full_org_name": "For example, 'Trash Mountain Project, Inc.'",
-    "heap_id": "If you want to use Heap to track your app analytics",
-    "large_gift_address": "group email for notifying when gifts larger than $500 are given",
     "newStuffVersion": "e.g. '0.9' This is used to show the user new updates and then increment those updates.",
-    "org_city": "Your org city",
     "org_domain": "Your org domain, for example 'trashmountain.com'",
-    "org_donate_url": "Your org donate page URL, for example 'https://trashmountain.com/donate'",
-    "org_ein": "Your org tax id/EIN",
-    "org_homepage_url": "Your org home page URL, for example 'https://trashmountain.com'",
-    "org_is_501c3": true,
-    "org_mission_statement": "Developing Christ-centered environments for children and families living in trash dump communities wordldwide.",
-    "org_name": "Your org name",
-    "org_phone": "Your org phone number",
-    "org_state": "Your org state",
-    "org_state_short": "Your org state abbreviation, for instance 'KS' for Kansas",
-    "org_street_address": "Your org street address, for example '1555 NW Gage BLVD",
-    "org_subdomain": "For example 'give' is the subdomain in this address -> https://give.trashmountain.com",
-    "org_zip": "Your org zip",
-    "other_support_addresses": ["array of addresses only currently used for the new account added emails"],
     "stripe_publishable: "publishable Stripe Key",
-    "support_address": "support email address",
   }
 }
 ```
