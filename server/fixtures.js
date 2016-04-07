@@ -10,7 +10,7 @@ Meteor.startup(function() {
     logger.info("Running fixtures");
 
     // CHANGE THE FIXTURE EMAIL BELOW
-    let email = 'josh.bechard@gmail.com';
+    let email = 'test@example.com';
     let tempPassword = 'sdie3030s,,@isS;';
     
     let initRoles = ['admin', 'admin-only', 'manager'];
