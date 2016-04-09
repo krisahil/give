@@ -187,6 +187,8 @@ Template.GivingOptions.events({
     let text;
     let description;
     let id;
+    let config = ConfigDoc();
+
 
     if ($(e.currentTarget).hasClass("group-option")) {
       text = $(e.currentTarget).val().toUpperCase();
@@ -207,7 +209,7 @@ Template.GivingOptions.events({
 
 
     // Store all the current options
-    let configOptions = Config.findOne() && Config.findOne().donationOptions;
+    let configOptions = config && config.donationOptions;
     // Find the indexOf this particular option
     let elementPos = configOptions.map(function(x) {return x.id ? x.id : x.groupId; }).indexOf(id);
     // Update the matching object
@@ -219,7 +221,7 @@ Template.GivingOptions.events({
       configOptions[elementPos].text = text;
     }
     // Store the new version of the configOptions
-    Config.update({_id: Session.get("configId")}, {
+    Config.update({_id: config._id}, {
       $set: {
         donationOptions: configOptions
       }
@@ -336,7 +338,8 @@ Template.GivingOptions.helpers({
     return Session.get("showDD");
   },
   configId: function() {
-    return Session.get("configId");
+    let config = ConfigDoc();
+    return config && config._id;
   }
 });
 
@@ -348,8 +351,10 @@ Template.GivingOptions.onCreated(function () {
 
 Template.GivingOptions.onRendered(function () {
 
+  let config = ConfigDoc();
+  
   // Set configId
-  Session.set("configId", Config.findOne() && Config.findOne()._id);
+  Session.set("configId", config && config._id);
   if (!Session.get("configId")) {
     console.log('no configuration id, need to setup the giving information first');
   } else {
@@ -357,8 +362,7 @@ Template.GivingOptions.onRendered(function () {
     sortableFunction();
   }
 
-  //var ConfigAllOptions = Config.findOne().GivingOptions;
-  var donationOptions = Config.findOne() && Config.findOne().donationOptions;
+  var donationOptions = config && config.donationOptions;
 
   if(donationOptions && donationOptions.length > 0){
 

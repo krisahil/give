@@ -1,22 +1,26 @@
+function logEvent(type) {
+  logger.info(type + ': event processed');
+}
+
 Stripe_Events = {
   'account.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'account.application.deauthorized': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'application_fee.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'application_fee.refunded': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'balance.available': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.pending': function (stripeEvent) {
@@ -45,7 +49,7 @@ Stripe_Events = {
       Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null);
     }
-    console.log( stripeEvent.type + ': event processed' );
+    logEvent( stripeEvent.type + ': event processed' );
     return;
   },
   'charge.succeeded': function (stripeEvent) {
@@ -77,7 +81,7 @@ Stripe_Events = {
           stripeEvent, "One Time", null );
       }
     }
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.failed': function (stripeEvent) {
@@ -103,7 +107,7 @@ Stripe_Events = {
       Utils.send_donation_email( false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null );
     }
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.refunded': function (stripeEvent) {
@@ -111,37 +115,37 @@ Stripe_Events = {
     let refund_object = Utils.stripe_get_refund(stripeEvent.data.object.refunds.data[0].id);
     console.log(refund_object);
     Refunds.upsert({_id: refund_object.id}, refund_object);
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.captured': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.updated': function (stripeEvent) {
     // TODO: Need to handle this
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.dispute.created': function (stripeEvent) {
     //TODO: need to send me an email so I can check into this
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.dispute.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'charge.dispute.closed': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.deleted': function (stripeEvent) {
@@ -163,50 +167,50 @@ Stripe_Events = {
         Meteor.users.update({'emails.address': stripeEvent.data.object.email}, {$set: {primary_customer_id: other_customers._id}});
     }
 
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.card.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.card.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.source.deleted': function (stripeEvent) {
     Devices.remove({_id: stripeEvent.data.object.id});
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.bank_account.deleted': function (stripeEvent) {
     Devices.remove({_id: stripeEvent.data.object.id});
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.card.deleted': function (stripeEvent) {
     Devices.remove({_id: stripeEvent.data.object.id});
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.source.created': function (stripeEvent) {
     StripeFunctions.store_stripe_event(stripeEvent);
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.source.updated': function (stripeEvent) {
     StripeFunctions.store_stripe_event(stripeEvent);
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.subscription.created': function (stripeEvent) {
     StripeFunctions.store_stripe_event(stripeEvent);
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.subscription.updated': function (stripeEvent) {
     StripeFunctions.store_stripe_event(stripeEvent);
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.subscription.deleted': function (stripeEvent) {
@@ -217,119 +221,119 @@ Stripe_Events = {
     // TODO: setup an email for sending to the user as well
     // TODO: include a link to resubscribe
 
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.subscription.trial_will_end': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.discount.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.discount.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'customer.discount.deleted': function (stripeEvent) {
     StripeFunctions.store_stripe_event(stripeEvent);
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoice.created': function (stripeEvent) {
     Utils.add_meta_from_subscription_to_charge(stripeEvent);
 
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoice.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoice.payment_succeeded': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoice.payment_failed': function (stripeEvent) {
     // TODO: Need to handle this
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoiceitem.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoiceitem.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'invoiceitem.deleted': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'plan.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'plan.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'plan.deleted': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'coupon.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'coupon.deleted': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'recipient.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'recipient.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'recipient.deleted': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'transfer.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'transfer.updated': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'transfer.paid': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'transfer.failed': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'bitcoin.receiver.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'bitcoin.receiver.transaction.created': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'bitcoin.receiver.filled': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   },
   'ping': function (stripeEvent) {
-    console.log(stripeEvent.type + ': event processed');
+    logEvent(stripeEvent.type);
     return;
   }
 };

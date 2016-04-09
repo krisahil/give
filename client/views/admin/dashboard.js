@@ -6,28 +6,28 @@ Template.Dashboard.helpers({
     return Session.get("showFixNoUser");
   },
   completedDonorTools: function() {
-    let config = Config.findOne({
-      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
-    });
-    return config && 
+    let config = ConfigDoc();
+
+    return config &&
       config.Settings &&
       config.Settings.DonorTools &&
       config.Settings.DonorTools.url;
   },
   donationOptions: function() {
-    let config = Config.findOne({
-      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
-    });
+    let config = ConfigDoc();
+
     return config && config.donationOptions;
   },
   showOtherThanConfig: function() {
-    let config = Config.findOne({
-      "OrgInfo.web.domain_name": Meteor.settings.public.org_domain
-    });
-    return config && config.donationOptions &&
+    let config = ConfigDoc();
+
+    if (config && config.donationOptions &&
       config.Settings &&
       config.Settings.DonorTools &&
-      config.Settings.DonorTools.url;
+      config.Settings.DonorTools.url ) {
+      return config.Settings.DonorTools.url;
+    }
+    return;
   }
 });
 

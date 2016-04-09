@@ -26,7 +26,6 @@ Template.AddNewBankAccount.events({
         Give.handleErrors( response.error );
       } else {
         // Call your backend
-        console.log(Session.get("updateSubscription"));
         let subscription_id = Session.get("updateSubscription");
         if(!subscription_id) {
           subscription_id = Session.get("sub");

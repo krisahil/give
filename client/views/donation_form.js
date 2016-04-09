@@ -4,7 +4,6 @@ function removeParam(key, sourceURL) {
   if (sourceURL.split("?").length < 2) {
     sourceURL = sourceURL + '?placeholder=';
   }
-  console.log(key, sourceURL);
   var rtn = sourceURL.split("?")[0],
     param,
     params_arr = [],

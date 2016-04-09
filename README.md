@@ -46,38 +46,18 @@ You'll want to complete the Settings form first, then the Giving Options. The
 Giving Options section pulls in all the Donor Tools funds so that you can use 
 them to create all the giving options you want donors to be able to choose. 
 
+## Webhooks 
+
+In order to get updates about charges, transfers and many other resources via Stripe 
+you'll need to point a webhook in the 
+<a href="https://dashboard.stripe.com/dashboard">Stripe dashboard</a> to 
+https://yourSiteURL/webhooks/stripe
+
 ## TODO
 
-Move these to the configuration and out of the setings.json file
+Move these to the configuration and out of the settings.json file
 
-  Kadira
-  
-  papertrail: {host: '', port: ''}
-  
-  sikka: {rateLimits: { "perIp": "100" }, 
-    "captcha": {
-      "siteKey": "",
-      "secret":  ""
-    } }
-    
   newStuffVersion
-  
-  donor_tools_default_fund_id
-  
-  donor_tools_gift_type
-  
-  donor_tools_individual_source_id
-  
-  donor_tools_org_source_id
-  
-  donor_tools_default_fund_id
-  
-  public.donor_tools_site
-  
-
-Change these from static references to pulling form the config
-
-  donation_type_id = 3921;
 
 ## Example
 
@@ -87,7 +67,7 @@ This is a live giving page, which is being used by Trash Mountain Project.
 
 ## Settings.json file
 
-Here is an example settings.json file
+Here is an example settings.json file. Each of the fields are required.
 
 ```
 {
@@ -99,6 +79,7 @@ Here is an example settings.json file
   },
   "public": {
     "dev": "****TEST****", // If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
+    "newStuffVersion": "e.g. '0.9' This is used to show the user new updates and then increment those updates.", // This is being deprecated
     "org_domain": "Your org domain, for example 'trashmountain.com'",
     "stripe_publishable: "publishable Stripe Key",
   }

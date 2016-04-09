@@ -36,7 +36,7 @@ Meteor.startup(function() {
     Meteor.setTimeout(()=> {
 
       // Set this fixture account to verified
-      Meteor.users.update({'emails.address': email}, {$set: {'emails.$.verified': true}});
+      Meteor.users.update({'emails.address': email}, {$set: {'emails.$.verified': true, profile: {}}});
 
       // Add roles to this account
       Roles.addUsersToRoles(user_id, ["admin", "admin-only"]);

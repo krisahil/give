@@ -37,14 +37,14 @@
         <!-- e: invoice header -->
 
         <section id="parties">
-            <div class="invoice-to">
+            <div class="col-md-8 col-sm-6 col-xs-12">
                 <h2>Donation To:</h2>
                 <div id="hcard" class="vcard">
-                    <a class="url fn" href={{org_homepage_url}}>{{org_name}}</a>
+                    <a class="url fn" href={{org_homepage_url}}>{{org_name}}</a><br>
                     <a class="email" href="mailto:{{contact_address}}">{{contact_address}}</a>
 
                     <div class="adr">
-                        <div class="street-address">{{org_street_address}}</div>
+                        <div class="street-address">{{{org_street_address}}}</div>
                         <span class="locality">{{org_city}}</span>
                         <span class="region">{{org_state_short}}</span>
                         <span class="postal-code">{{org_zip}}</span>
@@ -52,10 +52,10 @@
 
                     <div class="tel">{{org_phone}}</div>
                 </div><!-- e: vcard -->
-            </div><!-- e invoice-to -->
-            <div class="invoice-from"></div>
-            {{#with customer_data}}
-                <div class="invoice-from">
+                <br>
+            </div>
+            <div class="col-md-4 col-sm-6 col-xs-12">
+                {{#with customer_data}}
                     <h2>Donation From:</h2>
                     <div id="hcard-{{fname}}-{{lname}}" class="vcard">
                         <a class="fn">{{{business_name}}} {{fname}} {{lname}}</a><br>
@@ -72,56 +72,60 @@
                         <div class="tel">{{{phone}}}</div>
 
                     </div><!-- e: vcard -->
-                </div><!-- e invoice-from -->
-            {{/with}}
-        </section><!-- e: invoice partis -->
+                {{/with}}
+            </div>
+            <br>
+        </section><!-- e: invoice parties -->
 
+        <section class="invoice-financials">
+                <div class="invoice-items">
+                    <table>
+                        <caption>Your Donation:</caption>
+                        <thead>
+                        <tr>
+                            <th>Designation</th>
+                            <th>Donated with</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#with charges}}
+                        <tr>
+                            <th>{{donateTo}}</th>
+                            <td class="donateWith text-left">
+                                {{donateWith}}
+                            </td>
+                            <td>${{amount}}</td>
+                        </tr>
+                        {{{fees}}}
+                        {{/with}}
+                        </tbody>
+                    </table>
+                </div><!-- e: invoice totals -->
 
-            <section class="invoice-financials">
-                    <div class="invoice-items">
-                        <table>
-                            <caption>Your Donation:</caption>
-                            <thead>
-                            <tr>
-                                <th>Designation</th>
-                                <th>Donated with</th>
-                                <th>Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {{#with charges}}
-                            <tr>
-                                <th>{{donateTo}}</th>
-                                <td class="donateWith text-left">
-                                    {{donateWith}}
-                                </td>
-                                <td>${{amount}}</td>
-                            </tr>
-                            {{{fees}}}
-                            {{/with}}
-                            </tbody>
-                        </table>
-                    </div><!-- e: invoice totals -->
+            <div class="invoice-notes">
+                <h6>For Tax Purposes:</h6>
+                <p>Thank you for your donation of ${{#with charges}}{{total_amount}}{{/with}} to {{full_org_name}}.
+                    We know that our efforts are only possible because of the
+                    contributions we receive from generous donors like you,
+                    and we thank you again for believing in and supporting
+                    our mission.
+                </p>
+                <p>The estimated value of any goods or services provided in return for your donation is $0.
+                Please keep this written acknowledgment of your donation for your {{#if org_is_501c3}}tax {{/if}}records.</p>
 
-                <div class="invoice-notes">
-                    <h6>For Your Tax Purposes:</h6>
-                    <p>Thank you for your donation of ${{#with charges}}{{total_amount}}{{/with}} to {{full_org_name}}.
-                        We know that our efforts are only possible because of the
-                        contributions we receive from generous donors like you,
-                        and we thank you again for believing in and supporting
-                        our mission.
-                    </p>
-                    <p>The estimated value of any goods or services provided in return for your donation is $0.
-                    Please keep this written acknowledgment of your donation for your tax records.</p>
+            </div><!-- e: invoice-notes -->
 
-                </div><!-- e: invoice-notes -->
-
-            </section><!-- e: invoice financials -->
+        </section><!-- e: invoice financials -->
 
         <footer id="footer">
-            <p>
-                As a 501(c)3 non-profit organization, all contributions to {{org_name}} are tax deductible under 170(c)2 of the Internal Revenue Code. {{org_name}}  EIN {{org_ein}}
-            </p>
+            {{#if org_is_501c3}}
+                <p>
+                    As a 501(c)3 non-profit organization, all contributions to {{full_org_name}}
+                    are tax deductible under 170(c)2 of the Internal Revenue Code. {{full_org_name}}
+                    EIN {{org_ein}}
+                </p>
+            {{/if}}
             <p class="hidden-print">
                 <a id="printLink" href="">Click to Print</a>
             </p>

@@ -14,7 +14,8 @@ Router.plugin('ensureSignedIn', {
 
 Router.onAfterAction(function() {
   Meteor.setTimeout(() => {
-    let config = Config.findOne();
+    let config = ConfigDoc();
+
     if (!(config && config.Settings && config.Settings.showDonatePage)){
       this.render("SetupNotComplete");
     }
@@ -391,6 +392,17 @@ Router.route('/dashboard/orginfo', {
 
 Router.route('/dashboard/settings', {
   name: 'settings',
+  where: 'client',
+  waitOn: function() {
+    return Meteor.subscribe('wholeConfigDoc');
+  },
+  data: function() {
+    return Config.find();
+  }
+});
+
+Router.route('/dashboard/services', {
+  name: 'services',
   where: 'client',
   waitOn: function() {
     return Meteor.subscribe('wholeConfigDoc');

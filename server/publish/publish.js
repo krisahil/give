@@ -426,12 +426,27 @@ Meteor.publish("config", function () {
     'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
   }, {
     fields: {
-      'OrgInfo.web.domain_name': 1,
+      'OrgInfo.web': 1,
+      'OrgInfo.name': 1,
+      'OrgInfo.full_name': 1,
+      'OrgInfo.logoURL': 1,
+      'OrgInfo.phone': 1,
+      'OrgInfo.is_501c3': 1,
+      'OrgInfo.ein': 1,
+      'OrgInfo.address': 1,
+      'OrgInfo.mission_statement': 1,
+      'OrgInfo.emails.contact': 1,
+      'OrgInfo.emails.support': 1,
+      'Services.Analytics.heapId': 1,
+      'Settings.Stripe.keysPublishableExists': 1,
+      'Settings.Stripe.keysSecretExists': 1,
+      'Settings.DonorTools.usernameExists': 1,
+      'Settings.DonorTools.passwordExists': 1,
       'Settings.ach_verification_type': 1,
       'Settings.showDonatePage': 1,
+      'Settings.doNotAllowOneTimeACH': 1,
       'Settings.collectBankAccountType': 1,
       'Settings.forceACHDay': 1,
-      'Settings.doNotAllowOneTimeACH': 1,
       'Settings.DonorTools.url': 1,
       'donationOptions': 1
     }

@@ -1,3 +1,14 @@
+let config = ConfigDoc();
+
+let host, port;
+if (config &&
+  config.Services &&
+  config.Services.Papertrail &&
+  config.Services.Papertrail.host &&
+  config.Services.Papertrail.port) {
+  host = config.Services.Papertrail.host;
+  port = config.Services.Papertrail.port;
+}
 //creating a global server logger
 logger = Winston;
 
@@ -17,8 +28,8 @@ logger.add(Winston_Papertrail, {
     auth: 'red'
   },
 
-  host: Meteor.settings.papertrail.host,
-  port: Meteor.settings.papertrail.port, //this will be change from the papertrail account to account
+  host: host ? host : 'localhost',
+  port: port ? port : '1234', // this change from papertrail account to account
   handleExceptions: true,
   json: true,
   colorize: true,
@@ -27,16 +38,4 @@ logger.add(Winston_Papertrail, {
   }
 });
 
-
-logger.info(" =====> Meteor App restarted " + new Date( Date.now()) + " <=====");
-//consoleLogger.debug(" =====> Meteor App restarted "+ new Date( Date.now()) +" <=====");
-
-
-Meteor.methods( {
-    // This method can be (not in use yet) used on the client side to send logs to papertrailapp.com
-    clientLog: function ( message ) {
-      check(message, String);
-      logger.info( "client-side-log ", message );
-    }
-  }
-);
+logger.info(" =====> Give restarted " + new Date( Date.now()) + " <=====");

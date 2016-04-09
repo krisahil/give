@@ -24,7 +24,7 @@
                             {{#if configExists}}
                                 <div class="col-sm-2">
                                     {{#if $not completedDonorTools}}
-                                        <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
+                                        <span style="" class="badge alert-badge backgroundColor indianred">Needs a Donor Tools URL!</span>
                                     {{/if}}
                                     <a id="settings-dashboard-button" class="quick-button backgroundColor primary"
                                        href="/dashboard/settings">
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     {{#if $not donationOptions}}
-                                        <span style="" class="badge alert-badge backgroundColor indianred">Needs info!</span>
+                                        <span style="" class="badge alert-badge backgroundColor indianred">Setup After Donor Tools URL</span>
                                     {{/if}}
                                     <a id="giving-options" class="quick-button backgroundColor primary"
                                        href="/dashboard/giving_options">
@@ -44,6 +44,15 @@
                                     <i class="fa fa-repeat"></i>
                                 </span>
                                         <h5>Giving Options</h5>
+                                    </a>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a id="services-dashboard-button" class="quick-button backgroundColor primary"
+                                       href="/dashboard/services">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-server"></i>
+                                    </span>
+                                        <h5>Services</h5>
                                     </a>
                                 </div>
                             {{/if}}

@@ -1,5 +1,3 @@
-var config = Config.findOne({"OrgInfo.web.domain_name": Meteor.settings.public.org_domain});
-
 Template.registerHelper('formatTime', function(context) {
   if (context) {
     return moment( context ).format( 'MM/DD/YYYY, hh:mma' );
@@ -186,6 +184,8 @@ Template.registerHelper('doNotShowOneTime', function() {
   if (Session.equals("paymentMethod", "Card")) {
     return false;
   } else {
+    let config = ConfigDoc();
+
     if (config && config.Settings && config.Settings.doNotAllowOneTimeACH) {
       // set monthly
       $("#is_recurring").val("monthly");
@@ -197,6 +197,8 @@ Template.registerHelper('doNotShowOneTime', function() {
 
 Template.registerHelper('forceACHDay', function() {
   let newRecurringDate;
+  let config = ConfigDoc();
+
   if (Session.equals("paymentMethod", "Card") ||
     (config && config.Settings && config.Settings.forceACHDay === 'any')) {
     newRecurringDate =  moment().format('D MMM, YYYY');
@@ -220,6 +222,8 @@ Template.registerHelper('forceACHDay', function() {
 });
 
 Template.registerHelper('collectBankAccountType', function() {
+  let config = ConfigDoc();
+
   if (config && config.Settings && config.Settings.collectBankAccountType) {
     return true;
   }
@@ -285,9 +289,11 @@ Template.registerHelper( 'tutorialEnabled', ( ) => {
 });
 
 Template.registerHelper( 'contact_us', ( ) => {
-  return '<a class="email" href="mailto:' + Meteor.settings.public.support_address + '">' +
-    Meteor.settings.public.support_address + '</a><div class="tel">' +
-    Meteor.settings.public.org_phone + '</div>';
+  let config = ConfigDoc();
+
+  return '<a class="email" href="mailto:' +  config.OrgInfo.emails.contact && + '">' +
+    config.OrgInfo.emails.support + '</a><div class="tel">' +
+    config.OrgInfo.emails.phone + '</div>';
 });
 
 Template.registerHelper( 'not_safari', () => {
@@ -309,106 +315,15 @@ Template.registerHelper( 'searchValue', function() {
   return Session.get("searchValue");
 });
 
-/*
-*  Config helpers
-*  */
-
 Template.registerHelper('configExists', function() {
-  let trackedConfig = Tracker.autorun(function () {
-    return config;
-  });
-  return trackedConfig;
+  let config = ConfigDoc();
+  return config;
 });
 
 Template.registerHelper( 'stripe_ach_verification_type', () => {
+  let config = ConfigDoc();
+
   return config &&
     config.Settings &&
     config.Settings.ach_verification_type;
-});
-
-Template.registerHelper( 'support_emails', ( ) => {
-  return config &&
-    config.OrgInfo &&
-    config.OrgInfo.emails &&
-    config.OrgInfo.emails.support;
-});
-
-/*
-*  Meteor.settings.public helpers
-*  */
-
-Template.registerHelper( 'URL', ( ) => {
-  return Meteor.settings.public.URL;
-});
-Template.registerHelper( 'bcc_address', ( ) => {
-  return Meteor.settings.public.bcc_address;
-});
-Template.registerHelper( 'canceled_gift_address', ( ) => {
-  return Meteor.settings.public.canceled_gift_address;
-});
-Template.registerHelper( 'contact_address', ( ) => {
-  return Meteor.settings.public.contact_address;
-});
-Template.registerHelper( 'donor_tools_site', ( ) => {
-  return Meteor.settings.public.donor_tools_site;
-});
-Template.registerHelper( 'full_org_name', ( ) => {
-  return Meteor.settings.public.full_org_name;
-});
-Template.registerHelper( 'heap_id', ( ) => {
-  return Meteor.settings.public.heap_id;
-});
-Template.registerHelper( 'large_gift_address', ( ) => {
-  return Meteor.settings.public.large_gift_address;
-});
-Template.registerHelper( 'org_city', ( ) => {
-  return Meteor.settings.public.org_city;
-});
-Template.registerHelper( 'org_domain', ( ) => {
-  return Meteor.settings.public.org_domain;
-});
-Template.registerHelper( 'org_donate_url', ( ) => {
-  return Meteor.settings.public.org_donate_url;
-});
-Template.registerHelper( 'org_ein', ( ) => {
-  return Meteor.settings.public.org_ein;
-});
-Template.registerHelper( 'org_homepage_url', ( ) => {
-  return Meteor.settings.public.org_homepage_url;
-});
-Template.registerHelper( 'org_is_501c3', ( ) => {
-  return Meteor.settings.public.org_is_501c3;
-});
-Template.registerHelper( 'org_mission_statement', ( ) => {
-  return Meteor.settings.public.org_mission_statement;
-});
-Template.registerHelper( 'org_name', ( ) => {
-  return Meteor.settings.public.org_name;
-});
-Template.registerHelper( 'org_phone', ( ) => {
-  return Meteor.settings.public.org_phone;
-});
-Template.registerHelper( 'org_state', ( ) => {
-  return Meteor.settings.public.org_state;
-});
-Template.registerHelper( 'org_state_short', ( ) => {
-  return Meteor.settings.public.org_state_short;
-});
-Template.registerHelper( 'org_street_address', ( ) => {
-  return Meteor.settings.public.org_street_address;
-});
-Template.registerHelper( 'org_subdomain', ( ) => {
-  return Meteor.settings.public.org_subdomain;
-});
-Template.registerHelper( 'org_zip', ( ) => {
-  return Meteor.settings.public.org_zip;
-});
-Template.registerHelper( 'other_support_addresses', ( ) => {
-  return Meteor.settings.public.other_support_addresses;
-});
-Template.registerHelper( 'stripe_publishable', ( ) => {
-  return Meteor.settings.public.stripe_publishable;
-});
-Template.registerHelper( 'support_address', ( ) => {
-  return Meteor.settings.public.support_address;
 });

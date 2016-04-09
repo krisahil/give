@@ -1,7 +1,10 @@
 function configBasicsSetup() {
-  let config = Config.findOne({
+  // Not using the function 'ConfigDoc()' to assign this because this runs on both
+  // the client and the server
+  let config = Config.findOne( {
     'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
   });
+
   if (config &&
     config.Settings &&
     config.Settings.DonorTools &&
@@ -9,7 +12,7 @@ function configBasicsSetup() {
     config.Settings.DonorTools.usernameExists &&
     config.Settings.DonorTools.passwordExists &&
     config.Settings.Stripe.keysPublishableExists &&
-    config.Settings.Stripe.keysPublishableExists &&
+    config.Settings.Stripe.keysSecretExists &&
     config.donationOptions) {
     return true;
   } else {
@@ -116,18 +119,6 @@ Schema.OrgInfo = new SimpleSchema({
       }
     }
   },
-  "date_founded": {
-    type: Date,
-    label: "Date Founded",
-    optional: true,
-    autoform: {
-      type: "bootstrap-datepicker",
-      datePickerOptions: {
-        autoclose: true,
-        endDate: new Date()
-      }
-    }
-  },
   "emails": {
     type: Object,
     label: "Emails used for below scenarios",
@@ -157,12 +148,12 @@ Schema.OrgInfo = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Email,
     optional: true
   },
-  "emails.other_support_addresses": {
+  "emails.otherSupportAddresses": {
     type: Array,
     label: "Any additional support address you would like to be CC'd",
     optional: true
   },
-  "emails.other_support_addresses.$": {
+  "emails.otherSupportAddresses.$": {
     type: String,
     regEx: SimpleSchema.RegEx.Email,
     optional: true
@@ -228,21 +219,66 @@ Schema.OrgInfo = new SimpleSchema({
     type: String,
     label: "The subdomain you would like 'Give' to run at",
     optional: true
-  },
-  "other": {
+  }
+});
+
+Schema.Services = new SimpleSchema({
+  Kadira: {
     type: Object,
-    label: "Other info.",
     optional: true,
     autoform: {
       panelClass: "panel-info"
     }
   },
-  "other.heap_analytics_id": {
-    type: Number,
-    label: "Heap analytics ID",
-    max: 9999999999,
+  "Kadira.appId": {
+    type: String,
+    label: "App ID",
     optional: true
-  }
+  },
+  "Kadira.appSecret": {
+    type: String,
+    label: "App Secret",
+    optional: true
+  },
+  Papertrail: {
+    type: Object,
+    optional: true,
+    autoform: {
+      panelClass: "panel-info",
+      afFieldInput: {
+        class: 'slim-borders'
+      }
+    }
+  },
+  "Papertrail.host": {
+    type: String,
+    label: "Host",
+    optional: true,
+    autoform: {
+      placeholder: "Your Papertrailapp host address (e.g., logs.papertrailapp.com)"
+    },
+    regEx: SimpleSchema.RegEx.Domain
+  },
+  "Papertrail.port": {
+    type: Number,
+    label: "Port",
+    optional: true
+  },
+  Analytics: {
+    type: Object,
+    optional: true,
+    autoform: {
+      panelClass: "panel-info",
+      afFieldInput: {
+        class: 'slim-borders'
+      }
+    }
+  },
+  "Analytics.heapId": {
+    type: String,
+    label: "Heap ID",
+    optional: true
+  }  
 });
 
 Schema.Settings = new SimpleSchema({
@@ -348,6 +384,46 @@ Schema.Settings = new SimpleSchema({
     },
     regEx: SimpleSchema.RegEx.Url
   },
+  "DonorTools.customDataTypeId": {
+    type: Number,
+    label: "Custom Data Type ID for Give",
+    optional: true,
+    autoform: {
+      placeholder: "Go to your Donor Tools page and then to /settings/donation_type to find or create the ID"
+    }
+  },
+  "DonorTools.defaultFundId": {
+    type: Number,
+    label: "Default Fund ID",
+    optional: true,
+    autoform: {
+      placeholder: "The fund ID you'd like to use if no other match can be found"
+    }
+  },
+  "DonorTools.defaultSourceIdForIndividualDonor": {
+    type: Number,
+    label: "Default Individual Source ID",
+    optional: true,
+    autoform: {
+      placeholder: "The source ID you'd like to use for an individual's gift"
+    }
+  },
+  "DonorTools.defaultSourceIdForOrganizationDonor": {
+    type: Number,
+    label: "Default Organization Source ID",
+    optional: true,
+    autoform: {
+      placeholder: "The source ID you'd like to use for an organization's gift"
+    }
+  },
+  "DonorTools.failedDonationTypeId": {
+    type: Number,
+    label: "Failed Data Type ID",
+    autoform: {
+      placeholder: "If a gift fails it will be updated with this data type ID"
+    },
+    optional: true
+  },
   Stripe: {
     type: Object,
     optional: true,
@@ -403,6 +479,16 @@ Schema.Config = new SimpleSchema({
       omit: true
     }
   },
+  "OrgInfo": {
+    type: Schema.OrgInfo,
+    optional: true,
+    autoform: {
+      panelClass: "panel-primary",
+      afFieldInput: {
+        class: 'slim-borders'
+      }
+    }
+  },
   "Settings": {
     type: Schema.Settings,
     optional: true,
@@ -413,8 +499,8 @@ Schema.Config = new SimpleSchema({
       }
     }
   },
-  "OrgInfo": {
-    type: Schema.OrgInfo,
+  "Services": {
+    type: Schema.Services,
     optional: true,
     autoform: {
       panelClass: "panel-primary",
@@ -492,6 +578,72 @@ Schema.UserProfile = new SimpleSchema({
         label: false
       }
     }
+  },
+  others: {
+    type: Array,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "others.$": {
+    type: Object,
+    optional: true
+  },
+  "others.$.fname": {
+    type: String,
+    optional: true,
+    label: 'First Name'
+  },
+  "others.$.lname": {
+    type: String,
+    optional: true,
+    label: 'Last Name'
+  },
+  "others.$.address": {
+    type: Object,
+    optional: true
+  },
+  "others.$.address.address_line1": {
+    type: String,
+    optional: true,
+    label: 'Address Line 1'
+  },
+  "others.$.address.address_line2": {
+    type: String,
+    optional: true,
+    label: 'Address Line 2'
+  },
+  "others.$.address.city": {
+    type: String,
+    optional: true,
+    label: 'City'
+  },
+  "others.$.address.state": {
+    type: String,
+    optional: true,
+    label: 'State'
+  },
+  "others.$.address.country": {
+    type: String,
+    optional: true,
+    label: 'Country'
+  },
+  "others.$.address.postal_code": {
+    type: String,
+    optional: true,
+    regEx: SimpleSchema.RegEx.ZipCode,
+    label: 'Postal Code'
+  },
+  "others.$.business_name": {
+    type: String,
+    optional: true,
+    label: 'Organization Name'
+  },
+  "others.$.phone": {
+    type: String,
+    optional: true,
+    label: 'Phone Number'
   }
 });
 
@@ -817,6 +969,19 @@ Schema.OrgInfoForm = new SimpleSchema({
     optional: true,
     autoform: {
       panelClass: "panel-primary",
+      afFieldInput: {
+        class: 'slim-borders'
+      }
+    }
+  }
+});
+
+Schema.ServicesForm = new SimpleSchema({
+  "Services": {
+    type: Schema.Services,
+    optional: true,
+    autoform: {
+      panelClass: "panel panel-primary",
       afFieldInput: {
         class: 'slim-borders'
       }

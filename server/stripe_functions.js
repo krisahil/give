@@ -10,7 +10,7 @@ _.extend(StripeFunctions, {
    */
   stripe_create: function ( stripeObject, stripeArgs ) {
     logger.info("Started stripe_create");
-    console.log(stripeObject, stripeArgs);
+    logger.info(stripeObject, stripeArgs);
 
     let stripeResource = new Promise(function (resolve, reject) {
       Stripe[stripeObject].create(
@@ -173,7 +173,7 @@ _.extend(StripeFunctions, {
    */
   stripe_delete: function ( stripeObject, stripeTask, stripeID, stripeSupportingID ) {
     logger.info("Started stripe_delete");
-    console.log(stripeObject, stripeTask, stripeID, stripeSupportingID);
+    logger.info(stripeObject, stripeTask, stripeID, stripeSupportingID);
 
     if (!stripeSupportingID) {
       let stripeResource = new Promise(function (resolve, reject) {
@@ -238,7 +238,7 @@ _.extend(StripeFunctions, {
     // Did this event come from Stripe?
     if( STRIPE_REQUEST ){
 
-      console.log(STRIPE_REQUEST.type);
+      logger.info(STRIPE_REQUEST.type);
       // Did it come as a pending charge event?
       if(STRIPE_REQUEST.type === 'charge.pending') {
 

@@ -11,38 +11,9 @@ function checkDependantStates() {
     $('[name="Settings.forceACHDay"]').val('any');
     $('[name="Settings.forceACHDay"]').prop('disabled', true);
   }
-  let config = Config.findOne({
-    'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
-  });
-
 }
 
 AutoForm.hooks({
-  'updateInfoSection': {
-    onSuccess: function () {
-      Bert.alert({
-        message: "Good work",
-        type: 'success',
-        icon: 'fa-smile-o',
-        style: 'growl-bottom-right'
-      });
-
-      Meteor.call("afterUpdateInfoSection", function(err, res) {
-        if(!err) console.log(res);
-      });
-      
-      Router.go("Dashboard");
-    },
-    onError: function(formType, error) {
-      console.error(error);
-      Bert.alert({
-        message: "Looks like you might be missing some required fields.",
-        type: 'danger',
-        icon: 'fa-frown-o',
-        style: 'growl-bottom-right'
-      });
-    }
-  },
   'updateSettingsSection': {
     onSuccess: function() {
       Meteor.call("get_dt_funds", function(error, result) {
@@ -52,6 +23,15 @@ AutoForm.hooks({
           console.error(error);
         }
       });
+      
+      // Send an email to all the admins letting them know about this change.
+      Meteor.call("sendChangeConfigNotice", 'settings', function(error, result) {
+        if (result) {
+          console.log("Sent");
+        } else {
+          console.error(error);
+        }
+      });      
       Bert.alert({
         message: "Great, thanks",
         type: 'success',
@@ -72,31 +52,6 @@ AutoForm.hooks({
   }
 });
 
-Template.OrgInfo.onCreated(function () {
-  this.formType = new ReactiveVar('insert');
-});
-Template.OrgInfo.onRendered(function () {
-  $("[name='OrgInfo.phone']").mask("(999) 999-9999");
-  $("#updateInfoSection").parsley();
-});
-
-Template.OrgInfo.helpers({
-  configDoc: function () {
-    let config = Config.findOne({
-      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
-    });
-    if (config) {
-      Template.instance().formType.set('update');
-      return config;
-    }
-    return;
-  },
-  formType: function() {
-    var formType = Template.instance().formType.get();
-    return formType;
-  }
-});
-
 Template.Settings.onRendered(function () {
   $("[name='Settings.ach_verification_type']").attr('required', true);
   $("[name='Settings.DonorTools.url']").attr('required', true);
@@ -105,12 +60,11 @@ Template.Settings.onRendered(function () {
 });
 
 Template.Settings.helpers({
-  configDoc: function () {
-    let org_info = Config.findOne({
-      'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
-    });
-    if (org_info) {
-      return org_info;
+  configDocument: function () {
+    let config = ConfigDoc();
+
+    if (config) {
+      return config;
     }
     return;
   }

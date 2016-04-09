@@ -176,7 +176,13 @@ Template.UserProfile.events({
 
     var updateThis = {};
     updateThis.profile = Meteor.user() && Meteor.user().profile;
-    updateThis.profile[Session.get('activeTab')] = fields;
+    if (updateThis.profile) {
+      updateThis.profile.others[Session.get('activeTab')] = fields;
+    } else {
+      updateThis.profile = {};
+      updateThis.profile.others = [];
+      updateThis.profile.others[Session.get('activeTab')] = fields;
+    }
 
     // Update the Meteor.user profile
     Meteor.users.update({_id: Meteor.user()._id}, {$set:  updateThis});
@@ -273,7 +279,7 @@ Template.UserProfile.onRendered(function() {
 
   $('#myTabs li:first').addClass('active');
 
-  //$("a[href='" + Session.get('activeTab') + "' ]").addClass('active');
+  $("a[href='" + Session.get('activeTab') + "' ]").addClass('active');
 
   $('.tab-pane:first').addClass('active');
 

@@ -1,6 +1,5 @@
 Template.DonationTo.events({
   'change #donateTo': function() {
-    console.log("Test");
     if ($('#donateTo').val() !== 'WriteIn') {
       $('#giftDesignationText').hide();
       Session.set('showWriteIn', 'no');

@@ -1,38 +1,74 @@
 import FS from 'fs';
-import {config} from '/server/imports/config.js';
+let config = ConfigDoc();
 
 Meteor.methods({
+  /**
+   * check that the connection to DonorTools is up
+   *
+   * @method sendChangeConfigNotice
+   * @param {String} from - The section of the configuration area that this update was made in
+   */
+  sendChangeConfigNotice: function(from){
+    logger.info( "Started method checkDonorTools." );
+
+    check(from, String);
+    this.unblock();
+    Utils.send_change_email_notice_to_admins( this.userId, from);
+    return 'Done';
+  },
+  /**
+   * check that the connection to DonorTools is up
+   *
+   * @method checkDonorTools
+   */
+  checkDonorTools: function () {
+    logger.info( "Started method checkDonorTools." );
+    
+    this.unblock();
+    try {
+      if (config && config.Settings && config.Settings.DonorTools && config.Settings.DonorTools.url) {
+        const result = Utils.http_get_donortools("/settings/name_types.json");
+        if (result) {
+          return true;
+        }
+      }
+      logger.error("No DonorTools url set.");
+      return;
+    } catch (e) {
+      throw new Meteor.Error(500, "No connection to DT found.");
+    }
+  },
   get_dt_funds: function() {
     logger.info( "Started method get_dt_funds." );
-
     try {
       this.unblock();
-        //check to see that the user is the admin user
-        if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
-            logger.info("Started get_dt_funds");
-            var fundResults;
+      //check to see that the user is the admin user
+      if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
+        logger.info("Started get_dt_funds");
+        var fundResults;
 
-          console.log(config);
-            if (config && config.Settings && config.Settings.DonorTools && config.Settings.DonorTools.url) {
-              fundResults = HTTP.get( config.Settings.DonorTools.url + '/settings/funds.json?per_page=1000', {
-                auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-              } );
-              Utils.separate_funds( fundResults.data );
-              return fundResults.data;
-            } else {
-              logger.error("No DonorTools url set.");
-              return;
-            }
+        console.log(config);
+
+        let config2 = Config.findOne({'OrgInfo.web.domain_name': Meteor.settings.public.org_domain});
+        console.log(config2);
+        if (config2 && config2.Settings && config2.Settings.DonorTools && config2.Settings.DonorTools.url) {
+          fundResults = Utils.http_get_donortools('/settings/funds.json?per_page=1000');
+          Utils.separate_funds( fundResults.data );
+          return fundResults.data;
         } else {
-            logger.error("You aren't an admin, you can't do that");
-            return;
+          logger.error("No DonorTools url set.");
+          return;
         }
-      } catch (e) {
-        logger.info(e);
-        //e._id = AllErrors.insert(e.response);
-        var error = (e.response);
-        throw new Meteor.Error(error, e._id);
+      } else {
+        logger.error("You aren't an admin, you can't do that");
+        return;
       }
+    } catch (e) {
+      logger.info(e);
+      //e._id = AllErrors.insert(e.response);
+      var error = (e.response);
+      throw new Meteor.Error(error, e._id);
+    }
   },
   get_dt_sources: function() {
     logger.info( "Started method get_dt_funds." );
@@ -42,9 +78,7 @@ Meteor.methods({
         if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
           logger.info("Started get_dt_sources");
           var sourceResults;
-          sourceResults = HTTP.get(Meteor.settings.public.donor_tools_site + '/settings/sources.json?per_page=1000', {
-            auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-          });
+          sourceResults = Utils.http_get_donortools('/settings/sources.json?per_page=1000');
           Utils.separate_sources(sourceResults.data);
           return sourceResults.data;
         } else {
@@ -325,7 +359,7 @@ Meteor.methods({
 
       if( persona_ids && persona_ids.length ) {
         // The persona_ids let is an array
-        logger.info( "Multiple persona_ids found: ", persona_ids );
+        logger.info( "persona_ids found: ", persona_ids );
 
 
         // Since the donor tools information can change way down in the record
@@ -337,18 +371,14 @@ Meteor.methods({
 
         // Loop through the persona_ids
         _.forEach(persona_ids, function(each_persona_id) {
-            let personaResult = HTTP.get( Meteor.settings.public.donor_tools_site + "/people/" + each_persona_id + ".json", {
-              auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-            } );
+            let personaResult = Utils.http_get_donortools("/people/" + each_persona_id + ".json");
             set_this_array.push( personaResult.data.persona );
           console.log(personaResult.data.persona);
 
         });
       } else if( persona_ids ){
         logger.info("Single persona_id found: ", persona_ids);
-        let personaResult = HTTP.get(Meteor.settings.public.donor_tools_site + "/people/" + persona_ids + ".json", {
-          auth: Meteor.settings.donor_tools_user + ':' + Meteor.settings.donor_tools_password
-        });
+        let personaResult = Utils.http_get_donortools("/people/" + persona_ids + ".json");
         console.log(personaResult.data.persona);
         set_this_array.push(personaResult.data.persona);
       } else if(!Meteor.users.findOne({_id: userID}).persona_info &&
@@ -397,11 +427,7 @@ Meteor.methods({
       logger.info("Moving donation to: " + move_to_id);
 
       // Get the donation from DT
-      var get_donation = HTTP.get(Meteor.settings.public.donor_tools_site +
-        '/donations/' + donation_id + '.json', {
-          auth: Meteor.settings.donor_tools_user + ':' +
-            Meteor.settings.donor_tools_password
-      });
+      var get_donation = Utils.http_get_donortools('/donations/' + donation_id + '.json');
 
       console.dir(get_donation.data.donation);
       var moved_from_id = get_donation.data.donation.persona_id;
@@ -1035,7 +1061,7 @@ Meteor.methods({
   afterUpdateInfoSection: function() {
     logger.info("Started afterUpdateInfoSection method");
 
-    try {
+    /*try {*/
       this.unblock();
       if( Roles.userIsInRole( this.userId, ['admin', 'manager'] ) ) {
 
@@ -1046,11 +1072,11 @@ Meteor.methods({
         // guests
 
         if (config) {
-          if (!config.Settings.DonorTools) {
+          if (!(config && config.Settings && config.Settings.DonorTools)) {
             config.Settings.DonorTools = {};
           }
 
-          if (!config.Settings.Stripe) {
+          if (!(config && config.Settings && config.Settings.Stripe)) {
             config.Settings.Stripe = {};
           }
 
@@ -1074,10 +1100,14 @@ Meteor.methods({
           } else {
             config.Settings.Stripe.keysSecretExists = false;
           }
-          Config.update({_id: config._id}, {$set: config});
+          let waitForConfigUpdate = Config.update({_id: config._id}, {$set: config});
         }
 
-        if (config.Settings.Stripe.keysSecretExists && config.Settings.Stripe.keysPublishableExists) {
+        if (config &&
+          config.Settings &&
+          config.Settings.Stripe &&
+          config.Settings.Stripe.keysSecretExists &&
+          config.Settings.Stripe.keysPublishableExists) {
           // If the necessary Stripe keys exist then create the Stripe plans needed for Give
           Utils.create_stripe_plans();
         }
@@ -1088,10 +1118,10 @@ Meteor.methods({
 
         }
       }
-    } catch(e) {
+    /*} catch(e) {
       console.log(e);
       throw new Meteor.Error(e);
-    }
+    }*/
   },
   manual_gift_processed: function(donation_id) {
     logger.info("Started manual_gift_processed method");

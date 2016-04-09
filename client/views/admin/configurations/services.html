@@ -1,0 +1,14 @@
+<template name="Services">
+    <div class="text-center">
+        <p>
+            For more info. on these services,
+            <a href="https://github.com/c316/give/blob/master/README.md">
+                read the docs
+            </a>
+        </p>
+    </div>
+    <div class="container services-section">
+        {{> quickForm collection="Config" schema="Schema.ServicesForm" doc=configDocument
+        id="updateServicesSection" type='update' template="bootstrap3"}}
+    </div>
+</template>

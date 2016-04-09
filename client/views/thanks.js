@@ -30,15 +30,17 @@ Template.Thanks.helpers({
             </p>";
     },
     failedTrans: function () {
-        var referrer = Donations.findOne().URL;
+      let config = ConfigDoc();
+
+      var referrer = Donations.findOne().URL;
         var errorMessage = Charges.findOne().failure_code ? Charges.findOne().failure_code + " " + Charges.findOne().failure_message : 'The error we got from the card \
     processor was not very helpful so instead of displaying their cryptic error message you got this message, sorry we could not be more helpful.';
         if(!referrer || !errorMessage) {
             return "<h3 class='text-center badText'>Something went wrong.</h3>\
           <p class='text-center alert alert-error'>\
-            We weren't able to process your gift. Please <a href='" + Meteor.settings.public.org_donate_url + "'>go back</a> and try again.\
+            We weren't able to process your gift. Please <a href='" + config.OrgInfo.web.domain_name + "/landing'>go back</a> and try again.\
             <br>\
-            <a id='failed_icon' href='" + Meteor.settings.public.org_donate_url + "'><i class='fa fa-arrow-left large-arrow'></i></a>\
+            <a id='failed_icon' href='" + config.OrgInfo.web.domain_name + "/landing'><i class='fa fa-arrow-left large-arrow'></i></a>\
           </p>";
         }
         return "<h3 class='text-center badText'>Something went wrong.</h3>\

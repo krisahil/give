@@ -9,21 +9,29 @@ Charges = new Mongo.Collection('charges');
 // Organization configuration
 Config = new Mongo.Collection('config');
 
+Config.before.update(function (userId, doc, fieldNames, modifier) {
+  // if there is a trailing '/' remove it
+  if (fieldNames && fieldNames.indexOf("Settings") !== -1) {
+    if( modifier &&
+      modifier.$set &&
+      modifier.$set["Settings.DonorTools.url"] &&
+      modifier.$set["Settings.DonorTools.url"].slice( -1 ) === '/' ) {
+      modifier.$set["Settings.DonorTools.url"] =
+        modifier.$set["Settings.DonorTools.url"].slice( 0, -1 );
+    }
+  }
+});
 Config.after.update(function (userId, doc, fieldNames) {
 
-  if (fieldNames.indexOf("Settings") !== -1) {
+  if (fieldNames && fieldNames.indexOf("Settings") !== -1) {
     if( Meteor.isServer && userId ) {
-
+      // Not using the function 'ConfigDoc()' to assign this because this runs on both
+      // the client and the server
       let config = Config.findOne( {
         'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
       });
 
       if( config ) {
-        Meteor.setTimeout( ()=> {
-          // Send an email to all the admins letting them know about this change.
-          Utils.send_change_email_notice_to_admins( userId, fieldNames[0].toLowerCase() );
-        }, 1000 );
-
         return Mandrill.config( {
           username: config.OrgInfo.emails.mandrillUsername,
           "key":    config.OrgInfo.emails.mandrillKey
