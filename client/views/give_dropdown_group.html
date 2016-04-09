@@ -7,11 +7,14 @@
             <div class="text-center col-lg-4 col-md-4 col-sm-4">
                 <label for="is_recurring" id="frequency_label">Donation Frequency</label>
                 <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
-                    <option selected></option>
-                    <option value="one_time">One-Time</option>
+                    {{#unless doNotShowOneTime}}
+                        <option selected></option>
+                    {{/unless}}
+                    <!--<option value="daily">Daily</option>-->
                     <option value="monthly">Monthly</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="yearly">Yearly</option>
+                    {{#unless doNotShowOneTime}}
+                        <option value="one_time">One-Time</option>
+                    {{/unless}}
                 </select>
             </div>
             <div class="text-center col-lg-4 col-md-4 col-sm-4 donateWithDiv">

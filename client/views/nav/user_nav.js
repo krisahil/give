@@ -57,7 +57,3 @@ Template.UserNav.onRendered(function () {
     }
   });
 });
-
-Template.UserNav.onDestroyed(function () {
-  Session.delete('config');
-});

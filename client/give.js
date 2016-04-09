@@ -83,18 +83,55 @@ function OrgInfoCheck(name, namePart2) {
               "postal_code":   customerCursor.metadata.postal_code,
               "country":       customerCursor.metadata.country
             },
-            sessionId:            Meteor.default_connection._lastSessionId
+            sessionId: Meteor.default_connection._lastSessionId
           };
         } else {
           userCursor = Meteor.user();
-          if( userCursor.profile.business_name ) {
-            businessName = userCursor.profile.business_name;
+          var profile;
+          if (userCursor.profile && userCursor.profile.fname) {
+            profile = userCursor.profile;
+          } else {
+            let persona_info = Meteor.user() &&
+              Meteor.user().persona_info &&
+              Meteor.user().persona_info[0];
+            if (!persona_info) {
+              console.error("No persona_info");
+              return;
+            }
+            profile = {
+              fname: persona_info.names[0].first_name,
+              lname: persona_info.names[0].last_name,
+              phone: persona_info.phone_numbers[0].phone_number,
+              business_name: persona_info.company_name,
+              address: {
+                address_line1: persona_info.addresses[0].street_address.slice(0,
+                  persona_info.addresses[0].street_address.indexOf('\n')),
+                city: persona_info.addresses[0].city,
+                state: persona_info.addresses[0].state,
+                postal_code: persona_info.addresses[0].postal_code,
+                country: persona_info.addresses[0].country
+              }
+            };
+            if (persona_info.addresses[0].street_address.indexOf('\n')) {
+              profile.address.address_line2 =
+                persona_info.addresses[0]
+                  .street_address.slice(persona_info.addresses[0]
+                  .street_address.indexOf('\n')+1);
+            } else {
+              console.log("no second line found");
+              //profile.address.address_line2 = '';
+            }
+          }
+
+          console.log(profile);
+          if( profile.business_name ) {
+            businessName = profile.business_name;
           } else {
             businessName = '';
           }
 
-          if( userCursor.profile.address.address_line2 ) {
-            addressLine2 = userCursor.profile.address.address_line2;
+          if( profile.address.address_line2 ) {
+            addressLine2 = profile.address.address_line2;
           } else {
             addressLine2 = '';
           }
@@ -115,17 +152,17 @@ function OrgInfoCheck(name, namePart2) {
               "saved":        $( '#save_payment' ).is( ":checked" )
             },
             "customer":           {
-              "fname":         userCursor.profile.fname,
-              "lname":         userCursor.profile.lname,
+              "fname":         profile.fname,
+              "lname":         profile.lname,
               "org":           businessName,
               "email_address": userCursor.emails[0].address,
-              "phone_number":  userCursor.profile.phone,
-              "address_line1": userCursor.profile.address.address_line1,
+              "phone_number":  profile.phone,
+              "address_line1": profile.address.address_line1,
               "address_line2": addressLine2,
-              "region":        userCursor.profile.address.state,
-              "city":          userCursor.profile.address.city,
-              "postal_code":   userCursor.profile.address.postal_code,
-              "country":       userCursor.profile.address.country
+              "region":        profile.address.state,
+              "city":          profile.address.city,
+              "postal_code":   profile.address.postal_code,
+              "country":       profile.address.country ? profile.address.country : "US"
             },
             sessionId:            Meteor.default_connection._lastSessionId
           };
@@ -185,12 +222,12 @@ function OrgInfoCheck(name, namePart2) {
             cvc:             Give.getCleanValue( '#cvv' ),
             exp_month:       Give.getCleanValue( '#expiry_month' ),
             exp_year:        Give.getCleanValue( '#expiry_year' ),
-            address_line1:   userCursor.profile.address.address_line1,
-            address_line2:   userCursor.profile.address.address_line2,
-            address_city:    userCursor.profile.address.city,
-            address_state:   userCursor.profile.address.state,
-            address_country: userCursor.profile.address.country,
-            address_zip:     userCursor.profile.address.postal_code
+            address_line1:   profile.address.address_line1,
+            address_line2:   addressLine2,
+            address_city:    profile.address.city,
+            address_state:   profile.address.state,
+            address_zip:     profile.address.postal_code,
+            address_country: profile.address.country ? profile.address.country : "US"
           };
         } else {
           cardInfo = {
@@ -220,12 +257,12 @@ function OrgInfoCheck(name, namePart2) {
             account_number:      Give.getCleanValue( '#account_number' ),
             routing_number:      Give.getCleanValue( '#routing_number' ),
             account_holder_type: form.customer.org ? 'company' : 'individual',
-            address_line1:       userCursor.profile.address.address_line1,
-            address_line2:       userCursor.profile.address.address_line2,
-            address_city:        userCursor.profile.address.city,
-            address_state:       userCursor.profile.address.state,
-            address_zip:         userCursor.profile.address.postal_code,
-            country:             userCursor.profile.address.country
+            address_line1:       profile.address.address_line1,
+            address_line2:       addressLine2,
+            address_city:        profile.address.city,
+            address_state:       profile.address.state,
+            address_zip:         profile.address.postal_code,
+            country:             profile.address.country ? profile.address.country : "US"
           };
         } else {
           bankInfo = {

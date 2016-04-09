@@ -169,34 +169,20 @@ Template.UserProfile.events({
         'state':            $('#state').val(),
         'postal_code':      $('#zip').val()
       },
-      phone:                $('#phone').val()
+      phone: $('#phone').val()
     };
 
-    var loadingButton = $(':submit').button('loading');
-
-    var updateThis = {};
-    updateThis.profile = Meteor.user() && Meteor.user().profile;
-    if (updateThis.profile) {
-      updateThis.profile.others[Session.get('activeTab')] = fields;
-    } else {
-      updateThis.profile = {};
-      updateThis.profile.others = [];
-      updateThis.profile.others[Session.get('activeTab')] = fields;
-    }
-
-    // Update the Meteor.user profile
-    Meteor.users.update({_id: Meteor.user()._id}, {$set:  updateThis});
-    //var customer_id = Meteor.user() & Meteor.user().primary_customer_id;
-
+    $(':submit').button('loading');
+    
     Meteor.call('update_customer', fields, Number(Session.get('activeTab')), function(error, result){
      if(result){
        console.log(result);
        $('#modal_for_address_change').modal('hide');
-       loadingButton.button("reset");
+       $(':submit').button("reset");
        Bert.alert("We have updated your profile, thanks.", "success");
      } else{
        console.log(error);
-       loadingButton.button("reset");
+       $(':submit').button("reset");
        Bert.alert("That didn't work. Please try again. If it still doesn't work, " +
            "then please let us know, we'll check into this error." + error, "danger");
      }
