@@ -131,7 +131,7 @@ Meteor.methods({
     try {
       //Check the form to make sure nothing malicious is being submitted to the server
       Utils.checkFormFields(data);
-      if(data.paymentInformation.coverTheFees === false){
+      if (data.paymentInformation.coverTheFees === false) {
           data.paymentInformation.fees = '';
       }
       logger.info(data.paymentInformation.start_date);
@@ -141,10 +141,10 @@ Meteor.methods({
       //Convert donation to more readable format
       donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
 
-      if(donateTo === 'Write In') {
+      if (donateTo === 'Write In') {
           donateTo = data.paymentInformation.writeIn;
       }
-      if(!data.customer.id){
+      if (!data.customer.id) {
         customerData = Utils.create_customer(data.paymentInformation.token_id ? 
           data.paymentInformation.token_id : '',
           data.customer);

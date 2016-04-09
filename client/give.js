@@ -1,4 +1,3 @@
-let config = ConfigDoc();
 function OrgInfoCheck(name, namePart2) {
   let config = ConfigDoc();
   if (name && namePart2){
@@ -16,15 +15,15 @@ function OrgInfoCheck(name, namePart2) {
 };
 
   Give = {
-    getCleanValue:            function ( id ) {
+    getCleanValue: function ( id ) {
       var jqueryObjectVal = $( id ).val();
       return Give.cleanupString( jqueryObjectVal );
     },
-    cleanupString:            function ( string ) {
+    cleanupString: function ( string ) {
       var cleanString = s( string ).stripTags().trim().value();
       return cleanString;
     },
-    get_fee:                  function ( amount ) {
+    get_fee: function ( amount ) {
       var r = (100 - 2.9) / 100;
       var i = (parseFloat( amount ) + 0.3) / r;
       var s = i - amount;
@@ -33,7 +32,7 @@ function OrgInfoCheck(name, namePart2) {
         total: s
       };
     },
-    process_give_form:        function ( quickForm, customer ) {
+    process_give_form: function( quickForm, customer ) {
       var form = {};
       var userCursor;
       var customerCursor;
@@ -282,13 +281,17 @@ function OrgInfoCheck(name, namePart2) {
         // We need to check our configuration to see how Stripe is setup to
         // process our ACH type gifts.
         // If it is setup to take gifts manually then don't tokenize the bank info
+        let config = ConfigDoc();
+
         if( config && config.Settings &&
           config.Settings.ach_verification_type === 'manual' ) {
           if( config.Settings.collectBankAccountType ) {
+            console.log("Got to manual");
             bankInfo.account_type = Give.getCleanValue( '#account_type' );
           }
           Give.process_bank_manually( bankInfo, form );
         } else {
+          console.log("Got to normal");
           Give.process_bank_with_stripe( bankInfo, form );
         }
       } else {
@@ -307,7 +310,7 @@ function OrgInfoCheck(name, namePart2) {
       }
     },
     // Handle the server calls after the client side tokenization is taken care of
-    handleCalls:              function ( payment, form ) {
+    handleCalls: function ( payment, form ) {
       // payment is the token returned from Stripe or the _id of the
       // stored bankInfo document
       if( payment.id ) {
@@ -339,7 +342,7 @@ function OrgInfoCheck(name, namePart2) {
     // since we can take payment with card fees added in this is needed to update the
     // amount that is shown to the user and passed as total_amount through the form
     // display error modal if there is an error while initially submitting data from the form.
-    handleErrors:             function ( error ) {
+    handleErrors: function ( error ) {
       Session.set( "loading", false );
       $( ':submit' ).button( 'reset' );
       console.dir( error );
@@ -373,7 +376,7 @@ function OrgInfoCheck(name, namePart2) {
       error.reason ? error.reason : '' );
       return;
     },
-    process_card:             function ( cardInfo, form ) {
+    process_card: function ( cardInfo, form ) {
       Stripe.card.createToken( cardInfo, function ( status, response ) {
         if( response.error ) {
           Give.handleErrors( response.error );
@@ -404,7 +407,7 @@ function OrgInfoCheck(name, namePart2) {
         }
       } );
     },
-    process_bank_manually:    function ( bankInfo, form ) {
+    process_bank_manually: function ( bankInfo, form ) {
       Meteor.call( "process_bank_manually", bankInfo, function ( err, res ) {
         if( res ) {
           form.paymentInformation.source_id = res;
@@ -415,7 +418,7 @@ function OrgInfoCheck(name, namePart2) {
         }
       } );
     },
-    updateTotal:              function () {
+    updateTotal: function () {
       var data = Session.get( 'paymentMethod' );
       var donationAmount = $( '#amount' ).val();
       donationAmount = donationAmount.replace( /[^\d\.\-\ ]/g, '' );
@@ -466,7 +469,7 @@ function OrgInfoCheck(name, namePart2) {
         }
       }
     },
-    fillForm:                 function ( form ) {
+    fillForm: function ( form ) {
       if( form === 'main' ) {
         if( Session.get( "paymentMethod" ) === "Check" ) {
           $( '#routing_number' ).val( "111000025" ); // Invalid test =  fail after initial screen =  valid test = 111000025
@@ -554,7 +557,6 @@ function OrgInfoCheck(name, namePart2) {
 
   Template.registerHelper('orgLogoURL', function() {
     let logoURL = OrgInfoCheck('logoURL', '');
-
     if (logoURL) {
       return logoURL;
     }
