@@ -59,6 +59,16 @@ Move these to the configuration and out of the settings.json file
 
   newStuffVersion
 
+Document Services
+  Papertrail
+  TrackJS
+  Kadira
+  Heap
+
+Document Setup process
+
+Document Limitations of Integration with Stripe (No micro-deposit or Plaid at the moment)
+
 ## Example
 
 https://give.trashmountain.com/landing

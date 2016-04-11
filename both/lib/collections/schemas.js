@@ -266,6 +266,7 @@ Schema.Services = new SimpleSchema({
   },
   Analytics: {
     type: Object,
+    label: "Analytics and Error tracking",
     optional: true,
     autoform: {
       panelClass: "panel-info",
@@ -278,7 +279,12 @@ Schema.Services = new SimpleSchema({
     type: String,
     label: "Heap ID",
     optional: true
-  }  
+  },
+  "Analytics.trackjs": {
+    type: String,
+    label: "TrackJS Token",
+    optional: true
+  }
 });
 
 Schema.Settings = new SimpleSchema({

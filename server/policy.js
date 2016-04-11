@@ -1,3 +1,5 @@
+let config = ConfigDoc();
+
 BrowserPolicy.framing.disallow();
 BrowserPolicy.content.disallowInlineScripts();
 BrowserPolicy.content.disallowEval();
@@ -9,16 +11,24 @@ var trusted = [
   'api.stripe.com',
   'q.stripe.com',
   'checkout.stripe.com',
-  Meteor.settings.public.org_subdomain ? Meteor.settings.public.org_subdomain + "." +
-    Meteor.settings.public.org_domain : '',
   Meteor.settings.public.org_domain,
   'kadira.io',
   'enginex.kadira.io',
   'use.typekit.net',
   'p.typekit.net',
   'cdn.heapanalytics.com',
-  'heapanalytics.com'
+  'heapanalytics.com',
+  'd2zah9y47r7bi2.cloudfront.net',
+  'capture.trackjs.com',
+  'usage.trackjs.com'
 ];
+
+
+if (config && config.OrgInfo && config.OrgInfo.web.subdomain) {
+  trusted.push(config.OrgInfo.web.subdomain + "." +
+    config.OrgInfo.web.domain_name);
+}
+console.log(trusted);
 
 _.each(trusted, function(origin) {
   var secureOrigin = "https://" + origin;
@@ -28,5 +38,3 @@ _.each(trusted, function(origin) {
     BrowserPolicy.content.allowOriginForAll(nonSecureOrigin);
   }
 });
-
-BrowserPolicy.content.allowInlineScripts(Meteor.settings.public.URL);

@@ -438,6 +438,7 @@ Meteor.publish("config", function () {
       'OrgInfo.emails.contact': 1,
       'OrgInfo.emails.support': 1,
       'Services.Analytics.heapId': 1,
+      'Services.Analytics.trackjs': 1,
       'Settings.Stripe.keysPublishableExists': 1,
       'Settings.Stripe.keysSecretExists': 1,
       'Settings.DonorTools.usernameExists': 1,
