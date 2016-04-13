@@ -464,3 +464,13 @@ legend {
     color: #333;
     font-weight: bold;
 }
+
+.dd-selected-text {
+    width: 160px;
+    word-wrap: break-word;
+}
+
+.dd-option-text {
+    width: 160px;
+    word-wrap: break-word;
+}

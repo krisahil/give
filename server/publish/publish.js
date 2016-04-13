@@ -412,11 +412,8 @@ Meteor.publish("roles", function () {
 });
 
 Meteor.publish("uploaded", function () {
-  //if (Roles.userIsInRole(this.userId, 'admin')) {
-    return Uploads.find({userId: this.userId});
-  /*} else {
-    this.ready();
-  }*/
+  let config = ConfigDoc();
+  return Uploads.find({configId: config._id});
 });
 
 Meteor.publish("config", function () {

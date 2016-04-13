@@ -91,6 +91,6 @@ Transfers._ensureIndex(
   {background: true});
 
 Uploads._ensureIndex(
-  {'userId': 1},
   {'configId': 1},
+  {'fundId': 1},
   {background: true});

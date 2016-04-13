@@ -376,8 +376,9 @@ Template.GivingOptions.helpers({
 });
 
 Template.GivingOptions.onCreated(function () {
-  this.autorun(() => {
-    this.subscribe("uploaded");
+  let self = this;
+  self.autorun(function() {
+    self.subscribe("uploaded");
   });
 });
 

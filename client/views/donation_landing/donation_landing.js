@@ -80,10 +80,6 @@ Template.DonationLanding.events({
 });
 
 Template.DonationLanding.helpers({
-  imageExists: function () {
-    let id = this.id;
-    return Uploads.findOne({fundId: id});
-  },
   imageSrc: function () {
     if (Uploads.findOne({fundId: this.id})) {
       return Uploads.findOne({fundId: this.id}).baseUrl + Uploads.findOne({fundId: this.id}).name;
@@ -161,7 +157,8 @@ Template.DonationLanding.helpers({
 });
 
 Template.DonationLanding.onCreated(function () {
-  this.autorun(() => {
-    this.subscribe("uploaded");
+  let self = this;
+  self.autorun(function() {
+    self.subscribe("uploaded");
   });
 });

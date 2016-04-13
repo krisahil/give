@@ -1,8 +1,10 @@
 Template.Upload.helpers({
   addData: function() {
+    let config = ConfigDoc();
     return {
-      userId: Meteor.userId(),
-      fundId: this.id
+      configId: config._id,
+      fundId: this.id,
+      userId: Meteor.userId()
     };
   },
   myCallbacks: function() {
