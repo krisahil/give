@@ -447,7 +447,8 @@ Meteor.publish("config", function () {
       'Settings.collectBankAccountType': 1,
       'Settings.forceACHDay': 1,
       'Settings.DonorTools.url': 1,
-      'Giving': 1
+      'Giving.options': 1,
+      'Giving.guide': 1
     }
   });
 });

@@ -223,23 +223,70 @@ Schema.OrgInfo = new SimpleSchema({
 });
 
 Schema.Giving = new SimpleSchema({
-  "Giving.options": {
+  options: {
     type: Array,
     optional: true,
-    blackbox: true,
     autoform: {
       omit: true
     }
   },
-  "Giving.options.$": {
+  "options.$": {
     type: Object,
     optional: true,
-    blackbox: true,
     autoform: {
       omit: true
     }
   },
-  "Giving.guide": {
+  "options.$.description": {
+    type: String,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "options.$.currentGroup": {
+    type: String,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "options.$.id": {
+    type: String,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "options.$.groupId": {
+    type: String,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "options.$.text": {
+    type: String,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "options.$.type": {
+    type: String,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "options.$.position": {
+    type: Number,
+    optional: true,
+    autoform: {
+      omit: true
+    }
+  },
+  guide: {
     type: Array,
     optional: true,
     blackbox: true,
@@ -247,7 +294,7 @@ Schema.Giving = new SimpleSchema({
       omit: true
     }
   },
-  "Giving.guide.$": {
+  "guide.$": {
     type: Object,
     optional: true,
     blackbox: true,
@@ -505,7 +552,7 @@ Schema.Settings = new SimpleSchema({
 
 Schema.Config = new SimpleSchema({
   "Giving": {
-    type: Schema.OrgInfo,
+    type: Schema.Giving,
     optional: true,
     autoform: {
       panelClass: "panel-primary",

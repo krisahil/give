@@ -98,6 +98,7 @@ function checkForDuplicateGroupNames(givingOptions) {
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
     let config = ConfigDoc();
+    console.log(config._id);
     Config.update({_id: config._id}, {
       $addToSet: {
         "Giving.options": {
