@@ -299,8 +299,8 @@ Template.GivingOptions.events({
       }
     });
   },
-  'click .clear-image': function(e) {
-    confirm("Are you sure?");
+  'click .clear-image': function() {
+    confirm("Are you sure you want to delete that image?");
     let uploadId = Uploads.findOne({fundId: this.id})._id;
     let uploadName = Uploads.findOne({fundId: this.id}).name;
     Uploads.remove({_id: uploadId});

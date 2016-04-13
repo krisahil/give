@@ -474,3 +474,30 @@ legend {
     width: 160px;
     word-wrap: break-word;
 }
+
+.center-logo-overlay {
+    position: absolute;
+    display: table;
+    z-index: 2;
+    opacity: 0;
+    top: 10px;
+    width: 130px;
+    height: 80px;
+    vertical-align: bottom;
+    text-align: center;
+    margin: auto;
+}
+
+.center-logo-overlay:hover {
+    opacity:1;
+    background:rgba(0,0,0,0.5) center no-repeat;
+}
+
+.indianred {
+    color: indianred;
+}
+
+.center-logo-overlay > .inner {
+    position:relative;
+    top: 10%;
+}

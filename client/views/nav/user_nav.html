@@ -9,10 +9,48 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="{{org_homepage_url}}" target="_blank">
-                <img class="logoImage" src="{{orgLogoURL}}">
+                <div class="margin-left">
+                    {{#unless imageExists}}
+                        {{#if notAdmin}}
+                            <a href="/dashboard" title="Login to change this logo.">
+                                <span class="fa-stack fa-lg">
+                                  <i class="fa fa-square-o fa-stack-2x"></i>
+                                  <i class="fa fa-edit fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        {{else}}
+                            <div data-toggle='popover'
+                                 data-trigger='hover focus'
+                                 data-container='body'
+                                 data-content='Drop your logo here. width: 130px, height: 80px, PNG. Black and white logos look the best. '>
+                                {{> UploadLogo}}
+                            </div>
+                        {{/if}}
+                    {{else}}
+                        {{#if notAdmin}}
+                            <a href="" title="" class="image">
+                                <img class="logoImage" src="{{orgLogoURL}}">
+                            </a>
+                        {{else}}
+                            <a href="" title="" class="image">
+                                <img class="logoImage" src="{{orgLogoURL}}">
+                            </a>
+                            <div class="center-logo-overlay">
+                                <div class="inner">
+                                    <a class="clear-image"
+                                       href="">
+                                        <i class="large fa fa-times indianred">
+                                        </i>
+                                    </a>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/unless}}
+                </div>
             </a>
 
-            {{#if MeteorUser}}
+
+                {{#if MeteorUser}}
                 {{#unless $or dismissedNewStuff (isInRole 'admin-only')}}
                     <div class="contain-peek" style="overflow: hidden;
                              position: relative;

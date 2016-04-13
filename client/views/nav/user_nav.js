@@ -15,6 +15,30 @@ Template.UserNav.events({
     evt.preventDefault();
     Session.set('addingNewCreditCard', false);
     Router.go('subscriptions');
+  },
+  'click .clear-image': function() {
+    confirm( "Are you sure you want to delete the logo?" );
+    let uploadId = Uploads.findOne( { logo: "_true" } )._id;
+    let uploadName = Uploads.findOne( { logo: "_true" } ).name;
+    Uploads.remove( { _id: uploadId } );
+    Meteor.call( "deleteImageFile", uploadName, function ( err ) {
+      if( err ) {
+        Bert.alert( {
+          message: "Hmm... that didn't work",
+          type:    'danger',
+          icon:    'fa-frown-o',
+          style:   'growl-bottom-right'
+        } );
+        throw new Meteor.Error( "400", "Something went wrong and the user wasn't able to remove an image" );
+      } else {
+        Bert.alert( {
+          message: "Removed",
+          type:    'success',
+          icon:    'fa-smile-o',
+          style:   'growl-bottom-right'
+      } );
+      }
+    } )
   }
 });
 
@@ -27,15 +51,34 @@ Template.UserNav.helpers({
     } else {
       return false;
     }
+  },
+  notAdmin() {
+    if (Meteor.userId()) {
+      return !Roles.userIsInRole( Meteor.userId(), 'admin' );
+    }
+    return true;
+  },
+  imageExists: function () {
+    let id = this.id;
+    return Uploads.findOne({logo: "_true"});
+  },
+  imageSrc: function () {
+    if (Uploads.findOne({logo: "_true"})) {
+      return Uploads.findOne({logo: "_true"}).baseUrl + Uploads.findOne({logo: "_true"}).name;
+    }
+    return;
   }
 });
 
 Template.UserNav.onRendered(function () {
   materialadmin.AppOffcanvas.initialize($("#offcanvas-what-is-new"));
+  $('[data-toggle="popover"]').popover({html: true});
+
 
   // Subscribe to the configuration
   this.autorun(() => {
     this.subscribe("config");
+    this.subscribe("uploaded");
     let config = ConfigDoc();
 
     if (config && config.Services && config.Services.Analytics && config.Services.Analytics.heapId) {
