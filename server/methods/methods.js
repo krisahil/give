@@ -129,7 +129,7 @@ Meteor.methods({
   stripeDonation: function(data) {
     logger.info("Started stripeDonation");
     try {
-      //Check the form to make sure nothing malicious is being submitted to the server
+      // Check the form to make sure nothing malicious is being submitted to the server
       Utils.checkFormFields(data);
       if (data.paymentInformation.coverTheFees === false) {
           data.paymentInformation.fees = '';
@@ -138,7 +138,7 @@ Meteor.methods({
       let customerData = {};
       let donateTo, user_id, dt_account_id, customerInfo, metadata;
 
-      //Convert donation to more readable format
+      // Get the fund reference for this donation
       donateTo = Utils.getDonateTo(data.paymentInformation.donateTo);
 
       if (donateTo === 'Write In') {

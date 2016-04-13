@@ -399,10 +399,7 @@ legend {
     background-color: transparent;
 }
 
-.select2-drop .select2-result-with-children > .select2-result-label{
-    color: #000;
-    font-weight: bold;
-}
+
 
 .fadeMe {
     opacity:    0.5;
@@ -461,4 +458,9 @@ legend {
 
 .table-responsive .no-margin {
     margin: 0;
+}
+
+.select2-result-unselectable {
+    color: #333;
+    font-weight: bold;
 }

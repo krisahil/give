@@ -1,6 +1,8 @@
 <template name="DonationTo">
+    {{setupDonateToDropwdown}}
     <label for="donateTo">Donation Designation</label>
-    <select name="donateTo" id="donateTo" required class="form-control select select-primary mbl">
+    <input name="donateTo" id="donateTo" required class="form-control select select-primary mbl">
+    <!--<select name="donateTo" id="donateTo" required class="form-control select select-primary mbl">
         <option value="WhereMostNeeded" selected >Where Most Needed</option>
         <optgroup label="BaseCamp" title="Basecamp is used to specify giving toward operational expenses, or to help support a missionary/staff member.">
             <option value="Operations">Basecamp - Operations Expenses</option>
@@ -38,5 +40,5 @@
         <optgroup label="Write In">
             <option value="WriteIn">Write In</option>
         </optgroup>
-    </select>
+    </select>-->
 </template>

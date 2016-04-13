@@ -50,7 +50,15 @@ Template.Receipt.helpers({
   },
   donateTo: function() {
     if (this.metadata && this.metadata.donateTo) {
-      return this.metadata.donateTo;
+      if (! isNaN(this.metadata.donateTo)) {
+        if(DT_funds.findOne({_id: this.metadata.donateTo}) && DT_funds.findOne({_id: this.metadata.donateTo}).name) {
+          return DT_funds.findOne({_id: this.metadata.donateTo}).name;
+        } else {
+          return;
+        }
+      } else {
+        return this.metadata.donateTo;
+      }
     }
     return 'Other';
   },
@@ -108,4 +116,10 @@ Template.Receipt.onRendered(function() {
   if (Session.equals('print', 'yes')) {
     return window.print();
   }
+});
+
+Template.Receipt.onCreated(function() {
+  this.autorun(()=>{
+    this.subscribe("userDTFunds");
+  });
 });

@@ -20,7 +20,8 @@ var trusted = [
   'heapanalytics.com',
   'd2zah9y47r7bi2.cloudfront.net',
   'capture.trackjs.com',
-  'usage.trackjs.com'
+  'usage.trackjs.com',
+  'localhost:3000'
 ];
 
 
@@ -38,3 +39,5 @@ _.each(trusted, function(origin) {
     BrowserPolicy.content.allowOriginForAll(nonSecureOrigin);
   }
 });
+BrowserPolicy.content.allowOriginForAll("ws://localhost:3000");
+

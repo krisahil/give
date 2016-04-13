@@ -377,7 +377,7 @@ _.extend(Utils,{
               data_slug.message.merge_vars[0].vars.push(
                   {
                       "name": "DonateTo",
-                      "content": donation_cursor.donateTo
+                      "content": Utils.getDonateToName(donation_cursor.donateTo)
                   }
               );
               data_slug.message.merge_vars[0].vars.push(
@@ -392,7 +392,7 @@ _.extend(Utils,{
               data_slug.message.merge_vars[0].vars.push(
                   {
                       "name": "DonateTo",
-                      "content": subscription_cursor.metadata.donateTo
+                      "content": Utils.getDonateToName(subscription_cursor.metadata.donateTo)
                   }
               );
               data_slug.message.merge_vars[0].vars.push(
@@ -427,7 +427,7 @@ _.extend(Utils,{
               data_slug.message.merge_vars[0].vars.push(
                   {
                       "name": "DonateTo",
-                      "content": donation_cursor.donateTo
+                      "content": Utils.getDonateToName(donation_cursor.donateTo)
                   }
               );
               data_slug.message.merge_vars[0].vars.push(

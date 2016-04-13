@@ -252,7 +252,7 @@ _.extend(StripeFunctions, {
         }
       }
 
-      // Store and wait
+      // Wait for the store operation to complete
       wait_for_storage = StripeFunctions.store_stripe_event(STRIPE_REQUEST);
 
       // Send the event to the proper event function
@@ -260,7 +260,7 @@ _.extend(StripeFunctions, {
 
       if(STRIPE_REQUEST.data.object.object === 'charge'){
         console.log("Sending to DT");
-        if(DT_donations.findOne({transaction_id: STRIPE_REQUEST.data.object.id})){
+        if (DT_donations.findOne({transaction_id: STRIPE_REQUEST.data.object.id})) {
           // Send the donation change to Donor Tools. This function has a retry built
           // in, so also pass 1 for the interval
           wait_for_DT_update = Utils.update_dt_donation_status( STRIPE_REQUEST, 1 );
@@ -461,14 +461,14 @@ _.extend(StripeFunctions, {
     customerCursor =  Customers.findOne({_id: customer_id});
     console.log("Metadata: ", customerCursor.metadata);
 
-    if(chargeCursor && customerCursor.metadata && customerCursor.metadata.dt_persona_id) {
+    if (chargeCursor && customerCursor.metadata && customerCursor.metadata.dt_persona_id) {
       Utils.insert_gift_into_donor_tools( charge_id, customer_id );
 
     } else if( interval === 2 ) {
       // Pull the customer record straight from Stripe
       stripeCustomerRecord =  Utils.get_stripe_customer( customerCursor.id );
-      console.log("stripeCustomerRecord");
-      console.log(stripeCustomerRecord);
+      logger.info("stripeCustomerRecord");
+      logger.info(stripeCustomerRecord);
 
       // Store this version in the collection
       stripeCustomerRecord._id = stripeCustomerRecord.id;
@@ -503,14 +503,14 @@ _.extend(StripeFunctions, {
         // In this case we'll need to look for another way to get the persona_id.
         let invoice = StripeFunctions.get_previous_invoice( customer_id, chargeCursor.invoice );
 
-        console.log("Invoice Object: ");
-        console.dir(invoice.data);
+        logger.info("Invoice Object: ");
+        logger.info(invoice.data);
         let previous_charge_id = invoice.data[0].charge;
-        console.log("Charge_id: ", previous_charge_id);
+        logger.info("Charge_id: ", previous_charge_id);
         
         if (previous_charge_id) {
           let dt_donation_cursor = DT_donations.findOne({transaction_id: previous_charge_id});
-          console.log("dt_donation_cursor.persona_id : ", dt_donation_cursor.persona_id );
+          logger.info("dt_donation_cursor.persona_id : ", dt_donation_cursor.persona_id );
           dtPersonaId = dt_donation_cursor.persona_id;
         } else {
           dtPersonaId = Utils.find_dt_persona_flow(customerCursor.metadata.email, customer_id);

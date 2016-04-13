@@ -3,12 +3,29 @@
       <div class="container-fluid">
           {{#if configId}}
               <div class="row">
-                  <h2 class="text-center">Here is where you build your giving options menus.
-                      Think of this as a tree of groups and options. Each group is a branch with leaves.
-                      The leaves are the options.</h2>
+                  <h2 class="text-center">
+                      Here is where you build your giving menus.
+                      <i class='fa fa-question-circle'
+                         data-toggle='popover' data-trigger='hover focus'
+                         data-container='body' data-content='Think of this as a
+                          tree of groups and options. Each group is a branch
+                          with leaves. The leaves are the options.'>
+                      </i>
+                  </h2>
                   <div class="col-md-4">
-                    <h3>1. Add groups of giving options.</h3>
+                    <h3>1. Add a group first, then your giving options will appear.</h3>
+                      {{#if donationOptions}}
+                          <h3>
+                              <em>
+                              Check items to add them to the list. You can have many groups of options
+                              </em>
+                          </h3>
+                      {{/if}}
                     <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
+                    {{#if donationOptions}}
+                        <!-- TODO: use this button to create a dropdown option for allowing users to write in a different option -->
+                      <!--<button id="addWriteInButton" class="btn btn-primary">+ Create Other/Write In Option</button>-->
+                    {{/if}}
                     <section class="">
                         {{#if donationOptions}}
                             <div id="givingOptionsDiv">
@@ -32,8 +49,10 @@
                     </section>
                 </div>
                   <div class="col-md-4">
-                    <h3>2. Drag into the right order.</h3>
-                    <p>(drag out of the box or uncheck to remove, click text to edit)</p>
+                    <h3>2. Drag into the right order. Drop a picture to add one to a gift option.</h3>
+                    {{#if donationOptions}}
+                        <h3><em>Drag out of the box or un-check to remove, drag up or down to reposition</em></h3>
+                    {{/if}}
                       <section class="">
                           <form>
                             <div class="sortable slim-borders"
@@ -49,7 +68,13 @@
                                             <div class="col-md-3">
                                                 <div class="margin-left">
                                                     {{#unless imageExists}}
-                                                        {{> Upload}}
+                                                        <div data-toggle='popover'
+                                                             data-trigger='hover focus'
+                                                             data-container='body'
+                                                             data-content='Drop a picture here to add it to this gift option.
+                                                             For images to correctly display in your list, make sure they are square.'>
+                                                            {{> Upload}}
+                                                        </div>
                                                     {{else}}
                                                         <a href="" title="" class="image">
                                                             <img src="{{imageSrc}}"
@@ -60,7 +85,8 @@
                                                             <div class="inner">
                                                                 <a class="clear-image"
                                                                    href="">
-                                                                    <i class="large fa fa-2x fa-times"></i>
+                                                                    <i class="large fa fa-times">
+                                                                    </i>
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -112,7 +138,7 @@
                       <button id="updateDropdown" class="btn btn-primary"><i class="fa fa-save"></i> &nbsp; Save</button>
                       <br>
                       <label for="testDropdown">Dropdown Preview</label><br>
-                      <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" >
+                      <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl">
                       {{#if $and donationOptions showDD}}
                           <br>
                           <label for="selectTestMain">This will be your main selection dropdown</label>
@@ -140,7 +166,6 @@
                                       </option>
                                   {{/each}}
                               </select>
-                              <br>
                           {{/each}}
                       {{/if}}
                   </div>

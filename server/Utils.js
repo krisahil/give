@@ -220,13 +220,13 @@ Utils = {
       return;
     }
 
-    if(event_object.data.object.refunded){
+    if (event_object.data.object.refunded) {
       get_dt_donation.data[0].donation.payment_status = 'refunded';
     } else {
       get_dt_donation.data[0].donation.payment_status = event_object.data.object.status;
     }
 
-    if(event_object.data.object.status === 'failed'){
+    if (event_object.data.object.status === 'failed') {
       // The failed type in Donor Tools
       get_dt_donation.data[0].donation.donation_type_id = config.Settings.DonorTools.failedDonationTypeId;
     }
@@ -237,7 +237,8 @@ Utils = {
         auth: DONORTOOLSAUTH
       });
 
-    console.dir(update_donation);
+    logger.info("Updated donation Object: ");
+    logger.info(update_donation);
     DT_donations.upsert( {_id: dt_donation_id}, update_donation.data.donation );
   },
   find_dt_persona_flow: function (email, customer_id) {
@@ -456,11 +457,13 @@ Utils = {
   },
   insert_gift_into_donor_tools: function ( charge_id, customer_id ) {
     logger.info("Started insert_gift_into_donor_tools");
-    console.log(config.Settings);
+    logger.info("Config Settings: ");
+    logger.info(config.Settings);
 
     console.log("Charge_id: ", charge_id, " Customer_id: ", customer_id);
     let chargeCursor, dt_fund, donateTo, invoice_cursor,
-      fund_id, memo, source_id, newDonationResult, metadata;
+      fund_id, memo, source_id, newDonationResult;
+    var metadata;
 
     chargeCursor =  Charges.findOne({_id: charge_id});
 
@@ -472,8 +475,7 @@ Utils = {
     } else {
       Audit_trail.upsert({_id: chargeCursor._id}, {$set: {dt_donation_inserted: true}});
     }
-
-
+    
     if(charge_id.slice(0,2) === 'ch' || charge_id.slice(0,2) === 'py') {
       if (chargeCursor.invoice) {
         invoice_cursor = Invoices.findOne({_id: chargeCursor.invoice});
@@ -481,9 +483,9 @@ Utils = {
           invoice_cursor.lines &&
           invoice_cursor.lines.data[0] &&
           invoice_cursor.lines.data[0].metadata &&
-          invoice_cursor.lines.data[0].metadata.donateTo){
+          invoice_cursor.lines.data[0].metadata.donateTo) {
           metadata = invoice_cursor.lines.data[0].metadata;
-        } else{
+        } else {
           metadata = chargeCursor.metadata;
         }
       } else {
@@ -497,13 +499,7 @@ Utils = {
 
     donateTo = metadata.donateTo;
 
-    if(donateTo){
-      dt_fund = Utils.get_fund_id( donateTo );
-      console.log(dt_fund);
-    }
-    else {
-      dt_fund = null;
-    }
+    dt_fund = Utils.processDTFund(donateTo);
 
     // fund_id should be the No-Match-Found fund used to help reconcile
     // write-in gifts and those not matching a fund in DT
@@ -514,7 +510,6 @@ Utils = {
         metadata.frequency &&
         metadata.frequency.charAt(0).toUpperCase() +
         metadata.frequency.slice(1) + " " + donateTo;
-
     } else {
       fund_id = dt_fund;
       memo = Meteor.settings.dev + metadata &&
@@ -525,6 +520,7 @@ Utils = {
         memo = memo + " " + metadata.note;
       }
     }
+    
     if (!memo) {
       logger.error(charge_id, customer_id);
       logger.error(metadata);
@@ -618,12 +614,7 @@ Utils = {
 
     donateTo = donationCursor.donateTo;
 
-    if(donateTo){
-      dt_fund = Utils.get_fund_id( donateTo );
-      console.log(dt_fund);
-    } else {
-      dt_fund = null;
-    }
+    dt_fund = Utils.processDTFund(donateTo);
 
     // write-in gifts and those not matching a fund in DT
     if( !dt_fund ) {
@@ -709,129 +700,204 @@ Utils = {
       throw new Meteor.Error("Couldn't get the persona_id for some reason");
     }
   },
-    getDonateTo: function (donateTo) {
-        var returnToCalled;
-        switch(donateTo) {
-            case 'WhereMostNeeded':
-                returnToCalled = 'Where Most Needed';
-                return returnToCalled;
-                break;
-            case 'WriteIn':
-                return 'Write In';
-                break;
-            case 'Operations':
-                returnToCalled = 'Basecamp - Operations Expenses';
-                return returnToCalled;
-                break;
-            case 'JoshuaBechard':
-                returnToCalled = 'Basecamp - Joshua Bechard';
-                return returnToCalled;
-                break;
-            case 'DaveHenry':
-                returnToCalled = 'Basecamp - Dave Henry';
-                return returnToCalled;
-                break;
-            case 'TimmCollins':
-                returnToCalled = 'Basecamp - Timm Collins';
-                return returnToCalled;
-                break;
-            case 'BrettDurbin':
-                returnToCalled = 'Basecamp - Brett Durbin';
-                return returnToCalled;
-                break;
-            case 'RussellWest':
-                returnToCalled = 'Basecamp - Russell West';
-                return returnToCalled;
-                break;
-            case 'JohnKazaklis':
-                returnToCalled = 'Basecamp - John Kazaklis';
-                return returnToCalled;
-                break;
-            case 'ChrisMammoliti':
-                returnToCalled = 'Basecamp - Chris Mammoliti';
-                return returnToCalled;
-                break;
-            case 'ShelleySetchell':
-                returnToCalled = 'Basecamp - Shelley Setchell';
-                return returnToCalled;
-                break;
-            case 'WillieBrooks':
-                returnToCalled = 'Basecamp - Willie Brooks';
-                return returnToCalled;
-                break;
-            case 'JamesHishmeh':
-                returnToCalled = 'Basecamp - James Hishmeh';
-                return returnToCalled;
-                break;
-            case 'FieldProjectsWhereverNeededMost':
-                returnToCalled = 'International Field Projects - Where Most Needed';
-                return returnToCalled;
-                break;
-            case 'Bolivia':
-                returnToCalled = 'International Field Projects - Bolivia';
-                return returnToCalled;
-                break;
-            case 'DominicanRepublic':
-                returnToCalled = 'International Field Projects - Dominican Republic';
-                return returnToCalled;
-                break;
-            case 'Honduras':
-                returnToCalled = 'International Field Projects - Honduras';
-                return returnToCalled;
-                break;
-            case 'Kenya':
-                returnToCalled = 'International Field Projects - Kenya';
-                return returnToCalled;
-                break;
-            case 'Philippines':
-                returnToCalled = 'International Field Projects - Philippines';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipWhereverNeededMost':
-                returnToCalled = 'Community Sponsorship - Where Most Needed';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipBoliviaCochabamba':
-                returnToCalled = 'Community Sponsorship - Bolivia - Cochabamba';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipDominicanRepublicSantiago':
-                returnToCalled = 'Community Sponsorship - Dominican Republic - Santiago';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipHondurasTegucigalpa':
-                returnToCalled = 'Community Sponsorship - Honduras - Tegucigalpa';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipKenyaDandora':
-                returnToCalled = 'Community Sponsorship - Kenya - Dandora';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipPhilippinesPayatas':
-                returnToCalled = 'Community Sponsorship - Philippines - Payatas';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipPhilippinesSanMateo':
-                returnToCalled = 'Community Sponsorship - Philippines - San Mateo';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipPhilippinesSantiago':
-                returnToCalled = 'Community Sponsorship - Philippines - Santiago City/Isabella';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipPhilippinesSmokeyMtn':
-                returnToCalled = 'Community Sponsorship - Philippines - Smokey Mountain';
-                return returnToCalled;
-                break;
-            case 'CommunitySponsorshipPhilippinesTanza':
-                returnToCalled = 'Community Sponsorship - Philippines - Tanza';
-                return returnToCalled;
-                break;
-            default:
-                returnToCalled ='Where Most Needed';
-                return returnToCalled;
-        }
-    },
+  checkForDTFundID: function ( id ) {
+    logger.info("checkForDTFundID with id: " + id);
+
+    let dtFund = DT_funds.findOne({id: id});
+    if (dtFund) {
+      return dtFund.id;
+    }
+    return;
+  },
+  checkForDTFundName: function ( name ) {
+    logger.info("checkForDTFundName with name: " + name);
+
+    let dtFund = DT_funds.findOne({name: name});
+    if (dtFund) {
+      return dtFund.id;
+    }
+    return;
+  },
+  getDonateTo: function (donateTo) {
+    logger.info( "Get Donate To with: " );
+    logger.info( donateTo );
+    logger.info( "Is not a number? " + isNaN( donateTo ) );
+
+    if( !isNaN( donateTo ) ) {
+      let donorToolsIDMatch = Utils.checkForDTFundID( donateTo );
+      if( donorToolsIDMatch ) {
+        return donorToolsIDMatch;
+      } else {
+        throw new Meteor.Error( 500, "Couldn't find that number id in DT. Did it get merged?" );
+      }
+    } else {
+      let donorToolsNameMatch = Utils.checkForDTFundName( donateTo );
+      if( donorToolsNameMatch ) {
+        return donorToolsNameMatch;
+      } else {
+        throw new Meteor.Error( 500, "Couldn't find that name in DT. Did it get changed?" );
+      }
+    }
+  },
+  getDonateToName: function(donateTo) {
+    logger.info( "Get Donate To with: " );
+    logger.info( donateTo );
+    logger.info( "Is not a number? " + isNaN( donateTo ) );
+
+    if( !isNaN( donateTo ) ) {
+      let donorToolsIDMatch = Utils.checkForDTFundID( donateTo );
+      if( donorToolsIDMatch ) {
+        return DT_funds.findOne({id: donorToolsIDMatch}).name;
+      } else {
+        throw new Meteor.Error( 500, "Couldn't find that number id in DT. Did it get merged?" );
+      }
+    } else {
+      let donorToolsNameMatch = Utils.checkForDTFundName( donateTo );
+      if( donorToolsNameMatch ) {
+        return DT_funds.findOne({id: donorToolsNameMatch}).name;
+      } else {
+        throw new Meteor.Error( 500, "Couldn't find that name in DT. Did it get changed?" );
+      }
+    }
+  },
+  getDonateTo: function(donateTo) {
+    logger.info("Get Donate To with: ");
+    logger.info(donateTo);
+    logger.info("Is not a number? " + isNaN(donateTo));
+
+    if (!isNaN(donateTo)) {
+      let donorToolsIDMatch= Utils.checkForDTFundID( donateTo );
+      if( donorToolsIDMatch ) {
+        return donorToolsIDMatch;
+      } else {
+        throw new Meteor.Error(500, "Couldn't find that number id in DT. Did it get merged?");
+      }
+    } else {
+      let donorToolsNameMatch= Utils.checkForDTFundName( donateTo );
+      if( donorToolsNameMatch ) {
+        return donorToolsNameMatch;
+      } else {
+        throw new Meteor.Error(500, "Couldn't find that name in DT. Did it get changed?");
+      }
+    }
+
+    /*switch(donateTo) {
+        case 'WhereMostNeeded':
+          returnToCalled = 'Where Most Needed';
+          return returnToCalled;
+          break;
+        case 'WriteIn':
+          return 'Write In';
+          break;
+        case 'Operations':
+          returnToCalled = 'Basecamp - Operations Expenses';
+          return returnToCalled;
+          break;
+        case 'DaveHenry':
+          returnToCalled = 'Basecamp - Dave Henry';
+          return returnToCalled;
+          break;
+        case 'TimmCollins':
+          returnToCalled = 'Basecamp - Timm Collins';
+          return returnToCalled;
+          break;
+        case 'BrettDurbin':
+          returnToCalled = 'Basecamp - Brett Durbin';
+          return returnToCalled;
+          break;
+        case 'RussellWest':
+          returnToCalled = 'Basecamp - Russell West';
+          return returnToCalled;
+          break;
+        case 'JohnKazaklis':
+          returnToCalled = 'Basecamp - John Kazaklis';
+          return returnToCalled;
+          break;
+        case 'ChrisMammoliti':
+          returnToCalled = 'Basecamp - Chris Mammoliti';
+          return returnToCalled;
+          break;
+        case 'ShelleySetchell':
+          returnToCalled = 'Basecamp - Shelley Setchell';
+          return returnToCalled;
+          break;
+        case 'WillieBrooks':
+          returnToCalled = 'Basecamp - Willie Brooks';
+          return returnToCalled;
+          break;
+        case 'JamesHishmeh':
+          returnToCalled = 'Basecamp - James Hishmeh';
+          return returnToCalled;
+          break;
+        case 'FieldProjectsWhereverNeededMost':
+          returnToCalled = 'International Field Projects - Where Most Needed';
+          return returnToCalled;
+          break;
+        case 'Bolivia':
+          returnToCalled = 'International Field Projects - Bolivia';
+          return returnToCalled;
+          break;
+        case 'DominicanRepublic':
+          returnToCalled = 'International Field Projects - Dominican Republic';
+          return returnToCalled;
+          break;
+        case 'Honduras':
+          returnToCalled = 'International Field Projects - Honduras';
+          return returnToCalled;
+          break;
+        case 'Kenya':
+          returnToCalled = 'International Field Projects - Kenya';
+          return returnToCalled;
+          break;
+        case 'Philippines':
+          returnToCalled = 'International Field Projects - Philippines';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipWhereverNeededMost':
+          returnToCalled = 'Community Sponsorship - Where Most Needed';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipBoliviaCochabamba':
+          returnToCalled = 'Community Sponsorship - Bolivia - Cochabamba';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipDominicanRepublicSantiago':
+          returnToCalled = 'Community Sponsorship - Dominican Republic - Santiago';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipHondurasTegucigalpa':
+          returnToCalled = 'Community Sponsorship - Honduras - Tegucigalpa';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipKenyaDandora':
+          returnToCalled = 'Community Sponsorship - Kenya - Dandora';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipPhilippinesPayatas':
+          returnToCalled = 'Community Sponsorship - Philippines - Payatas';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipPhilippinesSanMateo':
+          returnToCalled = 'Community Sponsorship - Philippines - San Mateo';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipPhilippinesSantiago':
+          returnToCalled = 'Community Sponsorship - Philippines - Santiago City/Isabella';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipPhilippinesSmokeyMtn':
+          returnToCalled = 'Community Sponsorship - Philippines - Smokey Mountain';
+          return returnToCalled;
+          break;
+        case 'CommunitySponsorshipPhilippinesTanza':
+          returnToCalled = 'Community Sponsorship - Philippines - Tanza';
+          return returnToCalled;
+          break;
+        default:
+          returnToCalled ='Where Most Needed';
+          return returnToCalled;
+      }*/
+  },
     create_customer: function (paymentDevice, customerInfo) {
       logger.info("Inside create_customer.");
 
@@ -1947,12 +2013,8 @@ Utils = {
     } else{
       // TODO: this area is to be used in case we start excepting bitcoin or other payment methods that return something other than a ch_ event object id
     }
-    if(donateTo){
-      dt_fund = Utils.get_fund_id(donateTo);
-    }
-    else {
-      dt_fund = null;
-    }
+
+    dt_fund = Utils.processDTFund(donateTo);
 
     if(customer.metadata.address_line2){
       address_line2 = customer.metadata.address_line2;
@@ -2069,7 +2131,7 @@ Utils = {
   },
   get_all_dt_donations: function(persona_ids) {
     logger.info("Started get_all_dt_donations");
-    logger.info(persona_ids);
+    logger.info("persona_ids: " + persona_ids );
 
     if(persona_ids === '') {return;}
     persona_ids.forEach(function(id){
@@ -2082,7 +2144,7 @@ Utils = {
     });
   },
   insert_persona_info_into_user: function(user_id, persona_info) {
-    //Insert the donor tools persona id into the user record
+    // Insert the donor tools persona id into the user record
     logger.info("Started insert_persona_info_into_user");
     console.log(persona_info);
 
@@ -2272,5 +2334,22 @@ Utils = {
       });
       return return_to_called;
     }
+  },
+  processDTFund: function ( donateTo ) {
+    logger.info("Started processDTFund");
+
+    let dt_fund;
+
+    if (donateTo) {
+      if (!isNaN(donateTo)) {
+        dt_fund = Number(donateTo);
+      } else {
+        dt_fund = Utils.get_fund_id( donateTo );
+      }
+    } else {
+      dt_fund = null;
+    }
+    logger.info("dt_fund: " + dt_fund);
+    return dt_fund;
   }
 };

@@ -79,316 +79,89 @@ Template.DonationLanding.events({
     }
 });
 
-Template.DonationLanding.onRendered(function () {
-    //Dropdown plugin data for GiveTo
-    var GiveTo = [
-      {
-        text: "Wherever It's Needed Most",
-        value: '1',
-        selected: true,
-        description: ""
-    }, {
-        text: "TMP's Operations Expenses",
-        value: '2',
-        selected: false,
-        description: ""
-    }, {
-        text: "TMP Missionary",
-        value: '3',
-        selected: false,
-        description: ""
-    }, {
-        text: "International Field Projects",
-        value: '4',
-        selected: false,
-        description: ""
-    }, {
-        text: "Community Sponsorship",
-        value: '5',
-        selected: false,
-        description: ""
-    }, {
-        text: "I want to write in a different designation, or give to a trip participant.",
-        value: '6',
-        selected: false,
-        description: ""
-    }];
-    //Dropdown plugin data
-    var Missionary = [
-      {
-        text: "Choose a missionary",
-        value: "",
-        selected: true
-    }, {
-        text: "Brett Durbin",
-        value: "BrettDurbin",
-        selected: false,
-        description: "Executive Director",
-        imageSrc: "/images/team/Brett.jpg"
-    }, {
-        text: "Chris Mammoliti",
-        value: "ChrisMammoliti",
-        selected: false,
-        description: "Aquaponics Director",
-        imageSrc: "/images/team/Chris.jpg"
-    }, {
-        text: "Dave Henry",
-        value: "DaveHenry",
-        selected: false,
-        description: "Discipleship Director",
-        imageSrc: "/images/team/Dave.jpg"
-    },  {
-        text: "James Hishmeh",
-        value: "JamesHishmeh",
-        selected: false,
-        description: "Special Projects Intern",
-        imageSrc: "/images/team/James.jpg"
-    }, {
-        text: "John Kazaklis",
-        value: "JohnKazaklis",
-        selected: false,
-        description: "Missions Director for Asia",
-        imageSrc: "/images/team/John.jpg"
-    }, {
-        text: "Joshua Bechard",
-        value: "JoshuaBechard",
-        selected: false,
-        description: "Technology Director",
-        imageSrc: "/images/team/Josh.jpg"
-    }, {
-      text: "Russ West",
-      value: "RussellWest",
-      selected: false,
-      description: "Strategy Impact Officer",
-      imageSrc: "/images/team/Russ.jpg"
-    }, {
-        text: "Shelley Setchell",
-        value: "ShelleySetchell",
-        selected: false,
-        description: "Missions Director for Latin America",
-        imageSrc: "/images/team/Shelley.jpg"
-    }, {
-        text: "Timm Collins",
-        value: "TimmCollins",
-        selected: false,
-        description: "Chief Operating Officer",
-        imageSrc: "/images/team/Timm.jpg"
-    }, {
-        text: "Willie Brooks",
-        value: "WillieBrooks",
-        selected: false,
-        description: "International Program Director",
-        imageSrc: "/images/team/Willie.jpg"
-    }];
-    $('#GiveTo').ddslick({
-        width: 260,
-        height: "300px",
-        onSelected: function(selectedData) {
-            switch (selectedData.selectedData.value) {
-                case '1':
-                    // WhereMostNeeded, ddslick value of 1
-                    $("#depends-on-Missionary").prop('disabled', true);
-                    $("#depends-on-field-projects").prop('disabled', true);
-                    $("#depends-on-community-sponsorship").prop('disabled', true);
+Template.DonationLanding.helpers({
+  imageExists: function () {
+    let id = this.id;
+    return Uploads.findOne({fundId: id});
+  },
+  imageSrc: function () {
+    if (Uploads.findOne({fundId: this.id})) {
+      return Uploads.findOne({fundId: this.id}).baseUrl + Uploads.findOne({fundId: this.id}).name;
+    }
+    return;
+  },
+  donationOptions: function() {
+    let config = ConfigDoc();
+    let donationOptions =  config && config.donationOptions;
+    return _.sortBy(donationOptions, 'position');
+  },
+  donationGroups: function() {
+    let config = ConfigDoc();
+    let donationOptions =  config && config.donationOptions;
 
-                    $("#depends-on-Missionary").hide();
-                    $("#depends-on-field-projects").hide();
-                    $("#depends-on-community-sponsorship").hide();
-
-                    $("#depends-on-Missionary-label").hide();
-                    $("#depends-on-field-projects-label").hide();
-                    $("#depends-on-community-sponsorship-label").hide();
-
-                    $('.giving-detail-area').removeClass('dim-area');
-                    $('.giving-detail-area').removeClass('highlight-area');
-
-                    $('#placeholder_donate_input').val('');
-                    break;
-                case '2':
-                    // Operations, ddslick value of 2
-                    $("#depends-on-Missionary").prop('disabled', true);
-                    $("#depends-on-field-projects").prop('disabled', true);
-                    $("#depends-on-community-sponsorship").prop('disabled', true);
-
-                    $("#depends-on-Missionary").hide();
-                    $("#depends-on-field-projects").hide();
-                    $("#depends-on-community-sponsorship").hide();
-
-                    $("#depends-on-Missionary-label").hide();
-                    $("#depends-on-field-projects-label").hide();
-                    $("#depends-on-community-sponsorship-label").hide();
-
-                    $('.giving-detail-area').addClass('dim-area');
-                    $('.giving-detail-area').removeClass('highlight-area');
-                    $('#operations_description').addClass('highlight-area');
-                    $('#operations_description').removeClass('dim-area');
-
-                    $('[name="donateTo"]').val("Operations");
-
-                    $('#placeholder_donate_input').val('');
-                    break;
-                case '3':
-                    // Missionary, ddslick value of 3
-                    $("#depends-on-Missionary").prop('disabled', true);
-                    $("#depends-on-field-projects").prop('disabled', true);
-                    $("#depends-on-community-sponsorship").prop('disabled', true);
-
-                    $("#depends-on-Missionary").hide();
-                    $("#depends-on-field-projects").hide();
-                    $("#depends-on-community-sponsorship").hide();
-
-                    $("#depends-on-Missionary-label").hide();
-                    $("#depends-on-field-projects-label").hide();
-                    $("#depends-on-community-sponsorship-label").hide();
-
-                    $('.giving-detail-area').addClass('dim-area');
-                    $('#missionary_description').removeClass('dim-area');
-
-                    $('.giving-detail-area').removeClass('highlight-area');
-                    $('#missionary_description').addClass('highlight-area');
-
-                    $('[name="donateTo"]').val("BaseCampWhereverNeededMost");
-
-                    $("#depends-on-Missionary").prop('disabled', false);
-                    $("#depends-on-Missionary-label").show();
-                    $("#depends-on-Missionary").show();
-
-                    $('#placeholder_donate_input').val('#depends-on-Missionary');
-                    break;
-                case '4':
-                    // Field Projects, ddslick value of 4
-                    $("#depends-on-Missionary").prop('disabled', true);
-                    $("#depends-on-field-projects").prop('disabled',true);
-                    $("#depends-on-community-sponsorship").prop('disabled', true);
-
-                    $("#depends-on-Missionary").hide();
-                    $("#depends-on-field-projects").hide();
-                    $("#depends-on-community-sponsorship").hide();
-
-                    $("#depends-on-Missionary-label").hide();
-                    $("#depends-on-field-projects-label").hide();
-                    $("#depends-on-community-sponsorship-label").hide();
-
-                    $('.giving-detail-area').addClass('dim-area');
-                    $('#field_projects_description').removeClass('dim-area');
-
-                    $('.giving-detail-area').removeClass('highlight-area');
-                    $('#field_projects_description').addClass('highlight-area');
-
-
-                    $("#depends-on-field-projects").prop('disabled', false);
-                    $("#depends-on-Missionary").attr("name", "donateTo");
-
-                    $("#depends-on-field-projects-label").show();
-                    $("#depends-on-field-projects").show();
-
-                    $('#placeholder_donate_input').val('#depends-on-field-projects');
-                    break;
-                case '5':
-                    // Community Sponsorship, ddslick value of 5
-                    $("#depends-on-Missionary").prop('disabled', true);
-                    $("#depends-on-field-projects").prop('disabled', true);
-                    $("#depends-on-community-sponsorship").prop('disabled', true);
-
-                    $("#depends-on-Missionary").hide();
-                    $("#depends-on-field-projects").hide();
-                    $("#depends-on-community-sponsorship").hide();
-
-                    $("#depends-on-Missionary-label").hide();
-                    $("#depends-on-field-projects-label").hide();
-                    $("#depends-on-community-sponsorship-label").hide();
-
-                    $('.giving-detail-area').addClass('dim-area');
-                    $('#community_sponsorship_description').removeClass('dim-area');
-
-                    $('.giving-detail-area').removeClass('highlight-area');
-                    $('#community_sponsorship_description').addClass('highlight-area');
-
-
-                    $("#depends-on-community-sponsorship").prop('disabled', false);
-                    $("#depends-on-community-sponsorship-label").show();
-                    $("#depends-on-community-sponsorship").show();
-
-
-                    $('#placeholder_donate_input').val('#depends-on-community-sponsorship');
-                    break;
-                case '6':
-                    // WriteIn, ddslick value of 6
-                    $("#depends-on-Missionary").removeAttr("name", "donateTo");
-                    $("#depends-on-field-projects").removeAttr("name", "donateTo");
-                    $("#depends-on-community-sponsorship").removeAttr("name", "donateTo");
-
-                    $("#depends-on-Missionary").prop('disabled', true);
-                    $("#depends-on-field-projects").prop('disabled', true);
-                    $("#depends-on-community-sponsorship").prop('disabled', true);
-
-                    $("#depends-on-Missionary").hide();
-                    $("#depends-on-field-projects").hide();
-                    $("#depends-on-community-sponsorship").hide();
-
-                    $("#depends-on-Missionary-label").hide();
-                    $("#depends-on-field-projects-label").hide();
-                    $("#depends-on-community-sponsorship-label").hide();
-
-                    $('.giving-detail-area').addClass('dim-area');
-                    $('#trip_description').removeClass('dim-area');
-
-                    $('.giving-detail-area').removeClass('highlight-area');
-                    $('#trip_description').addClass('highlight-area');
-
-                    $('#placeholder_donate_input').val('');
-                    $('[name="donateTo"]').val("WriteIn");
-                    break;
-            }
-            //callback function: do something with selectedData;
-            console.log(selectedData.selectedData.value);
-            $('#GiveTo').val(selectedData.selectedData.value);
-        },
-        data: GiveTo
+    let groups = _.filter( donationOptions, function(item) {
+      return item && item.groupId;
     });
-    $("#depends-on-Missionary").ddslick({
-        width: 260,
-        height: "300px",
-        onSelected: function(selectedData) {
-            //callback function: do something with selectedData;
-            console.log(selectedData.selectedData.value);
-            $('#depends-on-Missionary').val(selectedData.selectedData.value);
-            $('[name="donateTo"]').val(selectedData.selectedData.value);
-            $('#depends-on-Missionary > .dd-select').removeClass("red-border");
-        },
-        data: Missionary
+    let donationGroups = groups.map(function(group) {
+      group.children = _.filter(donationOptions, function(item) {
+        return group.groupId === item.currentGroup;
+      });
+      return group;
     });
-    $("#depends-on-field-projects").ddslick({
-        width: 260,
-        height: "300px",
-        onSelected: function(selectedData) {
-            //callback function: do something with selectedData;
-            console.log(selectedData.selectedData.value);
-            $('#depends-on-field-projects').val(selectedData.selectedData
-                .value);
-            $('[name="donateTo"]').val(selectedData.selectedData.value);
-        }
-    });
-    $("#depends-on-community-sponsorship").ddslick({
-        width: 260,
-        height: "300px",
-        onSelected: function(selectedData) {
-            //callback function: do something with selectedData;
-            console.log(selectedData.selectedData.value);
-            $('#depends-on-community-sponsorship').val(selectedData.selectedData
-                .value);
-            $('[name="donateTo"]').val(selectedData.selectedData.value);
-        }
-    });
+    return donationGroups;
+  },
+  configId: function() {
+    let config = ConfigDoc();
 
+    if( config && config._id ) {
+      var donationOptions = config.donationOptions;
 
-    $("#depends-on-Missionary").prop('disabled', true);
-    $("#depends-on-field-projects").prop('disabled', true);
-    $("#depends-on-community-sponsorship").prop('disabled', true);
-    $("#depends-on-Missionary").hide();
-    $("#depends-on-field-projects").hide();
-    $("#depends-on-community-sponsorship").hide();
-    $("#depends-on-Missionary-label").hide();
-    $("#depends-on-field-projects-label").hide();
-    $("#depends-on-community-sponsorship-label").hide();
+      if( donationOptions && donationOptions.length > 0 ) {
+
+        let groups = _.filter( donationOptions, function ( item ) {
+          return item && item.groupId;
+        } );
+
+        // Setup the DD-Slick version of the individual select elements
+        Meteor.setTimeout( function () {
+          groups.forEach( function ( item ) {
+            let itemName = '#dd-' + item.groupId;
+            $( itemName ).ddslick( {
+              onSelected: function ( selectedData ) {
+                console.log("value: " + selectedData.selectedData.value);
+                $("[name='donateTo']").val( selectedData.selectedData.value );
+              }
+            } );
+            $( itemName ).hide();
+          } );
+
+          if( $( "#mainDD" ) ) {
+            $( "#mainDD" ).ddslick( {
+              onSelected: _.debounce( function ( selectedData ) {
+                $( "#dd-" + selectedData.selectedData.value ).show();
+
+                groups.forEach( function ( item ) {
+                  let itemName = '#dd-' + item.groupId;
+                  if( selectedData.selectedData.value !== item.groupId ) {
+                    $( itemName ).prop( 'disabled', true );
+                    $( itemName ).hide();
+                  } else {
+                    $("[name='donateTo']").val( $( itemName ).find( ":input" ).val() );
+                  }
+                } );
+              }, 300 )
+            } );
+          }
+        }, 0 );
+      }
+        return config._id;
+      }
+    return;
+  }
+});
+
+Template.DonationLanding.onCreated(function () {
+  this.autorun(() => {
+    this.subscribe("uploaded");
+  });
 });

@@ -59,6 +59,7 @@ DT_donations._ensureIndex(
   {background: true});
 
 DT_funds._ensureIndex(
+  {'id': 1},
   {'name': 1},
   {background: true});
 

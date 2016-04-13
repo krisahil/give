@@ -171,13 +171,13 @@ Template.DonationForm.events({
 Template.DonationForm.helpers({
   paymentQuestionIcon: function() {
     if (Session.equals('paymentMethod', 'Check')) {
-      return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+      return "<i class='makeRightOfInput fa fa-question-circle' data-toggle='popover' " +
         "data-trigger='hover focus' data-container='body' data-content='There are usually 3 sets of "+
         "numbers at the bottom of a check. The short check number, the 9 digit routing number and the " +
         "account number.'>" +
         "</i>";
     }
-    return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+    return "<i class='makeRightOfInput fa fa-question-circle' data-toggle='popover' " +
       "data-trigger='hover focus' data-container='body' data-content='" +
       "Visa®, Mastercard®, and Discover® cardholders: " +
       "Turn your card over and look at the signature box. You should see either the entire 16-digit credit " +
@@ -190,12 +190,12 @@ Template.DonationForm.helpers({
       "</i>";
   },
   onlyOneTimeIcon: function() {
-    return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+    return "<i class='makeRightOfInput fa fa-question-circle' data-toggle='popover' " +
       "data-trigger='hover focus' data-container='body' data-content='When giving by Check we can only accept monthly recurring gifts'>" +
       "</i>";
   },
   onlyOnSpecificDay: function() {
-    return "<i class='makeRightOfInput fa fa-question-circle' id='accountTypeQuestion' data-toggle='popover' " +
+    return "<i class='makeRightOfInput fa fa-question-circle' data-toggle='popover' " +
       "data-trigger='hover focus' data-container='body' data-content='When giving by Check we can only accept monthly gifts for a specific day of the month.'>" +
       "</i>";
   },
@@ -298,6 +298,7 @@ Template.DonationForm.onRendered(function() {
     $("#start_date").val(Session.get('params.start_date'));
   }
 
+  $('[name="donateTo"]').change();
 });
 
 Template.DonationForm.onDestroyed( function() {

@@ -1,3 +1,25 @@
+function setupDonateTo(){
+  // This helper doesn't return anything, rather it is used as a reactive
+  // helper to retrieve the configuration document reactively
+  let config = ConfigDoc();
+
+  var donationOptions = config && config.donationOptions;
+
+  if( donationOptions && donationOptions.length > 0 ) {
+    $( '#donateTo' ).select2( {
+      data:             _.sortBy( donationOptions, 'position' ),
+      dropdownCssClass: 'dropdown-inverse',
+      placeholder:      "Choose one"
+    } );
+  }
+}
+
+Template.DonationTo.helpers({
+  setupDonateToDropwdown: function () {
+    setupDonateTo();
+  }
+});
+
 Template.DonationTo.events({
   'change #donateTo': function() {
     if ($('#donateTo').val() !== 'WriteIn') {
@@ -17,6 +39,8 @@ Template.DonationTo.events({
 });
 
 Template.DonationTo.onRendered(function() {
+  setupDonateTo();
+
   if (Session.get('params.donateTo')) {
     $("#donateTo").val(Session.get('params.donateTo'));
 	}

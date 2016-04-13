@@ -241,11 +241,9 @@ Meteor.methods({
       }
       let persona_ids = Meteor.users.findOne( { _id: userID } ) &&
         Meteor.users.findOne( { _id: userID } ).persona_ids;
-      console.log( persona_ids );
 
       let persona_id = Meteor.users.findOne( { _id: userID } ) &&
         Meteor.users.findOne( { _id: userID } ).persona_id;
-      console.log( persona_id );
 
       if (persona_ids && persona_ids.length && persona_ids.length >= 1) {
         Utils.get_all_dt_donations( persona_ids );

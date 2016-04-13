@@ -1,8 +1,9 @@
 function reorderItems() {
+  let config = ConfigDoc();
   let orderOfOptions = $("#selectedGivingOptionsDiv").sortable("toArray"),
     newOptionsOrder = [],
     currentGroup;
-  let donationOptions = Config.findOne().donationOptions;
+  let donationOptions = config.donationOptions;
 
   orderOfOptions.forEach(function(id, index) {
     let thisOption = _.map(donationOptions, function(item){
@@ -18,7 +19,7 @@ function reorderItems() {
     });
   });
 
-  Config.update({_id: Session.get("configId")}, {
+  Config.update({_id: config._id}, {
     $set: {
       donationOptions: newOptionsOrder
     }
@@ -96,7 +97,8 @@ function checkForDuplicateGroupNames(donationOptions) {
 
 Template.GivingOptions.events({
   'click #addGroupButton': function () {
-    Config.update({_id: Session.get("configId")}, {
+    let config = ConfigDoc();
+    Config.update({_id: config._id}, {
       $addToSet: {
         "donationOptions": {
           groupId: Random.id([8]),
@@ -108,6 +110,7 @@ Template.GivingOptions.events({
   },
   'click #updateDropdown': function (e) {
     e.preventDefault();
+    let config = ConfigDoc();
 
     // If section two ends with a group, highlight that group and throw an error
     if ($("#selectedGivingOptionsDiv").children().last().hasClass("group-option")) {
@@ -123,7 +126,31 @@ Template.GivingOptions.events({
       return;
     }
 
-    var group = Config.findOne().donationOptions;
+    // If section two ends with a group, highlight that group and throw an error
+    let groupsTogether = $("#selectedGivingOptionsDiv").children().map(function(index, item){
+      if ($(item).prev().hasClass("group-option") && $(item).hasClass("group-option")){
+        return $(item).attr("id");
+      }});
+    if (groupsTogether && groupsTogether.length > 0) {
+      Bert.alert( {
+        message: "You have group(s) together with no sub-options",
+        type:    'danger',
+        icon:    'fa-frown-o',
+        style:   'growl-bottom-right'
+      } );
+      console.log(groupsTogether);
+      groupsTogether.each(function(index, id){
+        console.log(id);
+        if (id) {
+          $("#" + id).prev().addClass("backgroundColor");
+          $("#" + id).prev().addClass("indianred");
+        }
+      });
+      return;
+    }
+
+
+    var group = config.donationOptions;
 
     // Check this group for duplicate group names
     let duplicates = checkForDuplicateGroupNames(group);
@@ -230,6 +257,7 @@ Template.GivingOptions.events({
   'click .remove-item': function(e) {
     e.preventDefault();
     let dtId = $(e.currentTarget).attr('data-el-id');
+    let config = ConfigDoc();
 
     if(!dtId){
       Bert.alert({
@@ -242,7 +270,7 @@ Template.GivingOptions.events({
     }
     let updateOperator = dtId.length === 8 ? {groupId: dtId} : {id: dtId};
 
-    Config.update({_id: Session.get("configId")}, {
+    Config.update({_id: config._id}, {
       $pull: {
         "donationOptions": updateOperator
       }
@@ -255,8 +283,9 @@ Template.GivingOptions.events({
   'click :checkbox': function(e) {
     e.preventDefault();
     let dtId = $(e.target).val();
+    let config = ConfigDoc();
 
-    Config.update({_id: Session.get("configId")}, {
+    Config.update({_id: config._id}, {
       $addToSet: {
         "donationOptions": {
           id: dtId,
@@ -296,8 +325,8 @@ Template.GivingOptions.events({
 
 Template.GivingOptions.helpers({
   dt_funds: function () {
-    let orgDoc = Config.findOne();
-    let selectedGivingOptions = orgDoc ? orgDoc.donationOptions : null;
+    let config = ConfigDoc();
+    let selectedGivingOptions = config ? config.donationOptions : null;
     if(selectedGivingOptions){
       selectedGivingOptions = selectedGivingOptions.map(function(val){ return val.id; });
       if( selectedGivingOptions ) {
@@ -317,11 +346,13 @@ Template.GivingOptions.helpers({
     return;
   },
   donationOptions: function() {
-    let donationOptions =  Config.findOne() && Config.findOne().donationOptions;
+    let config = ConfigDoc();
+    let donationOptions =  config && config.donationOptions;
     return _.sortBy(donationOptions, 'position');
   },
   donationGroups: function() {
-    let donationOptions =  Config.findOne() && Config.findOne().donationOptions;
+    let config = ConfigDoc();
+    let donationOptions =  config && config.donationOptions;
 
     let groups = _.filter( donationOptions, function(item) {
       return item && item.groupId;
@@ -350,16 +381,15 @@ Template.GivingOptions.onCreated(function () {
 });
 
 Template.GivingOptions.onRendered(function () {
+  $('[data-toggle="popover"]').popover({html: true});
 
   let config = ConfigDoc();
   
-  // Set configId
-  Session.set("configId", config && config._id);
-  if (!Session.get("configId")) {
-    console.log('no configuration id, need to setup the giving information first');
-  } else {
+  if (config && config._id) {
     // Start the function to setup the table connections and make them sortable
     sortableFunction();
+  } else {
+    console.log('no configuration id, need to setup the giving information first');
   }
 
   var donationOptions = config && config.donationOptions;
@@ -388,7 +418,7 @@ Template.GivingOptions.onRendered(function () {
         let itemName = '#dd-' + item.groupId;
         $(itemName).ddslick({
           onSelected: function(selectedData) {
-            $('[name="donateTo"]').val(selectedData.selectedData.value);
+            $('#donateTo').val(selectedData.selectedData.value);
           }
         });
         $(itemName).hide();
@@ -405,13 +435,13 @@ Template.GivingOptions.onRendered(function () {
                 $( itemName ).prop('disabled', true);
                 $( itemName ).hide();
               } else {
-                $('[name="donateTo"]').val($(itemName).find(":input").val());
+                $('#donateTo').val($(itemName).find(":input").val());
               }
             });
           }, 300)
         });
       }
       $(".dd-container").addClass("text-center");
-    }, 600);
+    }, 1000);
   }
 });

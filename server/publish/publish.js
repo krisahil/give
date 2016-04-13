@@ -292,18 +292,16 @@ Meteor.publish("userDT", function (id) {
 });
 
 Meteor.publish("userDTFunds", function () {
-  if (this.userId) {
-    return DT_funds.find({}, { fields: {
-      id: 1,
-      name: 1,
-      alias: 1,
-      archived: 1,
-      description: 1,
-      tax_deductible: 1
-    }});
-  } else {
-    this.ready();
-  }
+  return DT_funds.find({}, {
+      fields: {
+        id: 1,
+        name: 1,
+        alias: 1,
+        archived: 1,
+        description: 1,
+        tax_deductible: 1
+      }
+  });
 });
 
 Meteor.publish("DTSources", function () {
@@ -414,11 +412,11 @@ Meteor.publish("roles", function () {
 });
 
 Meteor.publish("uploaded", function () {
-  if (Roles.userIsInRole(this.userId, 'admin')) {
+  //if (Roles.userIsInRole(this.userId, 'admin')) {
     return Uploads.find({userId: this.userId});
-  } else {
+  /*} else {
     this.ready();
-  }
+  }*/
 });
 
 Meteor.publish("config", function () {

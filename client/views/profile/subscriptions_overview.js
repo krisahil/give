@@ -95,9 +95,23 @@ Template.SubscriptionsOverview.helpers({
   canceled_reason: function () {
     return this.metadata && this.metadata.canceled_reason;
   },
-  bank: function () {
+  bank: function() {
     var id = this._id;
     var subscription = Subscriptions.findOne({id: _id});
+  },
+  donateTo: function() {
+    if (this.metadata && this.metadata.donateTo) {
+      if (! isNaN(this.metadata.donateTo)) {
+        if(DT_funds.findOne({_id: this.metadata.donateTo}) && DT_funds.findOne({_id: this.metadata.donateTo}).name) {
+          return DT_funds.findOne({_id: this.metadata.donateTo}).name;
+        } else {
+          return;
+        }
+      } else {
+        return this.metadata.donateTo;
+      }
+    }
+    return 'Other';
   },
   options: {
     id: "subscriptionsTutorial",
@@ -207,6 +221,12 @@ Template.SubscriptionsOverview.onRendered(function() {
   if(Roles.userIsInRole(Meteor.userId(), 'no-dt-person')) {
     Router.go("Dashboard");
   }
-    Session.setDefault('paymentMethod', 'default');
-    Session.setDefault('subscription_cursor', 0);
+  Session.setDefault('paymentMethod', 'default');
+  Session.setDefault('subscription_cursor', 0);
+});
+
+Template.SubscriptionsOverview.onCreated(function() {
+  this.autorun(()=>{
+    this.subscribe("userDTFunds");
+  });
 });
