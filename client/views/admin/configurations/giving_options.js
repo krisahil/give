@@ -3,10 +3,10 @@ function reorderItems() {
   let orderOfOptions = $("#selectedGivingOptionsDiv").sortable("toArray"),
     newOptionsOrder = [],
     currentGroup;
-  let donationOptions = config.donationOptions;
+  let givingOptions = config && config.Giving && config.Giving.options;
 
   orderOfOptions.forEach(function(id, index) {
-    let thisOption = _.map(donationOptions, function(item){
+    let thisOption = _.map(givingOptions, function(item){
       if(item.type === 'group'){
         currentGroup = item.groupId;
       } else {
@@ -21,7 +21,7 @@ function reorderItems() {
 
   Config.update({_id: config._id}, {
     $set: {
-      donationOptions: newOptionsOrder
+      'Giving.options': newOptionsOrder
     }
   });
 };
@@ -77,15 +77,15 @@ function sortableFunction () {
   }, 500);
 };
 
-function checkForDuplicateGroupNames(donationOptions) {
+function checkForDuplicateGroupNames(givingOptions) {
   let dupArr = [];
-  let groupedByCount = _.countBy(donationOptions, function (item) {
+  let groupedByCount = _.countBy(givingOptions, function (item) {
     return item.text;
   });
 
   for (var text in groupedByCount) {
     if (groupedByCount[text] > 1) {
-      _.where(donationOptions, {
+      _.where(givingOptions, {
         text: text, type: 'group'
       }).map(function (item) {
         dupArr.push(item);
@@ -100,7 +100,7 @@ Template.GivingOptions.events({
     let config = ConfigDoc();
     Config.update({_id: config._id}, {
       $addToSet: {
-        "donationOptions": {
+        "Giving.options": {
           groupId: Random.id([8]),
           type: 'group',
           position: $(".selected-options").length
@@ -150,7 +150,7 @@ Template.GivingOptions.events({
     }
 
 
-    var group = config.donationOptions;
+    var group = config.Giving.options;
 
     // Check this group for duplicate group names
     let duplicates = checkForDuplicateGroupNames(group);
@@ -236,7 +236,7 @@ Template.GivingOptions.events({
 
 
     // Store all the current options
-    let configOptions = config && config.donationOptions;
+    let configOptions = config && config.Giving && config.Giving.options;
     // Find the indexOf this particular option
     let elementPos = configOptions.map(function(x) {return x.id ? x.id : x.groupId; }).indexOf(id);
     // Update the matching object
@@ -250,7 +250,7 @@ Template.GivingOptions.events({
     // Store the new version of the configOptions
     Config.update({_id: config._id}, {
       $set: {
-        donationOptions: configOptions
+        'Giving.options': configOptions
       }
     });
   },500),
@@ -272,7 +272,7 @@ Template.GivingOptions.events({
 
     Config.update({_id: config._id}, {
       $pull: {
-        "donationOptions": updateOperator
+        "Giving.options": updateOperator
       }
     });
 
@@ -287,7 +287,7 @@ Template.GivingOptions.events({
 
     Config.update({_id: config._id}, {
       $addToSet: {
-        "donationOptions": {
+        "Giving.options": {
           id: dtId,
           text: $(e.target).attr('data-el-text'),
           description: $(e.target).attr('data-description') ?
@@ -326,7 +326,7 @@ Template.GivingOptions.events({
 Template.GivingOptions.helpers({
   dt_funds: function () {
     let config = ConfigDoc();
-    let selectedGivingOptions = config ? config.donationOptions : null;
+    let selectedGivingOptions = config ? config.Giving.options : null;
     if(selectedGivingOptions){
       selectedGivingOptions = selectedGivingOptions.map(function(val){ return val.id; });
       if( selectedGivingOptions ) {
@@ -345,20 +345,20 @@ Template.GivingOptions.helpers({
     }
     return;
   },
-  donationOptions: function() {
+  givingOptions: function() {
     let config = ConfigDoc();
-    let donationOptions =  config && config.donationOptions;
-    return _.sortBy(donationOptions, 'position');
+    let givingOptions =  config && config.Giving && config.Giving.options;
+    return _.sortBy(givingOptions, 'position');
   },
   donationGroups: function() {
     let config = ConfigDoc();
-    let donationOptions =  config && config.donationOptions;
+    let givingOptions =  config && config.Giving && config.Giving.options;
 
-    let groups = _.filter( donationOptions, function(item) {
+    let groups = _.filter( givingOptions, function(item) {
       return item && item.groupId;
     });
     let donationGroups = groups.map(function(group) {
-      group.children = _.filter(donationOptions, function(item) {
+      group.children = _.filter(givingOptions, function(item) {
         return group.groupId === item.currentGroup;
       });
       return group;
@@ -392,19 +392,19 @@ Template.GivingOptions.onRendered(function () {
     console.log('no configuration id, need to setup the giving information first');
   }
 
-  var donationOptions = config && config.donationOptions;
+  var givingOptions = config && config.Giving && config.Giving.options;;
 
-  if(donationOptions && donationOptions.length > 0){
+  if(givingOptions && givingOptions.length > 0){
 
     $('#testDropdown').select2({
-      data: _.sortBy(donationOptions, 'position'),
+      data: _.sortBy(givingOptions, 'position'),
       dropdownCssClass: 'dropdown-inverse',
       placeholder: "Choose one"
     });
-    //$("#testDropdown").select2('val',donationOptions[0].id);
+    //$("#testDropdown").select2('val',givingOptions[0].id);
 
-    Session.set("givingOptionsChecked", donationOptions);
-    let groups = _.filter( donationOptions, function(item) {
+    Session.set("givingOptionsChecked", givingOptions);
+    let groups = _.filter( givingOptions, function(item) {
         return item && item.groupId;
       });
     Session.set("showDD", false);

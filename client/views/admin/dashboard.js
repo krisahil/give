@@ -13,15 +13,15 @@ Template.Dashboard.helpers({
       config.Settings.DonorTools &&
       config.Settings.DonorTools.url;
   },
-  donationOptions: function() {
+  givingOptions: function() {
     let config = ConfigDoc();
 
-    return config && config.donationOptions;
+    return config && config.Giving && config.Giving.options;
   },
   showOtherThanConfig: function() {
     let config = ConfigDoc();
 
-    if (config && config.donationOptions &&
+    if (config && config.Giving && config.Giving.options &&
       config.Settings &&
       config.Settings.DonorTools &&
       config.Settings.DonorTools.url ) {

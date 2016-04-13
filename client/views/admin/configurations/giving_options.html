@@ -14,7 +14,7 @@
                   </h2>
                   <div class="col-md-4">
                     <h3>1. Add a group first, then your giving options will appear.</h3>
-                      {{#if donationOptions}}
+                      {{#if givingOptions}}
                           <h3>
                               <em>
                               Check items to add them to the list. You can have many groups of options
@@ -22,12 +22,12 @@
                           </h3>
                       {{/if}}
                     <button id="addGroupButton" class="btn btn-primary">+ Add Group</button>
-                    {{#if donationOptions}}
+                    {{#if givingOptions}}
                         <!-- TODO: use this button to create a dropdown option for allowing users to write in a different option -->
                       <!--<button id="addWriteInButton" class="btn btn-primary">+ Create Other/Write In Option</button>-->
                     {{/if}}
                     <section class="">
-                        {{#if donationOptions}}
+                        {{#if givingOptions}}
                             <div id="givingOptionsDiv">
                                 <form role="form">
                                     <div class="form-group">
@@ -50,14 +50,14 @@
                 </div>
                   <div class="col-md-4">
                     <h3>2. Drag into the right order. Drop a picture to add one to a gift option.</h3>
-                    {{#if donationOptions}}
+                    {{#if givingOptions}}
                         <h3><em>Drag out of the box or un-check to remove, drag up or down to reposition</em></h3>
                     {{/if}}
                       <section class="">
                           <form>
                             <div class="sortable slim-borders"
                                  id="selectedGivingOptionsDiv">
-                                {{#each donationOptions}}
+                                {{#each givingOptions}}
                                     {{#if $eq type "option"}}
                                         <div id="{{id}}" class="row selected-options">
                                             <div class="col-md-1">
@@ -139,12 +139,12 @@
                       <br>
                       <label for="testDropdown">Dropdown Preview</label><br>
                       <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl">
-                      {{#if $and donationOptions showDD}}
+                      {{#if $and givingOptions showDD}}
                           <br>
                           <label for="selectTestMain">This will be your main selection dropdown</label>
                             <br>
                           <select id="mainDD" class="form-control select select-primary mbl" >
-                              {{#each donationOptions}}
+                              {{#each givingOptions}}
                                   {{#if groupId}}
                                     <option value="{{groupId}}">{{text}}</option>
                                   {{/if}}

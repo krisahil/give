@@ -958,66 +958,6 @@ Meteor.methods({
       throw new Meteor.Error(e);
     }
   },
-  update_donation_options: function (arrayNames, selectedIds) {
-    logger.info("Started update_donation_options method");
-
-    check(arrayNames, Array);
-    check(selectedIds, Array);
-
-    try {
-      if (Roles.userIsInRole(this.userId, ['admin'])) {
-        console.log("Updating");
-
-        Config.update( { "OrgInfo.web.domain_name": Meteor.settings.public.org_domain }, {
-          $set: {
-            "DonationOptions": arrayNames,
-            "SelectedIDs": selectedIds
-          }
-        } );
-      } else {
-        return;
-      }
-    } catch(e){
-      console.log(e);
-      throw new Meteor.Error(e);
-    }
-  },
-  search_collections: function(collectionName, searchValue, searchIn) {
-    logger.info("Started search_collections method");
-
-    check(collectionName, String);
-    check(searchValue, String);
-    check(searchIn, Array);
-
-    try {
-      if (Roles.userIsInRole(this.userId, ['admin'])) {
-        console.log("Searching");
-        let searchConstructor = {
-          $or:
-            _.map(searchIn, function(searchInValue) {
-              return {
-                [searchInValue]: {$regex: searchValue, $options: 'i' }
-              }
-            })
-
-        };
-        let root = Meteor.isClient ? window : global;
-        // find the instance in the global context - e.g. window['Subscriptions']
-        let collection = root[collectionName];
-
-        console.dir(searchConstructor.$or);
-        let search_result = collection.find( searchConstructor );
-        console.log(search_result);
-
-        return search_result;
-      } else {
-        return;
-      }
-    } catch(e){
-      console.log(e);
-      throw new Meteor.Error(e);
-    }
-  },
   update_user_roles: function(roles, user_id) {
     logger.info("Started update_user_roles method");
 

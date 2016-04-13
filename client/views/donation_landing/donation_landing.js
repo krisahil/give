@@ -90,20 +90,20 @@ Template.DonationLanding.helpers({
     }
     return;
   },
-  donationOptions: function() {
+  givingOptions: function() {
     let config = ConfigDoc();
-    let donationOptions =  config && config.donationOptions;
-    return _.sortBy(donationOptions, 'position');
+    let givingOptions =  config && config.Giving && config.Giving.options;
+    return _.sortBy(givingOptions, 'position');
   },
   donationGroups: function() {
     let config = ConfigDoc();
-    let donationOptions =  config && config.donationOptions;
+    let givingOptions =  config && config.Giving && config.Giving.options;
 
-    let groups = _.filter( donationOptions, function(item) {
+    let groups = _.filter( givingOptions, function(item) {
       return item && item.groupId;
     });
     let donationGroups = groups.map(function(group) {
-      group.children = _.filter(donationOptions, function(item) {
+      group.children = _.filter(givingOptions, function(item) {
         return group.groupId === item.currentGroup;
       });
       return group;
@@ -114,11 +114,11 @@ Template.DonationLanding.helpers({
     let config = ConfigDoc();
 
     if( config && config._id ) {
-      var donationOptions = config.donationOptions;
+      var givingOptions = config.Giving.options;
 
-      if( donationOptions && donationOptions.length > 0 ) {
+      if( givingOptions && givingOptions.length > 0 ) {
 
-        let groups = _.filter( donationOptions, function ( item ) {
+        let groups = _.filter( givingOptions, function ( item ) {
           return item && item.groupId;
         } );
 

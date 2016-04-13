@@ -13,7 +13,7 @@ function configBasicsSetup() {
     config.Settings.DonorTools.passwordExists &&
     config.Settings.Stripe.keysPublishableExists &&
     config.Settings.Stripe.keysSecretExists &&
-    config.donationOptions) {
+    config.Giving && config.Giving.options) {
     return true;
   } else {
     return false;
@@ -219,6 +219,41 @@ Schema.OrgInfo = new SimpleSchema({
     type: String,
     label: "The subdomain you would like 'Give' to run at",
     optional: true
+  }
+});
+
+Schema.Giving = new SimpleSchema({
+  "Giving.options": {
+    type: Array,
+    optional: true,
+    blackbox: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "Giving.options.$": {
+    type: Object,
+    optional: true,
+    blackbox: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "Giving.guide": {
+    type: Array,
+    optional: true,
+    blackbox: true,
+    autoform: {
+      omit: true
+    }
+  },
+  "Giving.guide.$": {
+    type: Object,
+    optional: true,
+    blackbox: true,
+    autoform: {
+      omit: true
+    }
   }
 });
 
@@ -469,20 +504,14 @@ Schema.Settings = new SimpleSchema({
 });
 
 Schema.Config = new SimpleSchema({
-  "donationOptions": {
-    type: Array,
+  "Giving": {
+    type: Schema.OrgInfo,
     optional: true,
-    blackbox: true,
     autoform: {
-      omit: true
-    }
-  },
-  "donationOptions.$": {
-    type: Object,
-    optional: true,
-    blackbox: true,
-    autoform: {
-      omit: true
+      panelClass: "panel-primary",
+      afFieldInput: {
+        class: 'slim-borders'
+      }
     }
   },
   "OrgInfo": {

@@ -3,11 +3,11 @@ function setupDonateTo(){
   // helper to retrieve the configuration document reactively
   let config = ConfigDoc();
 
-  var donationOptions = config && config.donationOptions;
+  var givingOptions = config && config.Giving && config.Giving.options;
 
-  if( donationOptions && donationOptions.length > 0 ) {
+  if( givingOptions && givingOptions.length > 0 ) {
     $( '#donateTo' ).select2( {
-      data:             _.sortBy( donationOptions, 'position' ),
+      data:             _.sortBy( givingOptions, 'position' ),
       dropdownCssClass: 'dropdown-inverse',
       placeholder:      "Choose one"
     } );

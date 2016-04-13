@@ -19,8 +19,8 @@ Config._ensureIndex(
   {backgrond: true});
 
 Config._ensureIndex(
-  { 'donationOptions.id': 1 },
-  { 'donationOptions.groupId': 1 },
+  { 'Giving.options.id': 1 },
+  { 'Giving.options.groupId': 1 },
   { unique: true },
   { backgrond: true }
 );
