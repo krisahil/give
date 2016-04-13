@@ -560,7 +560,7 @@ function OrgInfoCheck(name, namePart2) {
     if (logoURL) {
       return logoURL;
     }
-    return '/images/bw_logo_new.png';
+    return;
   });
 
   Template.registerHelper('org_phone', function() {

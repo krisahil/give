@@ -59,12 +59,20 @@ Template.UserNav.helpers({
     return true;
   },
   imageExists: function () {
-    let id = this.id;
-    return Uploads.findOne({logo: "_true"});
+    let config = ConfigDoc();
+    if (config && config._id) {
+      return Uploads.findOne({$and: [{configId: config._id},{logo: "_true"}]});
+    }
+    return;
   },
   imageSrc: function () {
-    if (Uploads.findOne({logo: "_true"})) {
-      return Uploads.findOne({logo: "_true"}).baseUrl + Uploads.findOne({logo: "_true"}).name;
+    let config = ConfigDoc();
+    if (config && config._id) {
+      let imageDoc = Uploads.findOne({$and: [{configId: config._id},{logo: "_true"}]});
+      if (imageDoc) {
+        return imageDoc.baseUrl +
+          imageDoc.name;
+      }
     }
     return;
   }
