@@ -3,6 +3,40 @@ let config = ConfigDoc();
 
 Meteor.methods({
   /**
+   * Update the guide array inside the config document
+   *
+   * @method updateGuide
+   * @param {String} groupId - The id of this option group
+   * @param {String} index - The index of the group
+   * @param {String} type - What is being updated inside the group?
+   * @param {String} value - What is the value of the type being updated?
+   */
+  updateGuide: function(groupId, index, type, value){
+    logger.info( "Started method updateGuide." );
+    console.log(groupId, index, type, value);
+    let config = ConfigDoc();
+
+    check(groupId, String);
+    check(index, Number);
+    check(type, String);
+    check(value, Match.OneOf(String, Boolean));
+    
+    this.unblock();
+
+    let existingGuideObject = config.Giving.guide[index];
+    existingGuideObject[type] = value;
+
+    Config.update({
+      _id: config._id,
+      "Giving.guide.groupId": groupId
+    }, {
+      $set: {
+        "Giving.guide.$": existingGuideObject
+      }
+    });
+    return 'Done';
+  },
+  /**
    * check that the connection to DonorTools is up
    *
    * @method sendChangeConfigNotice

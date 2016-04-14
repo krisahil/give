@@ -1,82 +1,23 @@
-Template.DonationLanding.events({
-    'click #where_most_needed_description': function (e) {
-        e.preventDefault();
-        console.log("Clicked where_most_needed_description");
-        $('#GiveTo').ddslick('select', {index: '0' });
-    },
-    'click #operations_description': function (e) {
-        e.preventDefault();
-        console.log("Clicked operations_description");
-        $('#GiveTo').ddslick('select', {index: '1' });
-    },
-    'click #missionary_description': function (e) {
-        e.preventDefault();
-        console.log("Clicked missionary_description");
-        $('#GiveTo').ddslick('select', {index: '2' });
-    },
-    'click #field_projects_description': function (e) {
-        e.preventDefault();
-        console.log("Clicked field_projects_description");
-        $('#GiveTo').ddslick('select', {index: '3' });
-    },
-    'click #community_sponsorship_description': function (e) {
-        e.preventDefault();
-        console.log("Clicked community_sponsorship_description");
-        $('#GiveTo').ddslick('select', {index: '4' });
-    },
-    'click #trip_description': function (e) {
-        e.preventDefault();
-        console.log("Clicked trip_description");
-        $('#GiveTo').ddslick('select', {index: '5' });
-    },
-    'click #other_ways_to_give': function (e) {
-        e.preventDefault();
-        $('#modal_for_other_ways_to_give').modal({
-            show: true,
-            backdrop: 'static'
-        });
-    },
-    'click #cardButton': function(e) {
-        e.preventDefault();
-        console.log("You clicked the card button");
-        var placeholder_value = $('#placeholder_donate_input').val();
-        if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() === "") {
-            $('#depends-on-Missionary > .dd-select').addClass("red-border");
-            alert("Please select a missionary");
-            return false;
-        } else {
-            if (placeholder_value === '') {
-                $('[name="donateWith"]').val('Card');
-                if($('#GiveTo').val() === '1'){
-                    $('[name="donateTo"]').val('WhereMostNeeded');
-                }
-            } else {
-                $('[name="donateTo"]').val($(placeholder_value).val());
-                $('[name="donateWith"]').val('Card');
-            }
-            Router.go('/?'+$("#landing_form").serialize());
-        }
-    },
-    'click #checkButton': function(e) {
-        e.preventDefault();
-        var placeholder_value = $('#placeholder_donate_input').val();
-        if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() === "") {
-            $('#depends-on-Missionary > .dd-select').addClass("red-border");
-            alert("Please select a missionary");
-            return false;
-        } else {
-            if (placeholder_value === '') {
-                $('[name="donateWith"]').val('Check');
-                if($('#GiveTo').val() === '1'){
-                    $('[name="donateTo"]').val('WhereMostNeeded');
-                }
-            } else {
-                $('[name="donateTo"]').val($(placeholder_value).val());
-                $('[name="donateWith"]').val('Check');
-            }
-            Router.go('/?'+$("#landing_form").serialize());
-        }
-    }
+
+function guideExists () {
+  let config = ConfigDoc();
+  if (config && config.Giving && config.Giving.guide) {
+    return true;
+  }
+  return false;
+}
+
+function groupIndex (config, id) {
+  return config.Giving.guide.map( function ( group ) {
+    return group.groupId;
+  } ).indexOf( id );
+}
+
+Template.DonationLanding.onCreated(function () {
+  let self = this;
+  self.autorun(function() {
+    self.subscribe("uploaded");
+  });
 });
 
 Template.DonationLanding.helpers({
@@ -153,12 +94,110 @@ Template.DonationLanding.helpers({
         return config._id;
       }
     return;
+  },
+  givingGuide: function() {
+    let config = ConfigDoc();
+    var givingGuide = config && config.Giving && config.Giving.guide;
+
+    if(givingGuide && givingGuide.length > 0){
+      return givingGuide;
+    }
+  },
+  checked: function() {
+    let config = ConfigDoc();
+    if (guideExists()) {
+      if (groupIndex(config, this.groupId) !== -1 && config.Giving.guide[groupIndex(config, this.groupId)].show) {
+        return 'checked';
+      }
+    }
+    return;
+  },
+  icon: function () {
+    let config = ConfigDoc();
+    if (guideExists()) {
+      if (groupIndex(config, this.groupId) !== -1 && config.Giving.guide[groupIndex(config, this.groupId)].icon) {
+        return config.Giving.guide[groupIndex(config, this.groupId)].icon;
+      }
+    }
+    return;
+  },
+  title: function () {
+    let config = ConfigDoc();
+    if (guideExists()) {
+      if (groupIndex(config, this.groupId) !== -1 && config.Giving.guide[groupIndex(config, this.groupId)].title) {
+        return config.Giving.guide[groupIndex(config, this.groupId)].title;
+      }
+    }
+    return;
+  },
+  description: function () {
+    let config = ConfigDoc();
+    if (guideExists()) {
+      if (groupIndex(config, this.groupId) !== -1 && config.Giving.guide[groupIndex(config, this.groupId)].description) {
+        return config.Giving.guide[groupIndex(config, this.groupId)].description;
+      }
+    }
+    return;
   }
 });
 
-Template.DonationLanding.onCreated(function () {
-  let self = this;
-  self.autorun(function() {
-    self.subscribe("uploaded");
-  });
+Template.DonationLanding.events({
+  'click .guide-item': function (e) {
+    e.preventDefault();
+    let config = ConfigDoc();
+    console.log("Clicked guide item");
+    let ddslick = $("#mainDD").data('ddslick');
+    let index = groupIndex(config, this.groupId);
+    console.log(ddslick.settings.data[index]);
+    $('#mainDD').ddslick('select', {index: index.toString() });
+  },
+  'click #other_ways_to_give': function (e) {
+    e.preventDefault();
+    $('#modal_for_other_ways_to_give').modal({
+      show: true,
+      backdrop: 'static'
+    });
+  },
+  'click #cardButton': function(e) {
+    e.preventDefault();
+    console.log("You clicked the card button");
+    var placeholder_value = $('#placeholder_donate_input').val();
+    if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() === "") {
+      $('#depends-on-Missionary > .dd-select').addClass("red-border");
+      alert("Please select a missionary");
+      return false;
+    } else {
+      if (placeholder_value === '') {
+        $('[name="donateWith"]').val('Card');
+        if($('#GiveTo').val() === '1'){
+          $('[name="donateTo"]').val('WhereMostNeeded');
+        }
+      } else {
+        $('[name="donateTo"]').val($(placeholder_value).val());
+        $('[name="donateWith"]').val('Card');
+      }
+      Router.go('/?'+$("#landing_form").serialize());
+    }
+  },
+  'click #checkButton': function(e) {
+    e.preventDefault();
+    var placeholder_value = $('#placeholder_donate_input').val();
+    if (placeholder_value === '#depends-on-Missionary' && $('#depends-on-Missionary').val() === "") {
+      $('#depends-on-Missionary > .dd-select').addClass("red-border");
+      alert("Please select a missionary");
+      return false;
+    } else {
+      if (placeholder_value === '') {
+        $('[name="donateWith"]').val('Check');
+        if($('#GiveTo').val() === '1'){
+          $('[name="donateTo"]').val('WhereMostNeeded');
+        }
+      } else {
+        $('[name="donateTo"]').val($(placeholder_value).val());
+        $('[name="donateWith"]').val('Check');
+      }
+      Router.go('/?'+$("#landing_form").serialize());
+    }
+  }
 });
+

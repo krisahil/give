@@ -40,10 +40,22 @@
                                     {{/if}}
                                     <a id="giving-options" class="quick-button backgroundColor primary"
                                        href="/dashboard/giving_options">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-repeat"></i>
-                                </span>
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-repeat"></i>
+                                    </span>
                                         <h5>Giving Options</h5>
+                                    </a>
+                                </div>
+                                <div class="col-sm-2">
+                                    {{#if $not givingOptions}}
+                                        <span style="" class="badge alert-badge backgroundColor indianred">Setup After Giving Options</span>
+                                    {{/if}}
+                                    <a id="giving-guide" class="quick-button backgroundColor primary"
+                                       href="/dashboard/giving_guide">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-compass"></i>
+                                    </span>
+                                        <h5>Giving Guide</h5>
                                     </a>
                                 </div>
                                 <div class="col-sm-2">

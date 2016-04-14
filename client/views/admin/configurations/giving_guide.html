@@ -1,1 +1,81 @@
-<template name="GivingGuide"></template>
+<template name="GivingGuide">
+    <div class="container-fluid scroll-to-here Donation-Landing">
+        {{#if configId}}
+            <div class="row">
+                <h5 class="text-center">
+                    This guide will appear on the same page as the giving selections.
+                    <i class='fa fa-question-circle'
+                       data-toggle='popover' data-trigger='hover focus'
+                       data-container='body' data-content='Use this guide to tell
+                       your donors about the categories they can give to. The name and description
+                       within the giving options dropdowns should be very short so they fit.
+                       Here is your opportunity to explain a little more about these categories.'>
+                    </i>
+                </h5>
+                <div class="col-md-4 col-lg-4 col-md-offset-1">
+                    <p>Check the box to show that group in the guide</p>{{#each givingGroups}}
+                        <div class="row">
+                            <div class="reduced-left-padding col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" style="cursor: auto">
+                                <input type="checkbox"
+                                       class="guide-show"
+                                       style="margin-right: 20px;"
+                                       {{checked}}
+                                       data-group-id="{{groupId}}">
+                                <button class="btn btn-primary guide-icon"
+                                        role="iconpicker"
+                                        data-iconset="fontawesome"
+                                        data-icon="{{icon}}"
+                                        data-group-id="{{groupId}}"></button>
+
+                                <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                    <p class="small-bottom v-top uppercase-this"><strong>{{text}}</strong></p>
+                                    <input class="form-control input-sm guide-title"
+                                           placeholder="Guide Title Here"
+                                           data-group-id="{{groupId}}" value="{{title}}">
+                                    <textarea class="form-control input-sm guide-description"
+                                              rows="3"
+                                              placeholder="Guide Description Here"
+                                              data-group-id="{{groupId}}">{{description}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+                <div class="col col-lg-offset-1 col-lg-6 col-md-7 col-sm-offset-1 col-sm-10 col-xs-12">
+                    <h3 class="uppercase-this">Your giving guide</h3>
+
+                    <div class="row">
+                        <div class="reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="where_most_needed_description">
+                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><i class="fa fa-3x fa-plane"></i></div>
+
+                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                <p class="small-bottom v-top uppercase-this"><strong>** EXAMPLE Wherever It's Needed Most EXAMPLE **</strong></p>
+
+                                <p class=""><em>Your unrestricted gift will be used to meet our most pressing ministry needs.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    {{#each givingGuide}}
+                        {{#if show}}
+                            <div class="row">
+                                <div class="reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="{{groupId}}">
+                                    <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                        {{#if icon}}
+                                            <i class="fa fa-3x {{icon}}"></i>
+                                        {{/if}}
+                                    </div>
+
+                                    <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                        <p class="small-bottom v-top uppercase-this"><strong>{{title}}</strong></p>
+
+                                        <p><em>{{description}}</em></p>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/each}}
+                </div>
+            </div>
+        {{/if}}
+    </div>
+</template>

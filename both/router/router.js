@@ -379,6 +379,14 @@ Router.route('/dashboard/giving_options', {
   }
 });
 
+Router.route('/dashboard/giving_guide', {
+  name: 'GivingGuide',
+  where: 'client',
+  waitOn: function() {
+    return [ Meteor.subscribe('wholeConfigDoc'), Meteor.subscribe('userDTFunds')];
+  }
+});
+
 Router.route('/dashboard/orginfo', {
   name: 'OrgInfo',
   where: 'client',

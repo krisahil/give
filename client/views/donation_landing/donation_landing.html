@@ -82,87 +82,25 @@
 
                 <div class="col col-lg-offset-1 col-lg-6 col-md-7 col-sm-offset-1 col-sm-10 col-xs-12">
                     <h1 class="uppercase-this">Your giving guide</h1>
+                    {{#each givingGuide}}
+                        {{#if show}}
+                            <div class="row">
+                                <div class="guide-item reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="{{groupId}}">
+                                    <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                        {{#if icon}}
+                                            <i class="fa fa-3x {{icon}}"></i>
+                                        {{/if}}
+                                    </div>
 
-                    <div class="row">
-                        <div class="reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="where_most_needed_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><img class="center-block" height="60" src=
-                                    "/images/icons/map_marker.png"></div>
+                                    <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                        <p class="small-bottom v-top uppercase-this"><strong>{{title}}</strong></p>
 
-                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                <p class="small-bottom v-top uppercase-this"><strong>Wherever It's Needed Most</strong></p>
-
-                                <p class=""><em>Your unrestricted gift will be used to meet our most pressing ministry needs.</em></p>
+                                        <p><em>{{description}}</em></p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="reduced-left-padding col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="operations_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><img class="center-block" height="60" src=
-                                    "/images/icons/cog.png"></div>
-
-                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                <p class="small-bottom v-top uppercase-this"><strong>Operations Expenses (Basecamp)</strong></p>
-
-                                <p class=""><em>Your gift to Basecamp will be used to fund TMP's operational expenses.</em></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="reduced-left-padding col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="missionary_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><img class="center-block" height="60" src=
-                                    "/images/icons/missionary.png"></div>
-
-                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                <p class="small-bottom v-top uppercase-this"><strong>TMP Missionary Support (Basecamp)</strong></p>
-
-                                <p class=""><em>Your gift will be used to support the missionary/staff member you specify.</em></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="reduced-left-padding col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="field_projects_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><img class="center-block" height="60" src=
-                                    "/images/icons/flag.png"></div>
-
-                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                <p class="small-bottom v-top uppercase-this"><strong>International Field Projects</strong></p>
-
-                                <p class=""><em>Your gift will go directly to field projects in various international
-                                    TMP locations (including building homes and facilities, international leadership training, and
-                                    any other community-related needs).</em></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="reduced-left-padding col col-lg-12 col-md-12 col-sm-12 col-xs-12 giving-detail-area" id="community_sponsorship_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><img class="center-block" height="60" src=
-                                    "/images/icons/spoon_fork.png"></div>
-
-                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                <p class="small-bottom v-top uppercase-this"><strong>Community Sponsorship</strong></p>
-
-                                <p class=""><em>Your gift will go directly to the physical, spiritual, educational and
-                                    emotional care of children participating in one of our field programs.</em></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="reduced-left-padding col col-lg-12 col-md-12 col-sm-12 col-xs-12  giving-detail-area" id="trip_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><img class="center-block" height="60" src=
-                                    "/images/icons/map.png"></div>
-
-                            <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                <p class="small-bottom v-top uppercase-this"><strong>Trip Participant</strong></p>
-
-                                <p class=""><em>You can give to a trip participant or write in a different designation.</em></p>
-                            </div>
-                        </div>
-                    </div>
+                        {{/if}}
+                    {{/each}}
                 </div>
             </div>
             {{> OtherWaysToGive}}

@@ -187,7 +187,6 @@ Template.GivingOptions.events({
             style:   'growl-bottom-right'
           } );
           id = item.id;
-          // TODO: add a red background to this element to show them where they are missing text
         } else {
           Bert.alert( {
             message: "You have a blank value in a group, couldn't save",
@@ -196,7 +195,6 @@ Template.GivingOptions.events({
             style:   'growl-bottom-right'
           } );
           id = item.groupId;
-          // TODO: add a red background to this element to show them where they are missing text
         }
         $("#" + id).addClass("backgroundColor");
         $("#" + id).addClass("indianred");
@@ -219,7 +217,7 @@ Template.GivingOptions.events({
 
 
     if ($(e.currentTarget).hasClass("group-option")) {
-      text = $(e.currentTarget).val().toUpperCase();
+      text = $(e.currentTarget).val();
       id = $(e.currentTarget).attr("data-el-id");
       $("#" + id).removeClass("backgroundColor");
       $("#" + id).removeClass("indianred");
@@ -394,7 +392,7 @@ Template.GivingOptions.onRendered(function () {
     console.log('no configuration id, need to setup the giving information first');
   }
 
-  var givingOptions = config && config.Giving && config.Giving.options;;
+  var givingOptions = config && config.Giving && config.Giving.options;
 
   if(givingOptions && givingOptions.length > 0){
 
