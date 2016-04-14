@@ -13,28 +13,31 @@ Meteor.methods({
    */
   updateGuide: function(groupId, index, type, value){
     logger.info( "Started method updateGuide." );
-    console.log(groupId, index, type, value);
-    let config = ConfigDoc();
+    if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
+      console.log( groupId, index, type, value );
+      let config = ConfigDoc();
 
-    check(groupId, String);
-    check(index, Number);
-    check(type, String);
-    check(value, Match.OneOf(String, Boolean));
-    
-    this.unblock();
+      check( groupId, String );
+      check( index, Number );
+      check( type, String );
+      check( value, Match.OneOf( String, Boolean ) );
 
-    let existingGuideObject = config.Giving.guide[index];
-    existingGuideObject[type] = value;
+      this.unblock();
 
-    Config.update({
-      _id: config._id,
-      "Giving.guide.groupId": groupId
-    }, {
-      $set: {
-        "Giving.guide.$": existingGuideObject
-      }
-    });
-    return 'Done';
+      let existingGuideObject = config.Giving.guide[index];
+      existingGuideObject[type] = value;
+
+      Config.update( {
+        _id:                    config._id,
+        "Giving.guide.groupId": groupId
+      }, {
+        $set: {
+          "Giving.guide.$": existingGuideObject
+        }
+      } );
+      return 'Done';
+    }
+    return;
   },
   /**
    * check that the connection to DonorTools is up

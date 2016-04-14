@@ -275,6 +275,14 @@ Template.GivingOptions.events({
       }
     });
 
+    if (dtId.length === 8) {
+      Config.update({_id: config._id}, {
+        $pull: {
+          "Giving.guide": updateOperator
+        }
+      });
+    }
+
     // Now that we have removed an item we need to update the positions of the
     // remaining options
     reorderItems();
