@@ -16,13 +16,14 @@ Charges._ensureIndex(
 
 Config._ensureIndex(
   {'OrgInfo.web.domain_name': 1},
-  {backgrond: true});
+  { unique: true },
+  { background: true });
 
 Config._ensureIndex(
   { 'Giving.options.id': 1 },
   { 'Giving.options.groupId': 1 },
   { unique: true },
-  { backgrond: true }
+  { background: true }
 );
 
 Customers._ensureIndex(

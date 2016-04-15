@@ -200,6 +200,14 @@ Schema.OrgInfo = new SimpleSchema({
     type: String,
     label: "The template name of the password reset email"
   },
+  "emails.receipt": {
+    type: String,
+    label: "The template name of the receipt email"
+  },
+  "emails.failedPayment": {
+    type: String,
+    label: "The template name of the failed payment email"
+  },
   "web": {
     type: Object,
     label: "Your website info.",
