@@ -369,6 +369,13 @@ function OrgInfoCheck(name, namePart2) {
         error.reason ? error.reason : '' );
         return;
       }
+      if (error.reason && error.reason.message) {
+        $( '#modal_for_initial_donation_error' ).modal( { show: true } );
+        $( ".modal-dialog" ).css( "z-index", "1500" );
+        $( '#errorCategory' ).html( error.reason.code ? error.reason.code : 'Error' );
+        $( '#errorDescription' ).html( error.reason.message ? error.reason.message : '');
+        return;
+      }
       $( '#modal_for_initial_donation_error' ).modal( { show: true } );
       $( ".modal-dialog" ).css( "z-index", "1500" );
       $( '#errorCategory' ).html( error.code ? error.code : error.error ? error.error : 'General' );

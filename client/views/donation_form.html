@@ -130,5 +130,10 @@
             <input type="hidden" id="donation_note" value="{{donation_note}}" />
         </form>
     </div>
+    {{#if loading}}
+        <div id="spinDiv" class="fadeMe">
+        </div>
+        {{> spinner}}
+    {{/if}}
     {{> Modals}}
 </template>

@@ -339,9 +339,13 @@ Meteor.methods({
         return { c: customerData.id, don: data._id, charge: 'scheduled' };
       }
     } catch (e) {
-      logger.error("Got to catch error area of processPayment function." + e + " " + e.reason);
-      logger.error("e.category_code = " + e.category_code + " e.descriptoin = " + e.description);
-      if(e.category_code) {
+      logger.error("Got to catch error area of processPayment function, full error: " + e);
+      logger.error("e.reason = " + e.reason);
+      logger.error("e.category_code = " + e.category_code +
+        " e.descriptoin = " + e.description +
+        " e.type = " + e.type +
+        " e.message = " + e.message);
+      if (e.category_code) {
         logger.error("Got to catch error area of create_associate. ID: " + data._id + " Category Code: " + e.category_code + ' Description: ' + e.description);
         var chargeSubmitted;
         if(e.category_code === 'invalid-routing-number'){
@@ -357,9 +361,8 @@ Meteor.methods({
           }
         });
         throw new Meteor.Error(500, e.category_code, e.description);
-      } else {
-        throw new Meteor.Error(500, e.reason, e.details);
       }
+      throw new Meteor.Error(500, e);
     }
   },
   update_user_document_by_adding_persona_details_for_each_persona_id: function(id) {

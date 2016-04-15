@@ -31,7 +31,7 @@ _.extend(StripeFunctions, {
         return res;
       }, function(err) {
         logger.error(err);
-        throw new Meteor.Error("500", err);
+        throw new Meteor.Error(err);
       });
   },/**
    * Stripe general purpose resource retriever
@@ -68,7 +68,7 @@ _.extend(StripeFunctions, {
           return res;
         }, function(err) {
           logger.error(err);
-          throw new Meteor.Error("500", err);
+          throw new Meteor.Error(err);
         });
     } else {
       let stripeResource = new Promise(function (resolve, reject) {
@@ -91,7 +91,7 @@ _.extend(StripeFunctions, {
           return res;
         }, function(err) {
           logger.error(err);
-          throw new Meteor.Error("500", err);
+          throw new Meteor.Error(err);
         });
     }
 
@@ -134,7 +134,7 @@ _.extend(StripeFunctions, {
           return res;
         }, function(err) {
           logger.error(err);
-          throw new Meteor.Error("500", err);
+          throw new Meteor.Error(err);
         });
     } else {
       let stripeResource = new Promise(function (resolve, reject) {
@@ -155,7 +155,7 @@ _.extend(StripeFunctions, {
           return res;
         }, function(err) {
           logger.error(err);
-          throw new Meteor.Error("500", err);
+          throw new Meteor.Error(500, err);
         });
     }
     
@@ -195,7 +195,7 @@ _.extend(StripeFunctions, {
           return res;
         }, function(err) {
           logger.error(err);
-          throw new Meteor.Error("500", err);
+          throw new Meteor.Error(500, err);
         });
     } else {
       let stripeResource = new Promise(function (resolve, reject) {
@@ -218,7 +218,7 @@ _.extend(StripeFunctions, {
           return res;
         }, function(err) {
           logger.error(err);
-          throw new Meteor.Error("500", err);
+          throw new Meteor.Error(500, err);
         });
     }
 
@@ -492,9 +492,9 @@ _.extend(StripeFunctions, {
       }, 15000)
     } else {
       if(interval % 1 === 0.5) {
-        logger.error("500", "There was a problem that prevented the function from getting " +
+        logger.error(500, "There was a problem that prevented the function from getting " +
           "a result from either Donor Tools, or the MongoDB cursors");
-        throw new Meteor.Error("500", "There was a problem that prevented the function from getting " +
+        throw new Meteor.Error(500, "There was a problem that prevented the function from getting " +
           "a result from either Donor Tools, or the MongoDB cursors");
       } else {
 
@@ -516,8 +516,8 @@ _.extend(StripeFunctions, {
           dtPersonaId = Utils.find_dt_persona_flow(customerCursor.metadata.email, customer_id);
           logger.info("dtPersonaId : ", dtPersonaId );
           if (!dtPersonaId) {
-            logger.error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
-            throw new Meteor.Error("500", "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+            logger.error(500, "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
+            throw new Meteor.Error(500, "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
           }
         }
         Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dtPersonaId } });

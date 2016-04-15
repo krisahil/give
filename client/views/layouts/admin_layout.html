@@ -1,13 +1,16 @@
 <template name="AdminLayout">
-    {{> UserNav}}
-    {{> OffCanvas}}
-    <div class="container-fluid">
-        <div class="Admin">
-            <div class="top-margin-here">
-                {{> loading}}
-                {{> yield}}
-                {{> bertAlert}}
+    {{#if Template.subscriptionsReady}}
+        {{> UserNav}}
+        {{> OffCanvas}}
+        <div class="container-fluid">
+            <div class="Admin">
+                <div class="top-margin-here">
+                    {{> yield}}
+                    {{> bertAlert}}
+                </div>
             </div>
         </div>
-    </div>
+    {{else}}
+        {{> loading}}
+    {{/if}}
 </template>
