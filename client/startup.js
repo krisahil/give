@@ -22,6 +22,6 @@ Meteor.startup( function() {
     direction: 1, // 1: clockwise, -1: counterclockwise
     color: '#fff', // #rgb or #rrggbb
     speed: 0.7, // Rounds per second
-    trail: 60, // Afterglow percentage
+    trail: 60 // Afterglow percentage
   };
 });

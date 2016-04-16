@@ -293,7 +293,7 @@ Template.registerHelper( 'contact_us', ( ) => {
 
   return '<a class="email" href="mailto:' +  config.OrgInfo.emails.contact && + '">' +
     config.OrgInfo.emails.support + '</a><div class="tel">' +
-    config.OrgInfo.emails.phone + '</div>';
+    config.OrgInfo.phone + '</div>';
 });
 
 Template.registerHelper( 'not_safari', () => {

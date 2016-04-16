@@ -546,9 +546,17 @@ Utils = {
       } );
       console.log( checkPerson.data );
     } catch( e ) {
-      logger.info( "------No Person with the DT ID of " +
-        customerCursor.metadata.dt_persona_id + " found in DT--------" );
-      Utils.send_failed_to_add_to_dt_email_to_support( customerCursor.metadata.dt_persona_id, charge_id );
+      logger.error( "No Person with the DT ID of " +
+        customerCursor.metadata.dt_persona_id + " found in DT" );
+      let emailObject = {
+        emailType: 'Failed to add a gift to Donor Tools.',
+        emailMessage: "I tried to add a gift with PersonaID of: " + customerCursor.metadata.dt_persona_id +
+                      " to Donor Tools, but for some reason I wasn't able to." +
+                      " Click the button to see the Stripe Charge",
+        buttonText: "Stripe Charge",
+        buttonURL: "https://dashboard.stripe.com/payments/" + charge_id
+      };
+      Utils.sendAdminEmailNotice( emailObject );
       Audit_trail.update({_id: charge_id}, {
         $set: {
           "dt_donation_inserted": false
@@ -659,9 +667,17 @@ Utils = {
       } );
       console.log( checkPerson.data );
     } catch( e ) {
-      logger.info( "------No Person with the DT ID of " +
-        dt_persona_id + " found in DT--------" );
-      Utils.send_failed_to_add_to_dt_email_to_support( dt_persona_id, donation_id );
+      logger.error( "No Person with the DT ID of " +
+        dt_persona_id + " found in DT" );
+      let emailObject = {
+        emailType: 'Failed to add a gift to Donor Tools.',
+        emailMessage: "I tried to add a gift with PersonaID of: " + dt_persona_id +
+                   " to Donor Tools, but for some reason I wasn't able to." +
+                   " Click the button to see the Stripe Charge",
+        buttonText: "Stripe Charge",
+        buttonURL: "https://dashboard.stripe.com/payments/" + donation_id
+      };
+      Utils.sendAdminEmailNotice( emailObject );
       Audit_trail.update({donation_id: donation_id}, {
         $set: {
           "dt_donation_inserted": false
@@ -1247,8 +1263,7 @@ Utils = {
     cancel_stripe_subscription: function(customer_id, subscription_id, reason){
       logger.info("Inside cancel_stripe_subscription");
       logger.info(customer_id + " " + " " + subscription_id + " " + reason);
-
-
+      
       let stripe_subscription = StripeFunctions.stripe_update('customers',
         'updateSubscription',
         customer_id,
@@ -1361,16 +1376,20 @@ Utils = {
       "</a></p>";
 
     let toAddresses = [];
+    let bccAddress;
     toAddresses.push(config.OrgInfo.emails.support);
-    toAddresses = toAddresses.concat(config.OrgInfo.emails.other_support_addresses);
+    toAddresses = toAddresses.concat(config.OrgInfo.emails.otherSupportAddresses);
+    bccAddress = config.OrgInfo.emails.bccAddress;
     //Send email
 
-    Email.send({
+    let sendObject = {
       from: config.OrgInfo.emails.support,
       to: toAddresses,
+      bcc: bccAddress,
       subject: "DT Account inserted.",
       html: html
-    });
+    };
+    Utils.sendHTMLEmail(sendObject);
   },
   /**
    * Send an email to the support email contact alerting.
@@ -1382,8 +1401,14 @@ Utils = {
    * @param {String} personaID - id from Donor Tools identifying this user
    */
   send_new_give_account_added_email_to_support_email_contact: function (email, user_id, personaID){
-
     logger.info("Started send_new_give_account_added_email_to_support_email_contact");
+    let config = ConfigDoc();
+
+    if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.support)) {
+      logger.warn("No support email to send to/from.");
+      return;
+    }
+
     if(Audit_trail.findOne({user_id: personaID}) &&
       Audit_trail.findOne({user_id: personaID}).give_account_created)  {
       logger.info("Already sent a send_new_give_account_added_email_to_support_email_contact email");
@@ -1391,9 +1416,9 @@ Utils = {
     }
     let wait_for_audit = Utils.audit_email(personaID, 'give.account.created');
 
-    //Create the HTML content for the email.
-    //Create the link to go to the new person that was just created.
-    var html = "<h1>Give account created</h1><p>" +
+    // Create the HTML content for the email.
+    // Create the link to go to the new person that was just created.
+    let html = "<h1>Give account created</h1><p>" +
       "Details: <br>Email: " + email + "<br>ID: " + user_id +
       "<br>Link: <a href='" + config.Settings.DonorTools.url +
       "/people/" + personaID +"'>" + personaID + "</a></p>";
@@ -1403,14 +1428,15 @@ Utils = {
     if (config.OrgInfo.emails.otherSupportAddresses) {
       toAddresses = toAddresses.concat(config.OrgInfo.emails.otherSupportAddresses);
     }
-    //Send email
 
-    Email.send({
+    let emailObject = {
       from: config.OrgInfo.emails.support,
       to: toAddresses,
       subject: "Give Account inserted.",
       html: html
-    });
+    };
+
+    Utils.sendHTMLEmail(emailObject);
   },
   /**
    * Send an email to the admins.
@@ -1425,28 +1451,40 @@ Utils = {
     });
 
     if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.support)) {
+      logger.warn("No support email to send from.");
       return;
     }
+
     //Utils.audit_email(config._id, 'config.change');
     let admins = Roles.getUsersInRole('admin');
     let adminEmails = admins.map(function ( item ) {
       return item.emails[0].address;
     });
 
-    //Create the HTML content for the email.
-    //Create the link to go to the new person that was just created.
+    // Create the HTML content for the email.
+    // Create the link to go to the new person that was just created.
     var html = "<h2>We thought you might want to know.</h2><p> A changed was made to your Give " +
       "configuration. <br> Changed By: " +
       Meteor.users.findOne({_id: changeMadeBy}).emails[0].address + "</p><p>" +
       "To see the changes go to your <a href='" + Meteor.absoluteUrl() +
       "dashboard/" + changeIn + "'>Dashboard</a></p>";
     
-    Email.send({
+    let emailObject = {
       from: config.OrgInfo.name + "<" + config.OrgInfo.emails.support + ">",
       to: adminEmails,
       subject: Meteor.settings.dev + "A configuration change was made",
       html: html
-    });
+    };
+    
+
+    /*Email Object
+    * @param {String} emailObject.type - Email type
+    * @param {String} emailObject.message - Main email message
+    * @param {String} emailObject.buttonText - Button text
+    * @param {String} emailObject.buttonURL - Button URL*/
+    
+    
+    Utils.sendHTMLEmail(emailObject);
   },
   /**
    * set a user's state object and update that object with a timestamp
@@ -2351,5 +2389,48 @@ Utils = {
     }
     logger.info("dt_fund: " + dt_fund);
     return dt_fund;
+  },
+  /**
+   * This function sets up Mandrill
+   * @method configMandrill
+   */
+  configMandrill(){
+    logger.info("Started configMandrill");
+
+    Mandrill.config({
+      username: config.Services.Email.mandrillUsername,
+      "key": config.Services.Email.mandrillKey
+    });
+  },
+  /**
+   * Send an HTML email (not using a template)
+   * @method sendHTMLEmail
+   * @param {Object} emailObject - The email to be sent
+   * @param {String} emailObject.from - The from address
+   * @param {Array} emailObject.to - The to addresses
+   * @param {String} emailObject.subject - The email subject
+   * @param {String} emailObject.html - The html
+   */
+  sendHTMLEmail(emailObject){
+    logger.info("Started sendHTMLEmail");
+    let config = ConfigDoc();
+
+    if (!(config && config.Services && config.Services.Email && config.Services.Email.emailSendMethod)) {
+      logger.warn("Can't send email, there is no emailSendMethod.");
+      return;
+    }
+    let configMandrill = Utils.configMandrill();
+    let bccAddress;
+
+    if (config.OrgInfo.emails.bccAddress) {
+      bccAddress = config.OrgInfo.emails.bccAddress;
+    }
+    Email.send({
+      from: emailObject.from,
+      to: emailObject.to,
+      bcc: bccAddress,
+      subject: emailObject.subject,
+      html: emailObject.html
+    });
   }
 };

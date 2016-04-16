@@ -1,0 +1,131 @@
+<template name="Logos">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {{#if Template.subscriptionsReady}}
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Misc. Logos</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" style="background-color: lightgray;">
+                                <div class="col-lg-offset-2 col-lg-2 text-center">
+                                    <p>Favicon</p>
+                                    <span class="align-upload">
+                                        {{#unless imageExists 'favicon'}}
+                                            <div data-toggle='popover'
+                                                 data-trigger='hover focus'
+                                                 data-container='body'
+                                                 data-content='Drop your favicon here. width: 96px, height: 96px, PNG.'>
+                                                {{> dropzone contentType='images' fileTypes='.jpg,.jpeg,.png,.gif'
+                                                multiple=false formData=addFavIconData }}
+                                            </div>
+                                        {{else}}
+                                            <a href="" title="" class="image">
+                                            <img class="logoImage" src="{{imageSrc 'favicon'}}">
+                                            </a>
+                                            <div class="logo-overlay-admin">
+                                                <div class="inner">
+                                                    <a class="clear-image" data-el-type="favicon"
+                                                       href="">
+                                                        <i class="large fa fa-times indianred">
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {{/unless}}
+                                    </span>
+                                </div>
+                                <div class="col-lg-2 text-center">
+                                    <p>Logo</p>
+                                    <span class="align-upload">
+                                        {{#unless imageExists 'logo'}}
+                                            <div data-toggle='popover'
+                                                 data-trigger='hover focus'
+                                                 data-container='body'
+                                                 data-content='Drop your logo here.
+                                                  width: 130px, height: 80px, PNG.
+                                                  Black and white logos look the best.'>
+                                                {{> dropzone contentType='images' fileTypes='.jpg,.jpeg,.png,.gif'
+                                                multiple=false formData=addLogoData }}
+                                            </div>
+                                        {{else}}
+                                            <a href="" title="" class="image">
+                                            <img class="logoImage" src="{{imageSrc 'logo'}}">
+                                            </a>
+                                            <div class="logo-overlay-admin">
+                                                <div class="inner">
+                                                    <a class="clear-image" data-el-type="logo"
+                                                       href="">
+                                                        <i class="large fa fa-times indianred">
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {{/unless}}
+                                    </span>
+                                </div>
+                                <div class="col-lg-2 text-center">
+                                    <p>Email Logo</p>
+                                    <span class="align-upload">
+                                        {{#unless imageExists 'emailLogo'}}
+                                            <div data-toggle='popover'
+                                                 data-trigger='hover focus'
+                                                 data-container='body'
+                                                 data-content='Drop your email logo
+                                                 here. width: 250px, height: 188px, PNG.'>
+                                                {{> dropzone contentType='images' fileTypes='.jpg,.jpeg,.png,.gif'
+                                                multiple=false formData=addEmailLogoData }}
+                                            </div>
+                                        {{else}}
+                                            <a href="" title="" class="image">
+                                            <img class="logoImage" src="{{imageSrc 'emailLogo'}}">
+                                            </a>
+                                            <div class="logo-overlay-admin">
+                                                <div class="inner">
+                                                    <a class="clear-image" data-el-type="emailLogo"
+                                                       href="">
+                                                        <i class="large fa fa-times indianred">
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {{/unless}}
+                                    </span>
+                                </div>
+                                <div class="col-lg-2 text-center">
+                                    <p>Receipt Image</p>
+                                    <span class="align-upload">
+                                        {{#unless imageExists 'receiptImage'}}
+                                            <div data-toggle='popover'
+                                                 data-trigger='hover focus'
+                                                 data-container='body'
+                                                 data-content='Drop your receipt image here.
+                                                 width: 200px, height: 150px, JPEG or JPG'>
+                                                {{> dropzone contentType='images' fileTypes='.jpg,.jpeg,.png,.gif'
+                                                multiple=false formData=addReceiptImageData }}
+                                            </div>
+                                        {{else}}
+                                            <a href="" title="" class="image">
+                                            <img class="logoImage" src="{{imageSrc 'receiptImage'}}">
+                                            </a>
+                                            <div class="logo-overlay-admin">
+                                                <div class="inner">
+                                                    <a class="clear-image" data-el-type="receiptImage"
+                                                       href="">
+                                                        <i class="large fa fa-times indianred">
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {{/unless}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

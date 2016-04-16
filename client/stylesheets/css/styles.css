@@ -29,3 +29,9 @@
 .one-time {
     color: #F57F17;
 }
+
+.align-upload {
+    display: inline-block;
+    position: relative;
+    bottom: 15px;
+}

@@ -137,12 +137,12 @@ Schema.OrgInfo = new SimpleSchema({
     label: "Main contact address",
     regEx: SimpleSchema.RegEx.Email
   },
-  "emails.canceled_gift": {
+  "emails.canceledGift": {
     type: Array,
     label: "Notify for any canceled gifts",
     optional: true
   },
-  "emails.canceled_gift.$": {
+  "emails.canceledGift.$": {
     type: String,
     label: "Notify for any canceled gifts",
     regEx: SimpleSchema.RegEx.Email,
@@ -158,55 +158,27 @@ Schema.OrgInfo = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Email,
     optional: true
   },
-  "emails.large_gift_threshold": {
+  "emails.bccAddress": {
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    optional: true
+  },
+  "emails.largeGiftThreshold": {
     type: Number,
     optional: true,
     autoform: {
       placeholder: "Any gift at or above this gift amount will trigger the large gift email"
     }
   },
-  "emails.large_gift": {
+  "emails.largeGift": {
     type: Array,
     label: "If a gift is at or above the large gift threshold, send a notice to these addresses.",
     optional: true
   },
-  "emails.large_gift.$": {
+  "emails.largeGift.$": {
     type: String,
     regEx: SimpleSchema.RegEx.Email,
     optional: true
-  },
-  "emails.emailSendMethod": {
-    type: String,
-    label: "What service do you want to use to send emails?",
-    allowedValues: ["Mandrill"], // add these later "mailgun", "sendgrid", "smtp"
-    autoform: {
-      defaultValue: "Mandrill"
-    }
-  },
-  "emails.mandrillUsername": {
-    type: String,
-    label: "Mandrill username",
-    regEx: SimpleSchema.RegEx.Email
-  },
-  "emails.mandrillKey": {
-    type: String,
-    label: "Mandrill key"
-  },
-  "emails.enrollmentName": {
-    type: String,
-    label: "The template name of the enrollment email"
-  },
-  "emails.resetPasswordName": {
-    type: String,
-    label: "The template name of the password reset email"
-  },
-  "emails.receipt": {
-    type: String,
-    label: "The template name of the receipt email"
-  },
-  "emails.failedPayment": {
-    type: String,
-    label: "The template name of the failed payment email"
   },
   "web": {
     type: Object,
@@ -313,6 +285,60 @@ Schema.Giving = new SimpleSchema({
 });
 
 Schema.Services = new SimpleSchema({
+  Email: {
+    type: Object,
+    optional: true,
+    autoform: {
+      panelClass: "panel-info"
+    }
+  },
+  "Email.emailSendMethod": {
+    type: String,
+    label: "What service do you want to use to send emails?",
+    optional: true,
+    allowedValues: ["Mandrill"] // add these later "mailgun", "sendgrid"
+  },
+  "Email.mandrillUsername": {
+    type: String,
+    label: "Mandrill username",
+    optional: true,
+    regEx: SimpleSchema.RegEx.Email
+  },
+  "Email.mandrillKey": {
+    type: String,
+    label: "Mandrill key",
+    optional: true
+  },
+  "Email.enrollmentName": {
+    type: String,
+    label: "The template name of the enrollment email",
+    optional: true
+  },
+  "Email.resetPasswordName": {
+    type: String,
+    label: "The template name of the password reset email",
+    optional: true
+  },
+  "Email.receipt": {
+    type: String,
+    label: "The template name of the receipt email",
+    optional: true
+  },
+  "Email.scheduled": {
+    type: String,
+    label: "The template name of the scheduled email",
+    optional: true
+  },
+  "Email.failedPayment": {
+    type: String,
+    label: "The template name of the failed payment email",
+    optional: true
+  },
+  "Email.adminAlerts": {
+    type: String,
+    label: "The template name used for admin alerts.",
+    optional: true
+  },
   Kadira: {
     type: Object,
     optional: true,

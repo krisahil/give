@@ -5,147 +5,211 @@ _.extend(Utils,{
     var push_vars = vars.push({"name": name, "content": content});
     return push_vars;
   },
-  add_recipient_to_email: function (data_slug, email) {
-    logger.info("Started add_recipient_to_email");
+  /**
+   * Add the Mandrill to and rcpt fields to the email data_slug
+   *
+   * @method addRecipientToEmail
+   * @param {Object} data_slug - A Mandrill data_slug
+   * @param {String|Array} to - email address(es)
+   * @returns {Object} data_slug with to and rcpt arrays added
+   */
+  addRecipientToEmail: function (data_slug, to) {
+    logger.info("Started addRecipientToEmail");
+    logger.info("TO: " + to + " typeof " + typeof to);
+    if (!to) {
+      logger.error("No to address");
+      return;
+    }
+    let dataSlugWithTo = data_slug;
+    logger.info(dataSlugWithTo.message.to);
 
-    data_slug.message.to[0].email           = email;
-    data_slug.message.merge_vars[0].rcpt    = email;
-
-    return data_slug;
-
+    if (!dataSlugWithTo.message.to) {
+      logger.info("No existing to field");
+      if (typeof to === 'string') {
+        logger.info("Single email address");
+        logger.info(to);
+        dataSlugWithTo.message.to = [{email:to}];
+      } else {
+        logger.info("Array of email addresses");
+        dataSlugWithTo.message.to = to.map(function(item){return {"email": item}});
+      }
+    }
+    logger.info(dataSlugWithTo);
+    return dataSlugWithTo;
   },
-  send_failed_to_add_to_dt_email_to_support: function(persona_id, charge_id){
-    logger.info("Started send_failed_to_add_to_dt_email_to_support");
-    let data_slug = {
-      "template_name": "failed-dt-add-notice",
+  /**
+   * Construct an admin email notice
+   *
+   * @method sendAdminEmailNotice
+   * @param {Object} emailObject - Email Object
+   * @param {String|Array} emailObject.to - Email addresses to send to
+   * @param {String} emailObject.type - Email type
+   * @param {String} emailObject.message - Main email message
+   * @param {String} emailObject.buttonText - Button text
+   * @param {String} emailObject.buttonURL - Button URL
+   */
+  sendAdminEmailNotice(emailObject){
+    logger.info("Started sendAdminEmailNotice");
+    let config = ConfigDoc();
+
+    if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.support)) {
+      logger.warn("There is no support email to send to.");
+      return;
+    }
+
+    if (!(config && config.Services &&
+      config.Services.Email && config.Services.Email.adminAlerts)) {
+      logger.warn("No admin alert template setup, can't send the failed to add DT email.");
+      return;
+    }
+
+      let data_slug = {
+      "template_name": config.Services.Email.adminAlerts,
       "template_content": [
         {}
       ],
       "message": {
-        "to": [
-          {"email": Meteor.settings.public.support_address}
-        ],
-        "bcc_address": "",
-        "merge_vars": [
-          {
-            "rcpt": Meteor.settings.public.support_address,
-            "vars": [
+        "global_merge_vars": [
               {
                 "name": "DEV",
                 "content": Meteor.settings.dev
+              },{
+                "name": "PreviewLine",
+                "content": "Admin Notice - "
+              },{
+                "name": "EmailType",
+                "content": emailObject.type
+              },{
+                "name": "EmailMessage",
+                "content": emailObject.message
               }, {
-                "name": "PERSONA_ID",
-                "content": persona_id
+                "name": "ButtonText",
+                "content": emailObject.buttonText
               }, {
-                "name": "CHARGE_ID",
-                "content": charge_id
+                "name": "ButtonURL",
+                "content": emailObject.buttonURL
+              }, {
+                "name": "DashboardURL",
+                "content": Meteor.absoluteUrl("dashboard")
               }
-            ]
-          }
         ]
       }
     };
 
-    Utils.send_mandrill_email(data_slug, 'failed-dt-add-notice');
+    Utils.send_mandrill_email(data_slug, config.Services.Email.adminAlerts, emailObject.to, 'Admin Notice');
+  },
+  /**
+   * Push the image vars to the Mandrill data_slug
+   *
+   * @method setupImages
+   * @param {Object} dataSlug - this is the data_slug that Mandrill uses.
+   */
+  setupImages: function(dataSlug){
+    logger.info("Started setupImages");
+    let config = ConfigDoc();
 
+    let newDataSlug = dataSlug;
+    let logoURL;
+    let receiptURL;
+    let emailLogo = Uploads.findOne({$and: [{configId: config._id},{'emailLogo': "_true"}]});
+    let receiptImage = Uploads.findOne({$and: [{configId: config._id},{'receiptImage': "_true"}]});
+    if (emailLogo) {
+      logoURL = emailLogo.baseUrl + emailLogo.name;
+    } else {
+      logoURL = ''
+    }
+
+    if (receiptImage) {
+      receiptURL = receiptImage.baseUrl + receiptImage.name;
+    } else {
+      receiptURL = ''
+    }
+
+    newDataSlug.message.global_merge_vars.push(
+      {
+        "name": "LogoURL",
+        "content": logoURL
+      }
+    );
+    newDataSlug.message.global_merge_vars.push(
+      {
+        "name": "ReceiptURL",
+        "content": receiptURL
+      }
+    );
+
+    return newDataSlug;
+  },
+  /**
+   * Add the from fields to the data_slug
+   *
+   * @method setupEmailFrom
+   * @param {Object} dataSlug - this is the data_slug that Mandrill uses.
+   */
+  setupEmailFrom: function(dataSlug){
+    logger.info("Started setupEmailFrom");
+    let config = ConfigDoc();
+    let newDataSlug = dataSlug;
+
+    newDataSlug.message.from_email =  config.OrgInfo.emails.support;
+    newDataSlug.message.from_name =  config.OrgInfo.name;
+
+    return newDataSlug;
   },
   send_cancelled_email_to_admin: function (subscription_id, stripeEvent) {
     var audit_trail_cursor = Audit_trail.findOne({subscription_id: subscription_id});
 
+    let config = ConfigDoc();
     // Check to see if the deleted subscription email has already been sent for this charge
     if (audit_trail_cursor && audit_trail_cursor.subscription_deleted && audit_trail_cursor.subscription_deleted.sent_to_admin) {
-        logger.info("A 'subscription deleted' email has already been sent, exiting email send function.");
-        return;
+      logger.info("A 'subscription deleted' email has already been sent, exiting email send function.");
+      return;
     } else {
-        Audit_trail.upsert({subscription_id: subscription_id}, {
-            $set: {
-                'subscription_deleted.sent_to_admin': true,
-                'subscription_deleted.time': new Date()
-            }
-        });
+      Audit_trail.upsert({subscription_id: subscription_id}, {
+        $set: {
+          'subscription_deleted.sent_to_admin': true,
+          'subscription_deleted.time': new Date()
+        }
+      });
+    }
+    if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.canceledGift)) {
+      logger.warn("There is no canceled gift email to send to.");
+      return;
     }
 
-    var start_date = moment( new Date(stripeEvent.data.object.start * 1000) ).format('DD MMM, YYYY');
+    let start_date = moment( new Date(stripeEvent.data.object.start * 1000) ).format('DD MMM, YYYY');
 
-    var last_gift = moment(new Date(stripeEvent.data.object.current_period_start * 1000)).format('DD MMM, YYYY');
+    let last_gift = moment(new Date(stripeEvent.data.object.current_period_start * 1000)).format('DD MMM, YYYY');
 
-    var canceled_date = new Date(stripeEvent.data.object.canceled_at * 1000);
+    let canceled_date = new Date(stripeEvent.data.object.canceled_at * 1000);
     canceled_date = moment(canceled_date).format('DD MMM, YYYY hh:mma');
 
-    var customer_cursor = Customers.findOne({_id: stripeEvent.data.object.customer});
+    let customer_cursor = Customers.findOne({_id: stripeEvent.data.object.customer});
 
-    var donor_name = customer_cursor && customer_cursor.metadata && customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname;
+    let donor_name = customer_cursor && customer_cursor.metadata && customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname;
 
-    var donateWith = stripeEvent.data.object.metadata && stripeEvent.data.object.metadata.donateWith;
-
-    var testorlive = Meteor.settings.dev ? '/test' : '';
-
-    let data_slug = {
-      "template_name": "canceled-recurring-notice",
-      "template_content": [
-        {}
-      ],
-      "message": {
-        "to": [
-            {"email": Meteor.settings.public.canceled_gift_address}
-        ],
-        "bcc_address": "",
-        "merge_vars": [
-            {
-              "rcpt": Meteor.settings.public.canceled_gift_address,
-              "vars": [
-                {
-                  "name": "DEV",
-                  "content": Meteor.settings.dev
-                }, {
-                  "name": "testorlive",
-                  "content": testorlive
-                }, {
-                  "name": "Request",
-                  "content": stripeEvent.request
-                }, {
-                  "name": "START",
-                  "content": start_date
-                }, {
-                  "name": "SubscriptionId",
-                  "content": subscription_id
-                }, {
-                  "name": "DonateWith",
-                  "content": donateWith
-                }, {
-                  "name": "LastGift",
-                  "content": last_gift
-                }, {
-                  "name": "Interval",
-                  "content": stripeEvent.data.object.plan.interval
-                }, {
-                  "name": "TotalGiftAmount",
-                  "content": (stripeEvent.data.object.quantity / 100).toFixed(2)
-                }, {
-                  "name": "CANCELED_AT",
-                  "content": canceled_date
-                }, {
-                  "name": "CancelReason",
-                  "content": stripeEvent.data.object.metadata.canceled_reason
-                }, {
-                  "name": "NAME",
-                  "content": donor_name
-                }, {
-                  "name": "PHONE",
-                  "content": customer_cursor.metadata && customer_cursor.metadata && customer_cursor.metadata.phone
-                }
-              ]
-          }
-        ]
-      }
+    let donateWith = stripeEvent.data.object.metadata && stripeEvent.data.object.metadata.donateWith;
+    
+    let emailObject = {
+      to: config.OrgInfo.emails.canceledGift,
+      type: 'Canceled Recurring Gift',
+      message: donor_name + " or the admin stopped a recurring (every " +
+         stripeEvent.data.object.plan.interval + ") gift (amount: " +
+         (stripeEvent.data.object.quantity / 100).toFixed(2) + ") that was using " +
+         donateWith + ". The gift start date was " + start_date +
+         ". The last time this recurring gift ran was " + last_gift +
+         ". The gift was canceled on " + canceled_date + ". The reason they gave was " +
+         stripeEvent.data.object.metadata.canceled_reason,
+      buttonText: 'Donor Tools Person',
+      buttonURL: config.Settings.DonorTools.url + '/people/' + customer_cursor.metadata.dt_persona_id
     };
 
-    Utils.send_mandrill_email(data_slug, 'customer.subscription.deleted');
-
+    Utils.sendAdminEmailNotice(emailObject);
   },
   send_donation_email: function (recurring, id, amount, type, body, frequency, subscription) {
     try {
       logger.info("Started send_donation_email with ID: " + id);
+      let config = ConfigDoc();
       if (type === "charge.updated") {
           logger.info("Don't need to send an email when a charge is updated, exiting the send_donation_email method.");
           return;
@@ -172,65 +236,56 @@ _.extend(Utils,{
               {}
           ],
           "message": {
-              "to": [
-                  {"email": ""}
-              ],
-              "bcc_address": "",
-              "merge_vars": [
+              "global_merge_vars": [
                   {
-                      "rcpt": "",
-                      "vars": [
-                          {
-                              "name": "CreatedAt",
-                              "content": moment(new Date(Number(charge_cursor.created * 1000))).format('MM/DD/YYYY h:mma')
-                          }, {
-                              "name": "DEV",
-                              "content": Meteor.settings.dev
-                          }, {
-                              "name": "TotalGiftAmount",
-                              "content": (charge_cursor.amount / 100).toFixed(2)
-                          }, {
-                              "name": "ADDRESS_LINE1",
-                              "content": customer_cursor.metadata.address_line1
-                          }, {
-                              "name": "LOCALITY",
-                              "content": customer_cursor.metadata.city
-                          }, {
-                              "name": "REGION",
-                              "content": customer_cursor.metadata.state
-                          }, {
-                              "name": "POSTAL_CODE",
-                              "content": customer_cursor.metadata.postal_code
-                          }, {
-                              "name": "PHONE",
-                              "content": customer_cursor.metadata.phone
-                          }, {
-                              "name": "c",
-                              "content": charge_cursor.customer
-                          }, {
-                              "name": "charge",
-                              "content": charge_cursor._id
-                          }, {
-                              "name": "CHARGEID",
-                              "content": charge_cursor._id
-                          }, {
-                              "name": "failure_message",
-                              "content": charge_cursor.failure_message
-                          }, {
-                              "name": "failure_code",
-                              "content": charge_cursor.failure_code
-                          }, {
-                              "name": "URL",
-                              "content": Meteor.settings.public.URL + "/thanks?"
-                          }
-                      ]
+                      "name": "CreatedAt",
+                      "content": moment(new Date(Number(charge_cursor.created * 1000))).format('MM/DD/YYYY h:mma')
+                  }, {
+                      "name": "DEV",
+                      "content": Meteor.settings.dev
+                  }, {
+                      "name": "TotalGiftAmount",
+                      "content": (charge_cursor.amount / 100).toFixed(2)
+                  }, {
+                      "name": "ADDRESS_LINE1",
+                      "content": customer_cursor.metadata.address_line1
+                  }, {
+                      "name": "LOCALITY",
+                      "content": customer_cursor.metadata.city
+                  }, {
+                      "name": "REGION",
+                      "content": customer_cursor.metadata.state
+                  }, {
+                      "name": "POSTAL_CODE",
+                      "content": customer_cursor.metadata.postal_code
+                  }, {
+                      "name": "PHONE",
+                      "content": customer_cursor.metadata.phone
+                  }, {
+                      "name": "c",
+                      "content": charge_cursor.customer
+                  }, {
+                      "name": "charge",
+                      "content": charge_cursor._id
+                  }, {
+                      "name": "CHARGEID",
+                      "content": charge_cursor._id
+                  }, {
+                      "name": "failure_message",
+                      "content": charge_cursor.failure_message
+                  }, {
+                      "name": "failure_code",
+                      "content": charge_cursor.failure_code
+                  }, {
+                      "name": "URL",
+                      "content": Meteor.absoluteUrl()
                   }
               ]
           }
       };
 
       if(charge_cursor.metadata.fees){
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "GiftAmountFees",
                   "content": (charge_cursor.metadata.fees / 100).toFixed(2)
@@ -241,7 +296,7 @@ _.extend(Utils,{
               }
           );
       } else {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "GiftAmount",
                   "content": (amount / 100).toFixed(2)
@@ -249,7 +304,7 @@ _.extend(Utils,{
           );
       }
       if (customer_cursor.metadata.address_line2) {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "ADDRESS_LINE2",
                   "content": customer_cursor.metadata.address_line2 + "<br>"
@@ -258,14 +313,14 @@ _.extend(Utils,{
       }
 
       if (customer_cursor.metadata.business_name) {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "FULLNAME",
                   "content": customer_cursor.metadata.business_name + "<br>" + customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
               }
           );
       } else {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "FULLNAME",
                   "content": customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
@@ -275,7 +330,7 @@ _.extend(Utils,{
 
       //Get the donation with description for either the card or the bank account
       if (charge_cursor && charge_cursor.source && charge_cursor.source.brand) {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "DonateWith",
                   "content": charge_cursor.source.brand + " - ending in, " + charge_cursor.source.last4
@@ -288,7 +343,7 @@ _.extend(Utils,{
               }
           );
       } else if(charge_cursor && charge_cursor.source && charge_cursor.source.bank_name) {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "DonateWith",
                   "content": charge_cursor.source.bank_name + " - ending in, " + charge_cursor.source.last4
@@ -301,7 +356,7 @@ _.extend(Utils,{
               }
           );
       } else{
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "DonateWith",
                   "content": charge_cursor.payment_source.bank_name + " - ending in, " + charge_cursor.payment_source.last4
@@ -314,14 +369,14 @@ _.extend(Utils,{
 
       if (frequency !== "One Time") {
           if (frequency === 'day') {
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "Frequency",
                       "content": "daily"
                   }
               );
           } else {
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "Frequency",
                       "content": frequency + "ly"
@@ -329,7 +384,7 @@ _.extend(Utils,{
               );
           }
       } else {
-          data_slug.message.merge_vars[0].vars.push(
+          data_slug.message.global_merge_vars.push(
               {
                   "name": "Frequency",
                   "content": "one time"
@@ -356,8 +411,8 @@ _.extend(Utils,{
                   }
 
                   data_slug.template_name = "fall-2014-donation-failed-recurring";
-                  data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-                  data_slug.message.merge_vars[0].vars.push(
+                  data_slug = Utils.addRecipientToEmail(data_slug, customer_cursor.email);
+                  data_slug.message.global_merge_vars.push(
                       {
                           "name": "URL",
                           "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type.toLowerCase() + "/resubscribe?s=" +
@@ -367,35 +422,34 @@ _.extend(Utils,{
               }
           } else if (type === 'charge.failed') {
               data_slug.template_name = "fall-2014-donation-failed-recurring";
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "URL",
                       "content": Meteor.absoluteUrl("user/subscriptions/" + payment_type.toLowerCase() +  "/resubscribe?s=" +
                           subscription + "&c=" + subscription_cursor.customer)
                   }
               );
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "DonateTo",
                       "content": Utils.getDonateToName(donation_cursor.donateTo)
                   }
               );
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "don",
                       "content": donation_cursor._id
                   }
               );
           } else if ( type === 'charge.succeeded' || 
-                      type === 'payment.paid' || 
                       type === 'large_gift' ) {
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "DonateTo",
                       "content": Utils.getDonateToName(subscription_cursor.metadata.donateTo)
                   }
               );
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "don",
                       "content": donation_cursor._id
@@ -416,21 +470,21 @@ _.extend(Utils,{
 
                   data_slug.template_name = "fall-2014-donation-failed";
 
-                  data_slug.message.merge_vars[0].vars.push(
+                  data_slug.message.global_merge_vars.push(
                       {
                           "name": "URL",
-                          "content": Meteor.settings.public.org_donate_url
+                          "content": Meteor.absoluteUrl("landing")
                       }
                   );
               }
           } else {
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "DonateTo",
                       "content": Utils.getDonateToName(donation_cursor.donateTo)
                   }
               );
-              data_slug.message.merge_vars[0].vars.push(
+              data_slug.message.global_merge_vars.push(
                   {
                       "name": "don",
                       "content": donation_cursor._id
@@ -441,9 +495,7 @@ _.extend(Utils,{
 
       if (type === 'charge.failed') {
           Utils.audit_email(id, type, body.failure_message, body.failure_code);
-
-          data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-          Utils.send_mandrill_email(data_slug, 'charge.failed');
+          Utils.send_mandrill_email(data_slug, 'charge.failed', customer_cursor.email, 'Your gift failed to process.');
       } else if (type === 'charge.pending') {
           if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.pending && audit_trail_cursor.charge.pending.sent) {
             logger.info("A 'created' email has already been sent for this charge, exiting email send function.");
@@ -451,56 +503,37 @@ _.extend(Utils,{
           }
           Utils.audit_email(id, type);
           data_slug.template_name = "donation-initial-email";
-          data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-          data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
-          Utils.send_mandrill_email(data_slug, 'charge.pending');
-      } else if (type === 'payment.created') {
-          if (audit_trail_cursor && audit_trail_cursor.payment && audit_trail_cursor.payment.created && audit_trail_cursor.payment.created.sent) {
-              logger.info("A 'created' email has already been sent for this charge, exiting email send function.");
-              return;
-          }
-          Utils.audit_email(id, type);
-          data_slug.template_name = "donation-initial-email";
-          data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-          data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
-          data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-          Utils.send_mandrill_email(data_slug, 'payment.created');
-
+          Utils.send_mandrill_email(data_slug, 'charge.pending', customer_cursor.email, 'Donation');
       } else if (type === 'charge.succeeded') {
           if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.succeeded && audit_trail_cursor.charge.succeeded.sent) {
               logger.info("A 'succeeded' email has already been sent for this charge, exiting email send function.");
               return;
           }
           Utils.audit_email(id, type);
-          data_slug.template_name = "fall-2014-donation-receipt-multi-collection";
-          data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-          Utils.send_mandrill_email(data_slug, 'charge.succeeded');
-      } else if (type === 'payment.paid') {
-          if (audit_trail_cursor && audit_trail_cursor.payment && audit_trail_cursor.payment.paid && audit_trail_cursor.payment.paid.sent) {
-              logger.info("A 'succeeded' email has already been sent for this charge, exiting email send function.");
-              return;
-          }
-          Utils.audit_email(id, type);
-          data_slug.template_name = "fall-2014-donation-receipt-multi-collection";
-          data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-          Utils.send_mandrill_email(data_slug, 'payment.paid');
+          data_slug.template_name = config.Services.Email.receipt;
+          Utils.send_mandrill_email(data_slug, 'charge.succeeded', customer_cursor.email, 'Receipt for your donation');
       } else if (type === 'large_gift') {
-          if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.large_gift && audit_trail_cursor.charge.large_gift.sent) {
-              logger.info("A 'large_gift' email has already been sent for this charge, exiting email send function.");
-              return;
-          }
-          Utils.audit_email(id, type);
-          data_slug.message.subject = 'A Partner just Gave $' + (amount/ 100).toFixed(2);
-          data_slug = Utils.add_recipient_to_email(data_slug, Meteor.settings.public.large_gift_address);
-          data_slug.template_name = "large-gift-notice-multi-collection";
-          data_slug.message.bcc_address =
-            Meteor.settings.public.bcc_address ?
-            Meteor.settings.public.bcc_address :
-            '';
-          Utils.send_mandrill_email(data_slug, 'large-gift');
+        if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.large_gift && audit_trail_cursor.charge.large_gift.sent) {
+            logger.info("A 'large_gift' email has already been sent for this charge, exiting email send function.");
+            return;
+        }
+        Utils.audit_email(id, type);
+        if (!(config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.largeGift)) {
+          logger.warn("No large gift email(s) to send to.");
+          return;
+        }
+
+        let emailObject = {
+          to: config.OrgInfo.emails.largeGift,
+          type: 'Large Gift',
+          message: 'A Partner just Gave $' + (amount/ 100).toFixed(2),
+          buttonText: 'Receipt Link',
+          buttonURL: 'https://trashmountain.donortools.com/donations?transaction_id=' + charge_cursor._id
+        };
+
+        Utils.sendAdminEmailNotice(emailObject);
       }
     }  catch (e) {
-      logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
       throw new Meteor.Error(e);
     }
@@ -527,136 +560,137 @@ _.extend(Utils,{
       "template_content": [
         {}
       ],
-      "message":          {
-        "to":          [
-          { "email": "" }
-        ],
-        "bcc_address": "",
-        "merge_vars":  [
+      "message": {
+        "global_merge_vars":  [
           {
-            "rcpt": "",
-            "vars": [
-              {
-                "name":    "CreatedAt",
-                "content": moment(donation_cursor.created_at).format("MM/DD/YYYY hh:mm a")
-              }, {
-                "name":    "DEV",
-                "content": Meteor.settings.dev
-              }, {
-                "name":    "TotalGiftAmount",
-                "content": (donation_cursor.total_amount / 100).toFixed( 2 )
-              }
-            ]
+            "name":    "CreatedAt",
+            "content": moment(donation_cursor.created_at).format("MM/DD/YYYY hh:mm a")
+          }, {
+            "name":    "DEV",
+            "content": Meteor.settings.dev
+          }, {
+            "name":    "TotalGiftAmount",
+            "content": (donation_cursor.total_amount / 100).toFixed( 2 )
           }
         ]
       }
     };
     data_slug.template_name = "donation-initial-email";
-    data_slug = Utils.add_recipient_to_email(data_slug, customer_cursor.email);
-    data_slug.message.bcc_address  = Meteor.settings.public.bcc_address;
 
     if (customer_cursor.metadata.business_name) {
-      data_slug.message.merge_vars[0].vars.push(
+      data_slug.message.global_merge_vars.push(
         {
           "name": "FULLNAME",
           "content": customer_cursor.metadata.business_name + "<br>" + customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
         }
       );
     } else {
-      data_slug.message.merge_vars[0].vars.push(
+      data_slug.message.global_merge_vars.push(
         {
           "name": "FULLNAME",
           "content": customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
         }
       );
     }
-    Utils.send_mandrill_email(data_slug, 'charge.pending');
+    Utils.send_mandrill_email(data_slug, 'charge.pending', customer_cursor.email, 'Donation');
   },
-	send_mandrill_email: function(data_slug, type){
+	send_mandrill_email: function(data_slug, type, to, subject){
     try{
       logger.info("Started send_mandrill_email type: " + type);
-      Mandrill.messages.sendTemplate(data_slug);
-    }//End try
-    catch (e) {
+      let config = ConfigDoc();
+
+      if (config && config.Services && config.Services.Email &&
+        config.Services.Email.emailSendMethod) {
+        logger.info("Sending with email send method of: " + config.Services.Email.emailSendMethod);
+      } else {
+        logger.error("There is no email send method, can't send email.");
+        return;
+      }
+
+      if (config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.bccAddress){
+        data_slug.message.bcc_address  = config.OrgInfo.emails.bccAddress;
+      }
+
+      let dataSlugWithImageVars = Utils.setupImages(data_slug);
+      let dataSlugWithFrom = Utils.setupEmailFrom(dataSlugWithImageVars);
+      logger.info(dataSlugWithFrom);
+      let dataSlugWithTo = Utils.addRecipientToEmail(dataSlugWithFrom, to);
+      logger.info(dataSlugWithTo);
+      dataSlugWithTo.message.subject = subject;
+
+      let configMandrill = Utils.configMandrill();
+
+      logger.info(dataSlugWithTo);
+      Mandrill.messages.sendTemplate(dataSlugWithTo);
+    } catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);
       throw new Meteor.Error(e);
     }
   },
   send_scheduled_email: function (id, subscription_id, frequency, amount) {
-    try {
-      logger.info("Started send_scheduled_email with ID: " + id + " subscription_id: " + subscription_id + " frequency: " + frequency + "amount: " + amount);
+    logger.info( "Started send_scheduled_email with ID: " + id + " subscription_id: " +
+      subscription_id + " frequency: " + frequency + "amount: " + amount );
+    let config = ConfigDoc();
 
-      // Check to see if this email has already been sent before continuing, log it if it hasn't
-      var subscription_cursor = Subscriptions.findOne({_id: subscription_id});
-      if(subscription_cursor.metadata &&
-        subscription_cursor.metadata.send_scheduled_email &&
-        subscription_cursor.metadata.send_scheduled_email === 'no'){
-        return;
-      }
-      if(Audit_trail.findOne({"subscription_id": subscription_id}) &&
-        Audit_trail.findOne({"subscription_id": subscription_id}).subscription_scheduled &&
-        Audit_trail.findOne({"subscription_id": subscription_id}).subscription_scheduled.sent){
-        return;
-      } else{
-        Utils.audit_email(subscription_id, 'scheduled');
-      }
-
-      // Setup the rest of the cursors that we'll need
-      var donation_cursor = Donations.findOne({_id: id});
-      var customer_cursor = Customers.findOne(donation_cursor.customer_id);
-
-      var start_at = subscription_cursor.trial_end;
-      start_at = moment(start_at * 1000).format("MMM DD, YYYY");
-
-      var bcc_address = Meteor.settings.public.bcc_address;
-      var email_address = customer_cursor.email;
-
-      // convert the amount from an integer to a two decimal place number
-      amount = (amount/100).toFixed(2);
-      var slug = "scheduled-donation-with-amount-and-frequency";
-
-      logger.info("Sending with template name: " + slug);
-      Mandrill.messages.sendTemplate({
-        "key": Meteor.settings.mandrillKey,
-        "template_name": slug,
-        "template_content": [
-          {}
-        ],
-        "message": {
-          "to": [
-            {"email": email_address}
-          ],
-          "bcc_address": "",
-          "merge_vars": [
-            {
-              "rcpt": email_address,
-              "vars": [
-                {
-                  "name": "StartDate",
-                  "content": start_at
-                }, {
-                  "name": "DEV",
-                  "content": Meteor.settings.dev
-                }, {
-                  "name": "SUB_GUID",
-                  "content": subscription_id
-                }, {
-                  "name": "Frequency",
-                  "content": frequency
-                }, {
-                  "name": "Amount",
-                  "content": amount
-                }
-              ]
-            }
-          ]
-        }
-      });
-    } catch (e) {
-      logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
-      logger.error('Mandril sendEmailOutAPI Method error: ' + e);
-      throw new Meteor.Error(e);
+    if( !(config && config.Services && config.Services.Email &&
+      config.Services.Email.scheduled) ) {
+      logger.warn("There is no template for scheduled emails.");
+      return;
     }
+
+    // Check to see if this email has already been sent before continuing, log it if it hasn't
+    var subscription_cursor = Subscriptions.findOne( { _id: subscription_id } );
+    if( subscription_cursor.metadata &&
+      subscription_cursor.metadata.send_scheduled_email &&
+      subscription_cursor.metadata.send_scheduled_email === 'no' ) {
+      return;
+    }
+    if( Audit_trail.findOne( { "subscription_id": subscription_id } ) &&
+      Audit_trail.findOne( { "subscription_id": subscription_id } ).subscription_scheduled &&
+      Audit_trail.findOne( { "subscription_id": subscription_id } ).subscription_scheduled.sent ) {
+      return;
+    } else {
+      Utils.audit_email( subscription_id, 'scheduled' );
+    }
+
+    // Setup the rest of the cursors that we'll need
+    var donation_cursor = Donations.findOne( { _id: id } );
+    var customer_cursor = Customers.findOne( donation_cursor.customer_id );
+    let email_address = customer_cursor.email;
+
+    var start_at = subscription_cursor.trial_end;
+    start_at = moment( start_at * 1000 ).format( "MMM DD, YYYY" );
+
+    // convert the amount from an integer to a two decimal place number
+    amount = (amount / 100).toFixed( 2 );
+
+    let data_slug = {
+      "template_name": config.Services.Email.scheduled,
+      "template_content": [
+        {}
+      ],
+      "message": {
+        "global_merge_vars":  [
+              {
+                "name":    "StartDate",
+                "content": start_at
+              }, {
+                "name":    "DEV",
+                "content": Meteor.settings.dev
+              }, {
+                "name":    "SUB_GUID",
+                "content": subscription_id
+              }, {
+                "name":    "Frequency",
+                "content": frequency
+              }, {
+                "name":    "Amount",
+                "content": amount
+              }
+        ]
+      }
+    };
+    Utils.send_mandrill_email(data_slug, config.Services.Email.scheduled. email_address, 'Scheduled Gift');
   }
 });

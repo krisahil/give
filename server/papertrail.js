@@ -34,7 +34,7 @@ logger.add(Winston_Papertrail, {
   json: true,
   colorize: true,
   logFormat: function(level, message) {
-    return '[' + level + '] ' + ' [' + new Date().toUTCString() + '] ' + message;
+    return '[' + level + '] ' + message;
   }
 });
 

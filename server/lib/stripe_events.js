@@ -56,11 +56,12 @@ Stripe_Events = {
     StripeFunctions.audit_charge(stripeEvent.data.object.id, 'succeeded');
     console.log(stripeEvent);
     let send_successful_email;
+    let config = ConfigDoc();
 
-    if(stripeEvent.data.object.refunded){
+    if (stripeEvent.data.object.refunded) {
       logger.warn("This successful charge has been refunded.");
     }
-    if(stripeEvent.data.object.invoice) {
+    if (stripeEvent.data.object.invoice) {
       let wait_for_metadata_update = Utils.update_charge_metadata(stripeEvent);
 
       let invoice_cursor = Invoices.findOne({_id: stripeEvent.data.object.invoice});
@@ -69,16 +70,21 @@ Stripe_Events = {
       console.log(invoice_cursor._id);
       Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
-      if(stripeEvent.data.object.amount >= 50000) {
-        send_successful_email = Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, 'large_gift',
-          stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
+      if (config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.largeGiftThreshold) {
+        if(stripeEvent.data.object.amount >= (config.OrgInfo.emails.largeGiftThreshold * 100)) {
+          send_successful_email = Utils.send_donation_email( true, stripeEvent.data.object.id, stripeEvent.data.object.amount, 'large_gift',
+            stripeEvent, subscription_cursor.plan.interval, invoice_cursor.subscription );
+        }
       }
+
     } else {
       send_successful_email = Utils.send_donation_email(false, stripeEvent.data.object.id, stripeEvent.data.object.amount, stripeEvent.type,
         stripeEvent, "One Time", null);
-      if(stripeEvent.data.object.amount >= 50000) {
-        Utils.send_donation_email( false, stripeEvent.data.object.id, stripeEvent.data.object.amount, 'large_gift',
-          stripeEvent, "One Time", null );
+      if (config && config.OrgInfo && config.OrgInfo.emails && config.OrgInfo.emails.largeGiftThreshold) {
+        if( stripeEvent.data.object.amount >= (config.OrgInfo.emails.largeGiftThreshold * 100) ) {
+          Utils.send_donation_email( false, stripeEvent.data.object.id, stripeEvent.data.object.amount, 'large_gift',
+            stripeEvent, "One Time", null );
+        }
       }
     }
     logEvent(stripeEvent.type);

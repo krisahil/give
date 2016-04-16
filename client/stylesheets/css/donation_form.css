@@ -493,6 +493,24 @@ legend {
     background:rgba(0,0,0,0.5) center no-repeat;
 }
 
+.logo-overlay-admin {
+    position: absolute;
+    display: table;
+    z-index: 2;
+    opacity: 0;
+    left: -30px;
+    top: -5px;
+    width: 180px;
+    height: 75px;
+    text-align: center;
+    margin: auto;
+}
+
+.logo-overlay-admin:hover {
+    opacity:1;
+    background:rgba(0,0,0,0.5) center no-repeat;
+}
+
 .indianred {
     color: indianred;
 }

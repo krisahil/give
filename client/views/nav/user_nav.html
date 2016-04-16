@@ -13,16 +13,14 @@
                     {{#unless imageExists}}
                         {{#if notAdmin}}
                             <a href="/dashboard" title="Login to change this logo.">
-                                <span class="fa-stack fa-lg">
-                                  <i class="fa fa-square-o fa-stack-2x"></i>
-                                  <i class="fa fa-edit fa-stack-1x"></i>
-                                </span>
+                                <img src="/images/icons/mountain.svg" width="65px" />
                             </a>
                         {{else}}
                             <div data-toggle='popover'
                                  data-trigger='hover focus'
                                  data-container='body'
-                                 data-content='Drop your logo here. width: 130px, height: 80px, PNG. Black and white logos look the best. '>
+                                 data-content='Drop your logo here. width: 130px,
+                                  height: 80px, PNG. Black and white logos look the best.'>
                                 {{> UploadLogo}}
                             </div>
                         {{/if}}

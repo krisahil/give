@@ -470,3 +470,10 @@ Router.route('/dashboard/upload', {
   where: 'client',
   template: 'Upload'
 });
+
+
+Router.route('/dashboard/logos', {
+  name: 'Logos',
+  where: 'client',
+  template: 'Logos'
+});

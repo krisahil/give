@@ -29,7 +29,6 @@ if (config && config.OrgInfo && config.OrgInfo.web.subdomain) {
   trusted.push(config.OrgInfo.web.subdomain + "." +
     config.OrgInfo.web.domain_name);
 }
-console.log(trusted);
 
 _.each(trusted, function(origin) {
   var secureOrigin = "https://" + origin;
@@ -39,5 +38,3 @@ _.each(trusted, function(origin) {
     BrowserPolicy.content.allowOriginForAll(nonSecureOrigin);
   }
 });
-BrowserPolicy.content.allowOriginForAll("ws://localhost:3000");
-

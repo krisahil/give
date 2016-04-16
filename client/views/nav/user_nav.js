@@ -20,6 +20,7 @@ Template.UserNav.onRendered(function () {
     };
     heap.load( config.Services.Analytics.heapId );
   }
+
 });
 
 Template.UserNav.helpers({
