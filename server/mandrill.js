@@ -156,6 +156,55 @@ _.extend(Utils,{
 
     return newDataSlug;
   },
+  /**
+   * Add the Org fields to the data_slug
+   *
+   * @method addOrgInfoFields
+   * @param {Object} dataSlug - this is the data_slug that Mandrill uses.
+   */
+  addOrgInfoFields: function(dataSlug){
+    logger.info("Started addOrgInfoFields");
+    let config = ConfigDoc();
+    let newDataSlug = dataSlug;
+
+    if (config && config.OrgInfo && config.OrgInfo.emails) {
+      newDataSlug.message.global_merge_vars.push(
+        {
+          "name": "OrgName",
+          "content": config.OrgInfo.name
+        }, {
+          "name": "OrgPhone",
+          "content": config.OrgInfo.phone
+        }, {
+          "name": "SupportEmail",
+          "content": config.OrgInfo.emails.support
+        }, {
+          "name": "ContactEmail",
+          "content": config.OrgInfo.emails.contact
+        }, {
+          "name": "OrgAddressLine1",
+          "content": config.OrgInfo.address.line_1
+        }, {
+          "name": "OrgAddressLine2",
+          "content": config.OrgInfo.address.line_2
+        }, {
+          "name": "OrgCity",
+          "content": config.OrgInfo.address.city
+        }, {
+          "name": "OrgState",
+          "content": config.OrgInfo.address.state
+        }, {
+          "name": "OrgZip",
+          "content": config.OrgInfo.address.zip
+        }, {
+          "name": "OrgMissionStatement",
+          "content": config.OrgInfo.mission_statement
+        }
+      );
+    }
+
+    return newDataSlug;
+  },
   send_cancelled_email_to_admin: function (subscription_id, stripeEvent) {
     var audit_trail_cursor = Audit_trail.findOne({subscription_id: subscription_id});
 
@@ -210,9 +259,18 @@ _.extend(Utils,{
     try {
       logger.info("Started send_donation_email with ID: " + id);
       let config = ConfigDoc();
+
+      if (config && config.Services && config.Services.Email &&
+        config.Services.Email.emailSendMethod) {
+        logger.info("Sending with email send method of: " + config.Services.Email.emailSendMethod);
+      } else {
+        logger.error("There is no email send method, can't send email.");
+        return;
+      }
+
       if (type === "charge.updated") {
-          logger.info("Don't need to send an email when a charge is updated, exiting the send_donation_email method.");
-          return;
+        logger.info("Don't need to send an email when a charge is updated, exiting the send_donation_email method.");
+        return;
       }
       var donation_cursor;
       // Setup a cursor for the Audit_trail document corresponding to this charge_id
@@ -410,8 +468,7 @@ _.extend(Utils,{
                       return;
                   }
 
-                  data_slug.template_name = "fall-2014-donation-failed-recurring";
-                  data_slug = Utils.addRecipientToEmail(data_slug, customer_cursor.email);
+                  data_slug.template_name = config.Services.Email.failedPayment;
                   data_slug.message.global_merge_vars.push(
                       {
                           "name": "URL",
@@ -421,7 +478,7 @@ _.extend(Utils,{
                   );
               }
           } else if (type === 'charge.failed') {
-              data_slug.template_name = "fall-2014-donation-failed-recurring";
+              data_slug.template_name = config.Services.Email.failedPayment;
               data_slug.message.global_merge_vars.push(
                   {
                       "name": "URL",
@@ -468,7 +525,7 @@ _.extend(Utils,{
                       return;
                   }
 
-                  data_slug.template_name = "fall-2014-donation-failed";
+                  data_slug.template_name = config.Services.Email.failedPayment;
 
                   data_slug.message.global_merge_vars.push(
                       {
@@ -502,7 +559,7 @@ _.extend(Utils,{
             return;
           }
           Utils.audit_email(id, type);
-          data_slug.template_name = "donation-initial-email";
+          data_slug.template_name = config.Services.Email.pending;
           Utils.send_mandrill_email(data_slug, 'charge.pending', customer_cursor.email, 'Donation');
       } else if (type === 'charge.succeeded') {
           if (audit_trail_cursor && audit_trail_cursor.charge && audit_trail_cursor.charge.succeeded && audit_trail_cursor.charge.succeeded.sent) {
@@ -539,6 +596,11 @@ _.extend(Utils,{
     }
   },
   send_manually_processed_initial_email: function(donation_id, customer_id) {
+    logger.info("Started send_manually_processed_initial_email");
+    if (!(config && config.Services && config.Services.Email && config.Services.Email.pending)) {
+      logger.warn("No initial template specified, so no initial email will be sent.");
+      return;
+    }
 
     let audit_trail_id = Audit_trail.upsert({donation_id: donation_id}, {
       $set: {
@@ -555,8 +617,16 @@ _.extend(Utils,{
       return;
     }
 
+    let name;
+    if (customer_cursor && customer_cursor.metadata && customer_cursor.metadata.business_name) {
+      name = customer_cursor.metadata.business_name + "<br>" +
+        customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname;
+    } else {
+      name = customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname;
+    }
+
     let data_slug = {
-      "template_name":    "",
+      "template_name": config.Services.Email.pending,
       "template_content": [
         {}
       ],
@@ -571,27 +641,14 @@ _.extend(Utils,{
           }, {
             "name":    "TotalGiftAmount",
             "content": (donation_cursor.total_amount / 100).toFixed( 2 )
+          }, {
+            "name": "FULLNAME",
+            "content": name
           }
         ]
       }
     };
-    data_slug.template_name = "donation-initial-email";
 
-    if (customer_cursor.metadata.business_name) {
-      data_slug.message.global_merge_vars.push(
-        {
-          "name": "FULLNAME",
-          "content": customer_cursor.metadata.business_name + "<br>" + customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
-        }
-      );
-    } else {
-      data_slug.message.global_merge_vars.push(
-        {
-          "name": "FULLNAME",
-          "content": customer_cursor.metadata.fname + " " + customer_cursor.metadata.lname
-        }
-      );
-    }
     Utils.send_mandrill_email(data_slug, 'charge.pending', customer_cursor.email, 'Donation');
   },
 	send_mandrill_email: function(data_slug, type, to, subject){
@@ -601,6 +658,9 @@ _.extend(Utils,{
 
       if (config && config.Services && config.Services.Email &&
         config.Services.Email.emailSendMethod) {
+        if (config.Services.Email.emailSendMethod === "Mandrill") {
+          Utils.configMandrill();
+        }
         logger.info("Sending with email send method of: " + config.Services.Email.emailSendMethod);
       } else {
         logger.error("There is no email send method, can't send email.");
@@ -611,17 +671,15 @@ _.extend(Utils,{
         data_slug.message.bcc_address  = config.OrgInfo.emails.bccAddress;
       }
 
+      // Add all the standard merge_vars and standard fields for emails
       let dataSlugWithImageVars = Utils.setupImages(data_slug);
       let dataSlugWithFrom = Utils.setupEmailFrom(dataSlugWithImageVars);
-      logger.info(dataSlugWithFrom);
       let dataSlugWithTo = Utils.addRecipientToEmail(dataSlugWithFrom, to);
-      logger.info(dataSlugWithTo);
+      let dataSlugWithOrgInfoFields = Utils.addOrgInfoFields(dataSlugWithTo);
       dataSlugWithTo.message.subject = subject;
 
-      let configMandrill = Utils.configMandrill();
-
-      logger.info(dataSlugWithTo);
-      Mandrill.messages.sendTemplate(dataSlugWithTo);
+      logger.info(dataSlugWithOrgInfoFields);
+      Mandrill.messages.sendTemplate(dataSlugWithOrgInfoFields);
     } catch (e) {
       logger.error('Mandril sendEmailOutAPI Method error message: ' + e.message);
       logger.error('Mandril sendEmailOutAPI Method error: ' + e);

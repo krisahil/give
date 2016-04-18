@@ -309,34 +309,39 @@ Schema.Services = new SimpleSchema({
     label: "Mandrill key",
     optional: true
   },
+  "Email.adminAlerts": {
+    type: String,
+    label: "The template name used for admin alerts.",
+    optional: true
+  },
   "Email.enrollmentName": {
     type: String,
-    label: "The template name of the enrollment email",
-    optional: true
-  },
-  "Email.resetPasswordName": {
-    type: String,
-    label: "The template name of the password reset email",
-    optional: true
-  },
-  "Email.receipt": {
-    type: String,
-    label: "The template name of the receipt email",
-    optional: true
-  },
-  "Email.scheduled": {
-    type: String,
-    label: "The template name of the scheduled email",
+    label: "The template name of the new user email.",
     optional: true
   },
   "Email.failedPayment": {
     type: String,
-    label: "The template name of the failed payment email",
+    label: "The template name of the failed payment email.",
     optional: true
   },
-  "Email.adminAlerts": {
+  "Email.pending": {
     type: String,
-    label: "The template name used for admin alerts.",
+    label: "The template name used for acknowledgement email after an ACH gift is given.",
+    optional: true
+  },
+  "Email.receipt": {
+    type: String,
+    label: "The template name of the receipt email.",
+    optional: true
+  },
+  "Email.resetPasswordName": {
+    type: String,
+    label: "The template name of the password reset email.",
+    optional: true
+  },
+  "Email.scheduled": {
+    type: String,
+    label: "The template name of the scheduled email.",
     optional: true
   },
   Kadira: {
