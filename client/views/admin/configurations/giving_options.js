@@ -252,7 +252,7 @@ Template.GivingOptions.events({
         'Giving.options': configOptions
       }
     });
-  },500),
+  },1000),
   'click .remove-item': function(e) {
     e.preventDefault();
     let dtId = $(e.currentTarget).attr('data-el-id');

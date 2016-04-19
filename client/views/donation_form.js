@@ -104,11 +104,13 @@ Template.DonationForm.events({
     }
   },
   'change #donateTo': function() {
-    if ($('#donateTo').val() !== 'WriteIn') {
+    let config = ConfigDoc();
+    let writeIn = config.Settings.DonorTools.writeInDonationTypeId.toString();
+    if ($('#donateTo').val() !== writeIn) {
       $('#giftDesignationText').hide();
     } else {
       Session.set('showWriteIn', 'yes');
-      Session.set('params.donateTo', 'WriteIn');
+      Session.set('params.donateTo', writeIn);
       // setup modal for entering give toward information
       $('#modal_for_write_in').modal({
         show: true,
@@ -252,6 +254,9 @@ Template.DonationForm.helpers({
 });
 
 Template.DonationForm.onRendered(function() {
+  let config = ConfigDoc();
+  let writeIn = config.Settings.DonorTools.writeInDonationTypeId.toString();
+
   // Setup parsley form validation
   $('#donation_form').parsley();
 
@@ -265,7 +270,7 @@ Template.DonationForm.onRendered(function() {
     $('#calendarSection').show();
   }
   // setup modal for entering give toward information
-  if (Session.equals('params.donateTo', 'WriteIn') && !(Session.equals('showWriteIn', 'no'))) {
+  if (Session.equals('params.donateTo', writeIn) && !(Session.equals('showWriteIn', 'no'))) {
     $('#modal_for_write_in').modal({
       show: true,
       backdrop: 'static'

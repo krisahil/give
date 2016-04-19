@@ -1,8 +1,8 @@
 Meteor.startup(function() {
   UploadServer.init({
     tmpDir: process.env.PWD + '/.uploads/tmp',
-    checkCreateDirectories: true, // create the directories for you
     uploadDir: process.env.PWD + '/.uploads/',
+    checkCreateDirectories: true, // create the directories for you
     validateRequest: function(req) {
       logger.info("Got to validateRequest");
       if (req.headers["content-length"] > 10000000) {
@@ -14,20 +14,20 @@ Meteor.startup(function() {
     validateFile: function(file, req) {
       logger.info("Got to validateFile");
       if (req.maxFileSize < file.size) {
-        console.log("File is to large");
+        logger.info("File is to large");
         return 'File size to large, should be less than 10MB';
       }
-      console.log(file.type);
-      console.log(req);
-      console.log("File is NOT to large");
+      logger.info(file.type);
+      logger.info(req);
+      logger.info("File is NOT to large");
       return null;
     },
     imageTypes: /.(gif|jpe?g|png)$/i,
     maxFileSize: 10000000,
     getFileName: function( fileInfo, formData ) {
-      console.log("In getFileName");
-      console.log(fileInfo);
-      console.log(formData);
+      logger.info("In getFileName");
+      logger.info(fileInfo);
+      logger.info(formData);
       return fileInfo.name.replace(/\s+/g, '');
     },
     finished: function(fileInfo, formFields) {
@@ -35,8 +35,8 @@ Meteor.startup(function() {
       Object.assign(fileInfo, formFields);
 
       // Use GM to convert the image
-      console.log(fileInfo);
-      console.log(formFields);
+      logger.info(fileInfo);
+      logger.info(formFields);
       gm(process.env.PWD + '/.uploads' + fileInfo.path)
         .resize(256, 256)
         .type("TrueColor")

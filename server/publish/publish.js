@@ -438,6 +438,7 @@ Meteor.publish("config", function () {
       'Settings.Stripe.keysSecretExists': 1,
       'Settings.DonorTools.usernameExists': 1,
       'Settings.DonorTools.passwordExists': 1,
+      'Settings.DonorTools.writeInDonationTypeId': 1,
       'Settings.ach_verification_type': 1,
       'Settings.showDonatePage': 1,
       'Settings.doNotAllowOneTimeACH': 1,

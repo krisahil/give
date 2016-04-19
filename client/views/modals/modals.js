@@ -25,16 +25,20 @@ function removeParam(key, sourceURL) {
 
 Template.Modals.events({
   'click #write_in_save': function() {
+    let config = ConfigDoc();
+    let writeIn = config.Settings.DonorTools.writeInDonationTypeId.toString();
+    
     $('#modal_for_write_in').modal('hide');
 
     removeParam('enteredWriteInValue', window.location.href);
     var goHere = removeParam('donateTo', window.location.href);
     console.log(goHere);
     Session.set('showWriteIn', 'no');
-    goHere = goHere + '&enteredWriteInValue=' + $('#writeIn').val() + '&donateTo=WriteIn';
+    goHere = goHere + '&enteredWriteInValue=' + $('#writeIn').val() + '&donateTo=' + writeIn;
     Router.go(goHere);
     $('#giftDesignationText').show();
-    $('[name="donateTo"]').val("WriteIn");
+    
+    $('[name="donateTo"]').val(writeIn);
   }
 });
 

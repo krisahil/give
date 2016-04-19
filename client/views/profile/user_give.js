@@ -130,11 +130,13 @@ Template.UserGive.onRendered(function () {
     Router.go("Dashboard");
     return;
   }
+  let config = ConfigDoc();
+  let writeIn = config.Settings.DonorTools.writeInDonationTypeId.toString();
 
   $('[data-toggle="popover"]').popover();
 
   // setup modal for entering give toward information
-  if (Session.equals('params.donateTo', 'WriteIn') && !(Session.equals('showWriteIn', 'no'))) {
+  if (Session.equals('params.donateTo', writeIn) && !(Session.equals('showWriteIn', 'no'))) {
     $('#modal_for_write_in').modal({
       show: true,
       backdrop: 'static'

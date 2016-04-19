@@ -551,6 +551,14 @@ Schema.Settings = new SimpleSchema({
     },
     optional: true
   },
+  "DonorTools.writeInDonationTypeId": {
+    type: Number,
+    label: "Donation type used to prompt user to add a note",
+    autoform: {
+      placeholder: "Might use for trips or 'other'"
+    },
+    optional: true
+  },
   Stripe: {
     type: Object,
     optional: true,

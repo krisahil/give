@@ -46,7 +46,12 @@
 
                     <div class="row">
                         <div class="reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="where_most_needed_description">
-                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3"><i class="fa fa-3x fa-plane"></i></div>
+                            <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-plane fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </div>
 
                             <div class="col col-lg-10 col-md-10 col-sm-10 col-xs-10">
                                 <p class="small-bottom v-top uppercase-this"><strong>** EXAMPLE Wherever It's Needed Most EXAMPLE **</strong></p>
@@ -61,7 +66,10 @@
                                 <div class="reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="{{groupId}}">
                                     <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3">
                                         {{#if icon}}
-                                            <i class="fa fa-3x {{icon}}"></i>
+                                            <span class="fa-stack fa-2x">
+                                              <i class="fa fa-3x fa-circle fa-stack-2x"></i>
+                                              <i class="fa fa-stack-1x {{icon}} fa-inverse"></i>
+                                            </span>
                                         {{/if}}
                                     </div>
 

@@ -1,10 +1,8 @@
 function updateDoc(e, type, value) {
-  console.log(type);
   let config = ConfigDoc();
   let id = $(e.currentTarget).data('group-id');
   if (guideExists() && groupIndex(config, id) !== -1) {
-    Meteor.call( "updateGuide", id, groupIndex(config, id),
-    type, value, function ( err, res ) {
+    Meteor.call( "updateGuide", id, groupIndex(config, id), type, value, function ( err, res ) {
       if( res ) {
         console.log( res );
       } else {
@@ -121,4 +119,3 @@ Template.GivingGuide.events({
     updateDoc(e, 'description', $(e.currentTarget).val());
   }, 500)
 });
-
