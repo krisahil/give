@@ -39,7 +39,7 @@ Meteor.startup(function() {
         logger.info("In getFileName");
         logger.info(fileInfo);
         logger.info(formData);
-        return fileInfo.name.replace(/\s+/g, '');
+        return fileInfo.name.replace(/[*_\s]/g, '');
       } catch(e) {
         logger.error(e);
         throw new Meteor.Error(500, e);
