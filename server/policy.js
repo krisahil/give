@@ -21,7 +21,6 @@ var trusted = [
   'd2zah9y47r7bi2.cloudfront.net',
   'capture.trackjs.com',
   'usage.trackjs.com',
-  'localhost:3000'
 ];
 
 

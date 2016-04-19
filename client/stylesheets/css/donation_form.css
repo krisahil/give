@@ -511,10 +511,6 @@ legend {
     background:rgba(0,0,0,0.5) center no-repeat;
 }
 
-.indianred {
-    color: indianred;
-}
-
 .center-logo-overlay > .inner {
     position:relative;
     top: 10%;
