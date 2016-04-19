@@ -68,7 +68,6 @@ var options = {
     "zip": "application/zip, application/x-compressed-zip",
     "txt": "text/plain"
   },
-  /* Uncomment and edit this section to provide the service via HTTPS: */
    ssl: Meteor.absoluteUrl().slice(0,5) === 'https' ? true : false
 };
 

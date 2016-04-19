@@ -75,7 +75,7 @@ Transfers = new Mongo.Collection('transfers');
 // Uploads, used for admin file uploading
 Uploads = new Mongo.Collection('uploads');
 Uploads.before.insert(function (userId, doc, fieldNames, modifier) {
-  console.log(doc);
+  // Convert the url to not have spaces or underscores
   doc.url = doc.url.replace( /[*_\s]/g, '' );
   return true;
 });
