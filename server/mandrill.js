@@ -133,7 +133,7 @@ _.extend(Utils,{
     );
     newDataSlug.message.global_merge_vars.push(
       {
-        "name": "ReceiptURL",
+        "name": "ReceiptImage",
         "content": receiptURL
       }
     );

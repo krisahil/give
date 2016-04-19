@@ -88,7 +88,10 @@
                                 <div class="guide-item reduced-left-padding col col-lg-12 sol-md-12 col-sm-12 col-xs-12 giving-detail-area" id="{{groupId}}">
                                     <div class="reduced-left-padding col col-lg-2 col-md-2 col-sm-2 col-xs-3">
                                         {{#if icon}}
-                                            <i class="fa fa-3x {{icon}}"></i>
+                                            <span class="fa-stack fa-2x">
+                                              <i class="fa fa-3x fa-circle fa-stack-2x"></i>
+                                              <i class="fa fa-stack-1x {{icon}} fa-inverse"></i>
+                                            </span>
                                         {{/if}}
                                     </div>
 
