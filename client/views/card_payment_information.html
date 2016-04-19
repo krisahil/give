@@ -18,7 +18,7 @@
     </div>
     <div class="form-group">
         <!--<label class="col-lg-3 col-md-4 col-sm-4 col-xs-3 control-label noRightPadding" for="expiry_month">Expiration Date</label>-->
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="expiry_monthDiv">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <select class="form-control  select select-primary select-block mbl" id="expiry_month" required>
                 <option value="">Month</option>
                 <option value="01">Jan (01)</option>
@@ -35,7 +35,9 @@
                 <option value="12">Dec (12)</option>
             </select>
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" name="expiry_yearDiv">
+    </div>
+    <div class="form-group">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <select class="form-control select select-primary select-block mbl" id="expiry_year" required>
                 <option value="">Year</option>
                 <option value="2016">2016</option>
@@ -50,7 +52,9 @@
                 <option value="2024">2025</option>
             </select>
         </div>
-        <div class="col-md-12" id="expiry_monthDiv">
+    </div>
+    <div class="form-group">
+        <div class="col-md-12" id="expirySavePaymentDiv">
             <div class="save-this-payment">
                 <!-- Checbox for covering related fees-->
                 <input type="checkbox"
@@ -74,6 +78,5 @@
                 </span>
             </div>
         </div>
-
     </div>
 </template>
