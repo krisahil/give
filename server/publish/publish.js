@@ -458,3 +458,39 @@ Meteor.publish("wholeConfigDoc", function () {
     this.ready();
   }
 });
+
+Meteor.publish("trips", function (id) {
+  check(id, Match.Optional(String));
+  if (Roles.userIsInRole(this.userId, ['admin', 'volunteer-manager'])) {
+    if (id) {
+      return Trips.find({_id: id});
+    }
+    return Trips.find();
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publish("volunteers", function (id) {
+  check(id, Match.Optional(String));
+  if (Roles.userIsInRole(this.userId, ['admin', 'volunteer-manager'])) {
+    if (id) {
+      return Volunteers.find({'trips.id': id});
+    }
+    return Volunteers.find();
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publish("travelDTSplits", function () {
+  if (Roles.userIsInRole(this.userId, ['admin', 'volunteer-manager'])) {
+    let trips = Trips.find().map(function ( trip ) {
+      return Number(trip.fundId);
+    });
+    console.log(trips);
+    return DT_splits.find({fund_id: {$in: trips}});
+  } else {
+    this.ready();
+  }
+});

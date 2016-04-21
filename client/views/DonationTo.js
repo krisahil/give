@@ -1,10 +1,25 @@
 function setupDonateTo(){
   // This helper doesn't return anything, rather it is used as a reactive
   // helper to retrieve the configuration document reactively
+  // It also checks to see if the user used a donateTo=id value that doesn't
+  // exist in the designation list. If so, it will find that designation in the
+  // Donor Tools funds and put it as the selected and only option in the Donation
+  // Designation
   let config = ConfigDoc();
 
   var givingOptions = config && config.Giving && config.Giving.options;
 
+  let donateTo = Session.get("params.donateTo");
+  let note = Session.get("params.note");
+  let fund = DT_funds.findOne({_id: donateTo});
+
+  if (fund && fund.name) {
+    $( '#donateTo' ).select2( {
+      data: [{id: donateTo, text: fund.name, type: "option"}],
+      dropdownCssClass: 'dropdown-inverse'
+    } );
+    return;
+  }
   if( givingOptions && givingOptions.length > 0 ) {
     $( '#donateTo' ).select2( {
       data:             _.sortBy( givingOptions, 'position' ),
@@ -13,6 +28,12 @@ function setupDonateTo(){
     } );
   }
 }
+
+Template.DonationTo.onCreated(function () {
+  this.autorun(()=>{
+    this.subscribe("userDTFunds");
+  });
+});
 
 Template.DonationTo.helpers({
   setupDonateToDropwdown: function () {

@@ -16,11 +16,16 @@ Template.registerHelper('twoDecimalPlaces', function(stringToAddDecimal) {
 });
 
 Template.registerHelper('formatDate', function(date, unix) {
+  console.log(date);
   if (date && unix) {
-    return moment.unix(date).format('MMM DD, YYYY');
+    return moment.unix(new Date(date)).format('MMM DD, YYYY');
   } else if (date) {
-    return moment(date).format('MMM DD, YYYY');
+    return moment(new Date(date)).format('MMM DD, YYYY');
   }
+});
+
+Template.registerHelper('formatDateUTC', function(date) {
+  return moment.utc(new Date(date)).format('MMM DD, YYYY');
 });
 
 Template.registerHelper('writeInValue', function() {

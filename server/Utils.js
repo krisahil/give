@@ -121,15 +121,12 @@ Utils = {
       password: String
     });
   },
-  GetDTData: function(dateStart, dateEnd) {
+  GetDTData: function(fundsList, dateStart, dateEnd) {
     logger.info( "Started GetDTData method (not method call)" );
-    // This function can be removed after the Serve 1000 campaign concludes, it is strictly for pulling in donation history from community sponsorship funds
+    
+    check( fundsList, [Number] );
     check( dateStart, String );
     check( dateEnd, String );
-    // This is the fund ids for community sponsorship
-    var fundsList = [
-      63667, 63692, 63695, 64197, 64590, 67273, 67274, 67276, 67277, 67282
-    ];
     fundsList.forEach( function( fundId ) {
       Utils.getFundHistory( fundId, dateStart, dateEnd );
     });

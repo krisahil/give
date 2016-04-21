@@ -63,7 +63,9 @@ Template.Logos.helpers( {
 Template.Logos.events({
   'click .clear-image': function(e) {
     let type = $(e.currentTarget).data('el-type');
-    confirm( "Are you sure you want to delete the " + type + " ?" );
+    if (!confirm( "Are you sure you want to delete the " + type + " ?" )) {
+      return;
+    }
     let uploadId = Uploads.findOne( { [type]: "_true" } )._id;
     let uploadName = Uploads.findOne( { [type]: "_true" } ).name;
     Uploads.remove( { _id: uploadId } );

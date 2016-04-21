@@ -91,6 +91,11 @@ Transfers._ensureIndex(
   {'balance_transaction': 1},
   {background: true});
 
+Trips._ensureIndex(
+  {'fundId': 1},
+  {'name': 1},
+  {background: true});
+
 Uploads._ensureIndex(
   {'configId': 1},
   {'fundId': 1},

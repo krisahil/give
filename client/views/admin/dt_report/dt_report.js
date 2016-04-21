@@ -6,8 +6,11 @@ Template.DtReport.events({
     e.preventDefault();
     console.log("Got to click event");
 
-    var getDataButton   = $("#get-dt-data").button('loading');
-    Meteor.call("GetDTData", moment().subtract($('#numberOfDays' ).val(), 'days').format('MMM+DD+YYYY'), moment().format('MMM+DD+YYYY'), function ( error, result ) {
+    var getDataButton  = $("#get-dt-data").button('loading');
+    var fundsList = [
+      63667, 63692, 63695, 64590, 67273, 67274, 67276, 67277, 67282, 64197
+    ];
+    Meteor.call("GetDTData", fundsList, moment().subtract($('#numberOfDays' ).val(), 'days').format('MMM+DD+YYYY'), moment().format('MMM+DD+YYYY'), function ( error, result ) {
       if(!error) {
         getDataButton.button("reset");
 

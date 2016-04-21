@@ -6,6 +6,7 @@ Security.permit(['insert', 'update', 'remove'])
     Audit_trail,
     BankAccounts,
     Charges,
+    Config,
     Customers,
     Devices,
     Donate,
@@ -19,7 +20,10 @@ Security.permit(['insert', 'update', 'remove'])
     Payments,
     Refunds,
     Subscriptions,
-    Uploads
+    Transactions,
+    Transfers,
+    Uploads,
+    Volunteers
   ])
   .ifHasRole('admin')
   .apply();

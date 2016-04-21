@@ -72,6 +72,9 @@ Transactions = new Mongo.Collection('transactions');
 // Used to collect Stripe transfers
 Transfers = new Mongo.Collection('transfers');
 
+// Used to store mission trip information
+Trips = new Mongo.Collection('trips');
+
 // Uploads, used for admin file uploading
 Uploads = new Mongo.Collection('uploads');
 Uploads.before.insert(function (userId, doc, fieldNames, modifier) {
@@ -79,3 +82,5 @@ Uploads.before.insert(function (userId, doc, fieldNames, modifier) {
   doc.url = doc.url.replace( /[*_\s]/g, '' );
   return true;
 });
+
+Volunteers = new Mongo.Collection('volunteers');

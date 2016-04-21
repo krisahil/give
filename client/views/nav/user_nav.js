@@ -78,7 +78,9 @@ Template.UserNav.events({
     Router.go('subscriptions');
   },
   'click .clear-image': function() {
-    confirm( "Are you sure you want to delete the logo?" );
+    if (!confirm( "Are you sure you want to delete the logo?" )) {
+      return;
+    }
     let uploadId = Uploads.findOne( { logo: "_true" } )._id;
     let uploadName = Uploads.findOne( { logo: "_true" } ).name;
     Uploads.remove( { _id: uploadId } );

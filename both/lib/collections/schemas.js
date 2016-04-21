@@ -597,6 +597,105 @@ Schema.Settings = new SimpleSchema({
   }
 });
 
+Schema.Trips = new SimpleSchema({
+  fundId: {
+    type: String,
+    label: 'Select a Trip',
+    autoform: {
+      options: function() {
+        return DT_funds.find({}, {sort: {name: 1}}).map( function(r) {
+          return { label: r.name, value: r.id };
+        });
+      }
+    }
+  },
+  fundAdmin: {
+    type: Number,
+    optional: true,
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
+  fundTotal: {
+    type: Number,
+    optional: true,
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
+  startDate: {
+    type: Date,
+    label: "Start Date",
+    autoform: {
+      type: "bootstrap-datepicker",
+      datePickerOptions: {
+        autoclose: true,
+        startDate: new Date()
+      }
+    }
+  },
+  endDate: {
+    type: Date,
+    label: "End Date",
+    autoform: {
+      type: "bootstrap-datepicker",
+      datePickerOptions: {
+        autoclose: true,
+        startDate: new Date()
+      }
+    }
+  },
+  deadlines: {
+    type: Array
+  },
+  "deadlines.$": {
+    type: Object
+  },
+  "deadlines.$.id": {
+    type: String,
+    autoValue: function() {
+      if( this.isInsert ) {
+        console.log( this.userId );
+        return Random.id([6]);
+      }
+    },
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
+  "deadlines.$.amount": {
+    type: Number,
+    autoform: {
+      placeholder: "Individual deadline amount"
+    }
+  },
+  "deadlines.$.dueDate": {
+    type: Date,
+    label: "When is this deadline?",
+    autoform: {
+      type: "bootstrap-datepicker",
+      datePickerOptions: {
+        autoclose: true
+      }
+    }
+  }
+});
+
 Schema.Config = new SimpleSchema({
   "Giving": {
     type: Schema.Giving,
@@ -1060,6 +1159,90 @@ Schema.SettingsForm = new SimpleSchema({
       panelClass: "panel panel-primary",
       afFieldInput: {
         class: 'slim-borders'
+      }
+    }
+  }
+});
+
+Schema.Volunteers = new SimpleSchema( {
+  trips: {
+    type: Array,
+    optional: true,
+    autoform: {
+      type: "hidden"
+    }
+  },
+  'trips.$': {
+    type: Object,
+    optional: true
+  },
+  'trips.$.id': {
+    type: String,
+    optional: true
+  },
+  'trips.$.adjustments': {
+    type: Object,
+    optional: true
+  },
+  addedBy: {
+    type:     String,
+    optional: true,
+    autoform: {
+      afFieldInput: {
+        type: "hidden"
+      },
+      afFormGroup:  {
+        label: false
+      }
+    }
+  },
+  fname: {
+    type: String,
+    label: "First Name",
+    autoform: {
+      afFormGroup: {
+        'formgroup-class': "col-sm-4"
+      }
+    }
+  },
+  lname: {
+    type: String,
+    label: "Last Name",
+    autoform: {
+      afFormGroup: {
+        'formgroup-class': "col-sm-4"
+      }
+    }
+  },
+  email: {
+    type: String,
+    label: "Email Address",
+    regEx: SimpleSchema.RegEx.Email,
+    autoform: {
+      afFormGroup: {
+        'formgroup-class': "col-sm-4"
+      }
+    }
+  }
+});
+
+Schema.CreateVolunteersFormSchema = new SimpleSchema({
+  addParticipants: {
+    type: Array,
+    label: "",
+    autoform: {
+      afFormGroup: {
+        label: false
+      }
+    }
+  },
+  "addParticipants.$": {
+    type: Schema.Volunteers,
+    optional: true,
+    label: "",
+    autoform: {
+      afFormGroup: {
+        label: false
       }
     }
   }

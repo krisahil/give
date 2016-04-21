@@ -477,3 +477,27 @@ Router.route('/dashboard/logos', {
   where: 'client',
   template: 'Logos'
 });
+
+Router.route('/dashboard/trips', {
+  layoutTemplate: 'AdminLayout',
+  name: 'Trips',
+  where: 'client',
+  template: 'Trips'
+});
+
+Router.route('/dashboard/trip/:_id', function() {
+  var params = this.params;
+
+  this.subscribe('trips', params._id);
+  this.layoutTemplate = 'AdminLayout';
+
+  if (this.ready()) {
+    this.render('Trip');
+    this.next();
+  } else {
+    this.render('Loading');
+    this.next();
+  }
+}, {
+  name: 'trip'
+});

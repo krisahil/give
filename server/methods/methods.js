@@ -556,19 +556,16 @@ Meteor.methods({
       return;
     }
   },
-  GetDTData: function (dateStart, dateEnd) {
+  GetDTData: function (fundsList, dateStart, dateEnd) {
     logger.info("Started GetDTData method");
 
-    check(dateStart, String);
+    check(fundsList, [Number]);
+    check(dateEnd, String);
     check(dateEnd, String);
 
-    if (Roles.userIsInRole(this.userId, ['admin'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'volunteers-manager'])) {
       this.unblock();
-      try{
-        // This is the fund ids for community sponsorship
-        var fundsList = [
-          63667, 63692, 63695, 64590, 67273, 67274, 67276, 67277, 67282, 64197
-        ];
+      try {
         fundsList.forEach( function ( fundId ) {
           Utils.getFundHistory(fundId, dateStart, dateEnd);
         });
@@ -1152,6 +1149,82 @@ Meteor.methods({
     } catch(e) {
       console.log(e);
       throw new Meteor.Error(e);
+    }
+  },
+  /**
+   * Insert a new trip document
+   *
+   * @method insertTrip
+   * @param {Object} doc - The form values passed by AutoForm
+   */
+  insertTrip: function(doc) {
+    logger.info( "Started method insertTrip." );
+    if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
+      check( doc, Schema.Trips);
+      this.unblock();
+
+      doc.fundAdmin = this.userId;
+      Trips.insert(doc);
+    }
+  },
+  /**
+   * Insert a new set of volunteers into a trip
+   *
+   * @method insertVolunteersWithTrip
+   * @param {Object} doc - The form values passed by AutoForm
+   */
+  insertVolunteersWithTrip: function(doc) {
+    logger.info( "Started method insertVolunteersWithTrip." );
+    if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
+      check( doc, Schema.CreateVolunteersFormSchema);
+      this.unblock();
+      doc.addParticipants.forEach((participant)=> {
+        participant.addedBy = this.userId;
+        Volunteers.insert(participant);
+      });
+    }
+  },
+  /**
+   * Get the Donor Tools split data for the trip funds
+   *
+   * @method updateTripFunds
+   * @param {String} dateStart - Today - x days
+   * @param {String} dateEnd - Today
+   */
+  updateTripFunds: function (dateStart, dateEnd) {
+    logger.info("Started updateTripFunds method");
+
+    check(dateStart, String);
+    check(dateEnd, String);
+    if( Roles.userIsInRole( this.userId, ['admin', 'volunteers-manager'] ) ) {
+      this.unblock();
+      try {
+        let fundsList = Trips.find().map( function ( trip ) {
+          return trip.fundId;
+        });
+        logger.info( "Trips funds list: " + fundsList );
+
+        fundsList.forEach( function ( fundId ) {
+          var funds = Utils.getFundHistory( fundId, dateStart, dateEnd );
+
+          let dtSplits = DT_splits.find({fund_id: Number(fundId)});
+          console.log(dtSplits.fetch());
+          let amount = dtSplits.fetch().reduce(function ( prevValue, item ) {
+            return prevValue + item.amount_in_cents;
+          }, 0);
+
+          console.log("AMOUNT: " + amount);
+
+          Trips.update({fundId: fundId}, {$set: {
+            fundTotal: amount/100
+          }});
+        });
+
+      } catch( e ) {
+        // Got a network error, time-out or HTTP error in the 400 or 500 range.
+        return false;
+      }
+      return "Got all funds history";
     }
   }
 });

@@ -170,6 +170,7 @@ Template.DonationForm.events({
     Router.go('user.profile');
   }
 });
+
 Template.DonationForm.helpers({
   paymentQuestionIcon: function() {
     if (Session.equals('paymentMethod', 'Check')) {

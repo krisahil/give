@@ -241,6 +241,16 @@
                                 </a>
                             </div>
                         {{/if}}
+                        {{#if isInRole 'admin, volunteer-manager'}}
+                            <div class="col-sm-2">
+                                <a class="quick-button backgroundColor primary" href="{{pathFor 'Trips'}}">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-plane"></i>
+                                    </span>
+                                    <h5>Trips</h5>
+                                </a>
+                            </div>
+                        {{/if}}
                     </div>
                 </div>
                 {{/if}}
