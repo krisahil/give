@@ -2,7 +2,7 @@
 
 
 An opinionated donation app for Non-profits using <a href="https://stripe.com">Stripe</a> 
-written in <a href="http://meteor.com">Meteor</a>.
+written in <a href="https://meteor.com">Meteor</a>.
 
 
 ## About
@@ -46,6 +46,12 @@ You'll want to complete the Settings form first, then the Giving Options. The
 Giving Options section pulls in all the Donor Tools funds so that you can use 
 them to create all the giving options you want donors to be able to choose. 
 
+In order to use the **image uploading** you'll need to make sure that the user running
+the meteor process on your server can make changes to the .uploads folder. You'll
+also need to create the ```thumbnailSmall``` and ```thumbnailBig``` folders inside the
+```.uploads``` directory. 
+```chown -R meteoruser /opt/give/.uploads /opt/give/.uploads/thumbnailSmall /opt/give/.uploads/thumbnailBig```
+
 ## Webhooks 
 
 In order to get updates about charges, transfers and many other resources via Stripe 
@@ -81,7 +87,7 @@ Here is an example settings.json file. Each of the fields are required.
 
 ```
 {
-  "dev": "****TEST****", //Remove this text. If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
+  "dev": "****TEST****", // If you are using this settings.json file on the dev side include this text, if on the live side, leave it blank.
   "donor_tools_user": "",
   "donor_tools_password": "",
   "stripe": {
@@ -95,7 +101,6 @@ Here is an example settings.json file. Each of the fields are required.
   }
 }
 ```
-
 
 ## More
 
