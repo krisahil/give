@@ -637,10 +637,11 @@ Schema.Trips = new SimpleSchema({
     type: Date,
     label: "Start Date",
     autoform: {
-      type: "bootstrap-datepicker",
-      datePickerOptions: {
-        autoclose: true,
-        startDate: new Date()
+      afFieldInput: {
+        type: "bootstrap-datepicker",
+        datePickerOptions: {
+          autoclose: true
+        }
       }
     }
   },
@@ -648,10 +649,11 @@ Schema.Trips = new SimpleSchema({
     type: Date,
     label: "End Date",
     autoform: {
-      type: "bootstrap-datepicker",
-      datePickerOptions: {
-        autoclose: true,
-        startDate: new Date()
+      afFieldInput: {
+        type: "bootstrap-datepicker",
+        datePickerOptions: {
+          autoclose: true
+        }
       }
     }
   },
@@ -678,6 +680,12 @@ Schema.Trips = new SimpleSchema({
       }
     }
   },
+  "deadlines.$.name": {
+    type: String,
+    autoform: {
+      placeholder: "Name or description"
+    }
+  },
   "deadlines.$.amount": {
     type: Number,
     autoform: {
@@ -688,9 +696,11 @@ Schema.Trips = new SimpleSchema({
     type: Date,
     label: "When is this deadline?",
     autoform: {
-      type: "bootstrap-datepicker",
-      datePickerOptions: {
-        autoclose: true
+      afFieldInput: {
+        type: "bootstrap-datepicker",
+        datePickerOptions: {
+          autoclose: true
+        }
       }
     }
   }
@@ -1164,7 +1174,7 @@ Schema.SettingsForm = new SimpleSchema({
   }
 });
 
-Schema.Volunteers = new SimpleSchema( {
+Schema.Fundraisers = new SimpleSchema( {
   trips: {
     type: Array,
     optional: true,
@@ -1226,7 +1236,7 @@ Schema.Volunteers = new SimpleSchema( {
   }
 });
 
-Schema.CreateVolunteersFormSchema = new SimpleSchema({
+Schema.CreateFundraisersFormSchema = new SimpleSchema({
   addParticipants: {
     type: Array,
     label: "",
@@ -1237,7 +1247,7 @@ Schema.CreateVolunteersFormSchema = new SimpleSchema({
     }
   },
   "addParticipants.$": {
-    type: Schema.Volunteers,
+    type: Schema.Fundraisers,
     optional: true,
     label: "",
     autoform: {

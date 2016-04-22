@@ -1,9 +1,9 @@
 <template name="Trip">
 
-    <!-- TODO: add/remove volunteers to the trip -->
+    <!-- TODO: add/remove fundraisers to the trip -->
     <!-- TODO:
         b. For each of them see if they already have an account (email address will be provided)
-        d. userId should be part of the volunteer doc
+        d. userId should be part of the fundraisers doc
         e. Trips [] should include this { tripId, adjustments{deadline1: -100}, amountRaised: pulledInFromDT}
 
     4. On button click next to participants name (paper airplane) send them an
@@ -14,9 +14,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6">
-                <h3>{{#with trip}}TRIP - <strong>{{name}}</strong>{{/with}}</h3>
-                {{> quickForm schema="Schema.CreateVolunteersFormSchema" type="normal"
-                id="volunteers-form" template="bootstrap3-horizontal"}}
+                <h3>{{#with trip}}<strong>{{name}}</strong>{{/with}}</h3>
+                {{> quickForm schema="Schema.CreateFundraisersFormSchema" type="normal"
+                id="fundraisers-form" template="bootstrap3-horizontal"}}
             </div>
             {{#if participant}}
                 <div class="col-md-6">
@@ -36,6 +36,15 @@
                                 <td>{{amountRaised}}</td>
                                 <td>{{amountRaisedPercent amountRaised}}</td>
                                 <td class="text-center">
+                                    <button title="See details"
+                                            class="btn btn-primary"
+                                            type="button"
+                                            data-toggle="collapse"
+                                            data-target="#collapse-{{_id}}"
+                                            aria-expanded="false"
+                                            aria-controls="demo1">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
                                     <button type="button"
                                             title="Edit the participant details"
                                             class="btn btn-primary edit-participant"
@@ -43,14 +52,56 @@
                                         <i class="fa fa-pencil"></i>
                                     </button>
                                     <button type="button"
-                                            title="Suspend this trip"
-                                            class="btn btn-primary suspend-trip"
+                                            title="Suspend this fundraiser"
+                                            class="btn btn-primary suspend-fundraiser"
                                             data-id="{{_id}}"
                                             data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
                                             data-toggle="confirmation"
                                             aria-expanded="true">
                                         <i class="fa fa-stop"></i>
                                     </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" class="hiddenRow">
+                                    <div class="accordian-body collapse" id="collapse-{{_id}}">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                {{#with trip}}
+                                                    {{#each deadlines}}
+                                                    <tr>
+                                                        <td>
+                                                            {{this.name}}
+                                                        </td>
+                                                        <td colspan="5">
+                                                            <div class="progress progress-bar-info">
+                                                                <div class="progress-bar progress-bar-success" style="width: {{percentageOfDeadline}}%;"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                {{/with}}
+                                                <tr>
+                                                    <th>Donor Name</th>
+                                                    <th>Gift Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{Donor Name}</td>
+                                                    <td>{Gift Amount}</td>
+                                                    <td>{Date}</td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-default btn-sm">
+                                                            <i class="glyphicon glyphicon-cog"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </td>
                             </tr>
                         {{/each}}

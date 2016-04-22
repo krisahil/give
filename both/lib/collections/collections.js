@@ -21,6 +21,7 @@ Config.before.update(function (userId, doc, fieldNames, modifier) {
     }
   }
 });
+
 Config.after.update(function (userId, doc, fieldNames) {
 
   if (fieldNames && fieldNames.indexOf("Settings") !== -1) {
@@ -31,7 +32,8 @@ Config.after.update(function (userId, doc, fieldNames) {
         'OrgInfo.web.domain_name': Meteor.settings.public.org_domain
       });
 
-      if( config ) {
+      if( config && config.Services && config.Services.emailSendMethod &&
+        config.Services.emailSendMethod === "Mandrill") {
         return Mandrill.config( {
           username: config.OrgInfo.emails.mandrillUsername,
           "key":    config.OrgInfo.emails.mandrillKey
@@ -40,6 +42,16 @@ Config.after.update(function (userId, doc, fieldNames) {
       }
     }
   }
+});
+
+Config.after.insert(function () {
+  Meteor.setTimeout(()=>{
+    Meteor.call("afterUpdateInfoSection", function(err, res) {
+      if(!err) {
+        console.log( res );
+      }
+    });
+  }, 2000);
 });
 
 Customers = new Mongo.Collection('customers');
@@ -83,4 +95,4 @@ Uploads.before.insert(function (userId, doc, fieldNames, modifier) {
   return true;
 });
 
-Volunteers = new Mongo.Collection('volunteers');
+Fundraisers = new Mongo.Collection('fundraisers');

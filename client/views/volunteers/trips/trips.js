@@ -29,7 +29,7 @@ Template.Trips.onCreated(function () {
     this.subscribe("userDTFunds");
     this.subscribe("travelDTSplits");
     this.subscribe("trips");
-    this.subscribe("volunteers");
+    this.subscribe("fundraisers");
   })
 });
 
@@ -59,8 +59,7 @@ Template.Trips.helpers({
     return;
   },
   getParticipantNumber() {
-    let number = Volunteers.find({'trips.id': this._id}).count();
-    console.log(number);
+    let number = Fundraisers.find({'trips.id': this._id}).count();
     return number;
   }/*,
   getTripCost() {
@@ -72,7 +71,7 @@ Template.Trips.helpers({
   getTripCostPercentage() {
     console.log(this._id);
     let trip = Trips.findOne({_id: this._id});
-    let number = Volunteers.find({'trips.id': this._id}).count();
+    let number = Fundraisers.find({'trips.id': this._id}).count();
 
     if (trip && number) {
       let deadlinesTotal = trip.deadlines.reduce( function(previousVal, deadline){
@@ -93,7 +92,6 @@ Template.Trips.events({
   'click .trips-row': function (e) {
     console.log("CLicked row" );
     let tripId = $(e.currentTarget).attr("data-id");
-
     Router.go('trip', {_id: tripId});
   }
 });

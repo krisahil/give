@@ -413,7 +413,11 @@ Meteor.publish("roles", function () {
 
 Meteor.publish("uploaded", function () {
   let config = ConfigDoc();
-  return Uploads.find({configId: config._id});
+  if (config) {
+    return Uploads.find({configId: config._id});
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.publish("config", function () {
@@ -461,7 +465,7 @@ Meteor.publish("wholeConfigDoc", function () {
 
 Meteor.publish("trips", function (id) {
   check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'volunteer-manager'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
     if (id) {
       return Trips.find({_id: id});
     }
@@ -471,20 +475,20 @@ Meteor.publish("trips", function (id) {
   }
 });
 
-Meteor.publish("volunteers", function (id) {
+Meteor.publish("fundraisers", function (id) {
   check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'volunteer-manager'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
     if (id) {
-      return Volunteers.find({'trips.id': id});
+      return Fundraisers.find({'trips.id': id});
     }
-    return Volunteers.find();
+    return Fundraisers.find();
   } else {
     this.ready();
   }
 });
 
 Meteor.publish("travelDTSplits", function () {
-  if (Roles.userIsInRole(this.userId, ['admin', 'volunteer-manager'])) {
+  if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
     let trips = Trips.find().map(function ( trip ) {
       return Number(trip.fundId);
     });

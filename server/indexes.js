@@ -64,6 +64,11 @@ DT_funds._ensureIndex(
   {'name': 1},
   {background: true});
 
+Fundraisers._ensureIndex(
+  {'email': 1},
+  { unique: true },
+  { background: true });
+
 Invoices._ensureIndex(
   {'id': 1},
   {'customer': 1},

@@ -15,30 +15,30 @@ function checkDependantStates() {
 
 AutoForm.hooks({
   'updateSettingsSection': {
-    onSuccess: function() {
-      Meteor.call("get_dt_funds", function(error, result) {
-        if (result) {
-          console.log("Got all funds");
-        } else {
-          console.error(error);
-        }
-      });
-      
+    onSuccess: function () {
       // Send an email to all the admins letting them know about this change.
-      Meteor.call("sendChangeConfigNotice", 'settings', function(error, result) {
-        if (result) {
-          console.log("Sent");
-        } else {
-          console.error(error);
-        }
-      });      
-      Bert.alert({
-        message: "Great, thanks",
-        type: 'success',
-        icon: 'fa-smile-o',
-        style: 'growl-bottom-right'
-      });
-      Router.go("Dashboard");
+      /*Meteor.call("sendChangeConfigNotice", 'settings', function(error, result) {
+       if (result) {
+       console.log("Sent");
+       } else {
+       console.error(error);
+       }
+       });*/
+        console.log( "After" );
+        Meteor.call( "get_dt_funds", function ( error, result ) {
+          if( result ) {
+            console.log( "Got all funds" );
+            Router.go("Dashboard");
+          } else {
+            console.error( error );
+          }
+        } );
+        Bert.alert({
+          message: "Great, thanks",
+          type: 'success',
+          icon: 'fa-smile-o',
+          style: 'growl-bottom-right'
+        });
     },
     onError: function(formType, error) {
       console.error(error);

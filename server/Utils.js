@@ -26,6 +26,7 @@ Utils = {
   http_get_donortools: function( getQuery ) {
     logger.info("Started http_get_donortools");
     logger.info(getQuery);
+    let config = ConfigDoc();
     
     let getURL = config &&
       config.Settings &&

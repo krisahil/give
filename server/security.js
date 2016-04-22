@@ -15,6 +15,7 @@ Security.permit(['insert', 'update', 'remove'])
     DT_donations,
     DT_funds,
     DT_sources,
+    Fundraisers,
     Invoices,
     Config,
     Payments,
@@ -22,8 +23,7 @@ Security.permit(['insert', 'update', 'remove'])
     Subscriptions,
     Transactions,
     Transfers,
-    Uploads,
-    Volunteers
+    Uploads
   ])
   .ifHasRole('admin')
   .apply();

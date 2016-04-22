@@ -81,14 +81,9 @@ Meteor.methods({
       this.unblock();
       //check to see that the user is the admin user
       if (Roles.userIsInRole(this.userId, ['admin', 'manager'])) {
-        logger.info("Started get_dt_funds");
         var fundResults;
-
-        console.log(config);
-
-        let config2 = Config.findOne({'OrgInfo.web.domain_name': Meteor.settings.public.org_domain});
-        console.log(config2);
-        if (config2 && config2.Settings && config2.Settings.DonorTools && config2.Settings.DonorTools.url) {
+        let config = Config.findOne({'OrgInfo.web.domain_name': Meteor.settings.public.org_domain});
+        if (config && config.Settings && config.Settings.DonorTools && config.Settings.DonorTools.url) {
           fundResults = Utils.http_get_donortools('/settings/funds.json?per_page=1000');
           Utils.separate_funds( fundResults.data );
           return fundResults.data;
@@ -563,7 +558,7 @@ Meteor.methods({
     check(dateEnd, String);
     check(dateEnd, String);
 
-    if (Roles.userIsInRole(this.userId, ['admin', 'volunteers-manager'])) {
+    if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
       this.unblock();
       try {
         fundsList.forEach( function ( fundId ) {
@@ -1042,6 +1037,8 @@ Meteor.methods({
       this.unblock();
       if( Roles.userIsInRole( this.userId, ['admin', 'manager'] ) ) {
 
+        let config = ConfigDoc();
+
         // We store our DonorTools username and password in our Meteor.settings
         // We store out Stripe keys in the Meteor.settings as well
         // Here we store the status of these settings in our Config document
@@ -1078,23 +1075,28 @@ Meteor.methods({
             config.Settings.Stripe.keysSecretExists = false;
           }
           let waitForConfigUpdate = Config.update({_id: config._id}, {$set: config});
-        }
 
-        if (config &&
-          config.Settings &&
-          config.Settings.Stripe &&
-          config.Settings.Stripe.keysSecretExists &&
-          config.Settings.Stripe.keysPublishableExists) {
-          // If the necessary Stripe keys exist then create the Stripe plans needed for Give
-          Utils.create_stripe_plans();
-        }
+          if (config &&
+            config.Settings &&
+            config.Settings.Stripe &&
+            config.Settings.Stripe.keysSecretExists &&
+            config.Settings.Stripe.keysPublishableExists) {
+            // If the necessary Stripe keys exist then create the Stripe plans needed for Give
+            Utils.create_stripe_plans();
+          }
 
-        if (config.Settings.DonorTools.usernameExists && config.Settings.DonorTools.passwordExists) {
-          // TODO: write the function that will go out to DT and setup the necessary funds, types,
-          // and sources
+          if (config && config.Settings && config.Settings.DonorTools &&
+            config.Settings.DonorTools.usernameExists && config.Settings.DonorTools.passwordExists) {
+            // TODO: write the function that will go out to DT and setup the necessary funds, types,
+            // and sources
 
+          }
         }
+      } else {
+        logger.error("You aren't an admin, you can't do that");
+        return;
       }
+    return;
     /*} catch(e) {
       console.log(e);
       throw new Meteor.Error(e);
@@ -1168,19 +1170,19 @@ Meteor.methods({
     }
   },
   /**
-   * Insert a new set of volunteers into a trip
+   * Insert a new set of fundraisers into a trip
    *
-   * @method insertVolunteersWithTrip
+   * @method insertFundraisersWithTrip
    * @param {Object} doc - The form values passed by AutoForm
    */
-  insertVolunteersWithTrip: function(doc) {
-    logger.info( "Started method insertVolunteersWithTrip." );
+  insertFundraisersWithTrip: function(doc) {
+    logger.info( "Started method insertFundraisersWithTrip." );
     if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
-      check( doc, Schema.CreateVolunteersFormSchema);
+      check( doc, Schema.CreateFundraisersFormSchema);
       this.unblock();
       doc.addParticipants.forEach((participant)=> {
         participant.addedBy = this.userId;
-        Volunteers.insert(participant);
+        Fundraisers.insert(participant);
       });
     }
   },
@@ -1196,7 +1198,7 @@ Meteor.methods({
 
     check(dateStart, String);
     check(dateEnd, String);
-    if( Roles.userIsInRole( this.userId, ['admin', 'volunteers-manager'] ) ) {
+    if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
       this.unblock();
       try {
         let fundsList = Trips.find().map( function ( trip ) {

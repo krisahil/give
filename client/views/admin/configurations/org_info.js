@@ -7,11 +7,6 @@ AutoForm.hooks({
         icon: 'fa-smile-o',
         style: 'growl-bottom-right'
       });
-
-      Meteor.call("afterUpdateInfoSection", function(err, res) {
-        if(!err) console.log(res);
-      });
-      
       Router.go("Dashboard");
     },
     onError: function(formType, error) {
