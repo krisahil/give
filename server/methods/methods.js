@@ -1182,7 +1182,11 @@ Meteor.methods({
       this.unblock();
       doc.addParticipants.forEach((participant)=> {
         participant.addedBy = this.userId;
-        Fundraisers.insert(participant);
+        if (Fundraisers.findOne({email: participant.email})) {
+          Fundraisers.update({email: participant.email}, {$push: {trips: participant.trips[0]}});
+        } else {
+          Fundraisers.insert(participant);
+        }
       });
     }
   },
@@ -1228,5 +1232,51 @@ Meteor.methods({
       }
       return "Got all funds history";
     }
+  },
+  /**
+   * Get the Donor Tools person matching the supplied personaId
+   *
+   * @method getDTPerson
+   * @param {String} personaId - DonorTools Persona ID
+   */
+  getDTPerson: function (personaId) {
+    logger.info("Started getDTPerson method");
+
+    check(personaId, Number);
+    if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
+      this.unblock();
+      try {
+        let person = Utils.http_get_donortools('/people/' + personaId + '.json');
+        if (person && person.data && person.data.persona) {
+          let persona = person.data.persona;
+          let personaInsert = DT_personas.upsert({_id: persona.id}, persona);
+          return person.data.persona;
+        } else {
+          throw new Meteor.Error(500, "Couldn't find that person in DT");
+        }
+      return "Got all funds history";
+
+      } catch(e) {
+        logger.error(e);
+        return e;
+      }
+    }
+  },
+  /**
+   * Remove a trip participant from a trip
+   * @method removeTripParticipant
+   * @param {String} id - The document _id of the participant to remove
+   * @param {String} tripId - The document _id of the trip to remove the participant from
+   */
+  removeTripParticipant(id, tripId) {
+    logger.info("Started removeTripParticipant");
+    check(id, String);
+    check(tripId, String);
+    if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
+      this.unblock();
+      let updateFundraiser = Fundraisers.update({_id: id}, {$pull: {trips: {id: tripId}}});
+      return updateFundraiser;
+    }
+    return;
   }
 });

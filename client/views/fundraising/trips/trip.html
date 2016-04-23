@@ -3,7 +3,6 @@
     <!-- TODO: add/remove fundraisers to the trip -->
     <!-- TODO:
         b. For each of them see if they already have an account (email address will be provided)
-        d. userId should be part of the fundraisers doc
         e. Trips [] should include this { tripId, adjustments{deadline1: -100}, amountRaised: pulledInFromDT}
 
     4. On button click next to participants name (paper airplane) send them an
@@ -20,21 +19,26 @@
             </div>
             {{#if participant}}
                 <div class="col-md-6">
-                    <table class="table table-striped table-hover no-margin">
+                    <table class="table table-striped no-margin">
                         <thead>
                         <tr>
                             <th>Name</th>
                             <th>Raised</th>
-                            <th>% Raised</th>
+                            <th colspan="2">% Raised</th>
                             <th class="text-center">Actions</th>
                         </tr>
                         </thead>
                         <tbody class="trips">
                         {{#each participant}}
-                            <tr class="trips-row clickable-row" data-id="{{_id}}">
+                            <tr class="trips-row" data-id="{{_id}}">
                                 <td>{{participantName}}</td>
                                 <td>{{amountRaised}}</td>
-                                <td>{{amountRaisedPercent amountRaised}}</td>
+                                <td colspan="2">
+                                    <div class="progress progress-bar-info">
+                                        <div class="progress-bar progress-bar-success"
+                                             style="width: {{amountRaisedPercent amountRaised}}%;"></div>
+                                    </div>
+                                </td>
                                 <td class="text-center">
                                     <button title="See details"
                                             class="btn btn-primary"
@@ -42,7 +46,7 @@
                                             data-toggle="collapse"
                                             data-target="#collapse-{{_id}}"
                                             aria-expanded="false"
-                                            aria-controls="demo1">
+                                            aria-controls="collapse-{{_id}}">
                                         <i class="fa fa-eye"></i>
                                     </button>
                                     <button type="button"
@@ -52,8 +56,8 @@
                                         <i class="fa fa-pencil"></i>
                                     </button>
                                     <button type="button"
-                                            title="Suspend this fundraiser"
-                                            class="btn btn-primary suspend-fundraiser"
+                                            title="Remove this participant from the trip"
+                                            class="btn btn-primary remove-participant"
                                             data-id="{{_id}}"
                                             data-loading-text="<i class='fa fa-spinner fa-spin'></i>"
                                             data-toggle="confirmation"
@@ -62,8 +66,8 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="12" class="hiddenRow">
+                            <tr class="hiddenRow">
+                                <td colspan="12">
                                     <div class="accordian-body collapse" id="collapse-{{_id}}">
                                         <table class="table table-striped">
                                             <thead>
@@ -71,7 +75,7 @@
                                                     {{#each deadlines}}
                                                     <tr>
                                                         <td>
-                                                            {{this.name}}
+                                                            {{this.name}}: <span class="pull-right">${{this.amount}}</span>
                                                         </td>
                                                         <td colspan="5">
                                                             <div class="progress progress-bar-info">
@@ -85,20 +89,24 @@
                                                     <th>Donor Name</th>
                                                     <th>Gift Amount</th>
                                                     <th>Date</th>
-                                                    <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>{Donor Name}</td>
-                                                    <td>{Gift Amount}</td>
-                                                    <td>{Date}</td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-default btn-sm">
-                                                            <i class="glyphicon glyphicon-cog"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                                {{#if donationForThisFundraiser}}
+                                                    {{#each donationForThisFundraiser}}
+                                                        <tr>
+                                                            <td>{{donorName}}</td>
+                                                            <td>{{splitAmount}}</td>
+                                                            <td>{{formatDateUTC received_on}}</td>
+                                                        </tr>
+                                                    {{/each}}
+                                                {{else}}
+                                                    <tr>
+                                                        <td colspan="4" class="text-center">
+                                                            <strong>No donations found under this participant</strong>
+                                                        </td>
+                                                    </tr>
+                                                {{/if}}
                                             </tbody>
                                         </table>
                                     </div>

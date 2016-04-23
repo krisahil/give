@@ -1,5 +1,4 @@
-function getAmountRaised() {
-  let name = this.fname + " " + this.lname;
+function getAmountRaised(name) {
   let dtSplits = DT_splits.find( { 'memo': {
     $regex: name, $options: 'i'
   } } );
@@ -39,7 +38,6 @@ AutoForm.hooks({
       onFormError();
     },
     onSubmit: function (insertDoc) {
-      console.log(insertDoc);
       insertDoc.addParticipants.forEach(function ( participant ) {
         participant.trips = [{id : Trips.findOne()._id}];
       });
@@ -48,9 +46,8 @@ AutoForm.hooks({
           console.error(err);
           onFormError();
         } else {
-          console.log(res);
           AutoForm.resetForm('fundraisers-form');
-          $("[type='submit']").prop("disalbed", false)
+          $("[type='submit']").prop("disalbed", false);
           $("[type='submit']").removeAttr("disabled");
           onFormSuccess();
         }
@@ -65,7 +62,7 @@ Template.Trip.onCreated(function () {
   this.autorun(()=> {
     this.subscribe("userDTFunds");
     this.subscribe("fundraisers", tripId);
-    this.subscribe("travelDTSplits");
+    this.subscribe("travelDTSplits", tripId);
   });
 });
 
@@ -93,7 +90,7 @@ Template.Trip.helpers({
     return name;
   },
   amountRaised(){
-    let raised = getAmountRaised();
+    let raised = getAmountRaised(this.fname + " " + this.lname);
     return raised;
   },
   amountRaisedPercent(amountRaised){
@@ -104,7 +101,8 @@ Template.Trip.helpers({
     }, 0);
 
     if (deadlinesTotal && amountRaised) {
-      return 100*(amountRaised/deadlinesTotal);
+      console.log(amountRaised, " / ", deadlinesTotal);
+      return Math.ceil(100*(amountRaised/deadlinesTotal));
     }
     return 0;
   },
@@ -127,7 +125,8 @@ Template.Trip.helpers({
     let elementPosition = deadlinesSorted
       .map(function(item) {return item.id; }).indexOf(this.id);
 
-    let deadlinesTotal = parent.deadlines.reduce( function(previousVal, deadline, index){
+    let deadlinesTotal = parent.deadlines
+      .reduce( function(previousVal, deadline, index){
       if (elementPosition > index) {
         return previousVal + deadline.amount;
       } else {
@@ -136,7 +135,7 @@ Template.Trip.helpers({
     }, this.amount);
 
 
-    let raised = 1000; //getAmountRaised();
+    let raised = getAmountRaised(parent.fname + " " + parent.lname);
     let percentOfDeadline = 100*(raised/deadlinesTotal);
 
     if (elementPosition === 0 ){
@@ -145,9 +144,82 @@ Template.Trip.helpers({
       if (deadlinesSorted[elementPosition - 1].amount > raised) {
         return 0;
       } else {
-        // TODO: check that this still works with 4 deadlines and 2 and 1
-        return 100*((raised-deadlinesSorted[elementPosition - 1].amount)/(deadlinesTotal-deadlinesSorted[elementPosition - 1].amount));
+        return 100*((raised-deadlinesSorted[elementPosition - 1]
+            .amount)/(deadlinesTotal-deadlinesSorted[elementPosition - 1]
+            .amount));
       }
     }
+  },
+  donationForThisFundraiser() {
+    let name = this.fname + " " + this.lname;
+    let dtSplits = DT_splits.find( { 'memo': {
+      $regex: name, $options: 'i'
+    } } );
+    if (dtSplits && dtSplits.count() > 0) {
+      return dtSplits;
+    }
+    return;
+  },
+  donorName(){
+    // inside split
+    let donation = DT_donations.findOne({_id: this.donation_id});
+    if (donation) {
+      let dtPersona = DT_personas.findOne({_id: donation.persona_id});
+      if (dtPersona) {
+        return dtPersona.recognition_name;
+      } else {
+        Meteor.call("getDTPerson", donation.persona_id, function ( err, res ) {
+          if(!err){
+            return res.recognition_name;
+          } else {
+            console.error(err);
+          }
+        })
+      }  
+    }
+    return;    
+  },
+  splitAmount(){
+    return this.amount_in_cents ? (this.amount_in_cents/100) : "";
+  }
+});
+
+Template.Trip.events({
+  'click .edit-participant'(){
+    console.log("Clicked edit-participant");
+  },
+  'click .remove-participant'(){
+    let self = this;
+
+    console.log("remove participant clicked");
+    swal({
+      title: "Are you sure you want to remove this participant?",
+      type: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      closeOnConfirm: false,
+      closeOnCancel: true,
+      showLoaderOnConfirm: true
+    }, function(isConfirm) {
+      if (isConfirm) {
+
+        let tripId = Router.current().params._id;
+        Meteor.call( 'removeTripParticipant', self._id, tripId, function( error, response ) {
+          if ( error ) {
+            console.log(error);
+            swal("Error", "Something went wrong", "error");
+          } else {
+            console.log(response);
+            swal({
+              title: "Done",
+              text: "Ok, I've removed that participant.",
+              type: 'success'
+            });
+          }
+        });
+      }
+    });
   }
 });

@@ -47,9 +47,6 @@ Donations._ensureIndex(
 DT_splits._ensureIndex(
   {'donation_id': 1},
   {'fund_id': 1},
-  {background: true});
-
-DT_splits._ensureIndex(
   {'memo': "text"},
   {background: true});
 
@@ -62,6 +59,10 @@ DT_donations._ensureIndex(
 DT_funds._ensureIndex(
   {'id': 1},
   {'name': 1},
+  {background: true});
+
+DT_personas._ensureIndex(
+  {'id': 1},
   {background: true});
 
 Fundraisers._ensureIndex(

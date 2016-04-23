@@ -29,8 +29,13 @@ Template.DonationLanding.helpers({
   },
   givingOptions: function() {
     let config = ConfigDoc();
-    let givingOptions =  config && config.Giving && config.Giving.options;
-    return _.sortBy(givingOptions, 'position');
+    if (config && config._id) {
+      let givingOptions =  config && config.Giving && config.Giving.options;
+      if (givingOptions && givingOptions.length > 0) {
+        return _.sortBy(givingOptions, 'position');
+      }
+    }
+    return;
   },
   donationGroups: function() {
     let config = ConfigDoc();
@@ -51,7 +56,7 @@ Template.DonationLanding.helpers({
     let config = ConfigDoc();
 
     if( config && config._id ) {
-      var givingOptions = config.Giving.options;
+      var givingOptions = config && config.Giving && config.Giving.options;
 
       if( givingOptions && givingOptions.length > 0 ) {
 

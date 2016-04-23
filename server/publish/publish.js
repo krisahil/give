@@ -486,15 +486,3 @@ Meteor.publish("fundraisers", function (id) {
     this.ready();
   }
 });
-
-Meteor.publish("travelDTSplits", function () {
-  if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
-    let trips = Trips.find().map(function ( trip ) {
-      return Number(trip.fundId);
-    });
-    console.log(trips);
-    return DT_splits.find({fund_id: {$in: trips}});
-  } else {
-    this.ready();
-  }
-});

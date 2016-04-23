@@ -12,7 +12,7 @@ function updateSearchVal(){
   }
 };
 
-Template.ACH.onRendered(function() {
+Template.ACH.onCreated(function() {
   this.autorun(() => {
     this.subscribe("ach");
   });

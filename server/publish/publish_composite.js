@@ -233,3 +233,55 @@ Meteor.publishComposite('ach', function () {
     return;
   }
 });
+
+
+Meteor.publishComposite("travelDTSplits", function (tripId) {
+  check(tripId, Match.Optional(String));
+
+  if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
+    var funds = [];
+    if (tripId) {
+      let fundId = Trips.findOne({_id: tripId}) && Trips.findOne({_id: tripId}).fundId;
+      funds[0] = Number(fundId);
+    } else {
+      funds = Trips.find().map(function ( item ) {
+        return Number(item.fundId);
+      });  
+    }
+    console.log(funds);
+
+    return {
+      find: function () {
+        return DT_splits.find({
+          fund_id: {
+            $in: funds
+          }
+        });
+      },
+      children: [
+        {
+          find: function ( split ) {
+            return DT_donations.find({ _id: split.donation_id });
+          },
+          children: [
+            {
+              find: function ( donation ) {
+                // Find the person associated with this donation
+                return DT_personas.find(
+                  { _id: donation.persona_id }, {
+                    limit:  1,
+                    fields: {
+                      persona_id: 1,
+                      recognition_name: 1
+                    }
+                  } );
+              }
+            }
+          ]
+        }
+      ]
+    }
+  } else {
+    this.ready();
+  }
+});

@@ -68,6 +68,8 @@ DT_donations = new Mongo.Collection('dt_donations');
 
 DT_funds = new Mongo.Collection('dt_funds');
 
+DT_personas = new Mongo.Collection('dt_personas');
+
 DT_sources = new Mongo.Collection('dt_sources');
 
 Invoices = new Mongo.Collection('invoices');
