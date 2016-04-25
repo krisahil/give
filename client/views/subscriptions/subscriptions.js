@@ -110,15 +110,14 @@ Template.AdminSubscriptions.helpers({
   card_or_bank: function() {
     const customer = this.customer;
     const customer_cursor = Customers.findOne({_id: customer});
-    if(customer_cursor){
-      const default_source_type =  customer_cursor.default_source_type;
-      if(default_source_type === 'bank_account') {
+    if (customer_cursor) {
+      console.log(customer_cursor);
+      if(customer_cursor.default_source_type === 'bank_account') {
         return 'Bank';
-      } else if(default_source_type === 'card') {
+      } else if(customer_cursor.default_source_type === 'card') {
         return 'Card';
-      } else {
-        return 'Other';
       }
+      return 'Other';
     }
   },
   card_subscription: function () {

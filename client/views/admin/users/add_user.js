@@ -31,7 +31,7 @@ Template.AddUser.helpers({
     let editUserID = Router.current().params._id;
     if(editUserID) {
       let thisUser = Meteor.users.findOne({_id: editUserID});
-      if ( thisUser.roles.indexOf( this.name ) > -1 ){
+      if ( thisUser && thisUser.roles && thisUser.roles.indexOf( this.name ) > -1 ){
         return 'selected';
       }
     } else {

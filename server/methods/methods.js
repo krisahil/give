@@ -922,7 +922,7 @@ Meteor.methods({
 
     check( form, Schema.CreateUserFormSchema );
 
-    try {
+    /*try {*/
       if (Roles.userIsInRole(this.userId, ['admin'])) {
         SimpleSchema.debug = true;
         let user_id;
@@ -938,7 +938,7 @@ Meteor.methods({
         Meteor.users.update( user_id, {
           $set: {
             'roles':  form.roles,
-            'status': form.status
+            'state': {status: form.status}
           }
         } );
 
@@ -948,9 +948,10 @@ Meteor.methods({
       } else {
         return;
       }
-    } catch(e) {
+    /*} catch(e) {
+      logger.error(e);
       throw new Meteor.Error(e);
-    }
+    }*/
   },
   updateUser: function (form, _id) {
     logger.info("Started updateUser method");

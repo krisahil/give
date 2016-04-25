@@ -524,15 +524,19 @@ _.extend(Utils,{
                       logger.info("A 'failed' email has already been sent for this charge, exiting email send function.");
                       return;
                   }
-
-                  data_slug.template_name = config.Services.Email.failedPayment;
+                // If you get to this area it means the donor would have already seen their gift
+                // failed. If there is no donation cursor that means the gift process
+                // didn't get past the initial screen and so the donor already knows
+                // their gift failed. Sending an email here would just confuse them
+                return;
+                  /*data_slug.template_name = config.Services.Email.failedPayment;
 
                   data_slug.message.global_merge_vars.push(
                       {
                           "name": "URL",
                           "content": Meteor.absoluteUrl("landing")
                       }
-                  );
+                  );*/
               }
           } else {
               data_slug.message.global_merge_vars.push(

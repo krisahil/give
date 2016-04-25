@@ -31,24 +31,30 @@
                     <td>{{metadata.email}}</td>
                     <td>${{twoDecimalPlaces quantity}}</td>
                     <td>{{formatDate current_period_end true}}</td>
-                    <td>{{metadata.donateTo}}</td>
+                    <td>{{donateToThis metadata.donateTo}}</td>
                     <td>{{metadata.note}}</td>
                     <td>{{_id}}</td>
                     {{#if isInRole 'admin, manager'}}
                         <td class="text-right">
                             <div class="btn-group" role="group" aria-label="Basic example">
                                 {{#if card_subscription}}
-                                    <button id="go_to_resubscribe_link" class="btn btn-sm btn-info">
-                                        Edit {{card_or_bank}}</button>
+                                    <button title="Edit Payment method" id="go_to_resubscribe_link" class="btn btn-sm btn-info">
+                                        <i class="fa fa-pencil"></i> Card</button>
                                 {{else}}
                                     {{> AddNewBankAccount}}
-                                    <button id="btn_modal_for_add_new_bank_account"
-                                        class="btn btn-sm btn-info">
-                                            Edit {{card_or_bank}}
+                                    <button title="Edit Payment method"
+                                            id="btn_modal_for_add_new_bank_account"
+                                            class="btn btn-sm btn-info">
+                                        <i class="fa fa-pencil"></i> Bank
                                     </button>
                                 {{/if}}
-                                <button class="btn btn-sm btn-primary edit-button">Edit Parts</button>
-                                <button class="btn btn-sm btn-danger stop-button">Stop</button>
+                                <button title="Edit gift parts" class="btn btn-sm btn-primary edit-button">
+                                    <i class="fa fa-list"></i>
+                                </button>
+                                <button title="Stop this recurring gift"
+                                        class="btn btn-sm btn-danger stop-button">
+                                    <i class="fa fa-stop"></i>
+                                </button>
                             </div>
                         </td>
                     {{/if}}

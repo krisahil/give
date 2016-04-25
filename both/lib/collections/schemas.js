@@ -1042,7 +1042,6 @@ Schema.CreateUserFormSchema = new SimpleSchema({
   },
   roles: {
     type: Array,
-    optional: true,
     label: 'Roles: Hold down the Ctrl (windows) / Command (Mac) button to select multiple roles',
     autoform: {
       options: function() {

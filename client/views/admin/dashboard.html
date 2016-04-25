@@ -94,7 +94,8 @@
                                     <h5>Stripe Transfers</h5>
                                 </a>
                             </div>
-                            <div class="col-sm-2">
+                    {{#if isInRole 'super-admin'}}
+                        <div class="col-sm-2">
                                 <a class="quick-button backgroundColor primary" href="expiring">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-credit-card"></i>
@@ -102,6 +103,7 @@
                                     <h5>Expiring Cards</h5>
                                 </a>
                             </div>
+                    {{/if}}
                         </div>
                     </div>
                 {{#if showGetStripeEvent}}
@@ -149,15 +151,15 @@
                                         <h5>New Gift</h5>
                                     </a>
                                 </div>
+                                <div class="col-sm-2">
+                                    <a id="get-dt-split" class="quick-button backgroundColor primary" href="{{pathFor 'DtReport'}}">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-code-fork"></i>
+                                        </span>
+                                        <h5>Get DT Split Data</h5>
+                                    </a>
+                                </div>
                             {{/if}}
-                            <div class="col-sm-2">
-                                <a id="get-dt-split" class="quick-button backgroundColor primary" href="{{pathFor 'DtReport'}}">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-code-fork"></i>
-                                    </span>
-                                    <h5>Get DT Split Data</h5>
-                                </a>
-                            </div>
                             <div class="col-sm-2">
                                 <a id="get-dt-funds"
                                    class="quick-button backgroundColor primary"
@@ -223,7 +225,7 @@
                                 <h5>Move Gift</h5>
                             </a>
                         </div>
-                        {{#if isInRole 'admin'}}
+                        {{#if isInRole 'super-admin'}}
                             <div class="col-sm-2">
                                 <a id="show-get-stripe-event" class="quick-button backgroundColor primary" href="">
                                     <span class="fa-stack fa-lg">
