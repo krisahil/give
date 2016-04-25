@@ -749,6 +749,6 @@ _.extend(Utils,{
         ]
       }
     };
-    Utils.send_mandrill_email(data_slug, config.Services.Email.scheduled. email_address, 'Scheduled Gift');
+    Utils.send_mandrill_email(data_slug, config.Services.Email.scheduled, email_address, 'Scheduled Gift');
   }
 });
