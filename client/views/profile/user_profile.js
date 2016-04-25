@@ -242,14 +242,27 @@ Template.UserProfile.onRendered(function() {
       }
     } );
   } else if(!Session.equals("got_all_donations", true)) {
-    Meteor.call("get_all_donations_for_this_donor", function (error, result) {
+    Meteor.call( "get_all_donations_for_this_donor", function ( error, result ) {
       if( result ) {
         console.log( result );
-        Session.set("got_all_donations", true);
+        Session.set( "got_all_donations", true );
       } else {
         console.log( error );
       }
-    });
+    } );
+
+    if( Meteor.user() && Meteor.user().profile && !Meteor.user().profile.address ) {
+      // TODO: setup method call to fix the missing address info
+      // Use something like the below to get the right address info in.
+      let activeTab = Session.get( 'activeTab' );
+      Meteor.call( "putProfileAddress", activeTab ? activeTab : '', function ( err, res ) {
+        if( err ) {
+          console.error( err );
+        } else {
+          console.log( res );
+        }
+      } );
+    }
   }
 
   Session.setDefault('dt_donations_cursor', 0);

@@ -109,7 +109,33 @@
                 <a href="{{pathFor 'donation.form'}}?recurring=monthly" class="btn btn-primary btn-block">Setup a recurring gift</a>
             </div>
         {{/if}}
+        {{#if donations}}
+            {{#each donations}}
 
+            <div class="col col-lg-3">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-success" data-subscription-id="{{_id}}">
+                        Status: Active
+                    </li>
+
+                <li class="list-group-item bm-block">
+                    <div class="bm-block-content">
+                        Charged every: <strong>Month</strong>
+                    </div>
+                </li>
+                <li class="list-group-item bm-block">To: <strong>{{donateToThis this.donateTo}}</strong></li>
+                <li class="list-group-item bm-block">With: <strong>Bank Account</strong></li>
+                <li class="list-group-item bm-block">Amount: <strong>{{centsToDollars total_amount}}</strong></li>
+                <li class="list-group-item bm-block">Next gift on: <strong>{{epochToString start_date}}</strong></li>
+
+                    <li class="list-group-item bm-block button-blocks">
+                        <a href="mailto:{{support_address}}?Subject=Update Monthly Gift with id of: {{this._id}}"
+                           class="btn btn-block btn-danger manual-change" target="_blank">Update/Change/Cancel</a>
+                    </li>
+                </ul>
+            </div>
+            {{/each}}
+        {{/if}}
     </div>
     {{#if number_of_subscriptions}}
         <div class="row text-center">

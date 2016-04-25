@@ -16,7 +16,12 @@ Template.AddNewBankAccount.events({
       name = Meteor.user().profile.fname + " " + Meteor.user().profile.lname;
     }
     Stripe.bankAccount.createToken({
-      country: Meteor.user().profile.address.country,
+      country: (Meteor.user() &&
+      Meteor.user().profile &&
+      Meteor.user().profile.address &&
+      Meteor.user().profile.address.country) ?
+                 Meteor.user().profile.address.country :
+                 'US',
       routing_number: $('#routing_number').val(),
       account_number: $('#account_number').val(),
       name: name

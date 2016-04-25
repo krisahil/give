@@ -234,7 +234,6 @@ Meteor.publishComposite('ach', function () {
   }
 });
 
-
 Meteor.publishComposite("travelDTSplits", function (tripId) {
   check(tripId, Match.Optional(String));
 
@@ -278,6 +277,61 @@ Meteor.publishComposite("travelDTSplits", function (tripId) {
               }
             }
           ]
+        }
+      ]
+    }
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publishComposite("subscriptions", function () {
+  logger.info("Started publish function, subscriptions");
+  if (this.userId) {
+    return {
+      find: function () {
+        return Customers.find({'metadata.user_id': this.userId});
+      },
+      children: [
+        {
+          find: function ( customers ) {
+            // Find the person associated with this donation
+            return Charges.find( { 'customer': customers._id } );
+          }
+        }, {
+            find: function ( customers ) {
+              // Find the person associated with this donation
+              return Subscriptions.find({$and: [{'customer': customers._id}, {'metadata.replaced': {$ne: true}}]});
+            }
+        }, {
+          find: function ( customers ) {
+            // Find the person associated with this donation
+            return Devices.find({ $and: [{
+                'customer': customers._id
+                }, {
+                'metadata.saved': 'true'
+              }]
+            }, {
+              fields: {
+                fingerprint: 0,
+                routing_number: 0,
+                account_holder_type: 0,
+                currency: 0
+              }
+            });
+          }
+        }, {
+          find: function ( customers ) {
+            // Find the person associated with this donation
+            return Donations.find({ $and: [{
+                'customer_id': customers._id
+                }, {
+                'method': 'manualACH'
+                }, {
+                'status': 'pending'
+            }]
+            });
+          }
         }
       ]
     }

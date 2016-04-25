@@ -192,41 +192,6 @@ Meteor.publish("userStripeDataWithSubscriptions", function () {
 	}
 });
 
-Meteor.publish("user_data_and_subscriptions_with_only_4", function () {
-  if (this.userId) {
-    console.log("Started publish function, user_data_and_subscriptions_with_only_4");
-    var customers = Customers.find({'metadata.user_id': this.userId});
-    var customer_ids = [];
-    var subscription_ids = [];
-
-    customers.forEach(function(element) {
-        customer_ids.push(element.id);
-    });
-    var charges = Charges.find({'customer': {$in: customer_ids}});
-    var subscriptions = Subscriptions.find({$and: [{'customer': {$in: customer_ids}}, {'metadata.replaced': {$ne: true}}]});
-    var user = Meteor.users.find({_id: this.userId});
-    var devices = Devices.find({
-      $and: [{
-        'customer': {
-          $in: customer_ids
-        }
-      }, {
-        'metadata.saved': 'true'
-      }]
-    }, {
-      fields: {
-        fingerprint: 0,
-        routing_number: 0,
-        account_holder_type: 0,
-        currency: 0
-      }
-    });
-    return[customers, charges, subscriptions, user, devices];
-  } else {
-    this.ready();
-	}
-});
-
 Meteor.publish("publish_for_admin_give_form", function () {
   if (Roles.userIsInRole(this.userId, ['admin'])) {
 
@@ -482,6 +447,16 @@ Meteor.publish("fundraisers", function (id) {
       return Fundraisers.find({'trips.id': id});
     }
     return Fundraisers.find();
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publish("userDoc", function () {
+  if (this.userId) {
+    logger.info( "Started publish function, userDoc" );
+    let user = Meteor.users.find( { _id: this.userId } );
+    return user;
   } else {
     this.ready();
   }

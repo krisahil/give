@@ -24,21 +24,21 @@ AutoForm.hooks({
        console.error(error);
        }
        });*/
-        console.log( "After" );
-        Meteor.call( "get_dt_funds", function ( error, result ) {
-          if( result ) {
-            console.log( "Got all funds" );
-            Router.go("Dashboard");
-          } else {
-            console.error( error );
-          }
-        } );
-        Bert.alert({
-          message: "Great, thanks",
-          type: 'success',
-          icon: 'fa-smile-o',
-          style: 'growl-bottom-right'
-        });
+      console.log( "After" );
+      Meteor.call( "get_dt_funds", function ( error, result ) {
+        if( result ) {
+          console.log( "Got all funds" );
+        } else {
+          console.error( error );
+        }
+      } );
+      Bert.alert({
+        message: "Great, thanks",
+        type: 'success',
+        icon: 'fa-smile-o',
+        style: 'growl-bottom-right'
+      });
+      Router.go("Dashboard");
     },
     onError: function(formType, error) {
       console.error(error);

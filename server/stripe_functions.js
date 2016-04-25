@@ -158,7 +158,6 @@ _.extend(StripeFunctions, {
           throw new Meteor.Error(500, err);
         });
     }
-    
   },
   /**
    * Stripe general purpose resource deleter
@@ -375,7 +374,8 @@ _.extend(StripeFunctions, {
         break;
       case "card":
         Devices.upsert({_id: event_body.data.object.id}, event_body.data.object);
-        var result_of_update = Customers.update({_id: event_body.data.object.customer, 'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
+        var result_of_update = Customers.update({_id: event_body.data.object.customer,
+          'sources.data.id': event_body.data.object.id}, {$set: {'sources.data.$': event_body.data.object}});
         break;
       case "charge":
         Charges.upsert({_id: event_body.data.object.id}, event_body.data.object);
@@ -463,7 +463,6 @@ _.extend(StripeFunctions, {
 
     if (chargeCursor && customerCursor.metadata && customerCursor.metadata.dt_persona_id) {
       Utils.insert_gift_into_donor_tools( charge_id, customer_id );
-
     } else if( interval === 2 ) {
       // Pull the customer record straight from Stripe
       stripeCustomerRecord =  Utils.get_stripe_customer( customerCursor.id );
@@ -520,7 +519,7 @@ _.extend(StripeFunctions, {
             throw new Meteor.Error(500, "Couldn't find a charge id on the previous invoice, this is probably a scheduled recurring transaction");
           }
         }
-        Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dtPersonaId } });
+        let customerUpdate = Customers.update({_id: customer_id}, { $set: { 'metadata.dt_persona_id': dtPersonaId } });
         StripeFunctions.update_customer_metadata(customer_id, dtPersonaId);
         StripeFunctions.check_for_necessary_objects_before_inserting_into_dt( charge_id, customer_id, interval += .5);
       }

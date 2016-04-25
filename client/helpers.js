@@ -16,7 +16,6 @@ Template.registerHelper('twoDecimalPlaces', function(stringToAddDecimal) {
 });
 
 Template.registerHelper('formatDate', function(date, unix) {
-  console.log(date);
   if (date && unix) {
     return moment.unix(new Date(date)).format('MMM DD, YYYY');
   } else if (date) {
@@ -226,6 +225,14 @@ Template.registerHelper('forceACHDay', function() {
   }
 });
 
+Template.registerHelper('onlyOnSpecificDay', function() {
+  let config = ConfigDoc();
+  return "<i class='makeRightOfInput fa fa-question-circle' data-toggle='popover' " +
+    "data-trigger='hover focus' data-container='body' " +
+    "data-content='When giving by Check we can only accept monthly gifts for the day of the month shown in the box.'>" +
+    "</i>";
+});
+
 Template.registerHelper('collectBankAccountType', function() {
   let config = ConfigDoc();
 
@@ -331,4 +338,24 @@ Template.registerHelper( 'stripe_ach_verification_type', () => {
   return config &&
     config.Settings &&
     config.Settings.ach_verification_type;
+});
+
+Template.registerHelper('donor_tools_site', function() {
+  let config = ConfigDoc();
+
+  if (config && config.Settings && config.Settings.DonorTools && config.Settings.DonorTools.url) {
+    return config.Settings.DonorTools.url;
+  }
+});
+
+Template.registerHelper('donateToThis', function(idOrName) {
+  if (! isNaN(idOrName)) {
+    if (DT_funds.findOne({_id: idOrName}) && DT_funds.findOne({_id: idOrName}).name) {
+      return DT_funds.findOne({_id: idOrName}).name;
+    } else {
+      return idOrName;
+    }
+  } else {
+    return idOrName;
+  }
 });

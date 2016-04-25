@@ -3,7 +3,7 @@
         <div class="col col-lg-12">
             {{#if isInRole 'admin'}}
                 {{#unless showSingleRecord}}
-                    <form class="form">
+                    <form class="form" id="achSearchForm">
                         <div class="form-group">
                             <label for="searchACH" class="control-label">Search for ACH(s)</label>
                             <input id="searchACH" type="text" class="form-control search" placeholder="Search by; name, org. or email">
@@ -31,7 +31,7 @@
                             {{#each donations}}
                                 <tr class="{{donationFrequency}}" data-id="{{_id}}">
                                     <td>{{donorName}}</td>
-                                    <td>{{donateTo}}</td>
+                                    <td>{{donateToThis donateTo}}</td>
                                     <td>{{donationAmount}}</td>
                                     <td>{{donationDate}}</td>
                                     <td>{{status}}</td>
@@ -78,7 +78,7 @@
                                             </button>
                                         {{/if}}
                                         {{#if personaId}}
-                                            <a href="{{donor_tools_site}}/people/{{personaId}}">
+                                            <a href="{{donor_tools_site}}/people/{{personaId}}" target="_blank">
                                                 <button type="button"
                                                     title="See this user in Donor Tools"
                                                     class="btn btn-primary">

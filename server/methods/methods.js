@@ -46,7 +46,7 @@ Meteor.methods({
    * @param {String} from - The section of the configuration area that this update was made in
    */
   sendChangeConfigNotice: function(from){
-    logger.info( "Started method checkDonorTools." );
+    logger.info( "Started method sendChangeConfigNotice." );
 
     check(from, String);
     this.unblock();
@@ -368,7 +368,7 @@ Meteor.methods({
     var userID;
     if(this.userId) {
       this.unblock();
-     if(id){
+     if (id) {
        if (Roles.userIsInRole(this.userId, ['admin'])) {
          userID = id;
        } else {
@@ -379,23 +379,36 @@ Meteor.methods({
        userID = this.userId;
      }
     } else {
-        return "Not logged in.";
+      return "Not logged in.";
     }
-      let this_user_document, persona_ids;
-      this_user_document = Meteor.users.findOne({_id: userID});
-      persona_ids = this_user_document && this_user_document.persona_ids;
-      persona_id = this_user_document && this_user_document.persona_id;
-      var set_this_array = [];
+
+    let this_user_document, persona_ids;
+    this_user_document = Meteor.users.findOne({_id: userID});
+
+    // Some users have their DT persona ID(s) stored in persona_ids, others
+    // have only one and it is stored in persona_id
+    persona_ids = this_user_document && this_user_document.persona_ids;
+    persona_id = this_user_document && this_user_document.persona_id;
+    var set_this_array = [];
+
     try {
-      if(!persona_ids && persona_id) {
+      if (!persona_ids && persona_id) {
         logger.info("No persona_ids, but did find persona_id");
         persona_ids = persona_id;
       }
 
-      if( persona_ids && persona_ids.length ) {
+      if (persona_ids && persona_ids.length) {
         // The persona_ids let is an array
         logger.info( "persona_ids found: ", persona_ids );
 
+
+        // TODO: refactor this, shouldn't be storing persona_info in the user
+        // record, instead store it in a document of its own and just link the user
+        // to that document by storing the id in the same place (persona_ids)
+
+        // TODO: once you have this moved we could query for all the DT Personas
+        // and each day fix any of the merged personas.
+        // What would the security implications be?
 
         // Since the donor tools information can change way down in the record
         // we don't want to simply do an $addToSet, this will lead to many
@@ -408,15 +421,13 @@ Meteor.methods({
         _.forEach(persona_ids, function(each_persona_id) {
             let personaResult = Utils.http_get_donortools("/people/" + each_persona_id + ".json");
             set_this_array.push( personaResult.data.persona );
-          console.log(personaResult.data.persona);
-
         });
-      } else if( persona_ids ){
+      } else if (persona_ids) {
         logger.info("Single persona_id found: ", persona_ids);
         let personaResult = Utils.http_get_donortools("/people/" + persona_ids + ".json");
         console.log(personaResult.data.persona);
         set_this_array.push(personaResult.data.persona);
-      } else if(!Meteor.users.findOne({_id: userID}).persona_info &&
+      } else if (!Meteor.users.findOne({_id: userID}).persona_info &&
         Customers.findOne({'metadata.user_id': userID})) {
 
         let dt_account_id = Utils.find_dt_account_or_make_a_new_one(
@@ -437,7 +448,6 @@ Meteor.methods({
         console.log("Not a DT user");
         return 'Not a DT user';
       }
-      console.log(set_this_array);
 
       Meteor.users.update({_id: userID}, {$set: {'persona_info': set_this_array}});
 

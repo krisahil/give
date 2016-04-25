@@ -25,7 +25,6 @@ var subscriptionsTutorialSteps = function() {
   return return_tutorials;
 };
 
-
 Template.SubscriptionsOverview.helpers({
   subscriptions: function(){
     var subscription_page = Session.get('subscription_cursor');
@@ -112,6 +111,9 @@ Template.SubscriptionsOverview.helpers({
       }
     }
     return 'Other';
+  },
+  donations() {
+    return Donations.find({}, { sort: { created_at: 1} });
   },
   options: {
     id: "subscriptionsTutorial",

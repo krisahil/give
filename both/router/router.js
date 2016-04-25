@@ -268,7 +268,7 @@ Router.route('Subscriptions', function() {
   var params = this.params;
   Session.set('fix_it', params.query.fix_it);
 
-  this.wait(Meteor.subscribe('user_data_and_subscriptions_with_only_4'));
+  this.wait([Meteor.subscribe('subscriptions'), Meteor.subscribe('userDoc')]);
   if (this.ready()) {
     this.render();
   } else {

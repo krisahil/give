@@ -178,9 +178,12 @@ Template.ACH.events({
       }).prop('selected', true).change();
     }, 0);
   },
-  'keyup, change .search': _.debounce(function () {
+  'keyup, change .search': _.debounce(function (e) {
     updateSearchVal();
   }, 300),
+  'submit form': function ( e ) {
+    e.preventDefault();
+  },
   'click .clear-button': function () {
     $(".search").val("").change();
   },

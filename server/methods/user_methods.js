@@ -276,6 +276,38 @@ Meteor.methods({
     console.log("Got past check");
     let bank = BankAccounts.insert(bankInfo);
     return bank;
+  },
+  putProfileAddress: function(activeTab) {
+    logger.info("Started method get_all_donations_for_this_donor.");
+
+    check(activeTab, Match.Optional(String));
+    if (this.userId) {
+      let persona, persona_info, address;
+
+      if( activeTab ) {
+        persona_info = Meteor.users.findOne( { _id: this.userId } ) && Meteor.users.findOne( { _id: this.userId } ).persona_info;
+        persona = _.where( persona_info, { id: Number( activeTab ) } );
+      } else {
+        persona_info = Meteor.users.findOne() && Meteor.users.findOne().persona_info;
+        if( persona_info && persona_info.length > 0 ) {
+          persona = persona_info[0];
+        }
+      }
+
+      if( persona ) {
+        let street_address = persona.addresses[0].street_address;
+        street_address = street_address.split( "\n" );
+        address = {
+          city:        persona.addresses[0].city,
+          state:       persona.addresses[0].state,
+          postal_code: persona.addresses[0].postal_code,
+          address_line1:       street_address[0],
+          address_line2:       street_address[1]
+        };
+        return Meteor.users.update( { _id: this.userId }, { $set: { 'profile.address': address } } );
+      }
+    }
+    return;
   }
 });
 
