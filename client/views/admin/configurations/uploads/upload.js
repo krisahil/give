@@ -16,6 +16,11 @@ Template.Upload.helpers({
         if (!file) {
           console.log("Failed");
         }
+
+        if (['image/gif','image/png','image/jpg', 'image/jpeg'].indexOf(file[0].type) === -1) {
+          alert("The only image types you can use are png, gif, jpg or jpeg");
+          return false;
+        }
         console.log("validate area");
         console.log(file);
         return 'all done';

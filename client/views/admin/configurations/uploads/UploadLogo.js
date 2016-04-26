@@ -10,22 +10,5 @@ Template.UploadLogo.helpers({
       };
     }
     return;
-  },
-  myCallbacks: function() {
-    return {
-      validate: function(file) {
-        if (!file) {
-          console.log("Failed");
-        }
-        console.log("validate area");
-        console.log(file);
-        return 'all done';
-      },
-      finished: function( index, fileInfo, context ) {
-        console.log("finished area");
-        console.log(index, fileInfo, context);
-        return;
-      }
-    };
   }
 });
