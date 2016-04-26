@@ -363,11 +363,20 @@ Template.registerHelper('donateToThis', function(idOrName) {
 Template.registerHelper('imageUploadCallback', function() {
     return {
       validate: function(file) {
+        // 10485760 = 10 Megabytes
+        let maxFileSize = 10485760;
+        let sizeInMB = maxFileSize/1048576;
         if (!file) {
           console.log("Failed");
         }
+        // Check to see if the type of the file matches one of the image types listed in this array
         if (['image/gif','image/png','image/jpg', 'image/jpeg'].indexOf(file[0].type) === -1) {
           alert("The only image types you can use are png, gif, jpg or jpeg");
+          return false;
+        }
+        if (maxFileSize < file[0].size) {
+          console.warn("File is to large");
+          alert("The file size is to large, it must be under " + sizeInMB+ "MB");
           return false;
         }
         console.log("validate area");

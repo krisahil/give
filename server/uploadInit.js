@@ -6,7 +6,8 @@ Meteor.startup(function() {
     validateRequest: function(req) {
       try {
         logger.info("Got to validateRequest");
-        if (req.headers["content-length"] > 10000000) {
+        // 10485760 = 10 Megabytes
+        if (req.headers["content-length"] > 10485760) {
           logger.info("File is too long");
           return "File is too long!";
         }
