@@ -12,14 +12,17 @@
     -->
     <div class="container-fluid">
         <div class="row">
+            <h2 class="text-center">{{#with trip}}<strong>{{name}}</strong>{{/with}}</h2>
+        </div>
+        <div class="row">
             <div class="col-md-6">
-                <h3>{{#with trip}}<strong>{{name}}</strong>{{/with}}</h3>
-                {{> quickForm schema="Schema.CreateFundraisersFormSchema" type="normal"
-                id="fundraisers-form" template="bootstrap3-horizontal"}}
+                {{> quickForm buttonContent="Add" schema="Schema.Fundraisers" type="normal"
+                id="fundraisers-form"}}
+
             </div>
             {{#if participant}}
                 <div class="col-md-6">
-                    <table class="table table-striped no-margin">
+                    <table class="table no-margin no-border">
                         <thead>
                         <tr>
                             <th>Name</th>
@@ -52,7 +55,10 @@
                                     <button type="button"
                                             title="Edit the participant details"
                                             class="btn btn-primary edit-participant"
-                                            data-id="{{_id}}">
+                                            data-toggle="collapse"
+                                            data-target="#collapse-edit-{{_id}}"
+                                            aria-expanded="false"
+                                            aria-controls="collapse-edit-{{_id}}">
                                         <i class="fa fa-pencil"></i>
                                     </button>
                                     <button type="button"
@@ -69,7 +75,7 @@
                             <tr class="hiddenRow">
                                 <td colspan="12">
                                     <div class="accordian-body collapse" id="collapse-{{_id}}">
-                                        <table class="table table-striped">
+                                        <table class="table no-border">
                                             <thead>
                                                 {{#with trip}}
                                                     {{#each deadlines}}
@@ -109,6 +115,48 @@
                                                 {{/if}}
                                             </tbody>
                                         </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hiddenRow">
+                                <td colspan="12">
+                                    <div class="accordian-body collapse" id="collapse-edit-{{_id}}">
+                                        <form name="{{_id}}" class="update-participant">
+
+                                            {{#with trip}}
+                                                {{#each deadlines}}
+                                                    <label>Adjustment of {{this.name}}</label>
+                                                    <input type="text"
+                                                           class="form-control trip-adjustments"
+                                                           value="{{customDeadlineValue}}"
+                                                           name="{{this.id}}"
+                                                           placeholder="e.g. -100 or 100"/>
+                                                {{/each}}
+                                            {{/with}}
+                                            <div class="col-md-6">
+                                                <label>First Name</label>
+                                                <input class="form-control"
+                                                       type="text"
+                                                       value="{{this.fname}}"
+                                                       name="fname" />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Last Name</label>
+                                                <input class="form-control"
+                                                       type="text"
+                                                       value="{{this.lname}}"
+                                                       name="lname" />
+                                            </div>
+                                            <label>Email</label>
+                                            <input class="form-control"
+                                                   type="text"
+                                                   value="{{this.email}}"
+                                                   name="email" />
+                                            <br>
+                                            <div>
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

@@ -93,5 +93,13 @@ Template.Trips.events({
     console.log("CLicked row" );
     let tripId = $(e.currentTarget).attr("data-id");
     Router.go('trip', {_id: tripId});
+  },
+  'click #getFundsList'(){
+    console.log("getFundsList button clicked");
+    $("#getFundsList").button("loading");
+    Meteor.call("get_dt_funds", ()=>{
+      $("#getFundsList").button("reset");
+      alert("Got the funds");
+    });
   }
 });

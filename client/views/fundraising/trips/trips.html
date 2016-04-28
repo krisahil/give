@@ -2,6 +2,10 @@
     <div class="container-fluid trips-form">
         <div class="row">
             <div class="col-md-3">
+                <a type="button" class="btn btn-primary" id="getFundsList"
+                   data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                    Update Trips List
+                </a>
                 {{> quickForm schema="Schema.Trips" type="method"
                 meteormethod="insertTrip" id="trips-form" template="bootstrap3"
                 resetOnSuccess=true}}

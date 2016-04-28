@@ -32,6 +32,8 @@ if (config && config.OrgInfo && config.OrgInfo.web.subdomain) {
 _.each(trusted, function(origin) {
   var secureOrigin = "https://" + origin;
   BrowserPolicy.content.allowOriginForAll(secureOrigin);
+  
+  // only trust non https on dev side
   if (Meteor.settings.dev) {
     let nonSecureOrigin = "http://" + origin;
     BrowserPolicy.content.allowOriginForAll(nonSecureOrigin);

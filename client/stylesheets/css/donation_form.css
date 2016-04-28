@@ -515,3 +515,11 @@ legend {
     position:relative;
     top: 10%;
 }
+
+.tt-menu {
+    background-color: #fff;
+}
+
+.tt-menu:hover {
+    cursor: pointer;
+}

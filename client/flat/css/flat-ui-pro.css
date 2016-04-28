@@ -2465,45 +2465,6 @@ fieldset[disabled] .input-group-btn .btn-default.active {
   color: #fff;
   background-color: #16a085;
   }
-.bootstrap-tagsinput .twitter-typeahead {
-  width: auto;
-  vertical-align: top;
-  }
-.bootstrap-tagsinput .twitter-typeahead .tt-input {
-  min-width: 200px;
-  }
-.bootstrap-tagsinput .twitter-typeahead .tt-dropdown-menu {
-  width: auto;
-  min-width: 120px;
-  margin-top: 11px;
-  }
-.twitter-typeahead {
-  width: 100%;
-  }
-.twitter-typeahead .tt-dropdown-menu {
-  width: 100%;
-  padding: 5px 0;
-  margin-top: 5px;
-  background-color: #fff;
-  border: 2px solid #1abc9c;
-  border-radius: 6px;
-  }
-.twitter-typeahead .tt-suggestion p {
-  padding: 6px 14px;
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.429;
-  }
-.twitter-typeahead .tt-suggestion:first-child p,
-.twitter-typeahead .tt-suggestion:last-child p {
-  padding: 6px 14px;
-  }
-.twitter-typeahead .tt-suggestion.tt-is-under-cursor,
-.twitter-typeahead .tt-suggestion.tt-cursor {
-  color: #fff;
-  cursor: pointer;
-  background-color: #16a085;
-  }
 .progress {
   height: 12px;
   background: #ebedef;
@@ -3759,23 +3720,6 @@ fieldset[disabled] .input-group-btn .btn-default.active {
 .dropdown-menu > li:last-child > a:first-child {
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
-  }
-.dropdown-menu.typeahead {
-  display: none;
-  width: auto;
-  padding: 5px 0;
-  margin-top: 5px;
-  background-color: #fff;
-  border: 2px solid #1abc9c;
-  border-radius: 6px;
-  }
-.dropdown-menu.typeahead li a {
-  padding: 6px 14px;
-  }
-.dropdown-menu.typeahead li:first-child a,
-.dropdown-menu.typeahead li:last-child a {
-  padding: 6px 14px;
-  border-radius: 0;
   }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {

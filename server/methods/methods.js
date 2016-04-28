@@ -1189,16 +1189,14 @@ Meteor.methods({
   insertFundraisersWithTrip: function(doc) {
     logger.info( "Started method insertFundraisersWithTrip." );
     if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
-      check( doc, Schema.CreateFundraisersFormSchema);
+      check( doc, Schema.Fundraisers);
       this.unblock();
-      doc.addParticipants.forEach((participant)=> {
-        participant.addedBy = this.userId;
-        if (Fundraisers.findOne({email: participant.email})) {
-          Fundraisers.update({email: participant.email}, {$push: {trips: participant.trips[0]}});
-        } else {
-          Fundraisers.insert(participant);
-        }
-      });
+      doc.addedBy = this.userId;
+      if (Fundraisers.findOne({email: doc.email})) {
+        Fundraisers.update({email: doc.email}, {$push: {trips: doc.trips[0]}});
+      } else {
+        Fundraisers.insert(doc);
+      }
     }
   },
   /**
@@ -1241,7 +1239,7 @@ Meteor.methods({
         // Got a network error, time-out or HTTP error in the 400 or 500 range.
         return false;
       }
-      return "Got all funds history";
+      return "Got all funds history for the trips listed";
     }
   },
   /**
@@ -1265,7 +1263,7 @@ Meteor.methods({
         } else {
           throw new Meteor.Error(500, "Couldn't find that person in DT");
         }
-      return "Got all funds history";
+      return "Got the person matching the passed personaId";
 
       } catch(e) {
         logger.error(e);
@@ -1287,6 +1285,48 @@ Meteor.methods({
       this.unblock();
       let updateFundraiser = Fundraisers.update({_id: id}, {$pull: {trips: {id: tripId}}});
       return updateFundraiser;
+    }
+    return;
+  },
+  /**
+   * Update a trip participant and his/her deadline adjustments
+   * @method updateTripParticipantAndAdjustments
+   * @param {Object} formValues - The form values
+   * @param {String} formValues.trip_id - Trip _id
+   * @param {String} formValues.participant_id - Participant's _id
+   * @param {String} formValues.fname - Participant's first name
+   * @param {String} formValues.lname - Participant's last name
+   * @param {String} formValues.email - Participant's email
+   * @param {Array} formValues.deadlines - Participant's deadline adjustments
+   * @param {String} formValues.deadlines.id - Trip deadline id
+   * @param {String} formValues.deadlines.amount - Trip deadline adjustment amount
+   */
+  updateTripParticipantAndAdjustments(formValues) {
+    logger.info("Started removeTripParticipant");
+    check(formValues, {
+      trip_id: String,
+      participant_id: String,
+      fname: String,
+      lname: String,
+      email: String,
+      deadlines: Array
+    });
+
+    if( Roles.userIsInRole( this.userId, ['admin', 'trips-manager'] ) ) {
+      this.unblock();
+      Fundraisers.update({
+          _id: formValues.participant_id,
+          "trips.id": formValues.trip_id
+        }, {
+          $set: {
+            fname: formValues.fname,
+            lname: formValues.lname,
+            email: formValues.email,
+            "trips.$.deadlines": formValues.deadlines
+          }
+      });
+
+      return "Got it";
     }
     return;
   }

@@ -565,6 +565,7 @@ Schema.Settings = new SimpleSchema({
     autoform: {
       panelClass: "panel-info",
       afFieldInput: {
+        type: "hidden",
         class: 'slim-borders'
       }
     }
@@ -1190,7 +1191,19 @@ Schema.Fundraisers = new SimpleSchema( {
     optional: true
   },
   'trips.$.adjustments': {
+    type: Array,
+    optional: true
+  },
+  'trips.$.adjustments.$': {
     type: Object,
+    optional: true
+  },
+  'trips.$.adjustments.$.id': {
+    type: String,
+    optional: true
+  },
+  'trips.$.adjustments.$.amount': {
+    type: String,
     optional: true
   },
   addedBy: {
@@ -1210,28 +1223,18 @@ Schema.Fundraisers = new SimpleSchema( {
     label: "First Name",
     autoform: {
       afFormGroup: {
-        'formgroup-class': "col-sm-4"
+        autofocus: true
       }
     }
   },
   lname: {
     type: String,
-    label: "Last Name",
-    autoform: {
-      afFormGroup: {
-        'formgroup-class': "col-sm-4"
-      }
-    }
+    label: "Last Name"
   },
   email: {
     type: String,
     label: "Email Address",
-    regEx: SimpleSchema.RegEx.Email,
-    autoform: {
-      afFormGroup: {
-        'formgroup-class': "col-sm-4"
-      }
-    }
+    regEx: SimpleSchema.RegEx.Email
   }
 });
 

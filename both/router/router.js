@@ -17,7 +17,9 @@ Router.onAfterAction(function() {
     let config = ConfigDoc();
 
     if (!(config && config.Settings && config.Settings.showDonatePage)){
-      this.render("SetupNotComplete");
+      if (!Meteor.user() && !Meteor.loggingIn() ) {
+        this.render("SetupNotComplete");
+      }
     }
   }, 1000);
 }, {
