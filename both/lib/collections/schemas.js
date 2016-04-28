@@ -611,7 +611,7 @@ Schema.Trips = new SimpleSchema({
     }
   },
   fundAdmin: {
-    type: Number,
+    type: String,
     optional: true,
     autoform: {
       afFieldInput: {
@@ -625,6 +625,7 @@ Schema.Trips = new SimpleSchema({
   fundTotal: {
     type: Number,
     optional: true,
+    decimal: true,
     autoform: {
       afFieldInput: {
         type: "hidden"

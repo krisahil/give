@@ -24,7 +24,8 @@ AutoForm.hooks({
 });
 
 Template.Trips.onCreated(function () {
-  this.formType = new ReactiveVar('insert');
+  Session.set('showUpdateTrip', false);
+  Session.set('tripDoc', '');
   this.autorun(()=> {
     this.subscribe("userDTFunds");
     this.subscribe("travelDTSplits");
@@ -33,18 +34,19 @@ Template.Trips.onCreated(function () {
   })
 });
 
-Template.Trips.onRendered(function () {
-  Meteor.call("updateTripFunds", moment().subtract(365, 'days').format('MMM+DD+YYYY'), moment().format('MMM+DD+YYYY'), function ( error, result ) {
-    if(!error) {
-      console.dir(result);
-    } else {
-      console.dir(error);
-    }
-  });
+Template.Trips.onDestroyed(function () {
+  Session.delete('tripDoc');
+  Session.delete('showUpdateTrip');
 });
 
 Template.Trips.helpers({
-  formType: function() {
+  showUpdateTrip() {
+    return Session.get('showUpdateTrip');
+  },
+  tripDoc() {
+    return Session.get('tripDoc');
+  },
+  formType() {
     var formType = Template.instance().formType.get();
     return formType;
   },
@@ -61,35 +63,11 @@ Template.Trips.helpers({
   getParticipantNumber() {
     let number = Fundraisers.find({'trips.id': this._id}).count();
     return number;
-  }/*,
-  getTripCost() {
-    let deadlinesTotal = this.deadlines.reduce( function(previousVal, deadline){
-      return previousVal + deadline.amount;
-    }, 0);
-    return deadlinesTotal;
-  },
-  getTripCostPercentage() {
-    console.log(this._id);
-    let trip = Trips.findOne({_id: this._id});
-    let number = Fundraisers.find({'trips.id': this._id}).count();
-
-    if (trip && number) {
-      let deadlinesTotal = trip.deadlines.reduce( function(previousVal, deadline){
-        return previousVal + deadline.amount;
-      }, 0);
-      let groupTotal = deadlinesTotal * number;
-
-      if (trip.fundTotal > groupTotal) {
-        return trip.fundTotal/groupTotal;
-      }
-      return 100*(trip.fundTotal/groupTotal);
-    }
-    return;
-  }*/
+  }
 });
 
 Template.Trips.events({
-  'click .trips-row': function (e) {
+  'click .see-trip'(e) {
     console.log("CLicked row" );
     let tripId = $(e.currentTarget).attr("data-id");
     Router.go('trip', {_id: tripId});
@@ -101,5 +79,10 @@ Template.Trips.events({
       $("#getFundsList").button("reset");
       alert("Got the funds");
     });
+  },
+  'click .edit-trip'(e){
+    console.log($(e.currentTarget).data("id"));
+    Session.set('showUpdateTrip', true);
+    Session.set('tripDoc', Trips.findOne({_id: $(e.currentTarget).data("id")}));
   }
 });

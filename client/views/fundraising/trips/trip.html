@@ -81,7 +81,7 @@
                                                     {{#each deadlines}}
                                                     <tr>
                                                         <td>
-                                                            {{this.name}}: <span class="pull-right">${{this.amount}}</span>
+                                                            {{this.name}}: <span class="pull-right">${{adjustedAmount}}</span>
                                                         </td>
                                                         <td colspan="5">
                                                             <div class="progress progress-bar-info">
@@ -128,9 +128,8 @@
                                                     <label>Adjustment of {{this.name}}</label>
                                                     <input type="text"
                                                            class="form-control trip-adjustments"
-                                                           value="{{customDeadlineValue}}"
-                                                           name="{{this.id}}"
-                                                           placeholder="e.g. -100 or 100"/>
+                                                           value="{{deadlineAdjustmentValue}}"
+                                                           name="{{this.id}}"/>
                                                 {{/each}}
                                             {{/with}}
                                             <div class="col-md-6">

@@ -11,7 +11,7 @@ function getAmountRaised(name) {
   return 0;
 }
 
-function onFormError(  ) {
+function onFormError() {
   Bert.alert({
     message: "Looks like you might be missing some required fields.",
     type: 'danger',
@@ -19,12 +19,34 @@ function onFormError(  ) {
   });
 }
 
-function onFormSuccess(  ) {
+function onFormSuccess() {
   Bert.alert({
     message: "Good work",
     type: 'success',
     icon: 'fa-smile-o'
   });
+}
+
+function getAdjustmentAmount(id) {
+
+  let parent = Template.parentData(1);
+  let parentParent = Template.parentData(2);
+  let trip_id = parent._id;
+  let deadline_id = id;
+
+  let deadlineElementPosition = parent.deadlines
+    .map(function(item) {return item.id; }).indexOf(deadline_id);
+
+  let tripElementPosition = parentParent.trips
+    .map(function(item) {return item.id; }).indexOf(trip_id);
+
+  if (parentParent &&
+    parentParent.trips[tripElementPosition] &&
+    parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition] &&
+    parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition].amount) {
+    return Number(parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition].amount);
+  }
+  return '0';
 }
 
 AutoForm.hooks({
@@ -178,33 +200,18 @@ Template.Trip.helpers({
   splitAmount(){
     return this.amount_in_cents ? (this.amount_in_cents/100) : "";
   },
-  customDeadlineValue() {
-    let parent = Template.parentData(1);
-    let parentParent = Template.parentData(2);
-    let trip_id = parent._id;
-    let deadline_id = this.id;
-
-    let deadlineElementPosition = parent.deadlines
-      .map(function(item) {return item.id; }).indexOf(deadline_id);
-
-    let tripElementPosition = parentParent.trips
-      .map(function(item) {return item.id; }).indexOf(trip_id);
-
-    if (parentParent &&
-      parentParent.trips[tripElementPosition] &&
-      parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition] &&
-      parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition].amount) {
-      return Number(parentParent.trips[0].deadlines[deadlineElementPosition].amount);
-    }
-
-    return '0';
+  adjustedAmount() {
+    let deadlineAmount = this.amount;
+    let adjustment = getAdjustmentAmount(this.id);
+    return Number(deadlineAmount) + Number(adjustment);
+  },
+  deadlineAdjustmentValue() {
+    let adjustmentValue = getAdjustmentAmount(this.id);
+    return adjustmentValue;
   }
 });
 
 Template.Trip.events({
-  'click .edit-participant'(){
-    console.log("Clicked edit-participant");
-  },
   'click .remove-participant'(){
     let self = this;
 
