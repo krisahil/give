@@ -58,7 +58,10 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <label for="donateWith">Method of Payment</label>
-                                <select name="donateWith" id="donateWith" class="form-control select select-primary mbl" required>
+                                <select name="donateWith"
+                                        id="donateWith"
+                                        class="form-control select select-primary mbl"
+                                        required>
                                     <option value="Card">Card</option>
                                     <option value="Check">Check</option>
                                 </select>
@@ -66,7 +69,13 @@
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <label for="is_recurring" id="frequency_label">Donation Frequency {{#if doNotShowOneTime}}<span style="font-size: .8em;">{{{onlyOneTimeIcon}}}</span> {{/if}}</label>
                                 {{#unless locked_frequency}}
-                                        <select type="text" name="is_recurring" id="is_recurring" class="form-control select select-primary mbl" required data-placeholder="Select an Option" data-parsley-error-message="  Choose one ^" >
+                                        <select type="text"
+                                                name="is_recurring"
+                                                id="is_recurring"
+                                                class="form-control select select-primary mbl"
+                                                required
+                                                data-placeholder="Select an Option"
+                                                data-parsley-error-message="  Choose one ^">
                                         {{#unless doNotShowOneTime}}
                                             <option selected></option>
                                         {{/unless}}

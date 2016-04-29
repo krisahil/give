@@ -138,12 +138,12 @@
                       <button id="updateDropdown" class="btn btn-primary"><i class="fa fa-save"></i> &nbsp; Save</button>
                       <br>
                       <label for="testDropdown">Dropdown Preview</label><br>
-                      <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl">
+                      <input type="hidden" name="testDropdown" id="testDropdown" class="form-control select select-primary mbl" />
                       {{#if $and givingOptions showDD}}
                           <br>
                           <label for="selectTestMain">This will be your main selection dropdown</label>
                             <br>
-                          <select id="mainDD" class="form-control select select-primary mbl" >
+                          <select id="mainDD" class="form-control select select-primary mbl">
                               {{#each givingOptions}}
                                   {{#if groupId}}
                                     <option value="{{groupId}}">{{text}}</option>

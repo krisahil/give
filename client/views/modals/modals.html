@@ -82,4 +82,51 @@
             </div>
         </div>
     </div>
+
+    <!-- This modal is for getting the trip and the participant from a donor
+    who wants to give toward a trip participant-->
+    <div class="modal fade" id="modal_for_trips">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title text-center">
+                        <strong>Mission Trips</strong>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Please select the trip, then you will be able to choose
+                        the participant you'd like to support.
+                    </p>
+                    <select id="tripSelect"
+                            data-placeholder="Select a Trip">
+                        <option></option>
+                        {{#each trips}}
+                            <option data-trip="{{_id}}"
+                            value="{{fundId}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+                    <select id="participantSelect"
+                            data-placeholder="Select a Person">
+                        <option></option>
+                        {{#each participants}}
+                            <option value="{{fname}} {{lname}}">{{fname}} {{lname}}</option>
+                        {{/each}}
+                    </select>
+                    <p>
+                        If you have questions please <a
+                            href="mailto:{{contact_address}}?Subject=Donation
+                             Question - Trip Participant">email,
+                        {{contact_address}}.</a>
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary"
+                            id="tripsSave">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

@@ -9,7 +9,7 @@ Router.configure({
 Router.plugin('ensureSignedIn', {
   except: ['donation.form', 'donation.landing', 'donation.thanks',
            'donation.gift', 'donation.scheduled', 'enrollAccount',
-           'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn']
+           'forgotPwd', 'resetPwd', 'stripe_webhooks', 'signIn', 'TripsPublic']
 });
 
 Router.onAfterAction(function() {
@@ -54,6 +54,26 @@ Router.onBeforeAction(function() {
   }
 }, {
   only: ['transfers', 'Reports']
+});
+
+Router.onBeforeAction(function() {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'trips-manager', 'trips-member']) ) {
+    this.render("NotFound");
+  } else {
+    this.next();
+  }
+}, {
+  only: ['AdminTrips', 'AdminTrip']
+});
+
+Router.onBeforeAction(function() {
+  if (!Roles.userIsInRole(Meteor.user(), ['admin', 'trips-manager', 'trips-member']) ) {
+    this.render("NotFound");
+  } else {
+    this.next();
+  }
+}, {
+  only: ['MemberTrips', 'MemberTrip']
 });
 
 Router.route('', {
@@ -480,26 +500,56 @@ Router.route('/dashboard/logos', {
   template: 'Logos'
 });
 
-Router.route('/dashboard/trips', {
+Router.route('/trips/admin', {
   layoutTemplate: 'AdminLayout',
-  name: 'Trips',
+  name: 'TripsAdmin',
   where: 'client',
-  template: 'Trips'
+  template: 'TripsAdmin'
 });
 
-Router.route('/dashboard/trip/:_id', function() {
+Router.route('/trips/admin/:_id', function() {
   var params = this.params;
 
   this.subscribe('trips', params._id);
   this.layoutTemplate = 'AdminLayout';
 
   if (this.ready()) {
-    this.render('Trip');
+    this.render('TripAdmin');
     this.next();
   } else {
     this.render('Loading');
     this.next();
   }
 }, {
-  name: 'trip'
+  name: 'TripAdmin'
+});
+
+Router.route('/trips/member', {
+  layoutTemplate: 'AdminLayout',
+  name: 'TripsMember',
+  where: 'client',
+  template: 'TripsMember'
+});
+
+Router.route('/trips/member/:_id', function() {
+  var params = this.params;
+
+  this.subscribe('trips', params._id);
+  this.layoutTemplate = 'AdminLayout';
+
+  if (this.ready()) {
+    this.render('TripMember');
+    this.next();
+  } else {
+    this.render('Loading');
+    this.next();
+  }
+}, {
+  name: 'TripMember'
+});
+
+Router.route('/trips', {
+  name: 'TripsPublic',
+  where: 'client',
+  template: 'TripsPublic'
 });

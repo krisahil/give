@@ -5673,6 +5673,17 @@
     border: none;
   }
 
+  .pulse-border {
+    -webkit-animation: pulse-border 2s; /* Chrome, Safari, Opera */
+    animation: pulse-border 2s;
+    border: 15px solid #fff;
+  }
+
+  @-webkit-keyframes pulse-border {
+    0% {border: 15px solid darkcyan;}
+    100% {border: 15px solid #fff;}
+  }
+
   @media (max-width: 479px) {
     .col-xxs-12 {
       width: 100%;

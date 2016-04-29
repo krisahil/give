@@ -2,35 +2,34 @@
   <div class="stripe-transfer-details">
     <div id="" class="col-md-12">
 
-    {{#with transfer}}
-      <p class="text-left">
-        <span id="posted-span" class="status {{posted}} mouseover" title="Click to toggle the 'posted' status"
-          data-loading-text="<i class='fa fa-spinner fa-pulse'></i>">
-            <em>{{posted}}</em>
-        </span>
-          <label for="posted-span small">
-              &lt;-- Click to toggle the 'posted' status
-          </label>
-        <span class="status pull-right text-primary">
-          <em><a href="/transfers">Go to Transfers</a></em>
-        </span>
-      </p>
-    <p>
-        <span class="status {{status}}" title="This is the Stripe transfer status">
-          <em>{{status}}</em>
-        </span>
-        <strong> ${{twoDecimalPlaces amount}}</strong>
-        <a title="Click to go to this transfer in Stripe"
-           href="https://dashboard.stripe.com/transfers/{{id}}"
-           target="_blank"><span class="id">— {{id}}</span>
-        </a>
-        <span class="date">— {{transfer_date}}</span>
-        <small class="pull-right smallerHeight">
-            Legend = <span class="refunded" title="A refund, or a refunded transaction will be orange">Refund(ed)</span> /
-            <span class="failed" title="A failed transaction will be red"> Failed</span>
-        </small>
-
-    </p>
+        {{#with transfer}}
+            <p class="text-left">
+                <span id="posted-span" class="status {{posted}} mouseover" title="Click to toggle the 'posted' status"
+                    data-loading-text="<i class='fa fa-spinner fa-pulse'></i>">
+                    <em>{{posted}}</em>
+                </span>
+                <label for="posted-span small">
+                    Click to toggle the 'posted' status
+                </label>
+                <span class="status pull-right text-primary">
+                    <em><a href="/transfers">Go to Transfers</a></em>
+                </span>
+            </p>
+            <p>
+                <span class="status {{status}}" title="This is the Stripe transfer status">
+                    <em>{{status}}</em>
+                </span>
+                <strong> ${{twoDecimalPlaces amount}}</strong>
+                <a title="Click to go to this transfer in Stripe"
+                    href="https://dashboard.stripe.com/transfers/{{id}}"
+                    target="_blank"><span class="id">— {{id}}</span>
+                </a>
+                <span class="date">— {{transfer_date}}</span>
+                <small class="pull-right smallerHeight">
+                    Legend = <span class="refunded" title="A refund, or a refunded transaction will be orange">Refund(ed)</span> /
+                    <span class="failed" title="A failed transaction will be red"> Failed</span>
+                </small>
+            </p>
       <table class="table table-striped">
         <tfoot>
           <tr>

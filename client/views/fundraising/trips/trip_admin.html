@@ -1,10 +1,6 @@
-<template name="Trip">
+<template name="TripAdmin">
 
-    <!-- TODO: add/remove fundraisers to the trip -->
     <!-- TODO:
-        b. For each of them see if they already have an account (email address will be provided)
-        e. Trips [] should include this { tripId, adjustments{deadline1: -100}, amountRaised: pulledInFromDT}
-
     4. On button click next to participants name (paper airplane) send them an
     invite to our system if they don't already have an account make this invite an enrollment invite
     5. When the trips page loads and finds trips, debounce for 1 min the function to get new DT info, but pull in the
@@ -12,6 +8,19 @@
     -->
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-3 trip-member-details">
+                    <span id="subscribed-span" class="status {{subscribed}} mouseover"
+                          data-loading-text="<i class='fa fa-spinner fa-pulse'></i>">
+                        <em>{{subscribed}}</em>
+                    </span>
+                <i class='fa fa-question-circle'
+                   data-toggle='popover' data-trigger='hover focus'
+                   data-container='body' data-content="Click to subscribed
+                       or un-subscribe from donation alerts for this trip. If you
+                        subscribe you'll get an email each time someone gives toward your trip
+                        (through the online giving system)">
+                </i>
+            </div>
             <h2 class="text-center">{{#with trip}}<strong>{{name}}</strong>{{/with}}</h2>
         </div>
         <div class="row">
@@ -35,7 +44,7 @@
                         {{#each participant}}
                             <tr class="trips-row" data-id="{{_id}}">
                                 <td>{{participantName}}</td>
-                                <td>{{amountRaised}}</td>
+                                <td>${{amountRaised}}</td>
                                 <td colspan="2">
                                     <div class="progress progress-bar-info">
                                         <div class="progress-bar progress-bar-success"

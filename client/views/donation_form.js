@@ -272,6 +272,13 @@ Template.DonationForm.onRendered(function() {
       backdrop: 'static'
     });
   }
+  // setup modal for entering give toward information
+  if (Session.equals('params.donateTo', 'trips')) {
+    $('#modal_for_trips').modal({
+      show: true,
+      backdrop: 'static'
+    });
+  }
 
   // setup modal for entering serve1000 church information
   var campaignSession = Session.get('params.campaign');

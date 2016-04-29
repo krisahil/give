@@ -428,16 +428,22 @@ Meteor.publish("wholeConfigDoc", function () {
   }
 });
 
-Meteor.publish("trips", function (id) {
-  check(id, Match.Optional(String));
-  if (Roles.userIsInRole(this.userId, ['admin', 'trips-manager'])) {
-    if (id) {
-      return Trips.find({_id: id});
-    }
-    return Trips.find();
+Meteor.publish("userDoc", function () {
+  if (this.userId) {
+    logger.info( "Started publish function, userDoc" );
+    let user = Meteor.users.find( { _id: this.userId } );
+    return user;
   } else {
     this.ready();
   }
+});
+
+Meteor.publish("trips", function (id) {
+  check(id, Match.Optional(String));
+  if (id) {
+    return Trips.find({_id: id});
+  }
+  return Trips.find({active: true});
 });
 
 Meteor.publish("fundraisers", function (id) {
@@ -452,12 +458,15 @@ Meteor.publish("fundraisers", function (id) {
   }
 });
 
-Meteor.publish("userDoc", function () {
-  if (this.userId) {
-    logger.info( "Started publish function, userDoc" );
-    let user = Meteor.users.find( { _id: this.userId } );
-    return user;
-  } else {
-    this.ready();
+
+Meteor.publish("fundraisersPublic", function (id) {
+  check(id, Match.Optional(String));
+  if (id) {
+    return Fundraisers.find({'trips.id': id}, {fields: {
+      email: 0
+    }});
   }
+  return Fundraisers.find({}, {fields: {
+    email: 0
+  }});
 });

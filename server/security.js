@@ -28,13 +28,7 @@ Security.permit(['insert', 'update', 'remove'])
   .ifHasRole('admin')
   .apply();
 
-Trips.permit('update').ownsDocument('fundAdmin').apply();
-
-Security.defineMethod('ownsDocument', {
-  fetch: [],
-  allow(type, field, userId, doc) {
-    if (!field) field = 'userId';
-    return userId === doc[field];
-  }
-});
-
+Security.permit(['insert', 'update', 'remove'])
+  .collections([Trips])
+  .ifHasRole(['admin', 'trips-manager'])
+  .apply();

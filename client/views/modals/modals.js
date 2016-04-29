@@ -23,6 +23,13 @@ function removeParam(key, sourceURL) {
   return rtn;
 }
 
+Template.Modals.onCreated(function () {
+  this.autorun(()=> {
+    this.subscribe("trips");
+    this.subscribe("fundraisersPublic");
+  });
+});
+
 Template.Modals.events({
   'click #write_in_save': function() {
     let config = ConfigDoc();
@@ -39,15 +46,50 @@ Template.Modals.events({
     $('#giftDesignationText').show();
     
     $('[name="donateTo"]').val(writeIn);
+  },
+  'click #tripsSave'() {
+    if ($('#tripSelect').val() === "" || $('#participantSelect').val() === "") {
+      return;
+    }
+    $("#donateTo").val($("#tripSelect").val());
+    $('#modal_for_trips').modal('hide');
+    Router.go(Meteor.absoluteUrl() +
+      '?note=' + $('#participantSelect').val() +
+      '&donateTo=' + $("#tripSelect").val());
+  },
+  'change #tripSelect'(){
+    let trip = Trips.findOne({fundId: $("#tripSelect").val()});
+    if (trip && trip._id) {
+      Session.set("selectedTripId", trip._id);
+      $('#participantSelect').chosen({width: "95%"});
+      Meteor.setTimeout(function () {
+        $("#participantSelect").trigger("chosen:updated");
+      }, 1000);
+    }
+    return;
   }
 });
 
 Template.Modals.helpers({
-  contact_address: function() {
-    return Meteor.settings.public.contact_address;
+  participants(){
+    let trip_id = Session.get("selectedTripId");
+    if (trip_id) {
+      let fundraisers = Fundraisers.find({'trips.id': trip_id});
+      if (fundraisers) {
+        return fundraisers;
+      }
+    }
+    return;
   },
-  support_address: function() {
-    return Meteor.settings.public.support_address;
+  trips(){
+    return Trips.find();
+  },
+  name(){
+    let fundId = this.fundId;
+    if (fundId) {
+      return DT_funds.findOne( { _id: fundId } ) && DT_funds.findOne( { _id: fundId } ).name;
+    }
+    return;
   },
   churchSources: function() {
     return [
@@ -99,9 +141,17 @@ Template.Modals.helpers({
 
 Template.Modals.onRendered( function() {
   $('select').select2({dropdownCssClass: 'dropdown-inverse'});
-  $("#options").select2('destroy');
 
   $('#options').chosen({width: "95%"});
+
+  Meteor.setTimeout(function(){
+    $('#tripSelect').select2('destroy');
+    $('#participantSelect').select2('destroy');
+    Meteor.setTimeout(function () {
+      $('#tripSelect').chosen({width: "95%"});
+      $("#participantSelect").hide();
+    }, 250);
+  }, 250);
 
   $('#modal_for_serve1000').on('hidden.bs.modal', function() {
     var currentServed = 577;

@@ -339,3 +339,27 @@ Meteor.publishComposite("subscriptions", function () {
     this.ready();
   }
 });
+
+Meteor.publishComposite("tripsMember", function () {
+  logger.info( "Started publish function, tripsMember" );
+  if( this.userId ) {
+    console.log(this.userId);
+    let user = Meteor.users.findOne({_id: this.userId});
+    return {
+      find: function () {
+        return Fundraisers.find( { email: user.emails[0].address } );
+      },
+      children: [
+        {
+          find: function (fundraiser) {
+            if (fundraiser && fundraiser.trips) {
+              // Find the person associated with this donation
+              return Trips.find( { _id: {$in: fundraiser.trips.map(function(item){return item.id}) }} );
+            }
+            return;
+          }
+        }
+      ]
+    }
+  }
+});

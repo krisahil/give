@@ -599,6 +599,14 @@ Schema.Settings = new SimpleSchema({
 });
 
 Schema.Trips = new SimpleSchema({
+  active: {
+    type: Boolean,
+    optional: true,
+    autoform: {
+      defaultValue: true,
+      type: "hidden"
+    }
+  },
   fundId: {
     type: String,
     label: 'Select a Trip',

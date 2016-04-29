@@ -12,7 +12,7 @@
                 <div class="margin-left">
                     {{#unless imageExists}}
                         {{#if notAdmin}}
-                            <a href="/dashboard" title="Login to change this logo.">
+                            <a href="/dashboard" title="Give Logo">
                                 <img src="/images/icons/mountain.svg" width="65px" />
                             </a>
                         {{else}}
@@ -79,6 +79,16 @@
                     {{#if isInRole 'admin, manager'}}
                         <li class="">
                             <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'Dashboard'}}"><span class="fa fa-dashboard"></span> Dashboard</a>
+                        </li>
+                    {{/if}}
+                    {{#if isInRole 'trips-manager'}}
+                        <li class="">
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'TripsAdmin'}}"><span class="fa fa-plane"></span> Trips</a>
+                        </li>
+                    {{/if}}
+                    {{#if isInRole 'trips-member'}}
+                        <li class="">
+                            <a id="nav-dashboard" class="nav-bar-links" href="{{pathFor 'TripsMember'}}"><span class="fa fa-plane"></span> Trips</a>
                         </li>
                     {{/if}}
                     {{#unless isInRole 'no-dt-person, admin-only'}}

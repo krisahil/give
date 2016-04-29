@@ -11,22 +11,6 @@ function getAmountRaised(name) {
   return 0;
 }
 
-function onFormError() {
-  Bert.alert({
-    message: "Looks like you might be missing some required fields.",
-    type: 'danger',
-    icon: 'fa-frown-o'
-  });
-}
-
-function onFormSuccess() {
-  Bert.alert({
-    message: "Good work",
-    type: 'success',
-    icon: 'fa-smile-o'
-  });
-}
-
 function getAdjustmentAmount(id) {
 
   let parent = Template.parentData(1);
@@ -41,7 +25,8 @@ function getAdjustmentAmount(id) {
     .map(function(item) {return item.id; }).indexOf(trip_id);
 
   if (parentParent &&
-    parentParent.trips[tripElementPosition] &&
+    parentParent.trips && parentParent.trips[tripElementPosition] &&
+    parentParent.trips[tripElementPosition].deadlines &&
     parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition] &&
     parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition].amount) {
     return Number(parentParent.trips[tripElementPosition].deadlines[deadlineElementPosition].amount);
@@ -49,45 +34,30 @@ function getAdjustmentAmount(id) {
   return '0';
 }
 
-AutoForm.hooks({
-  'fundraisers-form': {
-    onSuccess: function () {
-      onFormSuccess();
-    },
-    onError: function(formType, error) {
-      onFormError();
-    },
-    onSubmit: function (insertDoc) {
-      insertDoc.trips = [{id : Trips.findOne()._id}];
-      Meteor.call("insertFundraisersWithTrip", insertDoc, function ( err, res ) {
-        if(err) {
-          console.error(err);
-          onFormError();
-        } else {
-          AutoForm.resetForm('fundraisers-form');
-          $("[type='submit']").prop("disalbed", false);
-          $("[type='submit']").removeAttr("disabled");
-          onFormSuccess();
-        }
-      });
-      return false;
-    }
-  }
+Template.TripMember.onRendered(function () {
+  $('[data-toggle="popover"]').popover({html: true});
 });
-
-Template.Trip.onCreated(function () {
+Template.TripMember.onCreated(function () {
   let tripId = Router.current().params._id;
+  // TODO: need to also pass this user's fundraiser id so that only those splits are passed back
   this.autorun(()=> {
     this.subscribe("userDTFunds");
-    this.subscribe("fundraisers", tripId);
+    this.subscribe("tripsMember");
     this.subscribe("travelDTSplits", tripId);
   });
 });
 
-Template.Trip.helpers({
+Template.TripMember.helpers({
   trip() {
     let trip = Trips.findOne();
     return Trips.findOne();
+  },
+  subscribed: function () {
+    if (this && this.metadata && this.metadata.subscribed && this.metadata.subscribed === "true") {
+      return 'subscribed';
+    } else {
+      return 'not-subscribed';
+    }
   },
   name() {
     let DTFund = DT_funds.findOne({_id: this.fundId});
@@ -97,22 +67,21 @@ Template.Trip.helpers({
     return;
   },
   participant() {
-    let participant = Fundraisers.find();
+    let participant = Fundraisers.findOne();
     if(participant) {
       return participant;
     }
     return;
-  },
-  participantName(){
-    let name = this.fname + " " + this.lname;
-    return name;
   },
   amountRaised(){
     let raised = getAmountRaised(this.fname + " " + this.lname);
     return raised;
   },
   amountRaisedPercent(amountRaised){
-    let deadlines = Trips.findOne().deadlines;
+    let deadlines = Trips.findOne() && Trips.findOne().deadlines;
+    if (!deadlines){
+      return;
+    }
 
     let deadlinesTotal = deadlines.reduce( function(previousVal, deadline){
       return previousVal + deadline.amount;
@@ -145,12 +114,12 @@ Template.Trip.helpers({
 
     let deadlinesTotal = parent.deadlines
       .reduce( function(previousVal, deadline, index){
-      if (elementPosition > index) {
-        return previousVal + deadline.amount;
-      } else {
-        return previousVal;
-      }
-    }, this.amount);
+        if (elementPosition > index) {
+          return previousVal + deadline.amount;
+        } else {
+          return previousVal;
+        }
+      }, this.amount);
 
 
     let raised = getAmountRaised(parent.fname + " " + parent.lname);
@@ -193,9 +162,9 @@ Template.Trip.helpers({
             console.error(err);
           }
         })
-      }  
+      }
     }
-    return;    
+    return;
   },
   splitAmount(){
     return this.amount_in_cents ? (this.amount_in_cents/100) : "";
@@ -211,75 +180,11 @@ Template.Trip.helpers({
   }
 });
 
-Template.Trip.events({
-  'click .remove-participant'(){
-    let self = this;
+Template.TripMember.events({
+  'click .subscribed-span'() {
+    // TODO: subscribe this fundraiser to email alerts (or unsubscribe)
+    // depending on whether they were already subscribed or unsubscribed
 
-    console.log("remove participant clicked");
-    swal({
-      title: "Are you sure you want to remove this participant?",
-      type: "info",
-      showCancelButton: true,
-      confirmButtonColor: "#DD6B55",
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      closeOnConfirm: false,
-      closeOnCancel: true,
-      showLoaderOnConfirm: true
-    }, function(isConfirm) {
-      if (isConfirm) {
-
-        let tripId = Router.current().params._id;
-        Meteor.call( 'removeTripParticipant', self._id, tripId, function( error, response ) {
-          if ( error ) {
-            console.log(error);
-            swal("Error", "Something went wrong", "error");
-          } else {
-            console.log(response);
-            swal({
-              title: "Done",
-              text: "Ok, I've removed that participant.",
-              type: 'success'
-            });
-          }
-        });
-      }
-    });
-  },
-  'submit .update-participant'(e){
-    console.log("Clicked update adjustments");
-    e.preventDefault();
-    let target = e.target;
-    let participant_id = this._id;
-    console.log(participant_id);
-    let adjustments = $.map($("[name=" + participant_id + "] .trip-adjustments"),
-      function(item, index){
-        console.log(index, item);
-        return {
-          id: $(item).attr('name'),
-          amount: $(item).val()
-        };
-      });
-
-    let formValues = {
-      trip_id: Trips.findOne()._id,
-      participant_id: participant_id,
-      deadlines: adjustments,
-      fname: target.fname.value,
-      lname: target.lname.value,
-      email: target.email.value
-    };
     
-    Meteor.call("updateTripParticipantAndAdjustments", formValues, ( err, res )=> {
-      if (err) {
-        console.error(err);
-        onFormError();
-      } else {
-        console.log(res);
-        onFormSuccess();
-        $("#collapse-edit-" + participant_id).collapse('toggle');
-      }
-
-    })
   }
 });
