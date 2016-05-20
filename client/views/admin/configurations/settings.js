@@ -1,5 +1,7 @@
 function checkDependantStates() {
-  if (AutoForm.getFieldValue("Settings.ach_verification_type", "updateSettingsSection") === 'manual') {
+  var currentSelection = AutoForm.getFieldValue("Settings.ach_verification_type", "updateSettingsSection");
+
+  if (currentSelection === 'manual' || currentSelection === 'micro-deposit') {
     $('[name="Settings.forceACHDay"]').prop('disabled', false);
     $('[name="Settings.doNotAllowOneTimeACH"]').bootstrapSwitch('readonly', false);
     $('[name="Settings.collectBankAccountType"]').bootstrapSwitch('readonly', false);

@@ -1,0 +1,25 @@
+<template name="VerifyBankAccount">
+    <div class="class=container form-container">
+        <form class="form-horizontal" role="form" id="verify-bank-account-form" name="verify_bank_account_form">
+            <fieldset>
+                <div class="form-item">
+                    <label>
+                        First deposit amount
+                        <input name="micro_amount_one" type="number" placeholder="0.00" min="0" step="0.01" />
+                    </label>
+                </div>
+                <div class="form-item">
+                    <label>
+                        Second deposit amount
+                        <input name="micro_amount_two" type="number" placeholder="0.00" min="0" step="0.01" />
+                    </label>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary pull-left">
+                <i class="fa fa-plus"></i>
+                Verify bank account
+            </button>
+        </form>
+    </div>
+</template>

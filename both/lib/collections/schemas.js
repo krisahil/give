@@ -412,7 +412,7 @@ Schema.Settings = new SimpleSchema({
   ach_verification_type: {
     type: String,
     label: "Which type of ACH verification do you prefer?",
-    allowedValues: ["none", "manual"], // add these later "micro-deposit", "plaid"
+    allowedValues: ["none", "manual", "micro-deposit"], // add these later: "plaid"
     optional: true,
     autoform: {
       afFieldInput: {

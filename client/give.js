@@ -283,16 +283,29 @@ function OrgInfoCheck(name, namePart2) {
         // If it is setup to take gifts manually then don't tokenize the bank info
         let config = ConfigDoc();
 
-        if( config && config.Settings &&
-          config.Settings.ach_verification_type === 'manual' ) {
-          if( config.Settings.collectBankAccountType ) {
+        // Define default ACH verification, to avoid errors.
+        if (typeof config.Settings.ach_verification_type === 'undefined') {
+          config.Settings.ach_verification_type = 'auto';
+        }
+
+        switch (config.Settings.ach_verification_type) {
+          case 'manual':
             console.log("Got to manual");
-            bankInfo.account_type = Give.getCleanValue( '#account_type' );
-          }
-          Give.process_bank_manually( bankInfo, form );
-        } else {
-          console.log("Got to normal");
-          Give.process_bank_with_stripe( bankInfo, form );
+            Give.process_bank_manually( bankInfo, form );
+            break;
+
+          case 'micro-deposit':
+            console.log("Got to micro-deposit");
+            // Use the normal processor, but tell it to queue bank account
+            // for verification if the account hasn't yet been verified.
+            Give.process_bank_with_stripe( bankInfo, form, true );
+            break;
+
+          case 'auto':
+          default:
+            console.log("Got to normal");
+            Give.process_bank_with_stripe( bankInfo, form );
+            break;
         }
       } else {
         form.paymentInformation.saved = true;
@@ -396,11 +409,17 @@ function OrgInfoCheck(name, namePart2) {
             return response;
           }
         }
-      } );
+      });
     },
-    process_bank_with_stripe: function ( bankInfo, form ) {
+    process_bank_with_stripe: function ( bankInfo, form, microDepositVerify = false ) {
       Stripe.bankAccount.createToken( bankInfo, function ( status, response ) {
         if( response.error ) {
+          // @TODO Verify that error is the one about ACH verification failure.
+          if (microDepositVerify) {
+            Give.bank_account_queue_verification(bankInfo);
+            // @TODO Customize error message? Or send email telling donor to
+            // process micro-deposit verification.
+          }
           Give.handleErrors( response.error );
         } else {
           // Call your backend
@@ -413,6 +432,9 @@ function OrgInfoCheck(name, namePart2) {
           }
         }
       } );
+    },
+    bank_account_queue_verification: function ( bankInfo ) {
+      logger.info("Would be trying to queue BA for verification.");
     },
     process_bank_manually: function ( bankInfo, form ) {
       Meteor.call( "process_bank_manually", bankInfo, function ( err, res ) {

@@ -220,6 +220,42 @@ Meteor.methods({
     }
     throw new Meteor.Error(403, "Not logged in");
   },
+  stripeVerifyBankAccount: function (customer_id) {
+    if (!this.userId) {
+      throw new Meteor.Error(403, "Not logged in");
+    }
+
+    check(customer_id, String);
+
+    var customer = StripeFunctions.stripe_retrieve('customers', 'retrieve', customer_id);
+    if (customer) {
+      logger.info(customer);
+
+      var bankAccountID = customer.sources.data[0].id;
+      // Test amounts that should work against test bank account.
+      var data = { amounts: [32, 45] }
+
+      Stripe.customers.verifySource(
+          customer_id,
+          bankAccountID,
+          data,
+          function (err, bankAccount) {
+            console.log('error', err);
+            console.log('updated BA', bankAccount);
+          }
+      );
+
+      return customer;
+    }
+    else {
+      return  {
+        // @TODO Correct messaging.
+        error: "Could not load customer.",
+        message: "This is my message for error. What else to include here?",
+      };
+    }
+
+  },
   get_all_donations_for_this_donor: function(id) {
     logger.info( "Started method get_all_donations_for_this_donor." );
     if (this.userId) {
@@ -274,6 +310,7 @@ Meteor.methods({
       country: Match.Optional(String)
     });
     console.log("Got past check");
+
     let bank = BankAccounts.insert(bankInfo);
     return bank;
   },

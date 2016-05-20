@@ -286,6 +286,14 @@ Router.route('/user/give', {
   name: 'user.give'
 });
 
+Router.route('/user/verify-bank-account', {
+  name: 'VerifyBankAccount',
+  template: 'VerifyBankAccount',
+  action: function () {
+    this.render('VerifyBankAccount');
+  },
+});
+
 Router.route('Subscriptions', function() {
   var params = this.params;
   Session.set('fix_it', params.query.fix_it);
