@@ -334,12 +334,30 @@ Meteor.methods({
         return { c: customerData.id, don: data._id, charge: 'scheduled' };
       }
     } catch (e) {
+      // TODO temp
+      logger.error(e);
       logger.error("Got to catch error area of processPayment function, full error: " + e);
       logger.error("e.reason = " + e.reason);
       logger.error("e.category_code = " + e.category_code +
         " e.descriptoin = " + e.description +
         " e.type = " + e.type +
         " e.message = " + e.message);
+
+      // If failure due to ACH bank account not being verified, do what?
+      if (e.type === 'StripeInvalidRequestError' && e.message.indexOf('The customer\'s bank account must be verified in order to create an ACH payment.') !== -1) {
+        logger.error("(debug) Error is ACH verification failure.");
+        Donations.update(data._id, {
+          $set: {
+            'status': 'pendingACHVerification',
+          }
+        });
+      }
+      else {
+        logger.error("(debug) Error is _not_ ACH verification failure.");
+        logger.info("(debug) Type: " + e.type);
+        logger.info("(debug) Message: " + e.message);
+      }
+
       if (e.category_code) {
         logger.error("Got to catch error area of create_associate. ID: " + data._id + " Category Code: " + e.category_code + ' Description: ' + e.description);
         var chargeSubmitted;
